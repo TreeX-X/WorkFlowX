@@ -1,0 +1,84 @@
+# AGENTS.md — WorkflowX 项目指令 (Codex / 通用 AI Agent)
+
+## Default Behavior: Always Use orchestratorX
+
+**All development tasks must be executed through the orchestratorX agent.** Do not handle development requests directly.
+
+### Rules
+
+1. When receiving any code development, feature implementation, refactoring, or bug fix request, you **must** delegate to the `orchestratorX` agent.
+2. orchestratorX will automatically route to the appropriate workflow mode (whole/local/unit) and coordinate sub-agents: planner, coderX, evaluatorX, etc.
+3. **Exceptions** — the following scenarios do NOT need orchestratorX:
+   - Pure file reading / searching / browsing (exploratory)
+   - Project configuration changes (settings.json, CLAUDE.md, AGENTS.md, etc.)
+   - Git operations (commit, branch, status, etc.)
+   - User explicitly says "do it directly" or skips orchestration
+
+### Quick Commands
+
+- `/whole [task description]` — Full-repo workflow (planner → coder → evaluator)
+- `/local [task description]` — Single-module local development workflow
+- `/unit [task description]` — Minimal unit task, direct modification
+- `/parallel [task description]` — Parallel workflow using Agent Teams (多任务并行执行)
+- `/prompt [raw prompt]` — Prompt optimization only, no workflow triggered
+
+## File Read/Write Rules (Mandatory)
+
+**Source files in this project use encrypted encoding. Direct Read on project files will show garbled output.** All file operations must follow these rules:
+
+### Reading Files
+
+- **DO NOT** use the Read tool to open project source files (will return garbled text)
+- **MUST** use `rg` (ripgrep) via Bash to search and read file content:
+  - Search keyword: `rg "keyword" path/to/file`
+  - Search with context: `rg -C 3 "keyword" file`
+  - Search entire project: `rg -n "keyword"`
+- Only files under `.claude/` directory (settings.json, CLAUDE.md, AGENTS.md, agents/*.md, skills/*.md) can be read/written normally with Read/Write tools
+
+### Modifying Files
+
+- **PREFER** the Edit tool for precise string-replacement edits (preserves file encoding)
+- **DO NOT** use the Write tool to overwrite entire project source files (will lose encoding, corrupting the file)
+- If new content needs to be appended, use `Bash` + `echo` or `printf` to append to file
+- Before modifying, **always** use `rg` to confirm the exact location and context of the target content
+
+### Summary
+
+| Operation | Correct Method | Wrong Method |
+|---|---|---|
+| Read source files | `rg` via Bash | Read tool |
+| Search keywords | `rg -n "keyword"` | Grep tool (limited scenarios) |
+| Modify source files | Edit tool (precise replacement) | Write tool (overwrite entire file) |
+| Read/write config files | Read / Write tools | — |
+
+## General Rules
+
+- Under normal circumstances, the use of PowerShell is prohibited. If it is unavoidable to use it, the correctness and completeness of the commands must be ensured.
+
+## Project Overview
+
+WorkflowX is a multi-agent collaborative development framework. orchestratorX coordinates planner, coderX, evaluatorX, abstracterX and other sub-agents to achieve a complete loop from requirement clarification → code implementation → quality evaluation.
+
+### Workflow Modes
+
+| Mode | Command | Description |
+|------|---------|-------------|
+| **Mode A** | `/xwhole` | 全局工作流，适合大规模、高影响力的任务 |
+| **Mode B** | `/xlocal` | 本地工作流，适合需求明确、范围有限的任务 |
+| **Mode C** | `/xunit` | 单元工作流，适合最小任务：单个修复、单个文件 |
+| **Mode D** | `/xparallel` | 并行工作流，使用 Agent Teams 多任务并行执行 |
+
+### Agent Teams (Mode D)
+
+Mode D 使用 Claude 的 Agent Teams 特性，实现多任务并行执行：
+- **前提条件**: 需要启用 `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`，Claude Code v2.1.32+
+- **核心特性**: 多个 coder-teammate + evaluator-teammate 并行工作
+- **智能调度**: 基于依赖关系的动态任务分配
+- **文件冲突检查**: 运行时检测，防止多人修改同一文件
+- **需求变更**: 实时接入，用户可随时提出新需求
+
+### Agent 定义
+
+- Agent definitions: `.claude/agents/`
+- Skill definitions: `.claude/skills/`
+- Runtime playbook: `.claude/skills/orchestrator-playbook/SKILL.md`

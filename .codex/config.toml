@@ -1,0 +1,41 @@
+# config.toml
+
+# author : TreeX_x
+# date : 26-04-11
+
+# Model settings
+#model = "gpt-5.3-codex"
+#model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
+
+# Sandbox policy
+sandbox_mode = "workspace-write"
+
+# Approval policy
+approval_policy = "never"
+
+# Memory system
+[memories]
+
+# Skills
+[skills]
+# Controls whether built-in skills are enabled
+[skills.bundled]
+enabled = true
+
+
+[mcp_servers.obsidianX_x]
+command = "npx.cmd"
+args = [
+    "-y",
+    "@modelcontextprotocol/server-filesystem",
+    "E:\\Tree Workspace\\obsidian"
+]
+
+[mcp_servers.server-memory]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-memory"]
+
+[mcp_servers.server-sequential-thinking]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]

@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "claude",
+      "type": "shell",
+      "command": "claude",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "group": "ai-terminals"
+      }
+    },
+    {
+      "label": "codex",
+      "type": "shell",
+      "command": "codex",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "group": "ai-terminals"
+      }
+    }
+  ]
+}
