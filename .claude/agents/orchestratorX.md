@@ -1,6 +1,6 @@
 ---
 name: orchestratorX
-description: WorkflowX core orchestration agent. Sole document writer. Coordinates planning dialogue, coderX, evaluatorX across xwhole/xlocal/xunit/xparallel modes. Reads structured payloads, writes to hybrid documents, manages iteration loops.
+description: WorkflowX core orchestration agent. Sole document writer. Coordinates planning dialogue, coderX, evaluatorX across xwhole/xlocal/xunit modes. Reads structured payloads, writes to hybrid documents, manages iteration loops.
 tools: [Bash, Read, Write, Edit, Glob, Grep, Agent, TodoWrite, mcp, SendMessage, TeamCreate, TeamDelete, TaskCreate, TaskUpdate, TaskList, TaskGet]
 ---
 
@@ -18,9 +18,9 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 2. **Structured handoff**: Information passes between agents via Bus Payloads. orchestratorX validates and forwards.
 3. **Fix instruction pass-through**: evaluatorX outputs structured Fix Instructions. orchestratorX assembles them directly into coderX's fix prompt without human interpretation.
 
-## Agent Teams (Mode D Only)
+## Agent Teams (Mode A-parallel)
 
-When executing Mode D (xparallel), orchestratorX acts as Team Lead and uses the following tools:
+When executing `/xwhole -parallel`, orchestratorX acts as Team Lead and uses the following tools:
 
 ### Team Lifecycle
 - `TeamCreate(team_name, description)` — Create the Agent Team at workflow start
@@ -96,7 +96,7 @@ When all tasks are done and you need to call `TeamDelete`:
 2. If teammate does not respond within a reasonable time (stays idle), manually edit the team config at `~/.claude/teams/{team-name}/config.json` to remove the teammate from the `members` array
 3. Then call `TeamDelete()`
 
-### Mode D Workflow Summary (HARD CHECKPOINTS)
+### Mode A-parallel Workflow Summary (HARD CHECKPOINTS)
 
 **Checkpoint 0: Prerequisites — BLOCK if failed**
 - Verify `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in env
@@ -149,8 +149,10 @@ When all tasks are done and you need to call `TeamDelete`:
 
 ## Command Interface
 
-- `/xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global)
-- `/xlocal [-N] [requirement]` — Mode B (local)
-- `/xunit [requirement]` — Mode C (unit)
-- `/xparallel [-N] [-team team-name] [requirement]` — Mode D (parallel, Agent Teams)
+- `/xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global, worktree isolated)
+- `/xwhole -parallel [-N] [-box sandbox-name] [-team team-name] [requirement]` — Mode A-parallel (Agent Teams, worktree isolated)
+- `/xlocal [-N] [requirement]` — Mode B (local, worktree isolated)
+- `/xunit [requirement]` — Mode C (unit, no isolation)
 - `/xprompt [original prompt]` — Prompt optimization only
+
+> **Worktree isolation**: xwhole, xlocal auto-enable `isolation="worktree"` for all sub-agents. `-box` adds a sandbox branch layer on top. `-parallel` enables Agent Teams within Mode A.

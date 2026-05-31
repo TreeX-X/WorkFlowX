@@ -25,7 +25,7 @@ Before any other operation, check for `.hybrid/.workflow-lock`:
 
 ## 1.1 MCP Health Check & Auto-Recovery (MCP Lifecycle)
 
-**Trigger**: Every entry into xwhole/xlocal/xunit/xparallel workflow, before any other operation.
+**Trigger**: Every entry into xwhole/xlocal/xunit workflow, before any other operation.
 
 ### Step 1: Probe — Single Attempt
 
@@ -50,7 +50,7 @@ mcp__server-memory__read_graph()
 
 ### Step 3: Write MCP Status to Hybrid Doc
 
-**If a hybrid document exists** (xwhole / xlocal / xparallel workflows): Update `Section 0. Runtime Environment Status` in the static zone.
+**If a hybrid document exists** (xwhole / xlocal workflows): Update `Section 0. Runtime Environment Status` in the static zone.
 
 Generate real timestamp: `date -u +%Y-%m-%dT%H:%M:%SZ`
 

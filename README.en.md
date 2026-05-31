@@ -97,12 +97,12 @@ Three platform configurations are provided out of the box:
 
 | Platform | Config Directory | Supported Modes | Notes |
 |----------|-----------------|-----------------|-------|
-| **Claude Code** | `.claude/` | All 4 modes | agents + skills, native SubAgent + Agent Teams (parallel mode) |
-| **OpenAI Codex** | `.codex/` | 3 modes (no parallel) | agents (`.toml`) + skills, full parity |
-| **GitHub Copilot** | `.github/` | 3 modes (no parallel) | agents (`.agent.md`) + skills + instructions |
-| **OpenCode** | `.opencode/` | 3 modes (no parallel) | agents + commands + skills, Task tool SubAgent delegation |
+| **Claude Code** | `.claude/` | All modes (incl. `-parallel`) | agents + skills, native SubAgent + Agent Teams + Worktree isolation |
+| **OpenAI Codex** | `.codex/` | 3 modes (no `-parallel`) | agents (`.toml`) + skills, full parity |
+| **GitHub Copilot** | `.github/` | 3 modes (no `-parallel`) | agents (`.agent.md`) + skills + instructions |
+| **OpenCode** | `.opencode/` | 3 modes (no `-parallel`) | agents + commands + skills, Task tool SubAgent delegation |
 
-> All four configurations share **identical workflow logic** — the same 6 commands, 4 modes, and multiple runtime modules. Only the tool-call syntax differs per platform. **Parallel mode (`/xparallel`) is only supported on Claude Code**, leveraging its experimental Agent Teams feature. OpenCode auto-discovers skills from `.claude/skills/`, so no duplication is needed.
+> All four configurations share **identical workflow logic** — the same commands, modes, and multiple runtime modules. Only the tool-call syntax differs per platform. **Parallel mode (`/xwhole -parallel`) is only supported on Claude Code**, leveraging its experimental Agent Teams feature. OpenCode auto-discovers skills from `.claude/skills/`, so no duplication is needed. All modes auto-enable Worktree isolation (except xunit).
 
 **Quick Setup:**
 1. Copy the relevant config directory (e.g., `.claude/` or `.opencode/`) into your project root
@@ -115,39 +115,41 @@ Three platform configurations are provided out of the box:
 | Command | Description | Example |
 |---------|-------------|---------|
 | `/xwhole [req]` | Full-repo workflow (plan → code → evaluate) | `/xwhole implement user login module` |
+| `/xwhole -parallel [req]` | **Parallel workflow**, multiple subtasks executed concurrently (Claude Code only) | `/xwhole -parallel implement user, order, and product modules` |
 | `/xwhole -box demo` | Execute in sandbox branch `demo`, isolated from main | `/xwhole -box auth refactor auth logic` |
 | `/xwhole -N 3` | Cap evaluator iterations at 3 (default: 2) | `/xwhole -N 3 optimize DB query performance` |
+| `/xwhole -parallel -team my-team` | Set Agent Team name | `/xwhole -parallel -team auth-team implement auth module` |
 | `/xlocal [req]` | Local module development, skips PRD planning | `/xlocal fix order list pagination bug` |
 | `/xunit [req]` | Minimal single-task change, no evaluation | `/xunit add timeout config to Config class` |
-| `/xparallel [req]` | **Parallel workflow**, multiple subtasks executed concurrently (Claude Code only) | `/xparallel implement user, order, and product modules` |
 | `/xprompt [text]` | Optimize a prompt only, no dev workflow triggered | `/xprompt write me a login page prompt` |
 
 > By default, all development requests are routed through orchestratorX. Exceptions: pure file reads, config edits, Git operations, or when the user explicitly says "directly do it."
 
-### 3. Four Workflow Modes
+### 3. Workflow Modes
 
 orchestratorX auto-routes based on requirement complexity (inferred from file scope, keywords, impact range, and PRD necessity), or you can specify manually:
 
 ```
-/xwhole     → [orchestratorX planning dialogue] → [promptMasterX optimize] → [coderX implement] → [evaluatorX evaluate] → loop
-/xlocal     → [promptMasterX optimize] → [coderX implement] → [evaluatorX evaluate] → loop
-/xunit      → [promptMasterX optimize] → [coderX implement] → done
-/xparallel  → [orchestratorX creates Agent Team] → [multiple coder-teammates implement in parallel] → [multiple evaluator-teammates review in parallel] → loop
+/xwhole              → [orchestratorX planning dialogue] → [promptMasterX optimize] → [coderX implement] → [evaluatorX evaluate] → loop
+/xwhole -parallel    → [orchestratorX creates Agent Team] → [multiple coder-teammates implement in parallel] → [multiple evaluator-teammates review in parallel] → loop
+/xlocal              → [promptMasterX optimize] → [coderX implement] → [evaluatorX evaluate] → loop
+/xunit               → [promptMasterX optimize] → [coderX implement] → done
 ```
 
-| | `/xwhole` Global | `/xlocal` Scoped | `/xunit` Minimal | `/xparallel` Parallel |
+| | `/xwhole` Global | `/xwhole -parallel` Parallel | `/xlocal` Scoped | `/xunit` Minimal |
 |---|---|---|---|---|
-| **Use case** | New features, cross-module refactors | 1-2 module changes | Single-file fixes, small edits | Multiple independent subtasks executed concurrently |
-| **Platform support** | Claude Code / Codex / Copilot / OpenCode | Claude Code / Codex / Copilot / OpenCode | Claude Code / Codex / Copilot / OpenCode | **Claude Code only** |
-| **PRD planning** | orchestratorX built-in multi-turn planning, outputs Hybrid Tree (Parent + Children) | Skipped | Skipped | Auto-generates Hybrid Tree, splits into parallel tasks |
-| **Evaluation loop** | evaluatorX auto-runs, up to N rounds | evaluatorX runs, up to N rounds | Only on explicit request | Multiple evaluator-teammates run in parallel |
-| **Dependency handling** | Deferred queue: blocked Children auto-queued for retry | Deferred queue | None | Dependency graph auto-scheduling, independent tasks run in parallel |
-| **Requirement changes** | Built-in change handling (adjust/optimize/scope/new branch) | Supported with Hybrid Tree | Terminate and restart | Supported, updates docs and re-schedules automatically |
-| **Checkpoints** | Auto-created each iteration | Auto-created each iteration | Not mandatory | 7 hard checkpoints, blocking verification at each step |
-| **Sandbox branch** | `-box` supported | Not supported | Not supported | Not supported |
-| **Agent Teams** | Not used | Not used | Not used | Uses TeamCreate + Agent tool to spawn teammates |
+| **Use case** | New features, cross-module refactors | Multiple independent subtasks concurrently | 1-2 module changes | Single-file fixes, small edits |
+| **Platform support** | Claude Code / Codex / Copilot / OpenCode | **Claude Code only** | Claude Code / Codex / Copilot / OpenCode | Claude Code / Codex / Copilot / OpenCode |
+| **PRD planning** | orchestratorX built-in multi-turn planning, outputs Hybrid Tree (Parent + Children) | Same as xwhole, then splits into parallel tasks | Skipped | Skipped |
+| **Evaluation loop** | evaluatorX auto-runs, up to N rounds | Multiple evaluator-teammates run in parallel | evaluatorX runs, up to N rounds | Only on explicit request |
+| **Dependency handling** | Deferred queue: blocked Children auto-queued for retry | Dependency graph auto-scheduling, independent tasks run in parallel | Deferred queue | None |
+| **Requirement changes** | Built-in change handling (adjust/optimize/scope/new branch) | Supported, updates docs and re-schedules automatically | Supported with Hybrid Tree | Terminate and restart |
+| **Checkpoints** | Auto-created each iteration | 7 hard checkpoints, blocking verification at each step | Auto-created each iteration | Not mandatory |
+| **Sandbox branch** | `-box` supported | `-box` supported | Not supported | Not supported |
+| **Worktree isolation** | ✅ Auto-enabled | ✅ Auto-enabled | ✅ Auto-enabled | Not used |
+| **Agent Teams** | Not used | Uses TeamCreate + Agent tool to spawn teammates | Not used | Not used |
 
-> **⚠️ `/xparallel` is Claude Code only**
+> **⚠️ `/xwhole -parallel` is Claude Code only**
 >
 > Parallel mode relies on Claude Code's experimental Agent Teams feature (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`). Other platforms (Codex, Copilot, OpenCode) do not support this mode. For parallel execution on other platforms, manually split tasks and run them with `/xlocal` separately.
 
@@ -184,7 +186,7 @@ Suppose you want to add a "User Login" feature to your project:
 
 ### 6. Parallel Mode Configuration (Claude Code Only)
 
-The `/xparallel` mode allows executing multiple independent subtasks concurrently, significantly improving development efficiency.
+`/xwhole -parallel` allows executing multiple independent subtasks concurrently, significantly improving development efficiency. Parallel mode is an extension of Mode A, sharing the same planning flow but using Agent Teams for parallel execution.
 
 **Prerequisites**:
 1. Claude Code v2.1.32+
@@ -203,19 +205,29 @@ The `/xparallel` mode allows executing multiple independent subtasks concurrentl
 
 **Workflow**:
 ```
-/xparallel implement user, order, and product modules independently
+/xwhole -parallel implement user, order, and product modules independently
   ↓
-orchestratorX creates Agent Team
+orchestratorX conducts planning dialogue (same as Mode A)
   ↓
-Auto-generates Hybrid Tree, splits into 3 parallel tasks
+Creates Agent Team, auto-generates Hybrid Tree, splits into parallel tasks
   ↓
-Spawns 2-3 coder-teammates + 1-2 evaluator-teammates
+Each teammate gets an isolated worktree (physical isolation)
   ↓
 Multiple coder-teammates implement concurrently
   ↓
 Multiple evaluator-teammates review concurrently
   ↓
-Iterative fixes → All pass → TeamDelete cleanup
+Iterative fixes → All pass → Merge worktree branches → TeamDelete cleanup
+```
+
+**Dual-layer isolation** (`-parallel` + `-box`):
+```
+main branch
+  └── sandbox/feature-x (sandbox branch)   ← Layer 1: protects main
+        ├── worktree/coder-1                ← Layer 2: agent isolation
+        ├── worktree/coder-2
+        ├── worktree/evaluator-1
+        └── worktree/evaluator-2
 ```
 
 **Use cases**:
@@ -232,14 +244,14 @@ Iterative fixes → All pass → TeamDelete cleanup
 
 Since config directories are independent, you can use the same workflow across tools:
 
-- **Claude Code CLI**: `.claude/agents/orchestratorX.md` defines agent behavior, **the only platform supporting parallel mode (`/xparallel`)**
+- **Claude Code CLI**: `.claude/agents/orchestratorX.md` defines agent behavior, **the only platform supporting parallel mode (`/xwhole -parallel`)**
 - **VS Code + Copilot**: `.github/agents/orchestratorX.agent.md` uses VSCode-native tool bindings
 - **OpenAI Codex CLI**: `.codex/agents/orchestratorX.toml` uses TOML format config
 - **OpenCode**: `.opencode/agents/orchestratorX.md` + `.opencode/commands/` defines agents and commands, delegating subtasks via the Task tool
 
 All four share the same skill definitions (in each platform's `skills/` directory), ensuring consistent workflow behavior. OpenCode auto-discovers skills from `.claude/skills/`, eliminating the need for duplication. Core skills are consolidated to 6: orchestrator-playbook (orchestration handbook + planning + requirement routing), evaluator-prd-audit, codex-spec-implementation, prompt-master, abstracter-code-summary, and guidelines.
 
-> **Parallel mode platform limitation**: `/xparallel` relies on Claude Code's Agent Teams feature (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + `teammateMode: "in-process"`). Other platforms cannot use this mode. For parallel execution on Codex/Copilot/OpenCode, manually split tasks and run them with `/xlocal` separately.
+> **Parallel mode platform limitation**: `/xwhole -parallel` relies on Claude Code's Agent Teams feature (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + `teammateMode: "in-process"`). Other platforms cannot use this mode. For parallel execution on Codex/Copilot/OpenCode, manually split tasks and run them with `/xlocal` separately.
 
 
 ## 🌟 About

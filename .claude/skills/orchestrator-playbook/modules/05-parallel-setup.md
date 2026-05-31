@@ -1,6 +1,6 @@
 # Module 05: Parallel Setup
 
-> **Trigger**: `/xparallel` command triggered, execute after environment init (Module 01)
+> **Trigger**: `/xwhole -parallel` triggered, execute after environment init (Module 01)
 
 ## Prerequisites Check (HARD REQUIREMENT — NO FALLBACK)
 
@@ -12,7 +12,7 @@
 2. **If prerequisites NOT met → ABORT immediately**
    - Do NOT fall back to Mode A/B
    - Do NOT proceed without Agent Teams
-   - Output error: `❌ Agent Teams not available. Mode D requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 and teammateMode="in-process". Aborting.`
+   - Output error: `❌ Agent Teams not available. -parallel requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 and teammateMode="in-process". Aborting.`
    - Delete workflow lock and terminate
 
 ## Team Creation Flow
@@ -20,10 +20,12 @@
 ### Step 1: Parse Parameters
 
 ```
-/xparallel [-N] [-team team-name] [requirement]
+/xwhole -parallel [-N] [-box sandbox-name] [-team team-name] [requirement]
 
 Parsed:
+- mode: xwhole (with -parallel flag)
 - N: max iteration rounds (default 2)
+- box: sandbox branch name (optional, enables dual-layer isolation)
 - team: team name (default: "workflow-{timestamp}")
 - requirement: requirement description
 ```

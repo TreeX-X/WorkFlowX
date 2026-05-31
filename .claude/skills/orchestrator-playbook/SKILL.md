@@ -11,11 +11,11 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
-| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal/xunit/xparallel | `modules/01-environment-init.md` |
+| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal/xunit | `modules/01-environment-init.md` |
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
-| 5 | Parallel Setup | `/xparallel` command triggered | `modules/05-parallel-setup.md` |
+| 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
 
 **Loading rule**: Load the relevant module with Read tool before each operation. **Never load all modules at once.**
@@ -30,9 +30,10 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 
 | Parameter | Format | Scope | Default | Description |
 |-----------|--------|-------|---------|-------------|
-| `-N` | `-N [number]` | xwhole, xlocal, xparallel | `2` | Maximum evaluation iteration rounds per Child |
+| `-N` | `-N [number]` | xwhole, xlocal | `2` | Maximum evaluation iteration rounds per Child |
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
-| `-team` | `-team [name]` | xparallel | `workflow-{timestamp}` | Agent Team name for parallel workflow |
+| `-parallel` | `-parallel` | xwhole | off | Enable Agent Teams parallel execution within Mode A |
+| `-team` | `-team [name]` | xwhole (with `-parallel`) | `workflow-{timestamp}` | Agent Team name for parallel workflow |
 
 ### Parsing Rules
 
@@ -44,13 +45,23 @@ Parsed:
   - mode: xwhole
   - N: 5
   - box: "feature-test"
+  - parallel: false
   - requirement: "Add user authentication"
+
+Input: "/xwhole -parallel -team my-team Implement auth module"
+Parsed:
+  - mode: xwhole
+  - N: 2 (default)
+  - parallel: true
+  - team: "my-team"
+  - requirement: "Implement auth module"
 ```
 
 **Step 2: Validate parameters**
 
 - `-N`: Must be positive integer (1-10). If invalid or missing, use default `2`.
 - `-box`: Must be valid branch name (alphanumeric, hyphens, underscores). If empty, skip sandbox.
+- `-parallel`: No value needed. Presence flag enables Agent Teams mode within xwhole.
 
 **Step 3: Store in session context**
 
@@ -78,10 +89,28 @@ Store parsed parameters in session memory for use during workflow execution:
 
 ### Mode A: whole workflow
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
-- **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: switch back, `--no-commit --no-ff` merge, restore stash.
+- **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
+- **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: merge worktree branches into sandbox, switch back, `--no-commit --no-ff` merge sandbox into original, restore stash.
 - **Entry**: Environment init (module 01) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
+
+#### Mode A-parallel (`-parallel`)
+When `-parallel` is specified, Mode A uses Agent Teams for parallel execution instead of sequential sub-agent dispatch:
+
+- **Prerequisites**: Agent Teams enabled (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), Claude Code v2.1.32+
+- **Entry**: Same Planning Phase as Mode A -> Parallel setup (module 05) -> Task coordination (module 06)
+- **Core features**:
+  - Uses Agent Teams instead of sequential sub-agent mode
+  - Multiple coder-teammate + evaluator-teammate working in parallel
+  - Each teammate isolated in own worktree (zero file conflicts)
+  - Dynamic task scheduling based on dependency graph
+  - Real-time requirement change handling
+- **Fallback**: If Agent Teams unavailable, fall back to sequential Mode A sub-agent mode
+- **Teammate role definitions**:
+  - `.claude/agents/coder-teammate.md`: Code implementation teammate
+  - `.claude/agents/evaluator-teammate.md`: Code evaluation teammate
+- **Detailed flow**: See Module 05 and Module 06
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
@@ -96,24 +125,6 @@ Store parsed parameters in session memory for use during workflow execution:
 - Scope: Minimal tasks: single fix, single file, minimal change.
 - **Entry**: promptMasterX optimization (module 04) -> coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
 - **coderX lightweight mode**: Only loads `karpathy-guidelines`, does not load `codex-spec-implementation`, no Bus Payload needed.
-
-### Mode D: parallel workflow (Agent Teams)
-- Scope: Multiple sub-tasks executed in parallel, requiring dynamic scheduling and dependency management.
-- **Entry**: Environment init (module 01) -> Parallel setup (module 05) -> Task coordination (module 06)
-- **Prerequisites**: Agent Teams enabled (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), Claude Code v2.1.32+
-- **Core features**:
-  - Uses Agent Teams instead of subagent mode
-  - Multiple coder-teammate + evaluator-teammate working in parallel
-  - Dynamic task scheduling based on dependency graph
-  - File conflict detection at runtime
-  - Real-time requirement change handling
-- **Fallback**: If Agent Teams unavailable, fall back to Mode A/B subagent mode
-
-**Teammate role definitions**:
-- `.claude/agents/coder-teammate.md`: Code implementation teammate
-- `.claude/agents/evaluator-teammate.md`: Code evaluation teammate
-
-**Detailed flow**: See Module 05 and Module 06
 
 ---
 
@@ -343,11 +354,11 @@ When user does not explicitly specify a mode, route by the following rules:
 
 ### Routing Rules (by priority)
 
-1. **Explicit commands first**: `/xwhole`, `/xlocal`, `/xunit`, `/xparallel` bypass auto-routing.
+1. **Explicit commands first**: `/xwhole`, `/xlocal`, `/xunit` bypass auto-routing. `/xwhole -parallel` triggers parallel execution within Mode A.
 2. **Scope inference**:
 
-   | Dimension | whole | local | unit | parallel |
-   |-----------|-------|-------|------|----------|
+   | Dimension | whole | local | unit | whole-parallel |
+   |-----------|-------|-------|------|----------------|
    | **Files involved** | 3+ modules/directories | 1-2 modules | Single file | 3+ modules (parallel) |
    | **Keywords** | "new feature", "module", "refactor" | "modify", "optimize", "supplement" | "fix", "typo", "single function" | "parallel", "simultaneously" |
    | **Code impact** | New files + modify existing | Modify existing only | 1-2 logic changes | Multi-module parallel modification |
@@ -361,7 +372,7 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 
 ## Start Rule
 
-1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`, `/xparallel`.
+1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`. Parallel execution via `/xwhole -parallel`.
 2. **State isolation**: Stay in current workflow mode until completion. No cross-mode calls.
 3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrator-playbook/hybrid-template.md`). unit exempt.
 4. **Concurrency protection**: Before starting any workflow, check for `.hybrid/.workflow-lock`. If lock exists, warn user and abort. Otherwise, create lock file with timestamp and mode. Remove lock on workflow completion or interruption.

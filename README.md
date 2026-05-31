@@ -106,7 +106,7 @@ WorkflowX 本质上是一套**轻量纯粹的配置文件与指令集系统**。
 | **GitHub Copilot** | `.github/` | 3 种模式（不含并行） | agents (`.agent.md`) + skills + instructions |
 | **OpenCode** | `.opencode/` | 3 种模式（不含并行） | agents + commands + skills，Task tool 委派 SubAgent |
 
-> 💡 四套配置的**工作流逻辑完全一致**（相同的 6 个指令、4 种模式、多个运行时模块），仅工具调用语法因平台而异。**并行模式（`/xparallel`）仅 Claude Code 支持**，依赖其 Agent Teams 实验性功能。OpenCode 通过 `.claude/skills/` 自动发现机制复用已有技能定义，无需额外复制。
+> 💡 四套配置的**工作流逻辑完全一致**（相同的指令、模式、多个运行时模块），仅工具调用语法因平台而异。**并行模式（`/xwhole -parallel`）仅 Claude Code 支持**，依赖其 Agent Teams 实验性功能。OpenCode 通过 `.claude/skills/` 自动发现机制复用已有技能定义，无需额外复制。所有模式均自动启用 Worktree 隔离（xunit 除外）。
 
 **快速部署步骤：**
 1. 将对应平台的配置目录（如 `.claude/` 或 `.opencode/`）复制到您的项目根目录
@@ -119,39 +119,41 @@ WorkflowX 本质上是一套**轻量纯粹的配置文件与指令集系统**。
 | 指令 | 说明 | 示例 |
 |------|------|------|
 | `/xwhole [需求]` | 全仓库级完整工作流（规划 → 编码 → 评估） | `/xwhole 实现用户登录模块` |
+| `/xwhole -parallel [需求]` | **并行工作流**，多个子任务同时执行（仅 Claude Code） | `/xwhole -parallel 实现用户、订单、商品三个独立模块` |
 | `/xwhole -box demo` | 在沙箱分支 `demo` 中执行，隔离主线 | `/xwhole -box auth 重构鉴权逻辑` |
 | `/xwhole -N 3` | 限定评估最多迭代 3 轮（默认 2 轮） | `/xwhole -N 3 优化数据库查询性能` |
+| `/xwhole -parallel -team my-team` | 指定 Agent Team 名称 | `/xwhole -parallel -team auth-team 实现认证模块` |
 | `/xlocal [需求]` | 局部模块开发，跳过 PRD 规划阶段 | `/xlocal 修复订单列表分页 bug` |
 | `/xunit [需求]` | 最小单元任务，直接修改，无评估 | `/xunit 给 Config 类添加超时配置` |
-| `/xparallel [需求]` | **并行工作流**，多个子任务同时执行（仅 Claude Code） | `/xparallel 实现用户、订单、商品三个独立模块` |
 | `/xprompt [文本]` | 仅优化提示词，不触发开发流程 | `/xprompt 帮我写一个登录页面的提示词` |
 
 > 默认行为：所有开发类请求会自动路由经过 orchestratorX。纯文件读取、配置修改、Git 操作等例外场景可直接执行。
 
-### 3. 四种工作流模式
+### 3. 工作流模式
 
 orchestratorX 根据需求复杂度自动路由（基于文件范围、关键词、影响范围、是否需要 PRD 四个维度推断），也可通过指令手动指定：
 
 ```
-/xwhole     → [orchestratorX 规划对话] → [promptMasterX 优化] → [coderX 实现] → [evaluatorX 评估] → 循环
-/xlocal     → [promptMasterX 优化] → [coderX 实现] → [evaluatorX 评估] → 循环
-/xunit      → [promptMasterX 优化] → [coderX 实现] → 完成
-/xparallel  → [orchestratorX 创建 Agent Team] → [多个 coder-teammate 并行实现] → [多个 evaluator-teammate 并行评估] → 循环
+/xwhole              → [orchestratorX 规划对话] → [promptMasterX 优化] → [coderX 实现] → [evaluatorX 评估] → 循环
+/xwhole -parallel    → [orchestratorX 创建 Agent Team] → [多个 coder-teammate 并行实现] → [多个 evaluator-teammate 并行评估] → 循环
+/xlocal              → [promptMasterX 优化] → [coderX 实现] → [evaluatorX 评估] → 循环
+/xunit               → [promptMasterX 优化] → [coderX 实现] → 完成
 ```
 
-| | `/xwhole` 全局模式 | `/xlocal` 局部模式 | `/xunit` 单元模式 | `/xparallel` 并行模式 |
+| | `/xwhole` 全局模式 | `/xwhole -parallel` 并行模式 | `/xlocal` 局部模式 | `/xunit` 单元模式 |
 |---|---|---|---|---|
-| **适用场景** | 新功能、跨模块重构 | 1-2 个模块内的修改 | 单文件修复、小改动 | 多个独立子任务并行执行 |
-| **平台支持** | Claude Code / Codex / Copilot / OpenCode | Claude Code / Codex / Copilot / OpenCode | Claude Code / Codex / Copilot / OpenCode | **仅 Claude Code** |
-| **PRD 规划** | orchestratorX 内置多轮规划对话，输出 Hybrid Tree（Parent + Children） | 跳过 | 跳过 | 自动生成 Hybrid Tree，拆分为并行任务 |
-| **评估迭代** | evaluatorX 自动执行，最多 N 轮 | evaluatorX 执行，最多 N 轮 | 仅在明确要求时执行 | 多个 evaluator-teammate 并行评估 |
-| **依赖处理** | 延迟队列机制：被阻塞的 Child 自动排队重试 | 延迟队列机制 | 无 | 依赖图自动调度，无依赖任务并行执行 |
-| **需求变更** | 内置需求变更处理（调整/优化/扩缩/新增分支） | 有 Hybrid Tree 时支持 | 终止并重启 | 支持，更新文档后自动重新调度 |
-| **检查点** | 每轮迭代后自动创建 | 每轮迭代后自动创建 | 非强制 | 7 个硬性检查点，每步阻塞验证 |
-| **沙箱分支** | 支持 `-box` 参数 | 不支持 | 不支持 | 不支持 |
-| **Agent Teams** | 不使用 | 不使用 | 不使用 | 使用 TeamCreate + Agent 工具生成队友 |
+| **适用场景** | 新功能、跨模块重构 | 多个独立子任务并行执行 | 1-2 个模块内的修改 | 单文件修复、小改动 |
+| **平台支持** | Claude Code / Codex / Copilot / OpenCode | **仅 Claude Code** | Claude Code / Codex / Copilot / OpenCode | Claude Code / Codex / Copilot / OpenCode |
+| **PRD 规划** | orchestratorX 内置多轮规划对话，输出 Hybrid Tree（Parent + Children） | 同 xwhole，规划后自动拆分为并行任务 | 跳过 | 跳过 |
+| **评估迭代** | evaluatorX 自动执行，最多 N 轮 | 多个 evaluator-teammate 并行评估 | evaluatorX 执行，最多 N 轮 | 仅在明确要求时执行 |
+| **依赖处理** | 延迟队列机制：被阻塞的 Child 自动排队重试 | 依赖图自动调度，无依赖任务并行执行 | 延迟队列机制 | 无 |
+| **需求变更** | 内置需求变更处理（调整/优化/扩缩/新增分支） | 支持，更新文档后自动重新调度 | 有 Hybrid Tree 时支持 | 终止并重启 |
+| **检查点** | 每轮迭代后自动创建 | 7 个硬性检查点，每步阻塞验证 | 每轮迭代后自动创建 | 非强制 |
+| **沙箱分支** | 支持 `-box` 参数 | 支持 `-box` 参数 | 不支持 | 不支持 |
+| **Worktree 隔离** | ✅ 自动启用 | ✅ 自动启用 | ✅ 自动启用 | 不使用 |
+| **Agent Teams** | 不使用 | 使用 TeamCreate + Agent 工具生成队友 | 不使用 | 不使用 |
 
-> **⚠️ `/xparallel` 仅支持 Claude Code**
+> **⚠️ `/xwhole -parallel` 仅支持 Claude Code**
 >
 > 并行模式依赖 Claude Code 的实验性 Agent Teams 功能（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`），其他平台（Codex、Copilot、OpenCode）不支持此模式。如需在其他平台实现并行效果，请使用 `/xwhole` 手动拆分任务。
 
@@ -188,7 +190,7 @@ orchestratorX 根据需求复杂度自动路由（基于文件范围、关键词
 
 ### 6. 并行模式配置（仅 Claude Code）
 
-`/xparallel` 模式允许同时执行多个独立子任务，大幅提升开发效率。
+`/xwhole -parallel` 允许同时执行多个独立子任务，大幅提升开发效率。并行模式是 Mode A 的扩展参数，共享相同的规划流程，但使用 Agent Teams 进行并行执行。
 
 **前置条件**：
 1. Claude Code v2.1.32+
@@ -207,19 +209,29 @@ orchestratorX 根据需求复杂度自动路由（基于文件范围、关键词
 
 **工作流程**：
 ```
-/xparallel 实现用户、订单、商品三个独立模块
+/xwhole -parallel 实现用户、订单、商品三个独立模块
   ↓
-orchestratorX 创建 Agent Team
+orchestratorX 进行规划对话（同 Mode A）
   ↓
-自动生成 Hybrid Tree，拆分为 3 个并行任务
+创建 Agent Team，自动生成 Hybrid Tree，拆分为并行任务
   ↓
-生成 2-3 个 coder-teammate + 1-2 个 evaluator-teammate
+每个 teammate 自动获得独立 worktree（物理隔离）
   ↓
 多个 coder-teammate 同时编码实现
   ↓
 多个 evaluator-teammate 同时评估审查
   ↓
-迭代修复 → 全部通过 → TeamDelete 清理
+迭代修复 → 全部通过 → 合并 worktree 分支 → TeamDelete 清理
+```
+
+**双层隔离**（`-parallel` + `-box`）：
+```
+main 分支
+  └── sandbox/feature-x (沙箱分支)        ← 第一层：保护 main
+        ├── worktree/coder-1              ← 第二层：agent 间隔离
+        ├── worktree/coder-2
+        ├── worktree/evaluator-1
+        └── worktree/evaluator-2
 ```
 
 **适用场景**：
@@ -236,14 +248,14 @@ orchestratorX 创建 Agent Team
 
 由于配置目录互相独立，您可以在不同工具中使用同一套工作流：
 
-- **Claude Code CLI**：`.claude/agents/orchestratorX.md` 定义智能体行为，**唯一支持并行模式（`/xparallel`）的平台**
+- **Claude Code CLI**：`.claude/agents/orchestratorX.md` 定义智能体行为，**唯一支持并行模式（`/xwhole -parallel`）的平台**
 - **VS Code + Copilot**：`.github/agents/orchestratorX.agent.md` 使用 VSCode 原生工具绑定
 - **OpenAI Codex CLI**：`.codex/agents/orchestratorX.toml` 使用 TOML 格式配置
 - **OpenCode**：`.opencode/agents/orchestratorX.md` + `.opencode/commands/` 定义智能体与指令，通过 Task tool 委派子任务
 
 四者共享相同的 skills 定义（位于各平台的 `skills/` 目录），确保工作流行为一致。OpenCode 会自动从 `.claude/skills/` 发现技能，因此无需重复配置。核心技能已精简为 6 个：orchestrator-playbook（编排手册 + 规划 + 需求路由）、evaluator-prd-audit、codex-spec-implementation、prompt-master、abstracter-code-summary、guidelines。
 
-> **并行模式平台限制**：`/xparallel` 依赖 Claude Code 的 Agent Teams 功能（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + `teammateMode: "in-process"`），其他平台无法使用。如需在 Codex/Copilot/OpenCode 中实现并行效果，建议手动拆分任务后分别使用 `/xlocal` 执行。
+> **并行模式平台限制**：`/xwhole -parallel` 依赖 Claude Code 的 Agent Teams 功能（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + `teammateMode: "in-process"`），其他平台无法使用。如需在 Codex/Copilot/OpenCode 中实现并行效果，建议手动拆分任务后分别使用 `/xlocal` 执行。
 
 
 ## 🌟 关于

@@ -20,7 +20,10 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 
 ## Command Interface
 
-- `/xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global)
-- `/xlocal [-N] [requirement]` — Mode B (local)
-- `/xunit [requirement]` — Mode C (unit)
+- `/xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global, worktree isolated)
+- `/xwhole -parallel [-N] [-box sandbox-name] [-team team-name] [requirement]` — Mode A-parallel (Agent Teams, worktree isolated)
+- `/xlocal [-N] [requirement]` — Mode B (local, worktree isolated)
+- `/xunit [requirement]` — Mode C (unit, no isolation)
 - `/xprompt [original prompt]` — Prompt optimization only
+
+> **Worktree isolation**: xwhole, xlocal auto-enable `isolation="worktree"` for all sub-agents. `-box` adds a sandbox branch layer on top. `-parallel` enables Agent Teams within Mode A.
