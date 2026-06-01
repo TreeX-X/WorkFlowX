@@ -20,6 +20,7 @@
 - `/local [task description]` — Single-module local development workflow
 - `/unit [task description]` — Minimal unit task, direct modification
 - `/parallel [task description]` — Parallel workflow using Agent Teams (多任务并行执行)
+- `/xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
 - `/prompt [raw prompt]` — Prompt optimization only, no workflow triggered
 
 ## File Read/Write Rules (Mandatory)
@@ -66,11 +67,11 @@ WorkflowX is a multi-agent collaborative development framework. orchestratorX co
 | **Mode A** | `/xwhole` | 全局工作流，适合大规模、高影响力的任务 |
 | **Mode B** | `/xlocal` | 本地工作流，适合需求明确、范围有限的任务 |
 | **Mode C** | `/xunit` | 单元工作流，适合最小任务：单个修复、单个文件 |
-| **Mode D** | `/xparallel` | 并行工作流，使用 Agent Teams 多任务并行执行 |
 
-### Agent Teams (Mode D)
 
-Mode D 使用 Claude 的 Agent Teams 特性，实现多任务并行执行：
+### Agent Teams (Mode A-parallel)
+
+Mode A-parallel 使用 Claude 的 Agent Teams 特性，实现多任务并行执行：
 - **前提条件**: 需要启用 `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`，Claude Code v2.1.32+
 - **核心特性**: 多个 coder-teammate + evaluator-teammate 并行工作
 - **智能调度**: 基于依赖关系的动态任务分配

@@ -11,12 +11,13 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
-| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal/xunit/xparallel | `modules/01-environment-init.md` |
+| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal/xunit | `modules/01-environment-init.md` |
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
-| 5 | Parallel Setup | `/xparallel` 指令触发 | `modules/05-parallel-setup.md` |
+| 5 | Parallel Setup | `/xwhole -parallel` 指令触发 | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 完成后，持续运行 | `modules/06-task-coordination.md` |
+| 7 | Status Report | `/xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
 
 **Loading rule**: Load the relevant module with Read tool before each operation. **Never load all modules at once.**
 
@@ -30,9 +31,9 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 
 | Parameter | Format | Scope | Default | Description |
 |-----------|--------|-------|---------|-------------|
-| `-N` | `-N [number]` | xwhole, xlocal, xparallel | `2` | Maximum evaluation iteration rounds per Child |
+| `-N` | `-N [number]` | xwhole, xlocal | `2` | Maximum evaluation iteration rounds per Child |
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
-| `-team` | `-team [name]` | xparallel | `workflow-{timestamp}` | Agent Team name for parallel workflow |
+| `-team` | `-team [name]` | xwhole -parallel | `workflow-{timestamp}` | Agent Team name for parallel workflow |
 
 ### Parsing Rules
 
@@ -97,7 +98,7 @@ Store parsed parameters in session memory for use during workflow execution:
 - **Entry**: promptMasterX optimization (module 04) -> coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
 - **coderX lightweight mode**: Only loads `karpathy-guidelines`, does not load `codex-spec-implementation`, no Bus Payload needed.
 
-### Mode D: parallel workflow (Agent Teams)
+### Mode A-parallel: parallel workflow (Agent Teams)
 - Scope: 多个子任务并行执行，需要智能调度和依赖管理。
 - **Entry**: Environment init (module 01) -> Parallel setup (module 05) -> Task coordination (module 06)
 - **前提条件**: 需要启用 Agent Teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`)，Claude Code v2.1.32+
@@ -343,7 +344,7 @@ When user does not explicitly specify a mode, route by the following rules:
 
 ### Routing Rules (by priority)
 
-1. **Explicit commands first**: `/xwhole`, `/xlocal`, `/xunit`, `/xparallel` bypass auto-routing.
+1. **Explicit commands first**: `/xwhole`, `/xlocal`, `/xunit` bypass auto-routing.
 2. **Scope inference**:
 
    | Dimension | whole | local | unit | parallel |
@@ -362,6 +363,6 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 
 ## Start Rule
 
-1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`, `/xparallel`.
+1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`.
 2. **State isolation**: Stay in current workflow mode until completion. No cross-mode calls.
 3. **Hybrid Tree**: whole, local, and parallel must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrator-playbook/hybrid-template.md`). unit exempt.

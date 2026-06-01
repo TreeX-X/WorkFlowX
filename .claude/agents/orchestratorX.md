@@ -153,6 +153,9 @@ When all tasks are done and you need to call `TeamDelete`:
 - `/xwhole -parallel [-N] [-box sandbox-name] [-team team-name] [requirement]` — Mode A-parallel (Agent Teams, worktree isolated)
 - `/xlocal [-N] [requirement]` — Mode B (local, worktree isolated)
 - `/xunit [requirement]` — Mode C (unit, no isolation)
+- `/xstatus [--output <path>]` — Generate styled HTML status report (huashu-design), open in browser
 - `/xprompt [original prompt]` — Prompt optimization only
 
 > **Worktree isolation**: xwhole, xlocal auto-enable `isolation="worktree"` for all sub-agents. `-box` adds a sandbox branch layer on top. `-parallel` enables Agent Teams within Mode A.
+>
+> **/xstatus**: Pure read-only operation. Scans `.hybrid/`, parses Parent/Child sections, infers xunit activities from git log, renders huashu-styled HTML to `./status-report.html` (or specified path), and auto-opens in default browser. See `modules/07-status-report.md` for full procedure.

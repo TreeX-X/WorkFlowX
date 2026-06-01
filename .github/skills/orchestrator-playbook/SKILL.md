@@ -15,6 +15,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
+| 7 | Status Report | `/xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
 
 **Loading rule**: Load the relevant module with Read tool before each operation. **Never load all modules at once.**
 

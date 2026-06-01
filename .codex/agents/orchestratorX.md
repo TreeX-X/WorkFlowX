@@ -23,4 +23,5 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 - `/xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global)
 - `/xlocal [-N] [requirement]` — Mode B (local)
 - `/xunit [requirement]` — Mode C (unit)
+- `/xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
 - `/xprompt [original prompt]` — Prompt optimization only

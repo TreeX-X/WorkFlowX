@@ -78,6 +78,21 @@ Because cross-agent state is continuously persisted via clear Markdown/Text hybr
 
 Strictly filters input information for each sub-agent. By blocking redundant long-history chats, it significantly drops the statistical probability of LLM hallucinations.
 
+### 📊 Workflow Status Visualization (`/xstatus`)
+
+A single command generates a high-fidelity HTML status report showing real-time progress of all active workflows:
+
+- **Data source**: `xwhole` / `xlocal` / `xwhole -parallel` parse Parent + Child docs from `.hybrid/`; `xunit` is inferred from git log (explicitly labeled "no documents")
+- **Style**: Built on `huashu-design` language — warm off-white background + serif display font + rust orange accent. Anti-AI-slop: no purple gradient, no decorative emoji, no rounded cards with left-border accent
+- **Mode-specific layouts**: 4 workflow modes each have a distinct display format — children tree / progress bar / iteration rounds / agent team sidebar / git activity table
+- **Read-only & idempotent**: No project files modified. Each run overwrites `./status-report.html` and auto-opens it in your default browser
+- **Custom output path**: `/xstatus --output <path>` lets you archive or share reports
+
+```bash
+/xstatus                            # Output to ./status-report.html and open
+/xstatus --output ./reports/today.html  # Output to a custom path
+```
+
 ## ⚙️ Setup & Installation
 
 1. Ensure Node.js (v18+) and Python 3.10+ are installed.
@@ -121,6 +136,7 @@ Three platform configurations are provided out of the box:
 | `/xwhole -parallel -team my-team` | Set Agent Team name | `/xwhole -parallel -team auth-team implement auth module` |
 | `/xlocal [req]` | Local module development, skips PRD planning | `/xlocal fix order list pagination bug` |
 | `/xunit [req]` | Minimal single-task change, no evaluation | `/xunit add timeout config to Config class` |
+| `/xstatus` | Generate huashu-styled HTML workflow status report and auto-open in browser | `/xstatus` or `/xstatus --output ./reports/today.html` |
 | `/xprompt [text]` | Optimize a prompt only, no dev workflow triggered | `/xprompt write me a login page prompt` |
 
 > By default, all development requests are routed through orchestratorX. Exceptions: pure file reads, config edits, Git operations, or when the user explicitly says "directly do it."

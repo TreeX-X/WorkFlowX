@@ -24,7 +24,7 @@
 - **禁止**调用 `EnterPlanMode`，即使上下文看起来像在做规划
 - **禁止**在 orchestratorX 返回后自行提出方案或创建计划
 - 收到用户新消息时，应通过 `Agent(orchestratorX)` 传递给当前工作流继续处理
-- 如果当前没有活跃工作流，引导用户使用 `/xwhole`、`/xlocal`、`/xunit` 或 `/xparallel` 指令启动
+- 如果当前没有活跃工作流，引导用户使用 `/xwhole`、`/xlocal`、`/xunit` 指令启动
 
 ### 快捷指令
 
@@ -35,7 +35,7 @@
 | `/xwhole [需求]` | Mode A | 全仓库级完整工作流（planner → coder → evaluator） |
 | `/xlocal [需求]` | Mode B | 单模块局部开发工作流 |
 | `/xunit [需求]` | Mode C | 最小单元任务，直接修改 |
-| `/xparallel [需求]` | Mode D | 并行工作流，使用 Agent Teams |
+| `/xstatus [--output <path>]` | — | 生成 huashu-styled HTML 状态报告并打开 |
 | `/xprompt [prompt]` | — | 仅做 prompt 优化，调用 `Agent(promptMasterX)` |
 
 **调用方式**：

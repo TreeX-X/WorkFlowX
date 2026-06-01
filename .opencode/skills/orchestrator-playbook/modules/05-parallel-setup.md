@@ -1,6 +1,6 @@
 # Module 05: Parallel Setup
 
-> **Trigger**: `/xparallel` 指令触发时，在环境初始化之后执行
+> **Trigger**: `/xwhole -parallel` 指令触发时，在环境初始化之后执行
 
 ## 前置条件检查
 
@@ -17,7 +17,7 @@
 ### Step 1: 解析参数
 
 ```
-/xparallel [-N] [-team team-name] [requirement]
+/xwhole -parallel [-N] [-team team-name] [requirement]
 
 解析结果：
 - N: 最大迭代轮次（默认 2）

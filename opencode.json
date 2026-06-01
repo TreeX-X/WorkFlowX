@@ -1,14 +1,17 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "server-memory": {
+    "memory": {
       "type": "local",
-      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-memory"],
+      "command": ["mcp-server-memory"],
+      "environment": {
+        "MEMORY_FILE_PATH": "C:/Users/77777/.cache/mcp-memory/memory.json"
+      },
       "enabled": true
     },
-    "server-sequential-thinking": {
+    "sequential-thinking": {
       "type": "local",
-      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "command": ["mcp-server-sequential-thinking"],
       "enabled": true
     }
   },

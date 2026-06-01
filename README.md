@@ -81,6 +81,21 @@ WorkflowX 通过三层协同架构大幅削减上下文开销：
 
 严格控制每一个子 Agent 的信息输入口径，不向它灌输冗余的历史对话，大幅降低大模型的幻觉概率。
 
+### 📊 工作流状态可视化 (`/xstatus`)
+
+一条指令即可生成高保真 HTML 状态报告，实时展示当前所有工作流的进展：
+
+- **数据源**：`xwhole` / `xlocal` / `xwhole -parallel` 从 `.hybrid/` 解析 Parent + Child 文档；`xunit` 从 git log 推断（明确标注"no documents"）
+- **风格**：基于 `huashu-design` 设计语言——暖白底 + 衬线 display 字体 + rust 橙 accent，反 AI slop（避免紫渐变/emoji 装饰/圆角左 border）
+- **差异化展示**：4 个工作流模式各自独立的展示格式——Children 树状 / 进度条 / 迭代轮次 / Team 状态侧栏 / git 活动表
+- **只读 + 幂等**：不修改任何项目文件，每次执行覆盖 `./status-report.html`，生成后自动在默认浏览器打开
+- **可自定义输出**：`/xstatus --output <path>` 指定输出路径，便于归档或分享
+
+```bash
+/xstatus                            # 输出到 ./status-report.html 并打开
+/xstatus --output ./reports/today.html  # 输出到指定路径
+```
+
 
 ## 环境准备 (Setup & Installation)
 
@@ -125,6 +140,7 @@ WorkflowX 本质上是一套**轻量纯粹的配置文件与指令集系统**。
 | `/xwhole -parallel -team my-team` | 指定 Agent Team 名称 | `/xwhole -parallel -team auth-team 实现认证模块` |
 | `/xlocal [需求]` | 局部模块开发，跳过 PRD 规划阶段 | `/xlocal 修复订单列表分页 bug` |
 | `/xunit [需求]` | 最小单元任务，直接修改，无评估 | `/xunit 给 Config 类添加超时配置` |
+| `/xstatus` | 生成 huashu-styled HTML 工作流状态报告并自动打开浏览器 | `/xstatus` 或 `/xstatus --output ./reports/today.html` |
 | `/xprompt [文本]` | 仅优化提示词，不触发开发流程 | `/xprompt 帮我写一个登录页面的提示词` |
 
 > 默认行为：所有开发类请求会自动路由经过 orchestratorX。纯文件读取、配置修改、Git 操作等例外场景可直接执行。

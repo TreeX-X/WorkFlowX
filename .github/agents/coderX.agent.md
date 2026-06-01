@@ -1,7 +1,7 @@
 ---
 name: coderX
 description: Lean coding agent. Owns implementation of features, bug fixes, refactors, and tests. Must apply karpathy-guidelines skill as the behavioral baseline for all coding work. Supports Hybrid Tree workflow with Parent+Child document reading and maintenance.
-tools: [Bash, Read, Write, Edit, Glob, Grep, Agent, TodoWrite, mcp]
+tools: ["execute", "read", "edit", "search", "agent", "todo"]
 ---
 
 # coderX Agent
