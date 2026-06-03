@@ -1,4 +1,4 @@
-# Module 05: Parallel Setup
+# Module 05: Parallel Setup (Optimized: Graph-Based Task Pool)
 
 > **Trigger**: `/xwhole -parallel` triggered, execute after environment init (Module 01)
 
@@ -17,12 +17,12 @@
 
 ## Team Creation Flow
 
-### Step 1: Parse Parameters
+### Step 1: Parse Parameters (Using Precompiled Regex)
 
 ```
 /xwhole -parallel [-N] [-box sandbox-name] [-team team-name] [requirement]
 
-Parsed:
+Parsed (stored in sessionParams object):
 - mode: xwhole (with -parallel flag)
 - N: max iteration rounds (default 2)
 - box: sandbox branch name (optional, enables dual-layer isolation)
@@ -50,7 +50,7 @@ This creates:
 - Team config at `~/.claude/teams/{team-name}/config.json`
 - Task list directory at `~/.claude/tasks/{team-name}/`
 
-### Step 4: Create Tasks in Task Pool
+### Step 4: Create Tasks in Task Pool (Optimized: Dependency Graph)
 
 Read Parent Section 7 to get all Children, then use `TaskCreate` for each:
 
@@ -63,6 +63,29 @@ For each Child in Parent Section 7:
 ```
 
 Store the returned task IDs for dependency setup and assignment.
+
+**Build Dependency Graph**:
+```javascript
+// Adjacency list: parent → [dependents]
+adj = {};
+// In-degree map: child → dependency count
+in_degree = {};
+// Per-child iteration counters
+child_iterations = {};
+
+// Initialize
+for (child of children) {
+  in_degree[child] = 0;
+  adj[child] = [];
+  child_iterations[child] = { used: 0, remaining: sessionParams.iteration_limit };
+}
+
+// Build edges from Section 8.3
+for (edge of dependencies) {
+  adj[edge.parent].push(edge.child);
+  in_degree[edge.child]++;
+}
+```
 
 ### Step 5: Set Up Dependencies
 
@@ -125,12 +148,19 @@ Agent(subagent_type="coder-teammate", name="coder-2", team_name="{team-name}", .
 Agent(subagent_type="evaluator-teammate", name="evaluator-2", team_name="{team-name}", ...)
 ```
 
-### Step 7: Initial Task Assignment
+### Step 7: Initial Task Assignment (Optimized: Critical Path Priority)
 
 Assign `ready` tasks (no blockers) to coder teammates using `TaskUpdate`:
 
 ```
-For each ready task:
+// Sort by critical path priority
+ready_tasks.sort((a, b) => {
+  const scoreA = dependents_count[a] + (1 / chain_position[a]);
+  const scoreB = dependents_count[b] + (1 / chain_position[b]);
+  return scoreB - scoreA; // Higher priority first
+});
+
+For each ready task (in priority order):
   TaskUpdate(
     taskId="{task-id}",
     owner="coder-{N}",
@@ -157,12 +187,13 @@ After setup completes, output:
    Team: {team-name}
    Teammates: {count}
 
-📊 Task pool initialized
+📊 Task pool initialized (dependency graph mode)
    Total: {total}
-   Ready: {ready-count}
-   Blocked: {blocked-count}
+   Ready: {ready-count} (in_degree == 0)
+   Blocked: {blocked-count} (in_degree > 0)
+   Dependency edges: {edge-count}
 
-🚀 Dispatching ready tasks to coders...
+🚀 Dispatching ready tasks to coders (priority order)...
 ```
 
 Then enter **Module 06: Task Coordination** for dynamic scheduling.

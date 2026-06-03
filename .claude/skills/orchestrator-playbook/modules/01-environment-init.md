@@ -88,3 +88,28 @@ Each time entering a new workflow, **always re-probe** (repeat Step 1). If MCP w
 2. Notify user:
    > MCP Server has recovered. Full knowledge graph capabilities restored.
 3. Clear any `TodoWrite` `MCP_DEGRADED` marker if present.
+
+## 1.2 Predictive Module Prefetch (Optimized)
+
+**Trigger**: After environment init, before workflow execution.
+
+### Prefetch Strategy
+
+Based on detected workflow mode, pre-load likely needed modules and sections:
+
+```
+Mode Detection → Prefetch Map:
+- xwhole: Prefetch modules 01(done), 04, hybrid-template
+- xlocal: Prefetch modules 01(done), 04, hybrid-template
+- xunit: Prefetch modules 01(done), 04 only
+- xparallel: Prefetch modules 01(done), 05, 06
+```
+
+### Section Prefetch
+
+For workflows with existing Hybrid Tree:
+1. Read and cache Parent §0-6 (static, rarely changes)
+2. Read and cache Parent §8.1, §8.2, §8.3 (incremental)
+3. Read Parent §7 routing table (to know Children)
+
+**Benefit**: First iteration of Core Loop starts with cached data, no initial I/O spike.

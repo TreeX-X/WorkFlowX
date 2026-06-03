@@ -1,4 +1,4 @@
-# Module 06: Task Coordination
+# Module 06: Task Coordination (Optimized: Graph-Based Scheduling)
 
 > **Trigger**: After Module 05 completes, runs continuously until all tasks complete or user interrupts
 
@@ -6,29 +6,29 @@
 
 orchestratorX as Team Lead:
 
-1. **Task scheduling**: Monitor task status, trigger dependency unlock
+1. **Task scheduling**: Based on dependency graph's ready queue scheduling
 2. **File conflict check**: Before assignment, check file overlap
 3. **Requirement change handling**: Receive user input, update Hybrid Tree
 4. **Progress monitoring**: Report progress, handle exceptions
 
 **Rule**: Teammates only claim tasks, complete tasks, and report results. All scheduling logic is managed by Team Lead.
 
-## Core Coordination Loop
+## Core Coordination Loop (Optimized: Graph-Based)
 
 The coordination loop is **event-driven**. Teammates send messages to the Team Lead when they complete work. orchestratorX processes each message and dispatches the next action.
 
 ### Step 1: Wait for Teammate Messages
 
-After initial dispatch (Module 07), orchestratorX waits for teammate messages. Messages arrive automatically as conversation turns — no polling needed.
+After initial dispatch (Module 05), orchestratorX waits for teammate messages. Messages arrive automatically as conversation turns — no polling needed.
 
 When a message arrives from a teammate, proceed to Step 2.
 
-### Step 2: Process Completion
+### Step 2: Process Completion (Optimized: Dependency Graph Update)
 
 When a coder-teammate reports task completion:
 
 1. **Verify completion**: Read the teammate's message for Change Summary
-2. **Load Module 02**: Validate the Bus Payload format
+2. **Load Module 02**: Validate the Bus Payload format (fast-path for known-good)
 3. **Dispatch evaluator**: Send evaluation request to evaluator-teammate
 
 ```
@@ -41,16 +41,27 @@ SendMessage(
 
 When an evaluator-teammate reports evaluation result:
 
-1. **Load Module 03**: Post-evaluation document update (with real timestamps, AC checkbox, status update)
+1. **Load Module 03**: Post-evaluation document update (incremental, with real timestamps, AC checkbox, status update)
 2. **Check result**:
-   - **PASS**: Mark task as completed, proceed to unlock dependents
+   - **PASS**: Mark task as completed, update dependency graph, unlock dependents
    - **Needs Fix**: Send fix instructions back to coder (if iteration limit not reached)
 
 ```
 # On PASS:
 TaskUpdate(taskId="{task-id}", status="completed")
 
+# Update dependency graph
+for (dependent in adj[completed_task]) {
+  in_degree[dependent]--;
+  if (in_degree[dependent] == 0) {
+    // Enqueue to ready queue
+    ready_queue.push(dependent);
+  }
+}
+
 # On Needs Fix (within iteration limit):
+child_iterations[task_id].used++;
+child_iterations[task_id].remaining--;
 SendMessage(
   to="coder-{N}",
   summary="Fix instructions for task {task-id}",
@@ -62,16 +73,19 @@ TaskUpdate(taskId="{task-id}", status="failed")
 Report to user: "Task {task-id} failed after {N} iterations"
 ```
 
-### Step 3: Unlock Dependencies
+### Step 3: Unlock Dependencies (Optimized: O(1) Lookup)
 
 After marking a task as completed:
 
 ```
-1. Read TaskList to find all tasks
-2. For each task with status "blocked":
-   a. Read its blockedBy list (from TaskGet)
-   b. Check if all blocking tasks are completed
-   c. If yes: TaskUpdate(taskId="{id}", status="pending")  # unblocked, ready for assignment
+// Instead of scanning all tasks, use adjacency list
+for (dependent of adj[completed_task_id]) {
+  in_degree[dependent]--;
+  if (in_degree[dependent] == 0) {
+    TaskUpdate(taskId="{dependent-id}", status="pending")
+    ready_queue.push(dependent);
+  }
+}
 ```
 
 ### Step 4: File Conflict Check
@@ -88,26 +102,32 @@ Before assigning a newly ready task:
 
 **Conflict rule**: Exact file path match = conflict. Same directory, different files = no conflict.
 
-### Step 5: Assign Ready Tasks
+### Step 5: Assign Ready Tasks (Priority-Based)
 
 Find all pending (unblocked, no file conflict) tasks and assign to idle coders:
 
 ```
-1. TaskList → filter status="pending" and owner is empty
-2. For each ready task:
-   TaskUpdate(
-     taskId="{task-id}",
-     owner="coder-{N}",
-     status="in_progress"
-   )
-   SendMessage(
-     to="coder-{N}",
-     summary="New task {task-id}",
-     message="Task assigned: {task-id}\nParent: {parent-path}\nChild: {child-path}\nRead docs and implement. Mark completed via TaskUpdate when done."
-   )
+// Sort by critical path priority
+ready_tasks.sort((a, b) => {
+  const scoreA = dependents_count[a] + (1 / chain_position[a]);
+  const scoreB = dependents_count[b] + (1 / chain_position[b]);
+  return scoreB - scoreA; // Higher priority first
+});
+
+For each ready task (in priority order):
+  TaskUpdate(
+    taskId="{task-id}",
+    owner="coder-{N}",
+    status="in_progress"
+  )
+  SendMessage(
+    to="coder-{N}",
+    summary="New task {task-id}",
+    message="Task assigned: {task-id}\nParent: {parent-path}\nChild: {child-path}\nRead docs and implement. Mark completed via TaskUpdate when done."
+  )
 ```
 
-**Assignment priority**: Tasks with fewer blockers first. Equal blocker count → earlier task ID first.
+**Assignment priority**: Tasks with higher impact score first (more dependents + closer to critical path).
 
 ### Step 6: Evaluator Dispatch After All Coders Done
 
@@ -124,7 +144,7 @@ When all currently assigned coder tasks are completed/evaluated:
 After each evaluation cycle, output progress:
 
 ```
-📊 Progress: {completed}/{total} done | {inProgress} in progress | {pending} pending | {blocked} blocked
+📊 Progress: {completed}/{total} done | {inProgress} in progress | {readyQueue} ready | {blocked} blocked
 ```
 
 ## Requirement Change Handling
@@ -137,13 +157,15 @@ Follow main SKILL.md Requirement Change Handling.
 - If change affects in_progress task:
   - Non-urgent: update docs, handle after current completion
   - Urgent: send message to teammate to abort, then reassign
+- **Dependency graph update**: If change affects dependencies, rebuild affected subgraph
 
-## Iteration Control
+## Iteration Control (Optimized: Per-Child Counter)
 
-- Each task has an iteration counter
-- On `needs_fix`: counter +1
-- Counter reaches limit (`-N` param): task marked `failed`
-- Report to user, wait for instructions
+- Each task has an independent iteration counter (inherited from Module 05)
+- `child_iterations[task_id] = { used: 0, remaining: sessionParams.iteration_limit }`
+- On `needs_fix`: `used++`, `remaining--`
+- `remaining <= 0`: task marked `failed`
+- **PASS**: Immediately mark complete, no iteration limit check needed
 
 ## Completion
 
@@ -161,6 +183,8 @@ Follow main SKILL.md Requirement Change Handling.
    Total: {total}
    Passed: {success}
    Failed: {failure}
+   Dependency edges: {edge-count}
+   Avg iterations: {avg-iterations}
 
 📁 Hybrid Tree updated
    Location: .hybrid/{feature-name}/

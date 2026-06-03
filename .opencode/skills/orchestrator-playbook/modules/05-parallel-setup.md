@@ -1,4 +1,4 @@
-# Module 05: Parallel Setup
+# Module 05: Parallel Setup (Optimized: Graph-Based Task Pool)
 
 > **Trigger**: `/xwhole -parallel` 指令触发时，在环境初始化之后执行
 
@@ -14,12 +14,12 @@
 
 ## 团队创建流程
 
-### Step 1: 解析参数
+### Step 1: 解析参数（使用预编译正则）
 
 ```
 /xwhole -parallel [-N] [-team team-name] [requirement]
 
-解析结果：
+解析结果（存入 sessionParams 对象）：
 - N: 最大迭代轮次（默认 2）
 - team: 团队名称（默认: "workflow-{timestamp}"）
 - requirement: 需求描述
@@ -49,18 +49,41 @@ Spawn teammate using .claude/agents/evaluator-teammate.md
 // 根据需要生成更多对
 ```
 
-### Step 5: 初始化任务池
+### Step 5: 初始化任务池（Optimized: Dependency Graph）
 
 1. **读取 Parent Section 7** → 获取所有 Children
 2. **读取 Parent Section 8.3** → 获取依赖关系
-3. **构建任务列表**：
-   - 无依赖的 Child → 状态设为 `ready`
-   - 有依赖的 Child → 状态设为 `blocked`，记录 `blockedBy` 字段
+3. **构建依赖图**：
+   ```javascript
+   // Adjacency list: parent → [dependents]
+   adj = {};
+   // In-degree map: child → dependency count
+   in_degree = {};
+   // Per-child iteration counters
+   child_iterations = {};
+   
+   // Initialize
+   for (child of children) {
+     in_degree[child] = 0;
+     adj[child] = [];
+     child_iterations[child] = { used: 0, remaining: sessionParams.iteration_limit };
+   }
+   
+   // Build edges from Section 8.3
+   for (edge of dependencies) {
+     adj[edge.parent].push(edge.child);
+     in_degree[edge.child]++;
+   }
+   ```
+4. **初始化就绪队列**：
+   - `ready_queue` = all children where `in_degree[child] == 0`
+   - `blocked_set` = all children where `in_degree[child] > 0`
 
-### Step 6: 初始分配
+### Step 6: 初始分配（Graph-Aware）
 
-- 将 `ready` 状态的任务分配给空闲的 coder-teammate
+- 将 `ready_queue` 中的任务分配给空闲的 coder-teammate
 - evaluator-teammate 等待 coder 完成后再分配
+- **动态调度**：当 Child PASS 后，更新 `in_degree`，将新就绪的 Child 加入 `ready_queue`
 
 ## 输出
 
@@ -71,10 +94,11 @@ Spawn teammate using .claude/agents/evaluator-teammate.md
    团队名称: {team-name}
    队友数量: {count}
 
-📊 任务池初始化
+📊 任务池初始化（依赖图模式）
    总任务数: {total}
-   Ready: {ready-count}
-   Blocked: {blocked-count}
+   Ready: {ready-count} (in_degree == 0)
+   Blocked: {blocked-count} (in_degree > 0)
+   依赖边数: {edge-count}
 
 🚀 开始并行执行...
 ```
