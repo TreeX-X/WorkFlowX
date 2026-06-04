@@ -6,7 +6,7 @@
 
 ### SubAgent-based Hybrid Multi-Agent Orchestration Framework
 
-![WorkflowX Logo](images/WorkFlowX-Logo.png)
+![WorkflowX Logo](docs/design/images/WorkFlowX-Logo.png)
 
 **File-driven · Zero Dependencies · Structured Requirements · AC Cross-Validation · Token-Optimized**
 
