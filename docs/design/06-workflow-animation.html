@@ -43,9 +43,13 @@
   .phase {
     position: absolute;
     inset: 0;
-    padding: 40px 56px;
+    padding: 0 56px;
     opacity: 0;
     pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   /* Phase label */
@@ -70,6 +74,13 @@
     color: #1A1A1A;
     margin-bottom: 20px;
     letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  /* Centered content wrapper */
+  .phase-inner {
+    width: 100%;
+    max-width: 800px;
   }
 
   /* Chat messages */
@@ -491,162 +502,174 @@
 
   <!-- Phase 1: Socratic Discovery -->
   <div class="phase p1">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> 需求发现 · Socratic Discovery</div>
-    <div class="section-title">苏格拉底式需求澄清</div>
-    <div class="chat-area">
-      <div class="msg m1">
-        <div class="avatar user">U</div>
-        <div class="bubble">实现用户登录功能</div>
-      </div>
-      <div class="msg m2">
-        <div class="avatar ai">AI</div>
-        <div class="bubble">
-          需求需要进一步澄清。第一个问题：<br/><br/>
-          <strong>认证方式选择：</strong>
-          <div class="options">
-            <div class="option selected">A. 邮箱 + 密码（推荐）</div>
-            <div class="option">B. 手机号 + 验证码</div>
-            <div class="option">C. OAuth 第三方（Google / GitHub）</div>
-            <div class="option">D. 以上全部</div>
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> 需求发现 · Socratic Discovery</div>
+      <div class="section-title">苏格拉底式需求澄清</div>
+      <div class="chat-area">
+        <div class="msg m1">
+          <div class="avatar user">U</div>
+          <div class="bubble">实现用户登录功能</div>
+        </div>
+        <div class="msg m2">
+          <div class="avatar ai">AI</div>
+          <div class="bubble">
+            需求需要进一步澄清。第一个问题：<br/><br/>
+            <strong>认证方式选择：</strong>
+            <div class="options">
+              <div class="option selected">A. 邮箱 + 密码（推荐）</div>
+              <div class="option">B. 手机号 + 验证码</div>
+              <div class="option">C. OAuth 第三方（Google / GitHub）</div>
+              <div class="option">D. 以上全部</div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="msg m3">
-        <div class="avatar user">U</div>
-        <div class="bubble">D，全部支持。另外需要 JWT token 认证和 RBAC 角色权限管理，支持 admin / editor / viewer 三种角色。</div>
+        <div class="msg m3">
+          <div class="avatar user">U</div>
+          <div class="bubble">D，全部支持。另外需要 JWT token 认证和 RBAC 角色权限管理，支持 admin / editor / viewer 三种角色。</div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Phase 2: Hybrid Tree -->
   <div class="phase p2">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">02</span> 文档生成 · Hybrid Tree</div>
-    <div class="section-title">结构化需求文档自动生成</div>
-    <div class="doc-view">
-      <div class="doc-title">Hybrid Tree · user-auth <span class="badge">已生成</span></div>
-      <div class="section-item s1">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>0. 需求摘要</strong> — 用户登录模块，三种认证方式 + JWT + RBAC</div>
-        <div class="tag static">静态区</div>
-      </div>
-      <div class="section-item s2">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>1. 功能范围</strong> — 注册 / 登录 / Token 刷新 / 角色路由守卫</div>
-        <div class="tag static">静态区</div>
-      </div>
-      <div class="section-item s3">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>2. 技术约束</strong> — Node.js + Express + PostgreSQL + Redis</div>
-        <div class="tag static">静态区</div>
-      </div>
-      <div class="section-item s4">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>5. 边界条件</strong> — 并发登录限制 / Token 过期策略 / 密码强度</div>
-        <div class="tag static">静态区</div>
-      </div>
-      <div class="section-item s5">
-        <div class="icon wip">AC</div>
-        <div class="text"><strong>7. 验收标准</strong> — 6 项 AC 从需求分解而来</div>
-        <div class="tag dynamic">动态区</div>
-      </div>
-      <div class="section-item s6">
-        <div class="icon wip">IDX</div>
-        <div class="text"><strong>8. 文件索引</strong> — 扫描项目结构，定位 12 个相关文件</div>
-        <div class="tag dynamic">动态区</div>
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">02</span> 文档生成 · Hybrid Tree</div>
+      <div class="section-title">结构化需求文档自动生成</div>
+      <div class="doc-view">
+        <div class="doc-title">Hybrid Tree · user-auth <span class="badge">已生成</span></div>
+        <div class="section-item s1">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>0. 需求摘要</strong> — 用户登录模块，三种认证方式 + JWT + RBAC</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s2">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>1. 功能范围</strong> — 注册 / 登录 / Token 刷新 / 角色路由守卫</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s3">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>2. 技术约束</strong> — Node.js + Express + PostgreSQL + Redis</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s4">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>5. 边界条件</strong> — 并发登录限制 / Token 过期策略 / 密码强度</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s5">
+          <div class="icon wip">AC</div>
+          <div class="text"><strong>7. 验收标准</strong> — 6 项 AC 从需求分解而来</div>
+          <div class="tag dynamic">动态区</div>
+        </div>
+        <div class="section-item s6">
+          <div class="icon wip">IDX</div>
+          <div class="text"><strong>8. 文件索引</strong> — 扫描项目结构，定位 12 个相关文件</div>
+          <div class="tag dynamic">动态区</div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Phase 3: Code Implementation -->
   <div class="phase p3">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">03</span> 规格驱动编码 · coderX</div>
-    <div class="section-title">按验收标准逐项实现</div>
-    <div class="editor">
-      <div class="titlebar">
-        <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-        <div class="filename">src/middleware/auth.ts</div>
-      </div>
-      <div class="body">
-        <div class="line c1"><span class="cm">// JWT 认证中间件 — AC-1, AC-4</span></div>
-        <div class="line c2"><span class="kw">import</span> { <span class="tp">Request</span>, <span class="tp">Response</span>, <span class="tp">NextFunction</span> } <span class="kw">from</span> <span class="str">'express'</span>;</div>
-        <div class="line c3"><span class="kw">import</span> <span class="pm">jwt</span> <span class="kw">from</span> <span class="str">'jsonwebtoken'</span>;</div>
-        <div class="line c4"><span class="kw">import</span> { <span class="pm">Role</span> } <span class="kw">from</span> <span class="str">'../types/auth'</span>;</div>
-        <div class="line c5">&nbsp;</div>
-        <div class="line c6"><span class="kw">export const</span> <span class="fn">authenticate</span> = (<span class="pm">req</span>: <span class="tp">Request</span>, <span class="pm">res</span>: <span class="tp">Response</span>, <span class="pm">next</span>: <span class="tp">NextFunction</span>) => {</div>
-        <div class="line c7">&nbsp;&nbsp;<span class="kw">const</span> <span class="pm">token</span> = <span class="pm">req</span>.headers.authorization?.split(<span class="str">' '</span>)[<span class="num">1</span>];</div>
-        <div class="line c8">&nbsp;&nbsp;<span class="kw">if</span> (!token) <span class="kw">return</span> <span class="pm">res</span>.status(<span class="num">401</span>).json({ error: <span class="str">'Unauthorized'</span> });<span class="cursor"></span></div>
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">03</span> 规格驱动编码 · coderX</div>
+      <div class="section-title">按验收标准逐项实现</div>
+      <div class="editor">
+        <div class="titlebar">
+          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+          <div class="filename">src/middleware/auth.ts</div>
+        </div>
+        <div class="body">
+          <div class="line c1"><span class="cm">// JWT 认证中间件 — AC-1, AC-4</span></div>
+          <div class="line c2"><span class="kw">import</span> { <span class="tp">Request</span>, <span class="tp">Response</span>, <span class="tp">NextFunction</span> } <span class="kw">from</span> <span class="str">'express'</span>;</div>
+          <div class="line c3"><span class="kw">import</span> <span class="pm">jwt</span> <span class="kw">from</span> <span class="str">'jsonwebtoken'</span>;</div>
+          <div class="line c4"><span class="kw">import</span> { <span class="pm">Role</span> } <span class="kw">from</span> <span class="str">'../types/auth'</span>;</div>
+          <div class="line c5">&nbsp;</div>
+          <div class="line c6"><span class="kw">export const</span> <span class="fn">authenticate</span> = (<span class="pm">req</span>: <span class="tp">Request</span>, <span class="pm">res</span>: <span class="tp">Response</span>, <span class="pm">next</span>: <span class="tp">NextFunction</span>) => {</div>
+          <div class="line c7">&nbsp;&nbsp;<span class="kw">const</span> <span class="pm">token</span> = <span class="pm">req</span>.headers.authorization?.split(<span class="str">' '</span>)[<span class="num">1</span>];</div>
+          <div class="line c8">&nbsp;&nbsp;<span class="kw">if</span> (!token) <span class="kw">return</span> <span class="pm">res</span>.status(<span class="num">401</span>).json({ error: <span class="str">'Unauthorized'</span> });<span class="cursor"></span></div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Phase 4: AC Validation -->
   <div class="phase p4">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">04</span> AC 交叉验证 · evaluatorX</div>
-    <div class="section-title">独立验证每项验收标准</div>
-    <table class="ac-table">
-      <thead><tr><th style="width:35%">验收标准</th><th style="width:12%">状态</th><th>验证说明</th></tr></thead>
-      <tbody>
-        <tr class="r1"><td>AC-1: 邮箱密码注册登录</td><td><span class="status-pass">PASS</span></td><td>bcrypt 哈希 + JWT 签发，逻辑完整</td></tr>
-        <tr class="r2"><td>AC-2: 手机验证码登录</td><td><span class="status-pass">PASS</span></td><td>短信服务集成 + 60s 过期机制</td></tr>
-        <tr class="r3"><td>AC-3: OAuth 第三方登录</td><td><span class="status-fail">FAIL</span></td><td>P0: 缺少 token 刷新逻辑，过期后无法续期</td></tr>
-        <tr class="r4"><td>AC-4: RBAC 角色路由守卫</td><td><span class="status-pass">PASS</span></td><td>admin/editor/viewer 三级权限已实现</td></tr>
-        <tr class="r5"><td>AC-5: JWT Token 刷新机制</td><td><span class="status-fail">FAIL</span></td><td>P1: refresh token 未存入 Redis</td></tr>
-      </tbody>
-    </table>
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">04</span> AC 交叉验证 · evaluatorX</div>
+      <div class="section-title">独立验证每项验收标准</div>
+      <table class="ac-table">
+        <thead><tr><th style="width:35%">验收标准</th><th style="width:12%">状态</th><th>验证说明</th></tr></thead>
+        <tbody>
+          <tr class="r1"><td>AC-1: 邮箱密码注册登录</td><td><span class="status-pass">PASS</span></td><td>bcrypt 哈希 + JWT 签发，逻辑完整</td></tr>
+          <tr class="r2"><td>AC-2: 手机验证码登录</td><td><span class="status-pass">PASS</span></td><td>短信服务集成 + 60s 过期机制</td></tr>
+          <tr class="r3"><td>AC-3: OAuth 第三方登录</td><td><span class="status-fail">FAIL</span></td><td>P0: 缺少 token 刷新逻辑，过期后无法续期</td></tr>
+          <tr class="r4"><td>AC-4: RBAC 角色路由守卫</td><td><span class="status-pass">PASS</span></td><td>admin/editor/viewer 三级权限已实现</td></tr>
+          <tr class="r5"><td>AC-5: JWT Token 刷新机制</td><td><span class="status-fail">FAIL</span></td><td>P1: refresh token 未存入 Redis</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!-- Phase 5: Iteration Loop -->
   <div class="phase p5">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> 迭代修复 · Iteration Loop</div>
-    <div class="section-title">自动迭代直至全部通过</div>
-    <div class="loop-diagram">
-      <div class="loop-node coder n1">coderX<div class="sub">Round 1</div></div>
-      <div class="loop-arrow a1">&rarr;</div>
-      <div class="loop-node eval n2">evaluatorX<div class="sub">AC-3, AC-5 FAIL</div></div>
-      <div class="loop-arrow a2">&rarr;</div>
-      <div class="loop-node coder n3">coderX<div class="sub">Round 2 · 修复中<span class="progress-dots"><span></span><span></span><span></span></span></div></div>
-      <div class="loop-arrow a3">&rarr;</div>
-      <div class="loop-node pass n4">PASS<div class="sub">全部 AC 通过</div></div>
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> 迭代修复 · Iteration Loop</div>
+      <div class="section-title">自动迭代直至全部通过</div>
+      <div class="loop-diagram">
+        <div class="loop-node coder n1">coderX<div class="sub">Round 1</div></div>
+        <div class="loop-arrow a1">&rarr;</div>
+        <div class="loop-node eval n2">evaluatorX<div class="sub">AC-3, AC-5 FAIL</div></div>
+        <div class="loop-arrow a2">&rarr;</div>
+        <div class="loop-node coder n3">coderX<div class="sub">Round 2 · 修复中<span class="progress-dots"><span></span><span></span><span></span></span></div></div>
+        <div class="loop-arrow a3">&rarr;</div>
+        <div class="loop-node pass n4">PASS<div class="sub">全部 AC 通过</div></div>
+      </div>
     </div>
   </div>
 
   <!-- Phase 6: Deliverable -->
   <div class="phase p6">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">06</span> 交付 · Deliverable</div>
-    <div class="two-col">
-      <div class="preview-frame preview">
-        <div class="browser-bar">
-          <div class="dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
-          <div class="url">localhost:3000/login</div>
-        </div>
-        <div class="preview-body">
-          <div class="mock-header">
-            <div class="mock-logo">MyApp</div>
-            <div class="mock-nav"><span>首页</span><span>产品</span><span>关于</span><span>登录</span></div>
+    <div class="phase-inner" style="max-width:960px;">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">06</span> 交付 · Deliverable</div>
+      <div class="two-col">
+        <div class="preview-frame preview">
+          <div class="browser-bar">
+            <div class="dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
+            <div class="url">localhost:3000/login</div>
           </div>
-          <div class="mock-form">
-            <div class="form-title">登录到 MyApp</div>
-            <div class="mock-input">请输入邮箱地址</div>
-            <div class="mock-input">请输入密码</div>
-            <div class="mock-btn">登 录</div>
-            <div class="mock-divider">或</div>
-            <div class="mock-social">
-              <div class="mock-social-btn">Google</div>
-              <div class="mock-social-btn">GitHub</div>
-              <div class="mock-social-btn">手机验证</div>
+          <div class="preview-body">
+            <div class="mock-header">
+              <div class="mock-logo">MyApp</div>
+              <div class="mock-nav"><span>首页</span><span>产品</span><span>关于</span><span>登录</span></div>
+            </div>
+            <div class="mock-form">
+              <div class="form-title">登录到 MyApp</div>
+              <div class="mock-input">请输入邮箱地址</div>
+              <div class="mock-input">请输入密码</div>
+              <div class="mock-btn">登 录</div>
+              <div class="mock-divider">或</div>
+              <div class="mock-social">
+                <div class="mock-social-btn">Google</div>
+                <div class="mock-social-btn">GitHub</div>
+                <div class="mock-social-btn">手机验证</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
-        <div class="result-badge badge">
-          <div class="dot"></div>
-          评估通过 · 交付就绪
+        <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+          <div class="result-badge badge">
+            <div class="dot"></div>
+            评估通过 · 交付就绪
+          </div>
+          <div class="result-sub">6 项 AC 全部 PASS · 2 轮迭代 · coderX + evaluatorX</div>
         </div>
-        <div class="result-sub">6 项 AC 全部 PASS · 2 轮迭代 · coderX + evaluatorX</div>
       </div>
+      <div class="bottom-label label" style="position:static;margin-top:20px;">WorkflowX · 通过工程纪律实现结构性优势</div>
     </div>
-    <div class="bottom-label label">WorkflowX · 通过工程纪律实现结构性优势</div>
   </div>
 
 </div>
