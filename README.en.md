@@ -73,15 +73,6 @@ Requirement changes propagate automatically. Dependencies auto-retry via deferre
 
 ## System Architecture
 
-<table>
-<tr>
-<td width="55%">
-
-<img src="docs/design/images/01-architecture.png" alt="WorkflowX System Architecture" width="520" />
-
-</td>
-<td width="45%">
-
 **orchestratorX** is the sole document writer, dispatching sub-agents via Bus Payload:
 
 - **Bus Payload Communication** — 3 structured Payload types (Change Summary / Evaluation Result / Requirement Change), zero context pollution
@@ -89,9 +80,9 @@ Requirement changes propagate automatically. Dependencies auto-retry via deferre
 - **Worktree Isolation** — Each sub-agent works in an independent git worktree, physical isolation
 - **AC Cross-Validation** — evaluatorX doesn't trust coderX's declarations, independently verifies every acceptance criterion
 
-</td>
-</tr>
-</table>
+<p align="center">
+  <img src="docs/design/images/01-architecture.png" alt="WorkflowX System Architecture" width="720" />
+</p>
 
 ---
 
@@ -117,6 +108,10 @@ Built-in **prompt-master** skill generates production-grade prompts for 20+ AI t
 ### Three-Layer Token Optimization
 
 > 40-60% token savings in multi-round iterations. Every SubAgent wake-up gets the minimum viable input.
+
+<p align="center">
+  <img src="docs/design/images/03-token-optimization.png" alt="WorkflowX Three-Layer Token Optimization" width="720" />
+</p>
 
 | Layer | Strategy | Effect |
 |-------|----------|--------|
