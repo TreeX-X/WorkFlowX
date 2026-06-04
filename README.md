@@ -6,7 +6,7 @@
 
 ### 基于 SubAgent 调度的混合多智能体工作流框架
 
-![WorkflowX Logo](images/WorkFlowX-Logo.png)
+![WorkflowX Logo](docs/design/images/WorkFlowX-Logo.png)
 
 **纯文件驱动 · 零依赖部署 · 结构化需求追踪 · AC 交叉验证 · Token 极致优化**
 
