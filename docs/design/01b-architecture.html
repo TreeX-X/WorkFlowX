@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX System Architecture</title>
+<title>WorkflowX Architecture · Data &amp; Communication</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -11,12 +11,11 @@
     background: #FAFAF8;
     color: #1A1A1A;
     width: 720px;
-    padding: 48px 36px;
+    padding: 8px 36px;
   }
   .container { width: 100%; }
 
-  /* Header */
-  .header { text-align: center; margin-bottom: 40px; }
+  .header { text-align: center; margin-bottom: 16px; }
   .header h1 {
     font-family: 'Georgia', 'Source Serif Pro', serif;
     font-size: 32px;
@@ -31,126 +30,13 @@
     letter-spacing: 0.1em;
   }
 
-  /* Canvas */
   .canvas {
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
     border-radius: 6px;
-    padding: 40px 32px 36px;
+    padding: 16px 20px 12px;
   }
 
-  /* Orchestrator */
-  .orchestrator {
-    width: 100%;
-    max-width: 380px;
-    margin: 0 auto 28px;
-    padding: 28px 24px;
-    background: linear-gradient(135deg, #C04A1A 0%, #D4622A 100%);
-    border-radius: 6px;
-    text-align: center;
-  }
-  .orchestrator .name {
-    font-family: 'Georgia', serif;
-    font-size: 22px;
-    color: #FFFFFF;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-  }
-  .orchestrator .role {
-    font-size: 14px;
-    color: rgba(255,255,255,0.75);
-    margin-top: 8px;
-  }
-
-  /* Connector */
-  .connector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  .connector .vline {
-    width: 2px;
-    height: 24px;
-    background: #D4D2CC;
-  }
-  .connector .hline {
-    width: 80%;
-    height: 2px;
-    background: #D4D2CC;
-    margin-bottom: 0;
-  }
-  .connector-drops {
-    display: flex;
-    justify-content: space-between;
-    width: 80%;
-    margin: 0 auto;
-    padding: 0;
-  }
-  .connector-drops .drop {
-    width: 2px;
-    height: 20px;
-    background: #D4D2CC;
-  }
-
-  /* Agent Grid - 2x2 for 720px */
-  .agent-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-  .agent-card {
-    padding: 22px 18px;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    text-align: center;
-    background: #FFFFFF;
-    position: relative;
-    overflow: hidden;
-  }
-  .agent-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    border-radius: 6px 6px 0 0;
-  }
-  .agent-card.prompt::before { background: #8B5CF6; }
-  .agent-card.coder::before { background: #10B981; }
-  .agent-card.evaluator::before { background: #EF4444; }
-  .agent-card.abstracter::before { background: #6366F1; }
-
-  .agent-card .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    margin: 0 auto 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 17px;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-  .agent-card.prompt .icon { background: #8B5CF6; }
-  .agent-card.coder .icon { background: #10B981; }
-  .agent-card.evaluator .icon { background: #EF4444; }
-  .agent-card.abstracter .icon { background: #6366F1; }
-
-  .agent-card .name {
-    font-family: 'Georgia', serif;
-    font-size: 16px;
-    color: #1A1A1A;
-    margin-bottom: 8px;
-  }
-  .agent-card .desc {
-    font-size: 14px;
-    color: #6B6B6B;
-    line-height: 1.6;
-  }
-
-  /* Layer Separator */
   .layer-sep {
     text-align: center;
     padding: 14px 0;
@@ -172,15 +58,14 @@
   .layer-sep::before { left: 0; }
   .layer-sep::after { right: 0; }
 
-  /* Data Layer */
   .data-layer {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 32px;
+    gap: 12px;
+    margin-bottom: 16px;
   }
   .data-card {
-    padding: 22px 18px;
+    padding: 12px 10px;
     border: 1px solid #E8E6E1;
     border-radius: 6px;
     background: #FAFAF8;
@@ -195,7 +80,7 @@
   }
   .data-card .title {
     font-family: 'Georgia', serif;
-    font-size: 17px;
+    font-size: 16px;
     color: #1A1A1A;
     margin-bottom: 8px;
   }
@@ -205,13 +90,12 @@
     line-height: 1.7;
   }
 
-  /* Payload Row */
   .payload-row {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 28px;
-    padding-top: 24px;
+    gap: 14px;
+    margin-top: 12px;
+    padding-top: 10px;
     border-top: 1px solid #E8E6E1;
     flex-wrap: wrap;
   }
@@ -232,10 +116,9 @@
   .payload-badge .dot.p2 { background: #EF4444; }
   .payload-badge .dot.p3 { background: #F59E0B; }
 
-  /* Parallel Section */
   .parallel-section {
-    margin-top: 28px;
-    padding-top: 24px;
+    margin-top: 12px;
+    padding-top: 10px;
     border-top: 1px dashed #E8E6E1;
     text-align: center;
   }
@@ -244,15 +127,15 @@
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #9B9B9B;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
   .parallel-agents {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 14px;
   }
   .parallel-card {
-    padding: 16px 24px;
+    padding: 10px 14px;
     border: 1px dashed #D4D2CC;
     border-radius: 6px;
     text-align: center;
@@ -269,10 +152,9 @@
     margin-top: 4px;
   }
 
-  /* Footer */
   .footer {
     text-align: center;
-    margin-top: 36px;
+    margin-top: 14px;
     font-size: 14px;
     color: #9B9B9B;
     letter-spacing: 0.06em;
@@ -282,52 +164,10 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>System Architecture</h1>
-    <div class="subtitle">WorkflowX Multi-Agent Orchestration Framework</div>
+    <h1>Architecture · Data &amp; Communication</h1>
+    <div class="subtitle">Hybrid Tree · MCP Memory Graph · Payload · Parallel Mode</div>
   </div>
   <div class="canvas">
-    <!-- Orchestrator -->
-    <div class="orchestrator">
-      <div class="name">orchestratorX</div>
-      <div class="role">Sole Orchestrator &amp; Document Writer</div>
-    </div>
-
-    <!-- Connectors -->
-    <div class="connector">
-      <div class="vline"></div>
-    </div>
-    <div class="connector-drops">
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-    </div>
-
-    <!-- Agent Grid (2x2) -->
-    <div class="agent-grid">
-      <div class="agent-card prompt">
-        <div class="icon">PM</div>
-        <div class="name">promptMasterX</div>
-        <div class="desc">37 anti-patterns auto-detection<br/>Karpathy guidelines injection</div>
-      </div>
-      <div class="agent-card coder">
-        <div class="icon">CX</div>
-        <div class="name">coderX</div>
-        <div class="desc">Spec-driven implementation<br/>Worktree isolated coding</div>
-      </div>
-      <div class="agent-card evaluator">
-        <div class="icon">EX</div>
-        <div class="name">evaluatorX</div>
-        <div class="desc">AC cross-validation<br/>Independent audit evaluation</div>
-      </div>
-      <div class="agent-card abstracter">
-        <div class="icon">AX</div>
-        <div class="name">abstracterX</div>
-        <div class="desc">Code analysis reports<br/>Structured summary output</div>
-      </div>
-    </div>
-
-    <!-- Data Layer -->
     <div class="layer-sep">Data Layer</div>
     <div class="data-layer">
       <div class="data-card">
@@ -342,7 +182,6 @@
       </div>
     </div>
 
-    <!-- Payload Badges -->
     <div class="payload-row">
       <div class="payload-badge">
         <div class="dot p1"></div>
@@ -358,7 +197,6 @@
       </div>
     </div>
 
-    <!-- Parallel Mode -->
     <div class="parallel-section">
       <div class="parallel-label">Parallel Mode (Agent Teams)</div>
       <div class="parallel-agents">

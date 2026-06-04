@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX Token 优化</title>
+<title>WorkflowX Token 优化 · 干叶分离与记忆图谱</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -11,12 +11,11 @@
     background: #FAFAF8;
     color: #1A1A1A;
     width: 720px;
-    padding: 48px 36px;
+    padding: 16px 36px;
   }
   .container { width: 100%; }
 
-  /* Header */
-  .header { text-align: center; margin-bottom: 44px; }
+  .header { text-align: center; margin-bottom: 16px; }
   .header h1 {
     font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
     font-size: 32px;
@@ -31,7 +30,6 @@
     letter-spacing: 0.08em;
   }
 
-  /* Layers Container */
   .layers {
     display: flex;
     flex-direction: column;
@@ -39,7 +37,6 @@
     position: relative;
   }
 
-  /* Vertical connector line */
   .layers::before {
     content: '';
     position: absolute;
@@ -55,27 +52,25 @@
     z-index: 0;
   }
 
-  /* Single Layer */
   .layer {
     position: relative;
     z-index: 1;
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
     border-radius: 6px;
-    padding: 28px 28px;
+    padding: 14px 18px;
     margin-bottom: 0;
   }
 
-  /* Layer header row */
   .layer-header {
     display: flex;
     align-items: center;
     gap: 18px;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
   .layer-number {
     font-family: 'Georgia', serif;
-    font-size: 36px;
+    font-size: 30px;
     font-weight: 400;
     line-height: 1;
     flex-shrink: 0;
@@ -84,7 +79,7 @@
   }
   .layer-title {
     font-family: 'Georgia', serif;
-    font-size: 20px;
+    font-size: 18px;
     color: #1A1A1A;
   }
   .layer-name {
@@ -93,46 +88,13 @@
     margin-top: 4px;
   }
 
-  /* Layer description */
   .layer-desc {
     font-size: 15px;
     color: #6B6B6B;
     line-height: 1.7;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
 
-  /* Zone visualization (L1) */
-  .zone-labels {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 6px;
-  }
-  .zone-label {
-    flex: 1;
-    text-align: center;
-    font-size: 14px;
-    color: #6B6B6B;
-    font-weight: 500;
-  }
-  .zones {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 16px;
-  }
-  .zone {
-    flex: 1;
-    padding: 12px 10px;
-    font-size: 14px;
-    text-align: center;
-    border-radius: 4px;
-    color: #FFFFFF;
-    font-weight: 500;
-  }
-  .zone.static { background: #3B82F6; }
-  .zone.incremental { background: #60A5FA; }
-  .zone.dynamic { background: #93C5FD; color: #1E40AF; }
-
-  /* Effect badge */
   .effect {
     display: inline-block;
     font-size: 14px;
@@ -142,11 +104,6 @@
     font-weight: 500;
   }
 
-  /* Color coding per layer */
-  .layer.l1 { border-left: 4px solid #3B82F6; }
-  .layer.l1 .layer-number { color: #3B82F6; }
-  .layer.l1 .effect { background: #EFF6FF; color: #2563EB; }
-
   .layer.l2 { border-left: 4px solid #10B981; }
   .layer.l2 .layer-number { color: #10B981; }
   .layer.l2 .effect { background: #ECFDF5; color: #059669; }
@@ -155,20 +112,18 @@
   .layer.l3 .layer-number { color: #F59E0B; }
   .layer.l3 .effect { background: #FFFBEB; color: #D97706; }
 
-  /* Flow arrows between layers */
   .flow-arrow {
     text-align: center;
-    padding: 14px 0;
+    padding: 8px 0;
     font-size: 24px;
     color: #A0A0A0;
     position: relative;
     z-index: 1;
   }
 
-  /* Footer */
   .footer {
     text-align: center;
-    margin-top: 44px;
+    margin-top: 14px;
     font-size: 14px;
     color: #9B9B9B;
     letter-spacing: 0.06em;
@@ -178,39 +133,11 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>三层 Token 优化</h1>
-    <div class="subtitle">多轮迭代场景节省 40-60%</div>
+    <h1>Token 优化 · 干叶分离与记忆图谱</h1>
+    <div class="subtitle">文档精瘦 + 按需检索 + 跨会话共享</div>
   </div>
 
   <div class="layers">
-    <!-- L1: Section-Level Caching -->
-    <div class="layer l1">
-      <div class="layer-header">
-        <div class="layer-number">L1</div>
-        <div>
-          <div class="layer-title">Section-Level Caching</div>
-          <div class="layer-name">混合文档拓扑排序</div>
-        </div>
-      </div>
-      <div class="layer-desc">
-        严格分区：极少变动的静态区置于顶部，持续命中 LLM Prompt Cache。动态区置于底部，覆写时不会导致缓存失效。
-      </div>
-      <div class="zone-labels">
-        <span class="zone-label">静态区</span>
-        <span class="zone-label">增量区</span>
-        <span class="zone-label">动态区</span>
-      </div>
-      <div class="zones">
-        <div class="zone static">需求 / 范围 / DoD</div>
-        <div class="zone incremental">验收标准 / 文件索引</div>
-        <div class="zone dynamic">评估报告</div>
-      </div>
-      <div class="effect">首次后节省 40-60% Token</div>
-    </div>
-
-    <div class="flow-arrow">&darr;</div>
-
-    <!-- L2: Trunk-Leaf Separation -->
     <div class="layer l2">
       <div class="layer-header">
         <div class="layer-number">L2</div>
@@ -227,7 +154,6 @@
 
     <div class="flow-arrow">&darr;</div>
 
-    <!-- L3: Memory Graph Snapshot -->
     <div class="layer l3">
       <div class="layer-header">
         <div class="layer-number">L3</div>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowX Token 优化 · L1 Section-Level Caching</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    background: #FAFAF8;
+    color: #1A1A1A;
+    width: 720px;
+    padding: 24px 36px;
+  }
+  .container { width: 100%; }
+
+  .header { text-align: center; margin-bottom: 20px; }
+  .header h1 {
+    font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    color: #1A1A1A;
+  }
+  .header .subtitle {
+    font-size: 16px;
+    color: #9B9B9B;
+    letter-spacing: 0.08em;
+  }
+
+  .layer {
+    position: relative;
+    z-index: 1;
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 6px;
+    padding: 20px 24px;
+    border-left: 4px solid #3B82F6;
+  }
+
+  .layer-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 12px;
+  }
+  .layer-number {
+    font-family: 'Georgia', serif;
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 56px;
+    text-align: center;
+    color: #3B82F6;
+  }
+  .layer-title {
+    font-family: 'Georgia', serif;
+    font-size: 20px;
+    color: #1A1A1A;
+  }
+  .layer-name {
+    font-size: 14px;
+    color: #6B6B6B;
+    margin-top: 4px;
+  }
+
+  .layer-desc {
+    font-size: 15px;
+    color: #6B6B6B;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  .zone-labels {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 6px;
+  }
+  .zone-label {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+    color: #6B6B6B;
+    font-weight: 500;
+  }
+  .zones {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .zone {
+    flex: 1;
+    padding: 10px 8px;
+    font-size: 14px;
+    text-align: center;
+    border-radius: 4px;
+    color: #FFFFFF;
+    font-weight: 500;
+  }
+  .zone.static { background: #3B82F6; }
+  .zone.incremental { background: #60A5FA; }
+  .zone.dynamic { background: #93C5FD; color: #1E40AF; }
+
+  .effect {
+    display: inline-block;
+    font-size: 14px;
+    padding: 7px 18px;
+    border-radius: 4px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    background: #EFF6FF;
+    color: #2563EB;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #9B9B9B;
+    letter-spacing: 0.06em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Token 优化 · L1 Section-Level Caching</h1>
+    <div class="subtitle">混合文档拓扑排序，首次后节省 40-60%</div>
+  </div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <div class="layer-number">L1</div>
+      <div>
+        <div class="layer-title">Section-Level Caching</div>
+        <div class="layer-name">混合文档拓扑排序</div>
+      </div>
+    </div>
+    <div class="layer-desc">
+      严格分区：极少变动的静态区置于顶部，持续命中 LLM Prompt Cache。动态区置于底部，覆写时不会导致缓存失效。
+    </div>
+    <div class="zone-labels">
+      <span class="zone-label">静态区</span>
+      <span class="zone-label">增量区</span>
+      <span class="zone-label">动态区</span>
+    </div>
+    <div class="zones">
+      <div class="zone static">需求 / 范围 / DoD</div>
+      <div class="zone incremental">验收标准 / 文件索引</div>
+      <div class="zone dynamic">评估报告</div>
+    </div>
+    <div class="effect">首次后节省 40-60% Token</div>
+  </div>
+
+  <div class="footer">WorkflowX &middot; 每次 SubAgent 唤醒的输入 Token 压缩到最小</div>
+</div>
+</body>
+</html>

@@ -6,9 +6,18 @@ const BASE = path.join(__dirname, '..', 'docs', 'design');
 const OUT = path.join(BASE, 'images');
 
 const pages = [
-  { file: '01-architecture-zh.html', out: '01-architecture-zh.png', width: 720 },
-  { file: '03-token-optimization-zh.html', out: '03-token-optimization-zh.png', width: 720 },
-  { file: '05-capabilities-zh.html', out: '05-capabilities-zh.png', width: 720 },
+  { file: '01a-architecture-zh.html', out: '01a-architecture-zh.png', width: 720 },
+  { file: '01b-architecture-zh.html', out: '01b-architecture-zh.png', width: 720 },
+  { file: '03a-token-optimization-zh.html', out: '03a-token-optimization-zh.png', width: 720 },
+  { file: '03b-token-optimization-zh.html', out: '03b-token-optimization-zh.png', width: 720 },
+  { file: '05a-capabilities-zh.html', out: '05a-capabilities-zh.png', width: 720 },
+  { file: '05b-capabilities-zh.html', out: '05b-capabilities-zh.png', width: 720 },
+  { file: '01a-architecture.html', out: '01a-architecture.png', width: 720 },
+  { file: '01b-architecture.html', out: '01b-architecture.png', width: 720 },
+  { file: '03a-token-optimization.html', out: '03a-token-optimization.png', width: 720 },
+  { file: '03b-token-optimization.html', out: '03b-token-optimization.png', width: 720 },
+  { file: '05a-capabilities.html', out: '05a-capabilities.png', width: 720 },
+  { file: '05b-capabilities.html', out: '05b-capabilities.png', width: 720 },
 ];
 
 (async () => {
