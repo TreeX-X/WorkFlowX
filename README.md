@@ -73,15 +73,6 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 
 ## 系统架构
 
-<table>
-<tr>
-<td width="55%">
-
-<img src="docs/design/images/01-architecture-zh.png" alt="WorkflowX 系统架构" width="520" />
-
-</td>
-<td width="45%">
-
 **orchestratorX** 是唯一文档写入者，通过 Bus Payload 调度子智能体：
 
 - **Bus Payload 通信** — 3 种结构化 Payload（Change Summary / Evaluation Result / Requirement Change），零上下文污染
@@ -89,9 +80,9 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 - **Worktree 隔离** — 每个子智能体在独立 git worktree 中工作，物理隔离
 - **AC 交叉验证** — evaluatorX 不信任 coderX 声明，独立验证每个验收标准
 
-</td>
-</tr>
-</table>
+<p align="center">
+  <img src="docs/design/images/01-architecture-zh.png" alt="WorkflowX 系统架构" width="720" />
+</p>
 
 ---
 
@@ -117,6 +108,10 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 ### 三层 Token 优化
 
 > 多轮迭代场景节省 40-60%，每次 SubAgent 唤醒的输入 Token 压缩到最小。
+
+<p align="center">
+  <img src="docs/design/images/03-token-optimization-zh.png" alt="WorkflowX 三层 Token 优化" width="720" />
+</p>
 
 | 层 | 策略 | 效果 |
 |---|------|------|
