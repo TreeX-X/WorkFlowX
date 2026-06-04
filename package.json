@@ -2,5 +2,9 @@
   "dependencies": {
     "ffmpeg-static": "^5.3.0",
     "playwright": "^1.60.0"
+  },
+  "devDependencies": {
+    "omggif": "^1.0.10",
+    "pngjs": "^7.0.0"
   }
 }
