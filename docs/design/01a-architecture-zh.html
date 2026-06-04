@@ -3,206 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX 系统架构 · 编排层</title>
+<title>WorkflowX 编排层</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
-    background: #FAFAF8;
-    color: #1A1A1A;
-    width: 720px;
-    padding: 8px 36px;
-  }
-  .container { width: 100%; }
-
-  /* Header */
-  .header { text-align: center; margin-bottom: 24px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 15px;
-    color: #9B9B9B;
-    letter-spacing: 0.1em;
-  }
-
-  /* Canvas */
-  .canvas {
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    padding: 16px 20px 12px;
-  }
-
-  /* Orchestrator */
-  .orchestrator {
-    width: 100%;
-    max-width: 380px;
-    margin: 0 auto 10px;
-    padding: 12px 16px;
-    background: linear-gradient(135deg, #C04A1A 0%, #D4622A 100%);
-    border-radius: 6px;
-    text-align: center;
-  }
-  .orchestrator .name {
-    font-family: 'Georgia', serif;
-    font-size: 20px;
-    color: #FFFFFF;
-    font-weight: 400;
-    letter-spacing: 0.04em;
-  }
-  .orchestrator .role {
-    font-size: 14px;
-    color: rgba(255,255,255,0.75);
-    margin-top: 8px;
-  }
-
-  /* Connector */
-  .connector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 8px;
-  }
-  .connector .vline {
-    width: 2px;
-    height: 10px;
-    background: #D4D2CC;
-  }
-  .connector-drops {
-    display: flex;
-    justify-content: space-between;
-    width: 80%;
-    margin: 0 auto;
-    padding: 0;
-  }
-  .connector-drops .drop {
-    width: 2px;
-    height: 8px;
-    background: #D4D2CC;
-  }
-
-  /* Agent Grid - 2x2 for 720px */
-  .agent-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .agent-card {
-    padding: 12px 10px;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    text-align: center;
-    background: #FFFFFF;
-    position: relative;
-    overflow: hidden;
-  }
-  .agent-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    border-radius: 6px 6px 0 0;
-  }
-  .agent-card.prompt::before { background: #8B5CF6; }
-  .agent-card.coder::before { background: #10B981; }
-  .agent-card.evaluator::before { background: #EF4444; }
-  .agent-card.abstracter::before { background: #6366F1; }
-
-  .agent-card .icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin: 0 auto 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-  .agent-card.prompt .icon { background: #8B5CF6; }
-  .agent-card.coder .icon { background: #10B981; }
-  .agent-card.evaluator .icon { background: #EF4444; }
-  .agent-card.abstracter .icon { background: #6366F1; }
-
-  .agent-card .name {
-    font-family: 'Georgia', serif;
-    font-size: 15px;
-    color: #1A1A1A;
-    margin-bottom: 8px;
-  }
-  .agent-card .desc {
-    font-size: 14px;
-    color: #6B6B6B;
-    line-height: 1.6;
-  }
-
-  /* Footer */
-  .footer {
-    text-align: center;
-    margin-top: 14px;
-    font-size: 14px;
-    color: #9B9B9B;
-    letter-spacing: 0.06em;
-  }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 720px; padding: 48px 40px 40px; }
+  .phase-label { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; letter-spacing: 0.1em; color: #9B9B9B; margin-bottom: 12px; }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+  .section-title { font-family: 'Georgia', serif; font-size: 28px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 28px; }
+  .orchestrator { width: 100%; max-width: 340px; margin: 0 auto 24px; padding: 24px 20px; background: linear-gradient(135deg, #C04A1A 0%, #D4622A 100%); border-radius: 6px; text-align: center; }
+  .orchestrator .name { font-family: 'Georgia', serif; font-size: 20px; color: #FFFFFF; font-weight: 400; letter-spacing: 0.04em; }
+  .orchestrator .role { font-size: 14px; color: rgba(255,255,255,0.75); margin-top: 6px; }
+  .connector { display: flex; flex-direction: column; align-items: center; margin-bottom: 12px; }
+  .connector .vline { width: 2px; height: 20px; background: #D4D2CC; }
+  .connector-drops { display: flex; justify-content: space-between; width: 60%; margin: 0 auto; }
+  .connector-drops .drop { width: 2px; height: 16px; background: #D4D2CC; }
+  .agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .agent-card { padding: 20px 16px; border: 1px solid #E8E6E1; border-radius: 6px; text-align: center; background: #FFFFFF; position: relative; overflow: hidden; }
+  .agent-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 6px 6px 0 0; }
+  .agent-card.pm::before { background: #8B5CF6; }
+  .agent-card.cx::before { background: #10B981; }
+  .agent-card.ex::before { background: #EF4444; }
+  .agent-card.ax::before { background: #6366F1; }
+  .agent-card .avatar { width: 44px; height: 44px; border-radius: 50%; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: #FFFFFF; }
+  .agent-card.pm .avatar { background: #8B5CF6; }
+  .agent-card.cx .avatar { background: #10B981; }
+  .agent-card.ex .avatar { background: #EF4444; }
+  .agent-card.ax .avatar { background: #6366F1; }
+  .agent-card .name { font-family: 'Georgia', serif; font-size: 16px; color: #1A1A1A; margin-bottom: 6px; }
+  .agent-card .desc { font-size: 14px; color: #6B6B6B; line-height: 1.6; }
+  .footer { text-align: center; margin-top: 28px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>系统架构 · 编排层</h1>
-    <div class="subtitle">orchestratorX 调度 4 个子智能体</div>
+  <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> 系统架构 · 编排层</div>
+  <div class="section-title">唯一编排者与子智能体</div>
+  <div class="orchestrator"><div class="name">orchestratorX</div><div class="role">唯一编排者 &amp; 文档写入者</div></div>
+  <div class="connector"><div class="vline"></div></div>
+  <div class="connector-drops"><div class="drop"></div><div class="drop"></div><div class="drop"></div><div class="drop"></div></div>
+  <div style="height:12px"></div>
+  <div class="agent-grid">
+    <div class="agent-card pm"><div class="avatar">PM</div><div class="name">promptMasterX</div><div class="desc">37 种反模式自动检测<br/>注入 Karpathy 指南</div></div>
+    <div class="agent-card cx"><div class="avatar">CX</div><div class="name">coderX</div><div class="desc">规格驱动实现<br/>Worktree 隔离编码</div></div>
+    <div class="agent-card ex"><div class="avatar">EX</div><div class="name">evaluatorX</div><div class="desc">AC 交叉验证<br/>独立审计评估</div></div>
+    <div class="agent-card ax"><div class="avatar">AX</div><div class="name">abstracterX</div><div class="desc">代码分析报告<br/>结构化摘要输出</div></div>
   </div>
-  <div class="canvas">
-    <!-- Orchestrator -->
-    <div class="orchestrator">
-      <div class="name">orchestratorX</div>
-      <div class="role">唯一编排者 &amp; 文档写入者</div>
-    </div>
-
-    <!-- Connectors -->
-    <div class="connector">
-      <div class="vline"></div>
-    </div>
-    <div class="connector-drops">
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-    </div>
-
-    <!-- Agent Grid (2x2) -->
-    <div class="agent-grid">
-      <div class="agent-card prompt">
-        <div class="icon">PM</div>
-        <div class="name">promptMasterX</div>
-        <div class="desc">37 种反模式自动检测<br/>注入 Karpathy 指南</div>
-      </div>
-      <div class="agent-card coder">
-        <div class="icon">CX</div>
-        <div class="name">coderX</div>
-        <div class="desc">规格驱动实现<br/>Worktree 隔离编码</div>
-      </div>
-      <div class="agent-card evaluator">
-        <div class="icon">EX</div>
-        <div class="name">evaluatorX</div>
-        <div class="desc">AC 交叉验证<br/>独立审计评估</div>
-      </div>
-      <div class="agent-card abstracter">
-        <div class="icon">AX</div>
-        <div class="name">abstracterX</div>
-        <div class="desc">代码分析报告<br/>结构化摘要输出</div>
-      </div>
-    </div>
-  </div>
-  <div class="footer">WorkflowX &middot; 纯文件驱动的多智能体编排框架</div>
-</div>
+  <div class="footer">WorkflowX · 纯文件驱动的多智能体编排框架</div>
 </body>
 </html>

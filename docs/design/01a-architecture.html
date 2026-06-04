@@ -15,36 +15,43 @@
   }
   .container { width: 100%; }
 
-  .header { text-align: center; margin-bottom: 8px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 15px;
-    color: #9B9B9B;
+  /* huashu: phase-label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
     letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9B9B9B;
+    margin-bottom: 16px;
+  }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+
+  /* huashu: section-title */
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+    text-align: center;
   }
 
-  .canvas {
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    padding: 16px 20px 12px;
-  }
+  .header { text-align: center; margin-bottom: 20px; }
 
+  /* huashu: orchestrator card */
   .orchestrator {
     width: 100%;
-    max-width: 380px;
-    margin: 0 auto 10px;
-    padding: 12px 16px;
+    max-width: 360px;
+    margin: 0 auto 12px;
+    padding: 14px 18px;
     background: linear-gradient(135deg, #C04A1A 0%, #D4622A 100%);
-    border-radius: 6px;
+    border-radius: 8px;
     text-align: center;
+    box-shadow: 0 2px 12px rgba(192,74,26,0.15);
   }
   .orchestrator .name {
     font-family: 'Georgia', serif;
@@ -56,14 +63,15 @@
   .orchestrator .role {
     font-size: 14px;
     color: rgba(255,255,255,0.75);
-    margin-top: 8px;
+    margin-top: 6px;
   }
 
+  /* huashu: dashed connectors */
   .connector {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .connector .vline {
     width: 2px;
@@ -73,7 +81,7 @@
   .connector-drops {
     display: flex;
     justify-content: space-between;
-    width: 80%;
+    width: 75%;
     margin: 0 auto;
     padding: 0;
   }
@@ -83,6 +91,7 @@
     background: #D4D2CC;
   }
 
+  /* huashu: agent-grid with 4px color top-bar */
   .agent-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -92,24 +101,26 @@
   .agent-card {
     padding: 12px 10px;
     border: 1px solid #E8E6E1;
-    border-radius: 6px;
+    border-radius: 8px;
     text-align: center;
     background: #FFFFFF;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
   }
   .agent-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 4px;
-    border-radius: 6px 6px 0 0;
+    border-radius: 8px 8px 0 0;
   }
   .agent-card.prompt::before { background: #8B5CF6; }
   .agent-card.coder::before { background: #10B981; }
   .agent-card.evaluator::before { background: #EF4444; }
   .agent-card.abstracter::before { background: #6366F1; }
 
+  /* huashu: circular avatar-style icon */
   .agent-card .icon {
     width: 40px;
     height: 40px;
@@ -131,7 +142,7 @@
     font-family: 'Georgia', serif;
     font-size: 15px;
     color: #1A1A1A;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
   .agent-card .desc {
     font-size: 14px;
@@ -151,48 +162,48 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>Architecture · Orchestration Layer</h1>
-    <div class="subtitle">orchestratorX dispatches 4 sub-agents</div>
+    <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> Orchestration Layer</div>
+    <div class="section-title">Architecture · Orchestration</div>
   </div>
-  <div class="canvas">
-    <div class="orchestrator">
-      <div class="name">orchestratorX</div>
-      <div class="role">Sole Orchestrator &amp; Document Writer</div>
-    </div>
 
-    <div class="connector">
-      <div class="vline"></div>
-    </div>
-    <div class="connector-drops">
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-      <div class="drop"></div>
-    </div>
+  <div class="orchestrator">
+    <div class="name">orchestratorX</div>
+    <div class="role">Sole Orchestrator &amp; Document Writer</div>
+  </div>
 
-    <div class="agent-grid">
-      <div class="agent-card prompt">
-        <div class="icon">PM</div>
-        <div class="name">promptMasterX</div>
-        <div class="desc">37 anti-patterns auto-detection<br/>Karpathy guidelines injection</div>
-      </div>
-      <div class="agent-card coder">
-        <div class="icon">CX</div>
-        <div class="name">coderX</div>
-        <div class="desc">Spec-driven implementation<br/>Worktree isolated coding</div>
-      </div>
-      <div class="agent-card evaluator">
-        <div class="icon">EX</div>
-        <div class="name">evaluatorX</div>
-        <div class="desc">AC cross-validation<br/>Independent audit evaluation</div>
-      </div>
-      <div class="agent-card abstracter">
-        <div class="icon">AX</div>
-        <div class="name">abstracterX</div>
-        <div class="desc">Code analysis reports<br/>Structured summary output</div>
-      </div>
+  <div class="connector">
+    <div class="vline"></div>
+  </div>
+  <div class="connector-drops">
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+    <div class="drop"></div>
+  </div>
+
+  <div class="agent-grid">
+    <div class="agent-card prompt">
+      <div class="icon">PM</div>
+      <div class="name">promptMasterX</div>
+      <div class="desc">37 anti-patterns auto-detection<br/>Karpathy guidelines injection</div>
+    </div>
+    <div class="agent-card coder">
+      <div class="icon">CX</div>
+      <div class="name">coderX</div>
+      <div class="desc">Spec-driven implementation<br/>Worktree isolated coding</div>
+    </div>
+    <div class="agent-card evaluator">
+      <div class="icon">EX</div>
+      <div class="name">evaluatorX</div>
+      <div class="desc">AC cross-validation<br/>Independent audit evaluation</div>
+    </div>
+    <div class="agent-card abstracter">
+      <div class="icon">AX</div>
+      <div class="name">abstracterX</div>
+      <div class="desc">Code analysis reports<br/>Structured summary output</div>
     </div>
   </div>
+
   <div class="footer">WorkflowX &middot; File-driven multi-agent orchestration framework</div>
 </div>
 </body>

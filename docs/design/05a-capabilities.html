@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX Unique Capabilities · Data &amp; Quality</title>
+<title>WorkflowX Unique Capabilities · Data & Quality</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -11,60 +11,74 @@
     background: #FAFAF8;
     color: #1A1A1A;
     width: 720px;
-    padding: 16px 36px;
+    padding: 8px 36px;
   }
   .container { width: 100%; }
 
-  .header { text-align: center; margin-bottom: 12px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 15px;
-    color: #9B9B9B;
+  /* huashu: phase-label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
     letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9B9B9B;
+    margin-bottom: 12px;
+  }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+
+  /* huashu: section-title */
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+    text-align: center;
   }
 
+  .header { text-align: center; margin-bottom: 14px; }
+
+  /* huashu: capability card with 4px top color-bar */
   .capability-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
     margin-bottom: 12px;
   }
-
   .cap-card {
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 6px;
+    border-radius: 8px;
     padding: 14px 14px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
   }
   .cap-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 4px;
-    border-radius: 6px 6px 0 0;
+    border-radius: 8px 8px 0 0;
   }
   .cap-card.ht::before { background: #C04A1A; }
   .cap-card.ac::before { background: #EF4444; }
   .cap-card.pm::before { background: #8B5CF6; }
 
+  /* huashu: circular avatar-style icon */
   .cap-card .icon-wrap {
     width: 40px;
     height: 40px;
-    border-radius: 6px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 6px;
-    font-size: 17px;
+    margin-bottom: 8px;
+    font-size: 15px;
     font-weight: 600;
     color: #FFFFFF;
   }
@@ -86,10 +100,10 @@
   }
   .cap-card .tag {
     display: inline-block;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 0.06em;
-    padding: 4px 12px;
-    margin-top: 10px;
+    padding: 3px 10px;
+    margin-top: 8px;
     border-radius: 4px;
     background: #F5F4F0;
     color: #6B6B6B;
@@ -97,7 +111,7 @@
 
   .footer {
     text-align: center;
-    margin-top: 14px;
+    margin-top: 12px;
     font-size: 14px;
     color: #9B9B9B;
     letter-spacing: 0.06em;
@@ -107,27 +121,27 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>Unique Capabilities · Data &amp; Quality</h1>
-    <div class="subtitle">Hybrid Tree · AC Cross-Validation · Prompt Engine</div>
+    <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> Data & Quality</div>
+    <div class="section-title">Unique Capabilities · Data & Quality</div>
   </div>
 
   <div class="capability-grid">
     <div class="cap-card ht">
       <div class="icon-wrap">HT</div>
-      <div class="title">Hybrid Tree Requirement Tracing</div>
-      <div class="desc">Parent + Child MECE structure. The only framework that documents, structures, and tracks requirements — instead of scattering them across conversations.</div>
+      <div class="title">Hybrid Tree Traceability</div>
+      <div class="desc">Parent + Child MECE structure. The only framework that documents, structures, and tracks requirements.</div>
       <div class="tag">Data Structure</div>
     </div>
     <div class="cap-card ac">
       <div class="icon-wrap">AC</div>
       <div class="title">AC Cross-Validation</div>
-      <div class="desc">evaluatorX does not trust coderX's self-declarations. Independently reads code, checks against acceptance criteria, and outputs structured evaluation reports.</div>
+      <div class="desc">evaluatorX does not trust coderX's self-declaration. Independently reads code against acceptance criteria.</div>
       <div class="tag">Quality Control</div>
     </div>
     <div class="cap-card pm">
       <div class="icon-wrap">PM</div>
       <div class="title">Prompt Optimization Engine</div>
-      <div class="desc">promptMasterX detects 37 anti-patterns before coding begins. Auto-matches optimal prompting strategy based on target model.</div>
+      <div class="desc">promptMasterX detects 37 anti-patterns before coding. Auto-matches optimal prompt strategy.</div>
       <div class="tag">Input Quality</div>
     </div>
   </div>

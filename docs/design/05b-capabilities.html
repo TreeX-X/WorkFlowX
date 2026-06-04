@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX Unique Capabilities · Safety &amp; Discovery</title>
+<title>WorkflowX Unique Capabilities · Safety & Discovery</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -15,56 +15,70 @@
   }
   .container { width: 100%; }
 
-  .header { text-align: center; margin-bottom: 10px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 15px;
-    color: #9B9B9B;
+  /* huashu: phase-label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
     letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9B9B9B;
+    margin-bottom: 12px;
+  }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+
+  /* huashu: section-title */
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+    text-align: center;
   }
 
+  .header { text-align: center; margin-bottom: 12px; }
+
+  /* huashu: capability card with 4px top color-bar */
   .capability-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
-
   .cap-card {
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    padding: 8px 10px;
+    border-radius: 8px;
+    padding: 12px 12px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
   }
   .cap-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 4px;
-    border-radius: 6px 6px 0 0;
+    border-radius: 8px 8px 0 0;
   }
   .cap-card.cb::before { background: #3B82F6; }
   .cap-card.sd::before { background: #10B981; }
   .cap-card.rx::before { background: #6366F1; }
 
+  /* huashu: circular avatar-style icon */
   .cap-card .icon-wrap {
     width: 40px;
     height: 40px;
-    border-radius: 6px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 6px;
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 600;
     color: #FFFFFF;
   }
@@ -86,28 +100,30 @@
   }
   .cap-card .tag {
     display: inline-block;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 0.06em;
-    padding: 4px 12px;
-    margin-top: 8px;
+    padding: 3px 10px;
+    margin-top: 6px;
     border-radius: 4px;
     background: #F5F4F0;
     color: #6B6B6B;
   }
 
+  /* huashu: insight quote card */
   .insight {
     text-align: center;
-    padding: 8px 10px;
+    padding: 12px 16px;
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 6px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
   }
   .insight .quote {
     font-family: 'Georgia', serif;
     font-size: 15px;
     font-style: italic;
     color: #1A1A1A;
-    line-height: 1.4;
+    line-height: 1.5;
     max-width: 580px;
     margin: 0 auto;
   }
@@ -119,7 +135,7 @@
 
   .footer {
     text-align: center;
-    margin-top: 14px;
+    margin-top: 12px;
     font-size: 14px;
     color: #9B9B9B;
     letter-spacing: 0.06em;
@@ -129,33 +145,33 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>Unique Capabilities · Safety &amp; Discovery</h1>
-    <div class="subtitle">Cross-Branch Detection · Socratic Discovery · Code Aesthetics</div>
+    <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> Safety & Discovery</div>
+    <div class="section-title">Unique Capabilities · Safety & Discovery</div>
   </div>
 
   <div class="capability-grid">
     <div class="cap-card cb">
       <div class="icon-wrap">CB</div>
       <div class="title">Cross-Branch Violation Detection</div>
-      <div class="desc">File ownership tracking + shared file compatibility checks. Prevents conflicts during multi-branch parallel development.</div>
-      <div class="tag">Safety Guard</div>
+      <div class="desc">File ownership tracking + shared file compatibility checks. Prevents conflicts in parallel development.</div>
+      <div class="tag">Safety</div>
     </div>
     <div class="cap-card sd">
       <div class="icon-wrap">SD</div>
-      <div class="title">Socratic Requirement Discovery</div>
-      <div class="desc">Weighted 6-dimension clarity assessment. One question at a time. Proactively challenges contradictions, boundaries, risks, and hidden assumptions.</div>
-      <div class="tag">Planning Phase</div>
+      <div class="title">Socratic Requirements Discovery</div>
+      <div class="desc">Weighted 6-dimension clarity assessment. One question at a time. Proactively challenges contradictions and risks.</div>
+      <div class="tag">Planning</div>
     </div>
     <div class="cap-card rx">
       <div class="icon-wrap">RX</div>
       <div class="title">Code Aesthetics Framework</div>
-      <div class="desc">razorX asks: "Can the path be shorter? Can cognitive load be lower?" Dual mode: surgical review + declarative generation.</div>
+      <div class="desc">razorX asks: "Can the path be shorter? Can cognitive load be lower?" Dual-mode review.</div>
       <div class="tag">Code Quality</div>
     </div>
   </div>
 
   <div class="insight">
-    <div class="quote">WorkflowX doesn't teach AI how to code, nor how to use tools. It teaches AI how to do engineering — requirement tracing, quality auditing, structured iteration.</div>
+    <div class="quote">WorkflowX does not teach AI how to write code, nor how to use tools. It teaches AI how to do engineering — requirement tracing, quality auditing, structured iteration.</div>
     <div class="attribution">&mdash; Design Philosophy</div>
   </div>
 

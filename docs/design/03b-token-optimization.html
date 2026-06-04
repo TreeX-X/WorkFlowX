@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX Token Optimization · Trunk-Leaf &amp; Memory Graph</title>
+<title>WorkflowX Token Optimization · Trunk-Leaf & Memory Graph</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -15,62 +15,53 @@
   }
   .container { width: 100%; }
 
-  .header { text-align: center; margin-bottom: 16px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 16px;
+  /* huashu: phase-label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: #9B9B9B;
-    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+
+  /* huashu: section-title */
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+    text-align: center;
   }
 
-  .layers {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    position: relative;
-  }
+  .header { text-align: center; margin-bottom: 16px; }
 
-  .layers::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: repeating-linear-gradient(
-      to bottom,
-      #C0C0B8 0px, #C0C0B8 10px,
-      transparent 10px, transparent 20px
-    );
-    z-index: 0;
-  }
-
-  .layer {
-    position: relative;
-    z-index: 1;
+  /* huashu: doc-view card with colored left border */
+  .doc-view {
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    padding: 10px 14px;
-    margin-bottom: 0;
+    border-radius: 8px;
+    padding: 18px 22px;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    position: relative;
   }
 
   .layer-header {
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 12px;
+    gap: 16px;
+    margin-bottom: 10px;
   }
   .layer-number {
     font-family: 'Georgia', serif;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 400;
     line-height: 1;
     flex-shrink: 0;
@@ -89,36 +80,37 @@
   }
 
   .layer-desc {
-    font-size: 14px;
+    font-size: 15px;
     color: #6B6B6B;
     line-height: 1.7;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
 
   .effect {
     display: inline-block;
     font-size: 14px;
-    padding: 7px 18px;
+    padding: 6px 16px;
     border-radius: 4px;
     letter-spacing: 0.04em;
     font-weight: 500;
   }
 
-  .layer.l2 { border-left: 4px solid #10B981; }
-  .layer.l2 .layer-number { color: #10B981; }
-  .layer.l2 .effect { background: #ECFDF5; color: #059669; }
+  /* L2: green left border */
+  .doc-view.l2 { border-left: 4px solid #10B981; }
+  .doc-view.l2 .layer-number { color: #10B981; }
+  .doc-view.l2 .effect { background: #ECFDF5; color: #059669; }
 
-  .layer.l3 { border-left: 4px solid #F59E0B; }
-  .layer.l3 .layer-number { color: #F59E0B; }
-  .layer.l3 .effect { background: #FFFBEB; color: #D97706; }
+  /* L3: yellow left border */
+  .doc-view.l3 { border-left: 4px solid #F59E0B; }
+  .doc-view.l3 .layer-number { color: #F59E0B; }
+  .doc-view.l3 .effect { background: #FFFBEB; color: #D97706; }
 
+  /* huashu: flow-arrow */
   .flow-arrow {
     text-align: center;
     padding: 8px 0;
     font-size: 24px;
     color: #A0A0A0;
-    position: relative;
-    z-index: 1;
   }
 
   .footer {
@@ -133,43 +125,43 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>Token Optimization · Trunk-Leaf &amp; Memory Graph</h1>
-    <div class="subtitle">Lean docs + On-demand retrieval + Cross-session sharing</div>
+    <div class="phase-label"><div class="dot"></div><span class="step-num">03</span> Trunk-Leaf & Memory Graph</div>
+    <div class="section-title">Token Optimization · L2 + L3</div>
   </div>
 
-  <div class="layers">
-    <div class="layer l2">
-      <div class="layer-header">
-        <div class="layer-number">L2</div>
-        <div>
-          <div class="layer-title">Trunk-Leaf Separation</div>
-          <div class="layer-name">Index-Based Retrieval</div>
-        </div>
+  <!-- L2 Card -->
+  <div class="doc-view l2">
+    <div class="layer-header">
+      <div class="layer-number">L2</div>
+      <div>
+        <div class="layer-title">Trunk-Leaf Separation</div>
+        <div class="layer-name">Document slimming + on-demand retrieval</div>
       </div>
-      <div class="layer-desc">
-        Markdown docs keep only the business "trunk" outline, no code detail bloat. Entity relations, code structures and other "leaves" are maintained independently via MCP Knowledge Graph, retrieved on demand by agents.
-      </div>
-      <div class="effect">Lean docs &middot; On-demand retrieval</div>
     </div>
-
-    <div class="flow-arrow">&darr;</div>
-
-    <div class="layer l3">
-      <div class="layer-header">
-        <div class="layer-number">L3</div>
-        <div>
-          <div class="layer-title">Memory Graph Snapshot</div>
-          <div class="layer-name">Knowledge Graph Persistence</div>
-        </div>
-      </div>
-      <div class="layer-desc">
-        Hybrid Tree stores only skeleton pointers (entity names, relation summaries). Full leaf node details are persisted by MCP server-memory. Cross-session, cross-agent knowledge sharing without redundant context passing.
-      </div>
-      <div class="effect">Cross-session sharing &middot; Minimum viable context</div>
+    <div class="layer-desc">
+      Markdown documents keep only the business "trunk" outline. Entity associations, code structures as "leaves" are maintained independently via MCP Knowledge Graph, retrieved on demand by agents.
     </div>
+    <div class="effect">Slim docs &middot; On-demand retrieval</div>
   </div>
 
-  <div class="footer">WorkflowX &middot; Minimizing input tokens on every SubAgent invocation</div>
+  <div class="flow-arrow">&darr;</div>
+
+  <!-- L3 Card -->
+  <div class="doc-view l3">
+    <div class="layer-header">
+      <div class="layer-number">L3</div>
+      <div>
+        <div class="layer-title">Knowledge Graph Snapshot</div>
+        <div class="layer-name">Cross-session persistence</div>
+      </div>
+    </div>
+    <div class="layer-desc">
+      Hybrid Tree stores only skeleton pointers (entity names, relationship summaries). Full leaf node details persist via MCP server-memory. Cross-session, cross-agent knowledge sharing without redundant context passing.
+    </div>
+    <div class="effect">Cross-session sharing &middot; Minimum viable context</div>
+  </div>
+
+  <div class="footer">WorkflowX &middot; Minimize input tokens on every SubAgent wake-up</div>
 </div>
 </body>
 </html>

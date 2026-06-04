@@ -6,160 +6,48 @@
 <title>WorkflowX 独有能力 · 安全与发现</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
-    background: #FAFAF8;
-    color: #1A1A1A;
-    width: 720px;
-    padding: 8px 36px;
-  }
-  .container { width: 100%; }
-
-  .header { text-align: center; margin-bottom: 10px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 6px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 15px;
-    color: #9B9B9B;
-    letter-spacing: 0.1em;
-  }
-
-  .capability-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 10px;
-  }
-
-  .cap-card {
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    padding: 8px 10px;
-    position: relative;
-    overflow: hidden;
-  }
-  .cap-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    border-radius: 6px 6px 0 0;
-  }
-  .cap-card.cb::before { background: #3B82F6; }
-  .cap-card.sd::before { background: #10B981; }
-  .cap-card.rx::before { background: #6366F1; }
-
-  .cap-card .icon-wrap {
-    width: 40px;
-    height: 40px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 6px;
-    font-size: 17px;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-  .cap-card.cb .icon-wrap { background: #3B82F6; }
-  .cap-card.sd .icon-wrap { background: #10B981; }
-  .cap-card.rx .icon-wrap { background: #6366F1; }
-
-  .cap-card .title {
-    font-family: 'Georgia', serif;
-    font-size: 15px;
-    color: #1A1A1A;
-    margin-bottom: 6px;
-    line-height: 1.3;
-  }
-  .cap-card .desc {
-    font-size: 14px;
-    color: #6B6B6B;
-    line-height: 1.4;
-  }
-  .cap-card .tag {
-    display: inline-block;
-    font-size: 14px;
-    letter-spacing: 0.06em;
-    padding: 4px 12px;
-    margin-top: 8px;
-    border-radius: 4px;
-    background: #F5F4F0;
-    color: #6B6B6B;
-  }
-
-  .insight {
-    text-align: center;
-    padding: 8px 10px;
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-  }
-  .insight .quote {
-    font-family: 'Georgia', serif;
-    font-size: 15px;
-    font-style: italic;
-    color: #1A1A1A;
-    line-height: 1.4;
-    max-width: 580px;
-    margin: 0 auto;
-  }
-  .insight .attribution {
-    font-size: 14px;
-    color: #9B9B9B;
-    margin-top: 8px;
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 14px;
-    font-size: 14px;
-    color: #9B9B9B;
-    letter-spacing: 0.06em;
-  }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 720px; padding: 48px 40px 40px; }
+  .phase-label { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; letter-spacing: 0.1em; color: #9B9B9B; margin-bottom: 12px; }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+  .section-title { font-family: 'Georgia', serif; font-size: 28px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 24px; }
+  .cap-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+  .cap-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; padding: 22px 20px; display: flex; gap: 18px; align-items: flex-start; }
+  .cap-card .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: #FFFFFF; flex-shrink: 0; }
+  .cap-card.cb .avatar { background: #3B82F6; }
+  .cap-card.sd .avatar { background: #10B981; }
+  .cap-card.rx .avatar { background: #6366F1; }
+  .cap-card .content { flex: 1; }
+  .cap-card .title { font-family: 'Georgia', serif; font-size: 17px; color: #1A1A1A; margin-bottom: 4px; }
+  .cap-card .desc { font-size: 14px; color: #6B6B6B; line-height: 1.7; }
+  .cap-card .tag { display: inline-block; font-size: 14px; padding: 3px 10px; margin-top: 8px; border-radius: 4px; background: #F5F4F0; color: #6B6B6B; letter-spacing: 0.04em; }
+  .insight { text-align: center; padding: 28px 24px; background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; }
+  .insight .quote { font-family: 'Georgia', serif; font-size: 17px; font-style: italic; color: #1A1A1A; line-height: 1.6; max-width: 560px; margin: 0 auto; }
+  .insight .attr { font-size: 14px; color: #9B9B9B; margin-top: 12px; }
+  .footer { text-align: center; margin-top: 28px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>独有能力 · 安全与发现</h1>
-    <div class="subtitle">跨分支违规检测 · 苏格拉底式需求发现 · 代码美学框架</div>
-  </div>
-
-  <div class="capability-grid">
+  <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> 独有能力 · 安全与发现</div>
+  <div class="section-title">差异化特性（下）</div>
+  <div class="cap-grid">
     <div class="cap-card cb">
-      <div class="icon-wrap">CB</div>
-      <div class="title">跨分支违规检测</div>
-      <div class="desc">文件所有权追踪 + 共享文件兼容性检查。多分支并行开发时防止冲突。</div>
-      <div class="tag">安全保障</div>
+      <div class="avatar">CB</div>
+      <div class="content"><div class="title">跨分支违规检测</div><div class="desc">文件所有权追踪 + 共享文件兼容性检查。多分支并行开发时防止冲突。</div><div class="tag">安全保障</div></div>
     </div>
     <div class="cap-card sd">
-      <div class="icon-wrap">SD</div>
-      <div class="title">苏格拉底式需求发现</div>
-      <div class="desc">加权 6 维清晰度评估。一次一题。主动质疑矛盾、边界、风险、隐含假设。</div>
-      <div class="tag">规划阶段</div>
+      <div class="avatar">SD</div>
+      <div class="content"><div class="title">苏格拉底式需求发现</div><div class="desc">加权 6 维清晰度评估。一次一题。主动质疑矛盾、边界、风险、隐含假设。</div><div class="tag">规划阶段</div></div>
     </div>
     <div class="cap-card rx">
-      <div class="icon-wrap">RX</div>
-      <div class="title">代码美学框架</div>
-      <div class="desc">razorX 追问：「路径能否更短？认知负荷能否更低？」双模式：外科手术式审查 + 声明式生成。</div>
-      <div class="tag">代码品质</div>
+      <div class="avatar">RX</div>
+      <div class="content"><div class="title">代码美学框架</div><div class="desc">razorX 追问：「路径能否更短？认知负荷能否更低？」双模式：外科手术式审查 + 声明式生成。</div><div class="tag">代码品质</div></div>
     </div>
   </div>
-
   <div class="insight">
     <div class="quote">WorkflowX 不教 AI 如何写代码，也不教 AI 如何用工具。它教 AI 如何做工程——需求追踪、质量审计、结构化迭代。</div>
-    <div class="attribution">&mdash; 设计理念</div>
+    <div class="attr">&mdash; 设计理念</div>
   </div>
-
-  <div class="footer">WorkflowX &middot; 通过工程纪律实现结构性优势</div>
-</div>
+  <div class="footer">WorkflowX · 通过工程纪律实现结构性优势</div>
 </body>
 </html>

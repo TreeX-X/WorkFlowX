@@ -11,39 +11,65 @@
     background: #FAFAF8;
     color: #1A1A1A;
     width: 720px;
-    padding: 24px 36px;
+    padding: 8px 36px;
   }
   .container { width: 100%; }
 
-  .header { text-align: center; margin-bottom: 20px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 16px;
+  /* huashu: phase-label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: #9B9B9B;
-    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+
+  /* huashu: section-title */
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+    text-align: center;
   }
 
-  .layer {
-    position: relative;
-    z-index: 1;
+  .header { text-align: center; margin-bottom: 20px; }
+
+  /* huashu: doc-view card */
+  .doc-view {
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    padding: 20px 24px;
-    border-left: 4px solid #3B82F6;
+    border-radius: 8px;
+    padding: 24px 28px;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .doc-view .doc-title {
+    font-family: 'Georgia', serif;
+    font-size: 20px; color: #1A1A1A;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #C04A1A;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .doc-view .doc-title .badge {
+    font-size: 13px; padding: 3px 10px;
+    border-radius: 4px;
+    background: #ECFDF5; color: #059669;
+    letter-spacing: 0.04em;
   }
 
   .layer-header {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
     margin-bottom: 12px;
   }
   .layer-number {
@@ -71,9 +97,10 @@
     font-size: 15px;
     color: #6B6B6B;
     line-height: 1.7;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   }
 
+  /* huashu: zone color blocks */
   .zone-labels {
     display: flex;
     gap: 4px;
@@ -104,6 +131,7 @@
   .zone.incremental { background: #60A5FA; }
   .zone.dynamic { background: #93C5FD; color: #1E40AF; }
 
+  /* huashu: effect badge */
   .effect {
     display: inline-block;
     font-size: 14px;
@@ -111,13 +139,13 @@
     border-radius: 4px;
     letter-spacing: 0.04em;
     font-weight: 500;
-    background: #EFF6FF;
-    color: #2563EB;
+    background: #ECFDF5;
+    color: #059669;
   }
 
   .footer {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 18px;
     font-size: 14px;
     color: #9B9B9B;
     letter-spacing: 0.06em;
@@ -127,20 +155,22 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>Token Optimization · L1 Section-Level Caching</h1>
-    <div class="subtitle">Hybrid document topological sort, 40-60% savings after first run</div>
+    <div class="phase-label"><div class="dot"></div><span class="step-num">03</span> L1 Section-Level Caching</div>
+    <div class="section-title">Token Optimization · L1 Caching</div>
   </div>
 
-  <div class="layer">
+  <div class="doc-view">
+    <div class="doc-title">Hybrid Tree Topology <span class="badge">40-60% savings after first run</span></div>
+
     <div class="layer-header">
       <div class="layer-number">L1</div>
       <div>
         <div class="layer-title">Section-Level Caching</div>
-        <div class="layer-name">Hybrid Document Topological Sort</div>
+        <div class="layer-name">Hybrid document topology sort</div>
       </div>
     </div>
     <div class="layer-desc">
-      Strict zoning: rarely-changed static sections placed at the top, continuously hitting LLM Prompt Cache. Dynamic sections at the bottom, so overwrites never invalidate the cache.
+      Strict zoning: rarely-changed static sections at the top, continuously hitting LLM Prompt Cache. Dynamic sections at the bottom, overwriting without cache invalidation.
     </div>
     <div class="zone-labels">
       <span class="zone-label">Static</span>
@@ -149,13 +179,13 @@
     </div>
     <div class="zones">
       <div class="zone static">Requirements / Scope / DoD</div>
-      <div class="zone incremental">Acceptance Criteria / File Index</div>
+      <div class="zone incremental">AC / File Index</div>
       <div class="zone dynamic">Evaluation Reports</div>
     </div>
-    <div class="effect">40-60% token savings after first run</div>
+    <div class="effect">40-60% Token savings after first run</div>
   </div>
 
-  <div class="footer">WorkflowX &middot; Minimizing input tokens on every SubAgent invocation</div>
+  <div class="footer">WorkflowX &middot; Minimize input tokens on every SubAgent wake-up</div>
 </div>
 </body>
 </html>

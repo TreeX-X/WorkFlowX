@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX Architecture · Data &amp; Communication</title>
+<title>WorkflowX Architecture · Data & Communication</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -15,81 +15,80 @@
   }
   .container { width: 100%; }
 
-  .header { text-align: center; margin-bottom: 16px; }
-  .header h1 {
-    font-family: 'Georgia', 'Source Serif Pro', serif;
-    font-size: 32px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    margin-bottom: 10px;
-    color: #1A1A1A;
-  }
-  .header .subtitle {
-    font-size: 15px;
-    color: #9B9B9B;
-    letter-spacing: 0.1em;
-  }
-
-  .canvas {
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    padding: 16px 20px 12px;
-  }
-
-  .layer-sep {
-    text-align: center;
-    padding: 14px 0;
+  /* huashu: phase-label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
     font-size: 14px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: #9B9B9B;
-    position: relative;
-  }
-  .layer-sep::before,
-  .layer-sep::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: calc(50% - 60px);
-    height: 1px;
-    background: #E8E6E1;
-  }
-  .layer-sep::before { left: 0; }
-  .layer-sep::after { right: 0; }
-
-  .data-layer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
     margin-bottom: 16px;
   }
-  .data-card {
-    padding: 12px 10px;
-    border: 1px solid #E8E6E1;
-    border-radius: 6px;
-    background: #FAFAF8;
-  }
-  .data-card .label {
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #C04A1A;
-    margin-bottom: 10px;
-    font-weight: 500;
-  }
-  .data-card .title {
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+
+  /* huashu: section-title */
+  .section-title {
     font-family: 'Georgia', serif;
-    font-size: 16px;
+    font-size: 28px;
+    font-weight: 400;
     color: #1A1A1A;
-    margin-bottom: 8px;
-  }
-  .data-card .desc {
-    font-size: 14px;
-    color: #6B6B6B;
-    line-height: 1.7;
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+    text-align: center;
   }
 
+  .header { text-align: center; margin-bottom: 16px; }
+
+  /* huashu: doc-view card */
+  .doc-view {
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    margin-bottom: 14px;
+  }
+  .doc-view .doc-title {
+    font-family: 'Georgia', serif;
+    font-size: 18px; color: #1A1A1A;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #C04A1A;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .doc-view .doc-title .badge {
+    font-size: 13px; padding: 3px 10px;
+    border-radius: 4px;
+    background: #ECFDF5; color: #059669;
+    letter-spacing: 0.04em;
+  }
+
+  /* huashu: section-item list */
+  .section-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
+  }
+  .section-item .icon {
+    width: 24px; height: 24px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; flex-shrink: 0;
+  }
+  .section-item .icon.done { background: #ECFDF5; color: #059669; }
+  .section-item .text { color: #1A1A1A; font-size: 15px; flex: 1; }
+  .section-item .text strong { color: #1A1A1A; }
+  .section-item .tag {
+    font-size: 13px; padding: 3px 10px;
+    border-radius: 4px; flex-shrink: 0;
+  }
+  .section-item .tag.static { background: #EFF6FF; color: #2563EB; }
+  .section-item .tag.dynamic { background: #FFFBEB; color: #D97706; }
+
+  /* huashu: badge-style payload items */
   .payload-row {
     display: flex;
     justify-content: center;
@@ -116,9 +115,10 @@
   .payload-badge .dot.p2 { background: #EF4444; }
   .payload-badge .dot.p3 { background: #F59E0B; }
 
+  /* huashu: dashed parallel section */
   .parallel-section {
-    margin-top: 12px;
-    padding-top: 10px;
+    margin-top: 14px;
+    padding-top: 12px;
     border-top: 1px dashed #E8E6E1;
     text-align: center;
   }
@@ -137,7 +137,7 @@
   .parallel-card {
     padding: 10px 14px;
     border: 1px dashed #D4D2CC;
-    border-radius: 6px;
+    border-radius: 8px;
     text-align: center;
     background: #FAFAF8;
   }
@@ -164,53 +164,81 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>Architecture · Data &amp; Communication</h1>
-    <div class="subtitle">Hybrid Tree · MCP Memory Graph · Payload · Parallel Mode</div>
+    <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> Data & Communication</div>
+    <div class="section-title">Architecture · Data & Communication</div>
   </div>
-  <div class="canvas">
-    <div class="layer-sep">Data Layer</div>
-    <div class="data-layer">
-      <div class="data-card">
-        <div class="label">Data Structure</div>
-        <div class="title">Hybrid Tree</div>
-        <div class="desc">Parent routing layer + Children requirements layer. MECE division. Section-Level Caching for token optimization.</div>
+
+  <!-- Data Layer: 2-column doc-view -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+    <div class="doc-view">
+      <div class="doc-title">Hybrid Tree <span class="badge">Data Structure</span></div>
+      <div class="section-item">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>Parent Routing</strong> — Global spec + routing table</div>
+        <div class="tag static">Static</div>
       </div>
-      <div class="data-card">
-        <div class="label">Knowledge</div>
-        <div class="title">MCP Memory Graph</div>
-        <div class="desc">Hybrid Tree stores skeleton pointers only. Full nodes persisted by MCP server-memory. Cross-session knowledge sharing.</div>
+      <div class="section-item">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>Children Requirements</strong> — MECE decomposition</div>
+        <div class="tag static">Static</div>
+      </div>
+      <div class="section-item">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>Section-Level Caching</strong> — Token optimization</div>
+        <div class="tag dynamic">Incremental</div>
       </div>
     </div>
-
-    <div class="payload-row">
-      <div class="payload-badge">
-        <div class="dot p1"></div>
-        <span>Change Summary &mdash; coderX &rarr; orchestratorX</span>
+    <div class="doc-view">
+      <div class="doc-title">MCP Memory Graph <span class="badge">Knowledge</span></div>
+      <div class="section-item">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>Skeleton Pointers</strong> — Hybrid Tree stores refs only</div>
+        <div class="tag static">Static</div>
       </div>
-      <div class="payload-badge">
-        <div class="dot p2"></div>
-        <span>Evaluation Result &mdash; evaluatorX &rarr; orchestratorX</span>
+      <div class="section-item">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>Persistent Nodes</strong> — server-memory storage</div>
+        <div class="tag dynamic">Dynamic</div>
       </div>
-      <div class="payload-badge">
-        <div class="dot p3"></div>
-        <span>Requirement Change &mdash; orchestratorX internal</span>
-      </div>
-    </div>
-
-    <div class="parallel-section">
-      <div class="parallel-label">Parallel Mode (Agent Teams)</div>
-      <div class="parallel-agents">
-        <div class="parallel-card">
-          <div class="name">coder-teammate</div>
-          <div class="desc">Parallel coding</div>
-        </div>
-        <div class="parallel-card">
-          <div class="name">evaluator-teammate</div>
-          <div class="desc">Parallel evaluation</div>
-        </div>
+      <div class="section-item">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>Cross-Session Sharing</strong> — No redundant context</div>
+        <div class="tag dynamic">Dynamic</div>
       </div>
     </div>
   </div>
+
+  <!-- Payload Badges -->
+  <div class="payload-row">
+    <div class="payload-badge">
+      <div class="dot p1"></div>
+      <span>Change Summary — coderX → orchestratorX</span>
+    </div>
+    <div class="payload-badge">
+      <div class="dot p2"></div>
+      <span>Evaluation Result — evaluatorX → orchestratorX</span>
+    </div>
+    <div class="payload-badge">
+      <div class="dot p3"></div>
+      <span>Req Change — orchestratorX internal</span>
+    </div>
+  </div>
+
+  <!-- Parallel Mode -->
+  <div class="parallel-section">
+    <div class="parallel-label">Parallel Mode (Agent Teams)</div>
+    <div class="parallel-agents">
+      <div class="parallel-card">
+        <div class="name">coder-teammate</div>
+        <div class="desc">Parallel coding</div>
+      </div>
+      <div class="parallel-card">
+        <div class="name">evaluator-teammate</div>
+        <div class="desc">Parallel evaluation</div>
+      </div>
+    </div>
+  </div>
+
   <div class="footer">WorkflowX &middot; File-driven multi-agent orchestration framework</div>
 </div>
 </body>
