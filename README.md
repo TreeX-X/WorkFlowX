@@ -27,7 +27,7 @@
 ## 工作流演示
 
 <p align="center">
-  <video src="docs/design/images/06-workflow-animation.mp4" autoplay loop muted playsinline width="960" />
+  <img src="docs/design/images/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="960" />
   <br/>
   <sub>xwhole 模式完整工作流：需求输入 → promptMasterX 优化 → coderX 编码 → evaluatorX 验证 → 迭代完成</sub>
 </p>

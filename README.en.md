@@ -27,7 +27,7 @@
 ## Workflow Demo
 
 <p align="center">
-  <video src="docs/design/images/06-workflow-animation.mp4" autoplay loop muted playsinline width="960" />
+  <img src="docs/design/images/06-workflow-animation.gif" alt="WorkflowX xwhole Workflow Demo" width="960" />
   <br/>
   <sub>xwhole mode full workflow: Requirements → promptMasterX → coderX → evaluatorX → Iteration Complete</sub>
 </p>
