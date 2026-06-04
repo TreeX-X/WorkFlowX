@@ -6,3 +6,7 @@
 .opencode/skills/huashu-design/
 .claude/skills/huashu-design/
 .claude/skills/razorX/
+
+# Runtime generated
+status-report.html
+.hybrid/
