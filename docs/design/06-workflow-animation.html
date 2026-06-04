@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowX 工作流完整演示</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    background: #FAFAF8;
+    color: #1A1A1A;
+    width: 1200px;
+    height: 800px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .scene {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Progress bar */
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: #E8E6E1;
+    z-index: 10;
+  }
+  .status-bar .progress {
+    height: 100%;
+    background: #C04A1A;
+    width: 0%;
+    animation: progressFill 28s linear forwards;
+  }
+
+  /* Phase: absolute, hidden by default */
+  .phase {
+    position: absolute;
+    inset: 0;
+    padding: 0 60px;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Phase label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9B9B9B;
+    margin-bottom: 20px;
+  }
+  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
+
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+
+  .phase-inner {
+    width: 100%;
+    max-width: 880px;
+  }
+
+  /* Chat messages */
+  .chat-area { display: flex; flex-direction: column; gap: 18px; }
+  .msg {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .msg .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600; color: #fff;
+    flex-shrink: 0;
+  }
+  .msg .avatar.user { background: #3B82F6; }
+  .msg .avatar.ai { background: #C04A1A; }
+  .msg .bubble {
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: 16px;
+    color: #1A1A1A;
+    line-height: 1.6;
+    max-width: 580px;
+  }
+  .msg .bubble strong { color: #C04A1A; }
+  .options { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .option {
+    font-size: 15px; color: #6B6B6B;
+    padding: 6px 12px;
+    background: #F5F4F0;
+    border-radius: 4px;
+    border-left: 3px solid #C04A1A;
+  }
+  .option.selected { color: #C04A1A; font-weight: 500; background: #FDF2ED; }
+
+  /* Code editor */
+  .editor {
+    background: #1E1E1E;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Menlo', 'Consolas', 'Courier New', monospace;
+    font-size: 15px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+  .editor .titlebar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px;
+    background: #2D2D2D;
+  }
+  .editor .titlebar .dot-r { width: 12px; height: 12px; border-radius: 50%; background: #FF5F56; }
+  .editor .titlebar .dot-y { width: 12px; height: 12px; border-radius: 50%; background: #FFBD2E; }
+  .editor .titlebar .dot-g { width: 12px; height: 12px; border-radius: 50%; background: #27C93F; }
+  .editor .titlebar .filename { margin-left: 16px; font-size: 14px; color: #9B9B9B; }
+  .editor .body {
+    padding: 16px 20px;
+    line-height: 2.0;
+    color: #D4D4D4;
+    min-height: 180px;
+  }
+  .editor .body .line { opacity: 0; }
+  .editor .body .kw { color: #C586C0; }
+  .editor .body .fn { color: #DCDCAA; }
+  .editor .body .str { color: #CE9178; }
+  .editor .body .tp { color: #4EC9B0; }
+  .editor .body .cm { color: #6A9955; font-style: italic; }
+  .editor .body .pm { color: #9CDCFE; }
+  .editor .body .num { color: #B5CEA8; }
+  .cursor {
+    display: inline-block; width: 2px; height: 16px;
+    background: #C04A1A;
+    animation: blink 0.8s step-end infinite;
+    vertical-align: middle; margin-left: 2px;
+  }
+
+  /* Hybrid Tree doc */
+  .doc-view {
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 8px;
+    padding: 28px 32px;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+  }
+  .doc-view .doc-title {
+    font-family: 'Georgia', serif;
+    font-size: 20px; color: #1A1A1A;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #C04A1A;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .doc-view .doc-title .badge {
+    font-size: 13px; padding: 3px 10px;
+    border-radius: 4px;
+    background: #ECFDF5; color: #059669;
+    letter-spacing: 0.04em;
+  }
+  .section-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 8px 0;
+    opacity: 0;
+  }
+  .section-item .icon {
+    width: 26px; height: 26px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; flex-shrink: 0;
+  }
+  .section-item .icon.done { background: #ECFDF5; color: #059669; }
+  .section-item .icon.wip { background: #FFFBEB; color: #D97706; }
+  .section-item .text { color: #1A1A1A; font-size: 15px; flex: 1; }
+  .section-item .text strong { color: #1A1A1A; }
+  .section-item .tag {
+    font-size: 13px; padding: 4px 12px;
+    border-radius: 4px; flex-shrink: 0;
+  }
+  .section-item .tag.static { background: #EFF6FF; color: #2563EB; }
+  .section-item .tag.dynamic { background: #FFFBEB; color: #D97706; }
+
+  /* AC Table */
+  .ac-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .ac-table th {
+    text-align: left; padding: 12px 16px;
+    border-bottom: 2px solid #E8E6E1;
+    color: #6B6B6B; font-weight: 500;
+    font-size: 14px; letter-spacing: 0.06em;
+  }
+  .ac-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #F5F4F0;
+    color: #1A1A1A;
+  }
+  .ac-table tr { opacity: 0; }
+  .status-pass {
+    display: inline-block; padding: 4px 14px;
+    border-radius: 4px;
+    background: #ECFDF5; color: #059669;
+    font-size: 14px; font-weight: 500;
+  }
+  .status-fail {
+    display: inline-block; padding: 4px 14px;
+    border-radius: 4px;
+    background: #FEF2F2; color: #DC2626;
+    font-size: 14px; font-weight: 500;
+  }
+
+  /* Loop diagram */
+  .loop-diagram {
+    display: flex; align-items: center;
+    justify-content: center;
+    gap: 28px;
+    padding: 36px 0;
+  }
+  .loop-node {
+    padding: 20px 32px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 17px; font-weight: 500;
+    opacity: 0;
+  }
+  .loop-node .sub { font-size: 14px; color: #9B9B9B; margin-top: 6px; font-weight: 400; }
+  .loop-node.coder { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+  .loop-node.eval { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+  .loop-node.pass { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+  .loop-arrow { font-size: 26px; color: #A0A0A0; opacity: 0; }
+
+  /* Preview */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .preview-frame {
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.08);
+  }
+  .preview-frame .browser-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 18px;
+    background: #F5F4F0;
+    border-bottom: 1px solid #E8E6E1;
+  }
+  .preview-frame .browser-bar .dots { display: flex; gap: 6px; }
+  .preview-frame .browser-bar .dot-r { width: 10px; height: 10px; border-radius: 50%; background: #FF5F56; }
+  .preview-frame .browser-bar .dot-y { width: 10px; height: 10px; border-radius: 50%; background: #FFBD2E; }
+  .preview-frame .browser-bar .dot-g { width: 10px; height: 10px; border-radius: 50%; background: #27C93F; }
+  .preview-frame .browser-bar .url {
+    flex: 1; background: #FFFFFF;
+    border: 1px solid #E8E6E1; border-radius: 4px;
+    padding: 6px 16px;
+    font-size: 14px; color: #9B9B9B;
+  }
+  .preview-body { padding: 32px; min-height: 240px; }
+  .mock-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #F5F4F0;
+  }
+  .mock-logo { font-family: 'Georgia', serif; font-size: 22px; color: #1A1A1A; }
+  .mock-nav { display: flex; gap: 20px; font-size: 15px; color: #6B6B6B; }
+  .mock-form { max-width: 380px; margin: 0 auto; }
+  .mock-form .form-title {
+    font-family: 'Georgia', serif;
+    font-size: 22px; color: #1A1A1A;
+    text-align: center; margin-bottom: 24px;
+  }
+  .mock-input {
+    width: 100%; padding: 13px 16px;
+    border: 1px solid #E8E6E1; border-radius: 6px;
+    font-size: 15px; margin-bottom: 12px;
+    color: #9B9B9B;
+    background: #FFFFFF;
+  }
+  .mock-btn {
+    width: 100%; padding: 13px;
+    background: #C04A1A; color: #fff;
+    border: none; border-radius: 6px;
+    font-size: 16px; font-weight: 500;
+    cursor: default; margin-top: 6px;
+  }
+  .mock-divider {
+    text-align: center; margin: 18px 0;
+    font-size: 14px; color: #C0C0C0;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .mock-divider::before, .mock-divider::after {
+    content: ''; flex: 1; height: 1px; background: #E8E6E1;
+  }
+  .mock-social {
+    display: flex; gap: 12px; justify-content: center;
+  }
+  .mock-social-btn {
+    flex: 1; padding: 11px;
+    border: 1px solid #E8E6E1; border-radius: 6px;
+    text-align: center;
+    font-size: 14px; color: #6B6B6B;
+    background: #FFFFFF;
+  }
+
+  .result-badge {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 18px 40px;
+    border-radius: 8px;
+    font-size: 18px; letter-spacing: 0.04em; font-weight: 500;
+    background: #ECFDF5; color: #059669;
+    border: 1px solid #A7F3D0;
+    box-shadow: 0 2px 10px rgba(16,185,129,0.1);
+  }
+  .result-badge .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%; background: #10B981;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .result-sub {
+    font-size: 15px; color: #9B9B9B;
+    margin-top: 14px;
+    text-align: center;
+  }
+
+  .bottom-label {
+    position: absolute;
+    bottom: 32px; left: 0; right: 0;
+    text-align: center;
+    font-size: 14px; color: #9B9B9B;
+    letter-spacing: 0.06em;
+    opacity: 0;
+  }
+
+  /* Title card */
+  .title-card {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0;
+    z-index: 5;
+  }
+  .title-card h1 { font-family: 'Georgia', serif; font-size: 48px; font-weight: 400; letter-spacing: 0.06em; }
+  .title-card .divider { width: 52px; height: 3px; background: #C04A1A; margin: 22px 0; }
+  .title-card .subtitle {
+    font-size: 18px; color: #9B9B9B; letter-spacing: 0.08em;
+  }
+
+  /* ======================== */
+  /* TIMELINE ANIMATIONS      */
+  /* ======================== */
+
+  .title-card { animation: fadeIn 0.6s ease 0s forwards, fadeOut 0.5s ease 2.5s forwards; }
+
+  .p1 { animation: fadeIn 0.4s ease 2.8s forwards, fadeOut 0.4s ease 7.5s forwards; }
+  .p1 .m1 { animation: slideUp 0.4s ease 3.2s forwards; }
+  .p1 .m2 { animation: slideUp 0.4s ease 4.5s forwards; }
+  .p1 .m3 { animation: slideUp 0.4s ease 6.0s forwards; }
+
+  .p2 { animation: fadeIn 0.4s ease 7.8s forwards, fadeOut 0.4s ease 13s forwards; }
+  .p2 .s1 { animation: slideUp 0.3s ease 8.5s forwards; }
+  .p2 .s2 { animation: slideUp 0.3s ease 9.0s forwards; }
+  .p2 .s3 { animation: slideUp 0.3s ease 9.5s forwards; }
+  .p2 .s4 { animation: slideUp 0.3s ease 10.0s forwards; }
+  .p2 .s5 { animation: slideUp 0.3s ease 10.5s forwards; }
+  .p2 .s6 { animation: slideUp 0.3s ease 11.0s forwards; }
+
+  .p3 { animation: fadeIn 0.4s ease 13.3s forwards, fadeOut 0.4s ease 18s forwards; }
+  .p3 .c1 { animation: codeLine 0.25s ease 14.0s forwards; }
+  .p3 .c2 { animation: codeLine 0.25s ease 14.4s forwards; }
+  .p3 .c3 { animation: codeLine 0.25s ease 14.8s forwards; }
+  .p3 .c4 { animation: codeLine 0.25s ease 15.2s forwards; }
+  .p3 .c5 { animation: codeLine 0.25s ease 15.6s forwards; }
+  .p3 .c6 { animation: codeLine 0.25s ease 16.0s forwards; }
+  .p3 .c7 { animation: codeLine 0.25s ease 16.4s forwards; }
+  .p3 .c8 { animation: codeLine 0.25s ease 16.8s forwards; }
+
+  .p4 { animation: fadeIn 0.4s ease 18.3s forwards, fadeOut 0.4s ease 22.5s forwards; }
+  .p4 .r1 { animation: slideUp 0.3s ease 19.0s forwards; }
+  .p4 .r2 { animation: slideUp 0.3s ease 19.5s forwards; }
+  .p4 .r3 { animation: slideUp 0.3s ease 20.0s forwards; }
+  .p4 .r4 { animation: slideUp 0.3s ease 20.5s forwards; }
+  .p4 .r5 { animation: slideUp 0.3s ease 21.0s forwards; }
+
+  .p5 { animation: fadeIn 0.4s ease 22.8s forwards, fadeOut 0.4s ease 26s forwards; }
+  .p5 .n1 { animation: slideUp 0.4s ease 23.3s forwards; }
+  .p5 .a1 { animation: fadeIn 0.3s ease 23.8s forwards; }
+  .p5 .n2 { animation: slideUp 0.4s ease 24.1s forwards; }
+  .p5 .a2 { animation: fadeIn 0.3s ease 24.6s forwards; }
+  .p5 .n3 { animation: slideUp 0.4s ease 24.9s forwards; }
+  .p5 .a3 { animation: fadeIn 0.3s ease 25.4s forwards; }
+  .p5 .n4 { animation: slideUp 0.4s ease 25.7s forwards; }
+
+  .p6 { animation: fadeIn 0.5s ease 26.3s forwards; }
+  .p6 .preview { animation: slideUp 0.5s ease 26.8s forwards; opacity: 0; }
+  .p6 .badge { animation: slideUp 0.4s ease 28.0s forwards; opacity: 0; }
+  .p6 .label { animation: fadeIn 0.4s ease 28.8s forwards; }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes codeLine {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  @keyframes progressFill {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+
+  .progress-dots {
+    display: inline-flex; gap: 4px;
+    margin-left: 10px;
+  }
+  .progress-dots span {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #C04A1A;
+    animation: dotPulse 1s ease-in-out infinite;
+  }
+  .progress-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .progress-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="status-bar"><div class="progress"></div></div>
+
+  <!-- Title Card -->
+  <div class="title-card">
+    <h1>WorkflowX</h1>
+    <div class="divider"></div>
+    <div class="subtitle">xwhole 模式 &middot; 完整工作流演示</div>
+  </div>
+
+  <!-- Phase 1: Socratic Discovery -->
+  <div class="phase p1">
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> 需求发现 &middot; Socratic Discovery</div>
+      <div class="section-title">苏格拉底式需求澄清</div>
+      <div class="chat-area">
+        <div class="msg m1">
+          <div class="avatar user">U</div>
+          <div class="bubble">实现用户登录功能</div>
+        </div>
+        <div class="msg m2">
+          <div class="avatar ai">AI</div>
+          <div class="bubble">
+            需求需要进一步澄清。第一个问题：<br/><br/>
+            <strong>认证方式选择：</strong>
+            <div class="options">
+              <div class="option selected">A. 邮箱 + 密码（推荐）</div>
+              <div class="option">B. 手机号 + 验证码</div>
+              <div class="option">C. OAuth 第三方（Google / GitHub）</div>
+              <div class="option">D. 以上全部</div>
+            </div>
+          </div>
+        </div>
+        <div class="msg m3">
+          <div class="avatar user">U</div>
+          <div class="bubble">D，全部支持。另外需要 JWT token 认证和 RBAC 角色权限管理，支持 admin / editor / viewer 三种角色。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 2: Hybrid Tree -->
+  <div class="phase p2">
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">02</span> 文档生成 &middot; Hybrid Tree</div>
+      <div class="section-title">结构化需求文档自动生成</div>
+      <div class="doc-view">
+        <div class="doc-title">Hybrid Tree &middot; user-auth <span class="badge">已生成</span></div>
+        <div class="section-item s1">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>0. 需求摘要</strong> &mdash; 用户登录模块，三种认证方式 + JWT + RBAC</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s2">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>1. 功能范围</strong> &mdash; 注册 / 登录 / Token 刷新 / 角色路由守卫</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s3">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>2. 技术约束</strong> &mdash; Node.js + Express + PostgreSQL + Redis</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s4">
+          <div class="icon done">&#10003;</div>
+          <div class="text"><strong>5. 边界条件</strong> &mdash; 并发登录限制 / Token 过期策略 / 密码强度</div>
+          <div class="tag static">静态区</div>
+        </div>
+        <div class="section-item s5">
+          <div class="icon wip">AC</div>
+          <div class="text"><strong>7. 验收标准</strong> &mdash; 6 项 AC 从需求分解而来</div>
+          <div class="tag dynamic">动态区</div>
+        </div>
+        <div class="section-item s6">
+          <div class="icon wip">IDX</div>
+          <div class="text"><strong>8. 文件索引</strong> &mdash; 扫描项目结构，定位 12 个相关文件</div>
+          <div class="tag dynamic">动态区</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3: Code Implementation -->
+  <div class="phase p3">
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">03</span> 规格驱动编码 &middot; coderX</div>
+      <div class="section-title">按验收标准逐项实现</div>
+      <div class="editor">
+        <div class="titlebar">
+          <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+          <div class="filename">src/middleware/auth.ts</div>
+        </div>
+        <div class="body">
+          <div class="line c1"><span class="cm">// JWT 认证中间件 &mdash; AC-1, AC-4</span></div>
+          <div class="line c2"><span class="kw">import</span> { <span class="tp">Request</span>, <span class="tp">Response</span>, <span class="tp">NextFunction</span> } <span class="kw">from</span> <span class="str">'express'</span>;</div>
+          <div class="line c3"><span class="kw">import</span> <span class="pm">jwt</span> <span class="kw">from</span> <span class="str">'jsonwebtoken'</span>;</div>
+          <div class="line c4"><span class="kw">import</span> { <span class="pm">Role</span> } <span class="kw">from</span> <span class="str">'../types/auth'</span>;</div>
+          <div class="line c5">&nbsp;</div>
+          <div class="line c6"><span class="kw">export const</span> <span class="fn">authenticate</span> = (<span class="pm">req</span>: <span class="tp">Request</span>, <span class="pm">res</span>: <span class="tp">Response</span>, <span class="pm">next</span>: <span class="tp">NextFunction</span>) =&gt; {</div>
+          <div class="line c7">&nbsp;&nbsp;<span class="kw">const</span> <span class="pm">token</span> = <span class="pm">req</span>.headers.authorization?.split(<span class="str">' '</span>)[<span class="num">1</span>];</div>
+          <div class="line c8">&nbsp;&nbsp;<span class="kw">if</span> (!token) <span class="kw">return</span> <span class="pm">res</span>.status(<span class="num">401</span>).json({ error: <span class="str">'Unauthorized'</span> });<span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4: AC Validation -->
+  <div class="phase p4">
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">04</span> AC 交叉验证 &middot; evaluatorX</div>
+      <div class="section-title">独立验证每项验收标准</div>
+      <table class="ac-table">
+        <thead><tr><th style="width:35%">验收标准</th><th style="width:12%">状态</th><th>验证说明</th></tr></thead>
+        <tbody>
+          <tr class="r1"><td>AC-1: 邮箱密码注册登录</td><td><span class="status-pass">PASS</span></td><td>bcrypt 哈希 + JWT 签发，逻辑完整</td></tr>
+          <tr class="r2"><td>AC-2: 手机验证码登录</td><td><span class="status-pass">PASS</span></td><td>短信服务集成 + 60s 过期机制</td></tr>
+          <tr class="r3"><td>AC-3: OAuth 第三方登录</td><td><span class="status-fail">FAIL</span></td><td>P0: 缺少 token 刷新逻辑，过期后无法续期</td></tr>
+          <tr class="r4"><td>AC-4: RBAC 角色路由守卫</td><td><span class="status-pass">PASS</span></td><td>admin/editor/viewer 三级权限已实现</td></tr>
+          <tr class="r5"><td>AC-5: JWT Token 刷新机制</td><td><span class="status-fail">FAIL</span></td><td>P1: refresh token 未存入 Redis</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Phase 5: Iteration Loop -->
+  <div class="phase p5">
+    <div class="phase-inner">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> 迭代修复 &middot; Iteration Loop</div>
+      <div class="section-title">自动迭代直至全部通过</div>
+      <div class="loop-diagram">
+        <div class="loop-node coder n1">coderX<div class="sub">Round 1</div></div>
+        <div class="loop-arrow a1">&rarr;</div>
+        <div class="loop-node eval n2">evaluatorX<div class="sub">AC-3, AC-5 FAIL</div></div>
+        <div class="loop-arrow a2">&rarr;</div>
+        <div class="loop-node coder n3">coderX<div class="sub">Round 2 &middot; 修复中<span class="progress-dots"><span></span><span></span><span></span></span></div></div>
+        <div class="loop-arrow a3">&rarr;</div>
+        <div class="loop-node pass n4">PASS<div class="sub">全部 AC 通过</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 6: Deliverable -->
+  <div class="phase p6">
+    <div class="phase-inner" style="max-width:1040px;">
+      <div class="phase-label"><div class="dot"></div><span class="step-num">06</span> 交付 &middot; Deliverable</div>
+      <div class="two-col">
+        <div class="preview-frame preview">
+          <div class="browser-bar">
+            <div class="dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
+            <div class="url">localhost:3000/login</div>
+          </div>
+          <div class="preview-body">
+            <div class="mock-header">
+              <div class="mock-logo">MyApp</div>
+              <div class="mock-nav"><span>首页</span><span>产品</span><span>关于</span><span>登录</span></div>
+            </div>
+            <div class="mock-form">
+              <div class="form-title">登录到 MyApp</div>
+              <div class="mock-input">请输入邮箱地址</div>
+              <div class="mock-input">请输入密码</div>
+              <div class="mock-btn">登 录</div>
+              <div class="mock-divider">或</div>
+              <div class="mock-social">
+                <div class="mock-social-btn">Google</div>
+                <div class="mock-social-btn">GitHub</div>
+                <div class="mock-social-btn">手机验证</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:18px;">
+          <div class="result-badge badge">
+            <div class="dot"></div>
+            评估通过 &middot; 交付就绪
+          </div>
+          <div class="result-sub">6 项 AC 全部 PASS &middot; 2 轮迭代 &middot; coderX + evaluatorX</div>
+        </div>
+      </div>
+      <div class="bottom-label label" style="position:static;margin-top:24px;">WorkflowX &middot; 通过工程纪律实现结构性优势</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
