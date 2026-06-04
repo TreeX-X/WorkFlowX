@@ -11,15 +11,15 @@
     background: #FAFAF8;
     color: #1A1A1A;
     padding: 64px 48px;
-    min-width: 800px;
+    min-width: 960px;
   }
-  .container { max-width: 840px; margin: 0 auto; }
+  .container { max-width: 960px; margin: 0 auto; }
   .header { text-align: center; margin-bottom: 48px; }
   .header h1 { font-size: 28px; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 8px; }
   .header .subtitle { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 13px; color: #9B9B9B; letter-spacing: 0.12em; }
   .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
-  .cap-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 2px; padding: 28px 24px; position: relative; overflow: hidden; }
-  .cap-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+  .cap-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 4px; padding: 28px 24px; position: relative; overflow: hidden; }
+  .cap-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 4px 4px 0 0; }
   .cap-card.ht::before { background: #C04A1A; }
   .cap-card.ac::before { background: #EF4444; }
   .cap-card.pm::before { background: #8B5CF6; }
@@ -27,7 +27,7 @@
   .cap-card.sd::before { background: #10B981; }
   .cap-card.rx::before { background: #6366F1; }
   .cap-card .icon-wrap {
-    width: 40px; height: 40px; border-radius: 2px;
+    width: 44px; height: 44px; border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
     margin-bottom: 16px;
     font-family: -apple-system, sans-serif; font-size: 16px; font-weight: 600; color: #FFFFFF;
@@ -43,20 +43,20 @@
   .cap-card .tag {
     display: inline-block;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 9px; letter-spacing: 0.08em;
-    padding: 3px 8px; margin-top: 12px; border-radius: 1px;
-    background: #F5F4F0; color: #9B9B9B;
+    font-size: 10px; letter-spacing: 0.06em;
+    padding: 4px 10px; margin-top: 12px; border-radius: 4px;
+    background: #F5F4F0; color: #6B6B6B;
   }
   .insight {
     text-align: center; padding: 32px;
-    background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 2px; margin-top: 8px;
+    background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 4px; margin-top: 12px;
   }
   .insight .quote {
     font-family: 'Georgia', serif; font-size: 16px; font-style: italic;
     color: #1A1A1A; line-height: 1.6; max-width: 600px; margin: 0 auto;
   }
   .insight .attribution { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #9B9B9B; margin-top: 12px; }
-  .footer { text-align: center; margin-top: 40px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #C0C0C0; letter-spacing: 0.06em; }
+  .footer { text-align: center; margin-top: 40px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>

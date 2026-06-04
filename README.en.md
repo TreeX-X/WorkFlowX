@@ -27,12 +27,10 @@
 ## Workflow Demo
 
 <p align="center">
-  <img src="docs/design/images/06-workflow-animation.png" alt="WorkflowX xwhole Workflow Demo" width="100%" />
+  <video src="docs/design/images/06-workflow-animation.mp4" autoplay loop muted playsinline width="960" />
   <br/>
   <sub>xwhole mode full workflow: Requirements → promptMasterX → coderX → evaluatorX → Iteration Complete</sub>
 </p>
-
-> Full animation: [06-workflow-animation.html](docs/design/06-workflow-animation.html) (open in browser to see the flow animation)
 
 ---
 
@@ -76,7 +74,7 @@ Requirement changes propagate automatically. Dependencies auto-retry via deferre
 ## System Architecture
 
 <p align="center">
-  <img src="docs/design/images/01-architecture.png" alt="WorkflowX System Architecture" width="100%" />
+  <img src="docs/design/images/01-architecture.png" alt="WorkflowX System Architecture" width="960" />
 </p>
 
 **Core Mechanisms:**
@@ -112,7 +110,7 @@ Built-in **prompt-master** skill generates production-grade prompts for 20+ AI t
 ### Three-Layer Token Optimization
 
 <p align="center">
-  <img src="docs/design/images/03-token-optimization.png" alt="Three-Layer Token Optimization" width="100%" />
+  <img src="docs/design/images/03-token-optimization.png" alt="Three-Layer Token Optimization" width="960" />
 </p>
 
 | Layer | Strategy | Effect |
@@ -196,7 +194,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 ### Workflow Modes
 
 <p align="center">
-  <img src="docs/design/images/02-workflow-modes.png" alt="Workflow Modes" width="100%" />
+  <img src="docs/design/images/02-workflow-modes.png" alt="Workflow Modes" width="960" />
 </p>
 
 | | `/xwhole` Global | `/xwhole -parallel` Parallel | `/xlocal` Scoped | `/xunit` Minimal |
@@ -244,7 +242,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 ### Weighted Scoring (out of 100)
 
 <p align="center">
-  <img src="docs/design/images/04-scoring-comparison.png" alt="Weighted Scoring Comparison" width="100%" />
+  <img src="docs/design/images/04-scoring-comparison.png" alt="Weighted Scoring Comparison" width="960" />
 </p>
 
 | Category (Weight) | WorkflowX | Superpowers | OMC |
@@ -274,7 +272,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | **Multi-platform native** | 4 platforms | 8 platforms | 2 platforms |
 
 <p align="center">
-  <img src="docs/design/images/05-capabilities.png" alt="WorkflowX Unique Capabilities" width="100%" />
+  <img src="docs/design/images/05-capabilities.png" alt="WorkflowX Unique Capabilities" width="960" />
 </p>
 
 ### Why WorkflowX?

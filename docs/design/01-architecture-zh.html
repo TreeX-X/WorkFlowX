@@ -13,7 +13,7 @@
     padding: 64px 48px;
     min-width: 960px;
   }
-  .container { max-width: 920px; margin: 0 auto; }
+  .container { max-width: 960px; margin: 0 auto; }
   .header { text-align: center; margin-bottom: 48px; }
   .header h1 { font-size: 28px; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 8px; }
   .header .subtitle {
@@ -25,16 +25,17 @@
     position: relative;
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 2px;
+    border-radius: 4px;
     padding: 56px 48px 48px;
   }
   .orchestrator {
-    width: 280px;
-    margin: 0 auto 48px;
+    width: 320px;
+    margin: 0 auto 20px;
     padding: 24px 20px;
     background: linear-gradient(135deg, #C04A1A 0%, #D4622A 100%);
-    border-radius: 3px;
+    border-radius: 4px;
     text-align: center;
+    position: relative;
   }
   .orchestrator .name {
     font-family: 'Georgia', serif;
@@ -49,16 +50,55 @@
     color: rgba(255,255,255,0.7);
     margin-top: 6px;
   }
+  /* Connector lines from orchestrator to agents */
+  .connector-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 40px;
+    position: relative;
+    margin-bottom: -8px;
+  }
+  .connector-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 20px;
+    background: #D4D2CC;
+  }
+  .connector-row::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: calc(50% - 280px);
+    right: calc(50% - 280px);
+    height: 1px;
+    background: #D4D2CC;
+  }
+  .connector-drops {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 calc(50% - 280px);
+    height: 20px;
+    margin-bottom: 4px;
+  }
+  .connector-drops .drop {
+    width: 1px;
+    height: 20px;
+    background: #D4D2CC;
+  }
   .agent-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
   }
   .agent-card {
     padding: 20px 16px;
     border: 1px solid #E8E6E1;
-    border-radius: 2px;
+    border-radius: 4px;
     text-align: center;
     background: #FFFFFF;
     position: relative;
@@ -67,22 +107,23 @@
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
+    height: 3px;
+    border-radius: 4px 4px 0 0;
   }
   .agent-card.prompt::before { background: #8B5CF6; }
   .agent-card.coder::before { background: #10B981; }
   .agent-card.evaluator::before { background: #EF4444; }
   .agent-card.abstracter::before { background: #6366F1; }
   .agent-card .icon {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     margin: 0 auto 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: -apple-system, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     color: #FFFFFF;
   }
@@ -94,14 +135,36 @@
     font-family: 'Georgia', serif;
     font-size: 14px;
     color: #1A1A1A;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
   }
   .agent-card .desc {
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 11px;
     color: #9B9B9B;
-    line-height: 1.5;
+    line-height: 1.6;
   }
+  /* Data layer separator */
+  .layer-separator {
+    text-align: center;
+    padding: 12px 0;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #9B9B9B;
+    position: relative;
+  }
+  .layer-separator::before,
+  .layer-separator::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 80px);
+    height: 1px;
+    background: #E8E6E1;
+  }
+  .layer-separator::before { left: 0; }
+  .layer-separator::after { right: 0; }
   .data-layer {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -111,7 +174,7 @@
   .data-card {
     padding: 20px;
     border: 1px solid #E8E6E1;
-    border-radius: 2px;
+    border-radius: 4px;
     background: #FAFAF8;
   }
   .data-card .label {
@@ -180,7 +243,7 @@
   .parallel-card {
     padding: 14px 20px;
     border: 1px dashed #D4D2CC;
-    border-radius: 2px;
+    border-radius: 4px;
     text-align: center;
     background: #FAFAF8;
   }
@@ -200,7 +263,7 @@
     margin-top: 40px;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 11px;
-    color: #C0C0C0;
+    color: #9B9B9B;
     letter-spacing: 0.06em;
   }
 </style>
@@ -216,28 +279,36 @@
       <div class="name">orchestratorX</div>
       <div class="role">唯一编排者 & 文档写入者</div>
     </div>
+    <div class="connector-row"></div>
+    <div class="connector-drops">
+      <div class="drop"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+      <div class="drop"></div>
+    </div>
     <div class="agent-grid">
       <div class="agent-card prompt">
-        <div class="icon">P</div>
+        <div class="icon">PM</div>
         <div class="name">promptMasterX</div>
-        <div class="desc">37 种反模式<br/>自动检测</div>
+        <div class="desc">37 种反模式自动检测<br/>注入 Karpathy 指南</div>
       </div>
       <div class="agent-card coder">
-        <div class="icon">C</div>
+        <div class="icon">CX</div>
         <div class="name">coderX</div>
-        <div class="desc">Karpathy 指南<br/>规格驱动实现</div>
+        <div class="desc">规格驱动实现<br/>Worktree 隔离编码</div>
       </div>
       <div class="agent-card evaluator">
-        <div class="icon">E</div>
+        <div class="icon">EX</div>
         <div class="name">evaluatorX</div>
-        <div class="desc">AC 交叉验证<br/>独立审计</div>
+        <div class="desc">AC 交叉验证<br/>独立审计评估</div>
       </div>
       <div class="agent-card abstracter">
-        <div class="icon">A</div>
+        <div class="icon">AX</div>
         <div class="name">abstracterX</div>
-        <div class="desc">代码分析<br/>结构化报告</div>
+        <div class="desc">代码分析报告<br/>结构化摘要输出</div>
       </div>
     </div>
+    <div class="layer-separator">数据层</div>
     <div class="data-layer">
       <div class="data-card">
         <div class="label">数据结构</div>

@@ -27,12 +27,10 @@
 ## 工作流演示
 
 <p align="center">
-  <img src="docs/design/images/06-workflow-animation.png" alt="WorkflowX xwhole 工作流演示" width="100%" />
+  <video src="docs/design/images/06-workflow-animation.mp4" autoplay loop muted playsinline width="960" />
   <br/>
   <sub>xwhole 模式完整工作流：需求输入 → promptMasterX 优化 → coderX 编码 → evaluatorX 验证 → 迭代完成</sub>
 </p>
-
-> 完整动画演示：[06-workflow-animation.html](docs/design/06-workflow-animation.html)（浏览器打开查看流转动画）
 
 ---
 
@@ -76,7 +74,7 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 ## 系统架构
 
 <p align="center">
-  <img src="docs/design/images/01-architecture-zh.png" alt="WorkflowX 系统架构" width="100%" />
+  <img src="docs/design/images/01-architecture-zh.png" alt="WorkflowX 系统架构" width="960" />
 </p>
 
 **核心机制：**
@@ -112,7 +110,7 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 ### 三层 Token 优化
 
 <p align="center">
-  <img src="docs/design/images/03-token-optimization-zh.png" alt="三层 Token 优化" width="100%" />
+  <img src="docs/design/images/03-token-optimization-zh.png" alt="三层 Token 优化" width="960" />
 </p>
 
 | 层 | 策略 | 效果 |
@@ -196,7 +194,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 ### 工作流模式
 
 <p align="center">
-  <img src="docs/design/images/02-workflow-modes-zh.png" alt="工作流模式" width="100%" />
+  <img src="docs/design/images/02-workflow-modes-zh.png" alt="工作流模式" width="960" />
 </p>
 
 | | `/xwhole` 全局模式 | `/xwhole -parallel` 并行模式 | `/xlocal` 局部模式 | `/xunit` 单元模式 |
@@ -244,7 +242,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 ### 加权评分（满分 100）
 
 <p align="center">
-  <img src="docs/design/images/04-scoring-comparison-zh.png" alt="加权评分对比" width="100%" />
+  <img src="docs/design/images/04-scoring-comparison-zh.png" alt="加权评分对比" width="960" />
 </p>
 
 | 大类 (权重) | WorkflowX | Superpowers | OMC |
@@ -274,7 +272,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | **多平台原生** | 4 平台 | 8 平台 | 2 平台 |
 
 <p align="center">
-  <img src="docs/design/images/05-capabilities-zh.png" alt="WorkflowX 独有能力" width="100%" />
+  <img src="docs/design/images/05-capabilities-zh.png" alt="WorkflowX 独有能力" width="960" />
 </p>
 
 ### 为什么选择 WorkflowX？

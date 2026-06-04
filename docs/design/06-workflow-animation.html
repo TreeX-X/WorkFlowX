@@ -24,6 +24,23 @@
     overflow: hidden;
   }
 
+  /* Progress bar */
+  .status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #E8E6E1;
+    z-index: 10;
+  }
+  .status-bar .progress {
+    height: 100%;
+    background: #C04A1A;
+    width: 0%;
+    animation: progressFill 12s ease-in-out forwards;
+  }
+
   /* Title card */
   .title-card {
     position: absolute;
@@ -33,8 +50,9 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    animation: fadeIn 0.8s ease forwards, fadeOut 0.6s ease forwards;
-    animation-delay: 0s, 2.5s;
+    animation: fadeIn 0.8s ease forwards, fadeOut 0.5s ease forwards;
+    animation-delay: 0s, 2.2s;
+    z-index: 5;
   }
   .title-card h1 {
     font-size: 42px;
@@ -60,30 +78,30 @@
   .flow-canvas {
     position: absolute;
     inset: 0;
-    padding: 40px 60px;
+    padding: 48px 60px 40px;
     opacity: 0;
-    animation: fadeIn 0.6s ease forwards;
-    animation-delay: 3s;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 2.5s;
   }
 
   /* Input prompt */
   .input-bar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 20px;
+    gap: 14px;
+    padding: 16px 22px;
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 2px;
-    margin-bottom: 32px;
+    border-radius: 4px;
+    margin-bottom: 36px;
     opacity: 0;
     transform: translateY(10px);
     animation: slideUp 0.5s ease forwards;
-    animation-delay: 3.4s;
+    animation-delay: 2.8s;
   }
   .input-bar .prompt-icon {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     background: #C04A1A;
     border-radius: 50%;
     display: flex;
@@ -91,22 +109,33 @@
     justify-content: center;
     color: #fff;
     font-family: -apple-system, sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     flex-shrink: 0;
   }
   .input-bar .text {
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     color: #6B6B6B;
     overflow: hidden;
     white-space: nowrap;
   }
-  .input-bar .text span {
+  .typing-text {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0;
     display: inline-block;
     border-right: 2px solid #C04A1A;
-    animation: blink 0.6s step-end infinite;
+    animation: typeExpand 1.5s steps(28) forwards, blink 0.6s step-end infinite;
+    animation-delay: 3.0s, 3.0s;
     padding-right: 2px;
+  }
+  @keyframes typeExpand {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  @keyframes blink {
+    50% { border-color: transparent; }
   }
 
   /* Agent flow */
@@ -120,11 +149,12 @@
     flex: 1;
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 2px;
-    padding: 18px 16px;
+    border-radius: 4px;
+    padding: 20px 18px;
     opacity: 0;
     transform: translateY(12px);
     position: relative;
+    transition: box-shadow 0.3s ease;
   }
   .agent-step::before {
     content: '';
@@ -132,23 +162,47 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 3px;
+    border-radius: 4px 4px 0 0;
   }
-  .agent-step:nth-child(1) { animation: slideUp 0.5s ease forwards; animation-delay: 4.2s; }
+  .agent-step:nth-child(1) { animation: slideUp 0.5s ease forwards; animation-delay: 3.8s; }
   .agent-step:nth-child(1)::before { background: #8B5CF6; }
-  .agent-step:nth-child(3) { animation: slideUp 0.5s ease forwards; animation-delay: 5.2s; }
+  .agent-step:nth-child(3) { animation: slideUp 0.5s ease forwards; animation-delay: 5.0s; }
   .agent-step:nth-child(3)::before { background: #10B981; }
   .agent-step:nth-child(5) { animation: slideUp 0.5s ease forwards; animation-delay: 6.2s; }
   .agent-step:nth-child(5)::before { background: #EF4444; }
-  .agent-step:nth-child(7) { animation: slideUp 0.5s ease forwards; animation-delay: 7.2s; }
+  .agent-step:nth-child(7) { animation: slideUp 0.5s ease forwards; animation-delay: 7.4s; }
   .agent-step:nth-child(7)::before { background: #C04A1A; }
+
+  /* Glow effect on active step */
+  .agent-step:nth-child(1) { animation: slideUp 0.5s ease forwards, glowPurple 2s ease-in-out 3.8s; }
+  .agent-step:nth-child(3) { animation: slideUp 0.5s ease forwards, glowGreen 2s ease-in-out 5.0s; }
+  .agent-step:nth-child(5) { animation: slideUp 0.5s ease forwards, glowRed 2s ease-in-out 6.2s; }
+  .agent-step:nth-child(7) { animation: slideUp 0.5s ease forwards, glowOrange 2s ease-in-out 7.4s; }
+
+  @keyframes glowPurple {
+    0%, 100% { box-shadow: 0 0 0 rgba(139,92,246,0); }
+    50% { box-shadow: 0 0 16px rgba(139,92,246,0.15); }
+  }
+  @keyframes glowGreen {
+    0%, 100% { box-shadow: 0 0 0 rgba(16,185,129,0); }
+    50% { box-shadow: 0 0 16px rgba(16,185,129,0.15); }
+  }
+  @keyframes glowRed {
+    0%, 100% { box-shadow: 0 0 0 rgba(239,68,68,0); }
+    50% { box-shadow: 0 0 16px rgba(239,68,68,0.15); }
+  }
+  @keyframes glowOrange {
+    0%, 100% { box-shadow: 0 0 0 rgba(192,74,26,0); }
+    50% { box-shadow: 0 0 16px rgba(192,74,26,0.15); }
+  }
 
   .agent-step .agent-name {
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
   .agent-step:nth-child(1) .agent-name { color: #8B5CF6; }
   .agent-step:nth-child(3) .agent-name { color: #10B981; }
@@ -157,16 +211,16 @@
 
   .agent-step .action {
     font-family: 'Georgia', serif;
-    font-size: 14px;
+    font-size: 15px;
     color: #1A1A1A;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     line-height: 1.3;
   }
   .agent-step .detail {
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: #9B9B9B;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   /* Arrow connectors */
@@ -174,16 +228,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-top: 28px;
-    color: #D4D2CC;
-    font-size: 18px;
+    padding-top: 32px;
+    color: #A0A0A0;
+    font-size: 20px;
     opacity: 0;
     flex-shrink: 0;
-    width: 24px;
+    width: 28px;
   }
-  .flow-arrow:nth-child(2) { animation: fadeIn 0.3s ease forwards; animation-delay: 4.6s; }
-  .flow-arrow:nth-child(4) { animation: fadeIn 0.3s ease forwards; animation-delay: 5.6s; }
-  .flow-arrow:nth-child(6) { animation: fadeIn 0.3s ease forwards; animation-delay: 6.6s; }
+  .flow-arrow:nth-child(2) { animation: fadeIn 0.3s ease forwards; animation-delay: 4.3s; }
+  .flow-arrow:nth-child(4) { animation: fadeIn 0.3s ease forwards; animation-delay: 5.5s; }
+  .flow-arrow:nth-child(6) { animation: fadeIn 0.3s ease forwards; animation-delay: 6.7s; }
 
   /* Result badge */
   .result-row {
@@ -191,20 +245,21 @@
     align-items: center;
     justify-content: center;
     gap: 16px;
-    margin-top: 28px;
+    margin-top: 32px;
     opacity: 0;
     animation: slideUp 0.5s ease forwards;
-    animation-delay: 8s;
+    animation-delay: 8.2s;
   }
   .result-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 24px;
-    border-radius: 2px;
+    gap: 10px;
+    padding: 12px 28px;
+    border-radius: 4px;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     letter-spacing: 0.04em;
+    font-weight: 500;
   }
   .result-badge.pass {
     background: #ECFDF5;
@@ -228,29 +283,24 @@
     text-align: center;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 11px;
-    color: #C0C0C0;
+    color: #9B9B9B;
     letter-spacing: 0.06em;
     opacity: 0;
     animation: fadeIn 0.6s ease forwards;
-    animation-delay: 8.8s;
+    animation-delay: 9.0s;
   }
 
-  /* Status bar at top */
-  .status-bar {
+  /* Loop indicator */
+  .loop-indicator {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: #E8E6E1;
-    z-index: 10;
-  }
-  .status-bar .progress {
-    height: 100%;
-    background: #C04A1A;
-    width: 0%;
-    animation: progressFill 8.5s ease-in-out forwards;
-    animation-delay: 3s;
+    bottom: 12px;
+    right: 20px;
+    font-family: -apple-system, sans-serif;
+    font-size: 10px;
+    color: #C0C0C0;
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+    animation-delay: 9.5s;
   }
 
   /* Animations */
@@ -266,49 +316,48 @@
     from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes blink {
-    50% { border-color: transparent; }
-  }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
   }
   @keyframes progressFill {
     0% { width: 0%; }
-    20% { width: 20%; }
-    40% { width: 45%; }
-    60% { width: 65%; }
-    80% { width: 85%; }
+    15% { width: 15%; }
+    30% { width: 30%; }
+    50% { width: 55%; }
+    70% { width: 75%; }
+    85% { width: 90%; }
     100% { width: 100%; }
   }
 
-  /* Typing effect for input */
-  .typing-text {
-    overflow: hidden;
-    white-space: nowrap;
-    width: 0;
-    animation: typeExpand 1.8s steps(30) forwards;
-    animation-delay: 3.6s;
-  }
-  @keyframes typeExpand {
-    from { width: 0; }
-    to { width: 100%; }
+  /* Loop: after 13s, reset everything and replay */
+  @keyframes loopReset {
+    0%, 99.9% { opacity: 1; }
+    100% { opacity: 0; }
   }
 </style>
+<script>
+  // Auto-loop: replay animation every 14 seconds
+  setInterval(() => {
+    const scene = document.querySelector('.scene');
+    const clone = scene.cloneNode(true);
+    scene.parentNode.replaceChild(clone, scene);
+  }, 14000);
+</script>
 </head>
 <body>
 <div class="scene">
   <!-- Progress bar -->
   <div class="status-bar"><div class="progress"></div></div>
 
-  <!-- Title card (0-2.5s) -->
+  <!-- Title card (0-2.2s) -->
   <div class="title-card">
     <h1>WorkflowX</h1>
     <div class="divider"></div>
     <div class="tagline">xwhole 模式 &middot; 完整工作流演示</div>
   </div>
 
-  <!-- Flow canvas (3s+) -->
+  <!-- Flow canvas (2.5s+) -->
   <div class="flow-canvas">
     <!-- User input -->
     <div class="input-bar">
@@ -356,13 +405,14 @@
     <div class="result-row">
       <div class="result-badge pass">
         <div class="dot"></div>
-        Evaluation Result: PASS
+        评估通过 · 迭代完成
       </div>
     </div>
   </div>
 
   <!-- Bottom label -->
   <div class="bottom-label">WorkflowX &middot; 通过工程纪律实现结构性优势</div>
+  <div class="loop-indicator">自动循环播放</div>
 </div>
 </body>
 </html>

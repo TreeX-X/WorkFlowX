@@ -11,15 +11,15 @@
     background: #FAFAF8;
     color: #1A1A1A;
     padding: 64px 48px;
-    min-width: 800px;
+    min-width: 960px;
   }
-  .container { max-width: 780px; margin: 0 auto; }
+  .container { max-width: 960px; margin: 0 auto; }
   .header { text-align: center; margin-bottom: 48px; }
   .header h1 { font-size: 28px; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 8px; }
   .header .subtitle { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 13px; color: #9B9B9B; letter-spacing: 0.12em; }
   .score-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 48px; }
-  .score-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 2px; padding: 28px 24px; text-align: center; position: relative; }
-  .score-card .rank { position: absolute; top: 12px; right: 16px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 10px; letter-spacing: 0.08em; padding: 2px 8px; border-radius: 1px; }
+  .score-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 4px; padding: 28px 24px; text-align: center; position: relative; }
+  .score-card .rank { position: absolute; top: 12px; right: 16px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 10px; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 4px; }
   .score-card.first .rank { background: #C04A1A; color: #FFFFFF; }
   .score-card.second .rank { background: #F0EFEA; color: #6B6B6B; }
   .score-card.third .rank { background: #F0EFEA; color: #9B9B9B; }
@@ -30,7 +30,7 @@
   .score-card.third .score { color: #9B9B9B; }
   .score-card .out-of { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 12px; color: #9B9B9B; }
   .dimension-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
-  .dimension-table thead th { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 10px; letter-spacing: 0.08em; color: #9B9B9B; padding: 0 0 16px; text-align: left; border-bottom: 1px solid #E8E6E1; }
+  .dimension-table thead th { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; letter-spacing: 0.06em; color: #6B6B6B; padding: 0 0 16px; text-align: left; border-bottom: 1px solid #E8E6E1; }
   .dimension-table thead th:not(:first-child) { text-align: center; }
   .dimension-table tbody td { padding: 16px 0; border-bottom: 1px solid #F5F4F0; vertical-align: middle; }
   .dimension-table tbody tr:last-child td { border-bottom: none; }
@@ -38,14 +38,14 @@
   .dimension-table .dim-weight { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 10px; color: #9B9B9B; margin-top: 2px; }
   .dimension-table .score-cell { text-align: center; }
   .dimension-table .bar-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .dimension-table .bar-container { width: 120px; height: 6px; background: #F5F4F0; border-radius: 1px; overflow: hidden; }
-  .dimension-table .bar-fill { height: 100%; border-radius: 1px; }
+  .dimension-table .bar-container { width: 140px; height: 10px; background: #F5F4F0; border-radius: 4px; overflow: hidden; }
+  .dimension-table .bar-fill { height: 100%; border-radius: 4px; }
   .dimension-table .bar-fill.wfx { background: #C04A1A; }
   .dimension-table .bar-fill.sp { background: #6B6B6B; }
   .dimension-table .bar-fill.omc { background: #9B9B9B; }
-  .dimension-table .score-val { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #6B6B6B; }
+  .dimension-table .score-val { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 12px; color: #6B6B6B; }
   .winner { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #C04A1A; margin-left: 4px; position: relative; top: -1px; }
-  .footer { text-align: center; margin-top: 32px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #C0C0C0; letter-spacing: 0.06em; }
+  .footer { text-align: center; margin-top: 32px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>
