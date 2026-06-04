@@ -74,10 +74,10 @@ Based on detected workflow mode, pre-load likely needed modules and sections:
 
 ```
 Mode Detection → Prefetch Map:
-- xwhole: Prefetch modules 01(done), 04, hybrid-template
-- xlocal: Prefetch modules 01(done), 04, hybrid-template
+- xwhole: Prefetch modules 01(done), 08, 04, hybrid-template
+- xlocal: Prefetch modules 01(done), 08, 04, hybrid-template
 - xunit: Prefetch modules 01(done), 04 only
-- xparallel: Prefetch modules 01(done), 05, 06
+- xparallel: Prefetch modules 01(done), 08, 05, 06
 ```
 
 ### Section Prefetch

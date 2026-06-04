@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowX 框架对比评分</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
+    background: #FAFAF8;
+    color: #1A1A1A;
+    padding: 64px 48px;
+    min-width: 960px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 48px; }
+  .header h1 { font-size: 28px; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .header .subtitle { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 13px; color: #9B9B9B; letter-spacing: 0.12em; }
+  .score-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 48px; }
+  .score-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 4px; padding: 28px 24px; text-align: center; position: relative; }
+  .score-card .rank { position: absolute; top: 12px; right: 16px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 10px; letter-spacing: 0.08em; padding: 3px 10px; border-radius: 4px; }
+  .score-card.first .rank { background: #C04A1A; color: #FFFFFF; }
+  .score-card.second .rank { background: #F0EFEA; color: #6B6B6B; }
+  .score-card.third .rank { background: #F0EFEA; color: #9B9B9B; }
+  .score-card .name { font-family: 'Georgia', serif; font-size: 18px; color: #1A1A1A; margin-bottom: 12px; }
+  .score-card .score { font-family: 'Georgia', serif; font-size: 48px; font-weight: 400; line-height: 1; margin-bottom: 4px; }
+  .score-card.first .score { color: #C04A1A; }
+  .score-card.second .score { color: #6B6B6B; }
+  .score-card.third .score { color: #9B9B9B; }
+  .score-card .out-of { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 12px; color: #9B9B9B; }
+  .dimension-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+  .dimension-table thead th { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; letter-spacing: 0.06em; color: #6B6B6B; padding: 0 0 16px; text-align: left; border-bottom: 1px solid #E8E6E1; }
+  .dimension-table thead th:not(:first-child) { text-align: center; }
+  .dimension-table tbody td { padding: 16px 0; border-bottom: 1px solid #F5F4F0; vertical-align: middle; }
+  .dimension-table tbody tr:last-child td { border-bottom: none; }
+  .dimension-table .dim-name { font-family: 'Georgia', serif; font-size: 14px; color: #1A1A1A; }
+  .dimension-table .dim-weight { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 10px; color: #9B9B9B; margin-top: 2px; }
+  .dimension-table .score-cell { text-align: center; }
+  .dimension-table .bar-group { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .dimension-table .bar-container { width: 140px; height: 10px; background: #F5F4F0; border-radius: 4px; overflow: hidden; }
+  .dimension-table .bar-fill { height: 100%; border-radius: 4px; }
+  .dimension-table .bar-fill.wfx { background: #C04A1A; }
+  .dimension-table .bar-fill.sp { background: #6B6B6B; }
+  .dimension-table .bar-fill.omc { background: #9B9B9B; }
+  .dimension-table .score-val { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 12px; color: #6B6B6B; }
+  .winner { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #C04A1A; margin-left: 4px; position: relative; top: -1px; }
+  .footer { text-align: center; margin-top: 32px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #9B9B9B; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Weighted Scoring Comparison</h1>
+    <div class="subtitle">4 大类 &middot; 16 子维度 &middot; 证据支撑评分</div>
+  </div>
+  <div class="score-row">
+    <div class="score-card first">
+      <div class="rank">1st</div>
+      <div class="name">WorkflowX</div>
+      <div class="score">83</div>
+      <div class="out-of">/ 100</div>
+    </div>
+    <div class="score-card second">
+      <div class="rank">2nd</div>
+      <div class="name">Superpowers</div>
+      <div class="score">80</div>
+      <div class="out-of">/ 100</div>
+    </div>
+    <div class="score-card third">
+      <div class="rank">3rd</div>
+      <div class="name">oh-my-claudecode</div>
+      <div class="score">73</div>
+      <div class="out-of">/ 100</div>
+    </div>
+  </div>
+  <table class="dimension-table">
+    <thead>
+      <tr><th>Category (Weight)</th><th>WorkflowX</th><th>Superpowers</th><th>OMC</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="dim-name">Architecture</div><div class="dim-weight">25%</div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill wfx" style="width:91.5%"></div></div><span class="score-val">9.15 <span class="winner"></span></span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill sp" style="width:67%"></div></div><span class="score-val">6.70</span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill omc" style="width:74%"></div></div><span class="score-val">7.40</span></div></td>
+      </tr>
+      <tr>
+        <td><div class="dim-name">Workflow</div><div class="dim-weight">30%</div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill wfx" style="width:92%"></div></div><span class="score-val">9.20 <span class="winner"></span></span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill sp" style="width:76%"></div></div><span class="score-val">7.60</span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill omc" style="width:75%"></div></div><span class="score-val">7.50</span></div></td>
+      </tr>
+      <tr>
+        <td><div class="dim-name">Quality</div><div class="dim-weight">25%</div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill wfx" style="width:78.5%"></div></div><span class="score-val">7.85</span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill sp" style="width:85.5%"></div></div><span class="score-val">8.55 <span class="winner"></span></span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill omc" style="width:77%"></div></div><span class="score-val">7.70</span></div></td>
+      </tr>
+      <tr>
+        <td><div class="dim-name">Platform</div><div class="dim-weight">20%</div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill wfx" style="width:64%"></div></div><span class="score-val">6.40</span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill sp" style="width:96%"></div></div><span class="score-val">9.60 <span class="winner"></span></span></div></td>
+        <td class="score-cell"><div class="bar-group"><div class="bar-container"><div class="bar-fill omc" style="width:66%"></div></div><span class="score-val">6.60</span></div></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="footer">WorkflowX &middot; Full analysis: docs/comparison-report.md</div>
+</div>
+</body>
+</html>

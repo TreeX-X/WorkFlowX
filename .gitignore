@@ -1,12 +1,9 @@
 ﻿.mcp.json
+PLATFORM-MAP.md
+
 
 
 /memories
 /docx
 .opencode/skills/huashu-design/
-.claude/skills/huashu-design/
-.claude/skills/razorX/
-
-# Runtime generated
-status-report.html
-.hybrid/
+node_modules/

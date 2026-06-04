@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "workflowx",
+  "description": "Multi-agent orchestration framework — Socratic discovery, Hybrid Tree PRD, structured evaluation, token-optimized iteration",
+  "owner": {
+    "name": "TreeX"
+  },
+  "plugins": [
+    {
+      "name": "workflowx",
+      "description": "Multi-agent orchestration framework with Socratic requirements discovery, Hybrid Tree PRD management, AC cross-validation, and structured quality evaluation. Supports xwhole/xlocal/xunit workflow modes.",
+      "version": "1.0.0",
+      "author": {
+        "name": "TreeX"
+      },
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/TreeX/workflowx",
+      "tags": [
+        "multi-agent",
+        "orchestration",
+        "planning",
+        "evaluation",
+        "hybrid-tree",
+        "requirements-discovery",
+        "token-optimization"
+      ]
+    }
+  ],
+  "version": "1.0.0"
+}

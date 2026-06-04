@@ -1,16 +1,19 @@
-﻿<div align="center">
+<div align="center">
 
 [中文](./README.md) · **English**
 
-# 🧰 WorkflowX: SubAgent-based Hybrid Orchestration Workflow
+# WorkflowX
+
+### SubAgent-based Hybrid Multi-Agent Orchestration Framework
 
 ![WorkflowX Logo](images/WorkFlowX-Logo.png)
-WorkflowX is a **pure file-driven multi-agent orchestration configuration system** — no servers to install, no runtime to set up. Just copy the config files into your AI IDE project and you're ready to go. By leveraging the `runSubAgent` capabilities of mainstream CLI tools, it builds an ecosystem where a master orchestrator intelligently delegates tasks to specialized sub-agents.
+
+**File-driven · Zero Dependencies · Structured Requirements · AC Cross-Validation · Token-Optimized**
 
 [![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-6-10B981?style=for-the-badge)](#-skills)
-[![Agents](https://img.shields.io/badge/Agents-5-10B981?style=for-the-badge)](#-skills)
-[![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
+[![Skills](https://img.shields.io/badge/Skills-8-10B981?style=for-the-badge)](#-core-capabilities)
+[![Agents](https://img.shields.io/badge/Agents-7-10B981?style=for-the-badge)](#-core-capabilities)
+[![Modules](https://img.shields.io/badge/Modules-8-F59E0B?style=for-the-badge)](#-core-capabilities)
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97706?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
@@ -19,275 +22,300 @@ WorkflowX is a **pure file-driven multi-agent orchestration configuration system
 
 </div>
 
-The core philosophy: **Independent context for maximum efficiency, hybrid document-driven state (Hybrid Docs) for seamless human-in-the-loop interaction. A single document writer (orchestratorX) ensures state consistency, and structured Payload communication achieves zero context pollution.**
+---
 
-## 🌟 Design Philosophy
+## Workflow Demo
 
-- **Zero-dependency deployment, config-and-run** — Pure file-driven, copy and go
-- **Single writer, consistent state** — orchestratorX is the sole document writer, no multi-source conflicts
-- **Reduce Hallucinations & Maximize Single-Step Efficiency** — Pristine context + structured Payload communication
-- **Single-Point Operations with Global Synchronization** — Requirement changes propagate automatically, dependencies auto-retry via deferred queue
+<p align="center">
+  <video src="docs/design/images/06-workflow-animation.mp4" autoplay loop muted playsinline width="960" />
+  <br/>
+  <sub>xwhole mode full workflow: Requirements → promptMasterX → coderX → evaluatorX → Iteration Complete</sub>
+</p>
 
-## 🏗 System Architecture
+---
 
-Modern LLMs perform best when focused on a single, well-defined problem. WorkflowX solves the "context window bloating" and memory degradation problem through a modular design:
+## Design Philosophy
 
-1. **Master Orchestrator Agent**: Acts as the central brain. It analyzes requirements, plans the workflow path, and delegates to specialized sub-agents. **orchestratorX is the sole document writer** — all Hybrid Document creation and updates are performed by it.
-2. **Specialized Sub-Agents (Pure Context)**: Invoked via the `runSubAgent` protocol. Each sub-agent operates with a **pristine, isolated context**. coderX is a pure reader + implementer (reads docs, writes code, outputs Payload). evaluatorX is a pure analyzer (reads docs + code, outputs Evaluation Payload). Neither writes to any document.
-3. **Hybrid Document State Flow**: Instead of accumulating invisible black-box context, task progress, knowledge indexes, and architecture details are persisted into human-readable **Hybrid Documents**. Uses a Hybrid Tree structure (Parent routing layer + Children requirement layer) with MECE division of responsibility.
-4. **Bus Pipeline Communication**: Agents communicate via 3 structured Payload types — Change Summary (coderX→orchestratorX→evaluatorX), Evaluation Result (evaluatorX→orchestratorX), and Requirement Change (orchestratorX internal). orchestratorX validates format, forwards Payloads, and performs document updates.
+> **Independent context for maximum efficiency. Hybrid document-driven state for seamless human-in-the-loop interaction. A single document writer ensures state consistency; structured Payload communication achieves zero context pollution.**
 
-## ✨ Core Capabilities
+<table>
+<tr>
+<td width="50%">
 
-### Prompt Optimization Engine (Prompt-Master)
+**Single Writer, Consistent State**
+orchestratorX is the sole document writer — no multi-source conflicts. All sub-agents (coderX, evaluatorX) are read-only + Payload output only.
 
-Built-in **prompt-master** skill generates production-grade prompts for 20+ AI tools (Claude, GPT, Gemini, Cursor, Copilot, etc.):
+</td>
+<td width="50%">
 
-- **9-Dimension Intent Extraction**: Silently analyzes task, target tool, output format, constraints, and more
-- **Tool-Specific Routing**: Auto-matches optimal prompting strategies per model (e.g., no CoT for reasoning-native models)
-- **6-Category Fault Scanning**: Detects and fixes ambiguity, missing context, format drift, and more
+**Zero-Dependency, Config-and-Run**
+Pure Markdown-driven. No servers to install, no runtime to set up. Copy config files into your project and deploy.
+
+</td>
+</tr>
+<tr>
+<td>
+
+**Reduce Hallucinations, Maximize Efficiency**
+Pristine context + structured Payload communication + Worktree physical isolation. Every SubAgent wake-up gets the minimum viable input tokens.
+
+</td>
+<td>
+
+**Single-Point Operations, Global Sync**
+Requirement changes propagate automatically. Dependencies auto-retry via deferred queue. Hybrid Tree's MECE structure ensures every task has clear ownership and acceptance criteria.
+
+</td>
+</tr>
+</table>
+
+---
+
+## System Architecture
+
+<p align="center">
+  <img src="docs/design/images/01-architecture.png" alt="WorkflowX System Architecture" width="960" />
+</p>
+
+**Core Mechanisms:**
+
+| Mechanism | Description |
+|-----------|-------------|
+| **Bus Payload Communication** | 3 structured Payload types (Change Summary / Evaluation Result / Requirement Change) — zero context pollution |
+| **Hybrid Tree** | Parent routing layer + Children requirement layer, MECE division, Section-Level Caching |
+| **Worktree Isolation** | Each sub-agent works in an independent git worktree — physical isolation |
+| **AC Cross-Validation** | evaluatorX doesn't trust coderX's declarations — independently verifies every acceptance criterion |
+
+---
+
+## Core Capabilities
+
+### Socratic Requirements Discovery (Module 08)
+
+> Surface hidden assumptions and edge cases during planning, not after coding.
+
+- **Weighted Clarity Assessment**: 6 dimensions (Target User 15% / Functional Scope 25% / Technical Constraints 20% / Boundary Conditions 15% / AC 15% / NFR 10%)
+- **One question per turn, prefer multiple choice**: Each question builds on the previous answer, going deeper
+- **Proactive Challenge**: Even with clear requirements — analyzes contradictions, edge cases, risks, hidden assumptions, cross-module conflicts, missing NFRs
+
+### Prompt Optimization Engine (promptMasterX)
+
+Built-in **prompt-master** skill generates production-grade prompts for 20+ AI tools:
+
+- **9-Dimension Intent Extraction**: Silently analyzes task, target tool, output format, constraints
+- **Tool-Specific Routing**: Auto-matches optimal prompting strategies per model
+- **6-Category Fault Scanning**: Detects and fixes ambiguity, missing context, format drift
 - **Copy-Paste Ready**: Outputs a single prompt block requiring zero manual edits
 
-### Hybrid Docs × Indexing × Memory Graph — Maximum Token Savings
+### Three-Layer Token Optimization
 
-Three-layer collaboration that dramatically cuts context overhead:
+<p align="center">
+  <img src="docs/design/images/03-token-optimization.png" alt="Three-Layer Token Optimization" width="960" />
+</p>
 
-**Layer 1: Hybrid Document Topology (Prompt Caching)**
-- Strict zoning: **Static** (requirements, scope, DoD — rarely changes), **Incremental** (acceptance criteria, file indexes), **Dynamic** (evaluation reports — overwritten each round)
-- Static sections at the top hit LLM Prompt Cache continuously; dynamic sections at the bottom don't invalidate cached tokens when overwritten
-- Token costs stay minimal even after 100+ conversation turns
+| Layer | Strategy | Effect |
+|-------|----------|--------|
+| **L1: Section-Level Caching** | Static zone at top hits LLM Prompt Cache; dynamic zone at bottom doesn't invalidate cache on overwrite | 40-60% savings after first round |
+| **L2: Trunk-Leaf Index** | Markdown retains only outline; entity relations maintained separately in MCP Knowledge Graph | Lean documents |
+| **L3: Memory Graph Snapshot** | Hybrid Tree stores skeleton pointers only; full nodes persisted by MCP server-memory | Cross-session sharing |
 
-**Layer 2: Trunk-Leaf Index Separation**
-- Markdown documents retain only business "trunk" outlines — no code detail dumps
-- Entity relations, code structures ("leaves") are maintained separately in the MCP Knowledge Graph
-- Agents fetch on-demand, keeping engineering documents lean
+### AC Cross-Validation
 
-**Layer 3: Memory Graph Snapshot**
-- Hybrid doc §8.2 stores only **skeleton pointers** to knowledge graph entities (names, relation summaries)
-- Full leaf-node details are persisted by MCP server-memory
-- L3 deep compression auto-syncs graph state, ensuring doc-graph consistency
-- Cross-session, cross-agent knowledge sharing without redundant context transfer
+**evaluatorX doesn't trust coderX's self-declarations** — it independently reads code, checks against acceptance criteria, and outputs a structured evaluation report (AC status table: pass / partial / fail / unevaluable + P0/P1/P2 issue list + fix instructions).
 
-> **Combined effect**: Static requirements trigger cache hits → incremental indexes enable targeted references → memory graph loads on-demand. Every SubAgent wake-up gets the minimum viable input tokens.
+### Code Aesthetics Framework (razorX)
 
-### 🤖 Seamless Auto / Semi-Auto Shift
+> "Can the path be shorter? Can cognitive load be lower?"
 
-Because cross-agent state is continuously persisted via clear Markdown/Text hybrid docs, human developers can safely pause, intervene, and guide the workflow by directly editing the documents for the next agent.
+Dual-mode operation:
+- **Review mode**: Line-by-line surgical scan
+- **Generation mode**: Declarative, stdlib-first, composable functions
 
-### 🧹 Zero Context Pollution
+### Workflow Status Visualization (`/xstatus`)
 
-Strictly filters input information for each sub-agent. By blocking redundant long-history chats, it significantly drops the statistical probability of LLM hallucinations.
-
-### 📊 Workflow Status Visualization (`/xstatus`)
-
-A single command generates a high-fidelity HTML status report showing real-time progress of all active workflows:
-
-- **Data source**: `xwhole` / `xlocal` / `xwhole -parallel` parse Parent + Child docs from `.hybrid/`; `xunit` is inferred from git log (explicitly labeled "no documents")
-- **Style**: Built on `huashu-design` language — warm off-white background + serif display font + rust orange accent. Anti-AI-slop: no purple gradient, no decorative emoji, no rounded cards with left-border accent
-- **Mode-specific layouts**: 4 workflow modes each have a distinct display format — children tree / progress bar / iteration rounds / agent team sidebar / git activity table
-- **Read-only & idempotent**: No project files modified. Each run overwrites `./status-report.html` and auto-opens it in your default browser
-- **Custom output path**: `/xstatus --output <path>` lets you archive or share reports
+A single command generates a high-fidelity HTML status report, built on `huashu-design` language — warm off-white background + serif display font + rust orange accent. Anti-AI-slop design.
 
 ```bash
 /xstatus                            # Output to ./status-report.html and open
 /xstatus --output ./reports/today.html  # Output to a custom path
 ```
 
-## ⚙️ Setup & Installation
+---
 
-1. Ensure Node.js (v18+) and Python 3.10+ are installed.
-2. Install the required MCP tools for the workflow:
-~~~bash
+## Quick Start
+
+### Requirements
+
+- Node.js v18+
+- MCP tools: `npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking`
+
+### Installation
+
+**Option 1: Plugin Marketplace (Recommended)**
+
+| Platform | Install Command |
+|----------|----------------|
+| **Claude Code** | `/plugin marketplace add https://github.com/TreeX/workflowx` → `/plugin install workflowx` |
+| **OpenAI Codex** | `/plugins` → search `workflowx` → Install Plugin |
+| **GitHub Copilot** | `copilot plugin marketplace add https://github.com/TreeX/workflowx` → `copilot plugin install workflowx@workflowx` |
+| **OpenCode** | Add `"plugin": ["workflowx@git+https://github.com/TreeX/workflowx.git"]` to `opencode.json` |
+
+**Option 2: Manual Setup**
+
+```bash
+# 1. Copy config directory to project root
+cp -r .claude/ /your/project/
+
+# 2. Install MCP dependencies
 npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
-~~~
-3. Configure and mount the above MCPs in your AI Client (e.g., VSCode Copilot / Claude) using the provided configuration template `mcp.json.template`.
 
-## 🚀 Workflow & Usage
+# 3. Mount MCP config in your AI client (see mcp.json.template)
+```
 
-### 1. Platform Integration
+---
 
-WorkflowX is a **lightweight, pure text-based configuration and instruction system**. No runtime lock-in, no extra services to install — just copy the config files into your project directory and deploy.
+## Usage Guide
 
-Three platform configurations are provided out of the box:
-
-| Platform | Config Directory | Supported Modes | Notes |
-|----------|-----------------|-----------------|-------|
-| **Claude Code** | `.claude/` | All modes (incl. `-parallel`) | agents + skills, native SubAgent + Agent Teams + Worktree isolation |
-| **OpenAI Codex** | `.codex/` | 3 modes (no `-parallel`) | agents (`.toml`) + skills, full parity |
-| **GitHub Copilot** | `.github/` | 3 modes (no `-parallel`) | agents (`.agent.md`) + skills + instructions |
-| **OpenCode** | `.opencode/` | 3 modes (no `-parallel`) | agents + commands + skills, Task tool SubAgent delegation |
-
-> All four configurations share **identical workflow logic** — the same commands, modes, and multiple runtime modules. Only the tool-call syntax differs per platform. **Parallel mode (`/xwhole -parallel`) is only supported on Claude Code**, leveraging its experimental Agent Teams feature. OpenCode auto-discovers skills from `.claude/skills/`, so no duplication is needed. All modes auto-enable Worktree isolation (except xunit).
-
-**Quick Setup:**
-1. Copy the relevant config directory (e.g., `.claude/` or `.opencode/`) into your project root
-2. Install MCP dependencies: `npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking`
-3. Mount MCP config in your AI client (see `mcp.json.template`; OpenCode users can use the `opencode.json` at project root which includes MCP configuration)
-4. Start using: call orchestratorX in your chat and deliver your requirements
-
-**OpenCode-Specific Configuration:**
-
-OpenCode users should pay attention to these configuration files:
-
-| Config Item | File | Description |
-|-------------|------|-------------|
-| MCP Servers | `opencode.json` → `mcp` | Pre-configured memory + sequential-thinking; adjust paths for your environment |
-| Agent Permissions | `opencode.json` → `agent` | Tool permissions for 5 agents (orchestratorX / coderX / evaluatorX / promptMasterX / abstracterX) |
-| Command Definitions | `opencode.json` → `command` | 5 commands registered (xwhole / xlocal / xunit / xprompt / xstatus) |
-| Command Templates | `.opencode/commands/*.md` | Detailed execution flow for each command, with YAML frontmatter |
-| Agent Definitions | `.opencode/agents/*.md` | Behavior definitions for 5 agents |
-| Skill Discovery | `.opencode/skills/` | OpenCode auto-discovers skills from `.claude/skills/`, no duplication needed |
-
-OpenCode's `opencode.json` includes MCP configuration out of the box — no need to create a separate `mcp.json`. If your Node.js installation path differs, update the `command` field in `opencode.json`.
-
-> Parallel mode (`/xwhole -parallel`) relies on Claude Code's Agent Teams feature and is not available on OpenCode. For parallelism, manually split tasks and run multiple `/xlocal` calls.
-
-### 2. Command Reference
+### Command Reference
 
 | Command | Description | Example |
 |---------|-------------|---------|
 | `/xwhole [req]` | Full-repo workflow (plan → code → evaluate) | `/xwhole implement user login module` |
-| `/xwhole -parallel [req]` | **Parallel workflow**, multiple subtasks executed concurrently (Claude Code only) | `/xwhole -parallel implement user, order, and product modules` |
+| `/xwhole -parallel [req]` | **Parallel workflow**, multiple subtasks concurrently (Claude Code only) | `/xwhole -parallel implement user, order, and product modules` |
 | `/xwhole -box demo` | Execute in sandbox branch `demo`, isolated from main | `/xwhole -box auth refactor auth logic` |
 | `/xwhole -N 3` | Cap evaluator iterations at 3 (default: 2) | `/xwhole -N 3 optimize DB query performance` |
-| `/xwhole -parallel -team my-team` | Set Agent Team name | `/xwhole -parallel -team auth-team implement auth module` |
 | `/xlocal [req]` | Local module development, skips PRD planning | `/xlocal fix order list pagination bug` |
 | `/xunit [req]` | Minimal single-task change, no evaluation | `/xunit add timeout config to Config class` |
-| `/xstatus` | Generate huashu-styled HTML workflow status report and auto-open in browser | `/xstatus` or `/xstatus --output ./reports/today.html` |
+| `/xstatus` | Generate HTML workflow status report | `/xstatus` or `/xstatus --output ./reports/today.html` |
 | `/xprompt [text]` | Optimize a prompt only, no dev workflow triggered | `/xprompt write me a login page prompt` |
 
 > By default, all development requests are routed through orchestratorX. Exceptions: pure file reads, config edits, Git operations, or when the user explicitly says "directly do it."
 
-### 3. Workflow Modes
+### Workflow Modes
 
-orchestratorX auto-routes based on requirement complexity (inferred from file scope, keywords, impact range, and PRD necessity), or you can specify manually:
-
-```
-/xwhole              → [orchestratorX planning dialogue] → [promptMasterX optimize] → [coderX implement] → [evaluatorX evaluate] → loop
-/xwhole -parallel    → [orchestratorX creates Agent Team] → [multiple coder-teammates implement in parallel] → [multiple evaluator-teammates review in parallel] → loop
-/xlocal              → [promptMasterX optimize] → [coderX implement] → [evaluatorX evaluate] → loop
-/xunit               → [promptMasterX optimize] → [coderX implement] → done
-```
+<p align="center">
+  <img src="docs/design/images/02-workflow-modes.png" alt="Workflow Modes" width="960" />
+</p>
 
 | | `/xwhole` Global | `/xwhole -parallel` Parallel | `/xlocal` Scoped | `/xunit` Minimal |
 |---|---|---|---|---|
-| **Use case** | New features, cross-module refactors | Multiple independent subtasks concurrently | 1-2 module changes | Single-file fixes, small edits |
-| **Platform support** | Claude Code / Codex / Copilot / OpenCode | **Claude Code only** | Claude Code / Codex / Copilot / OpenCode | Claude Code / Codex / Copilot / OpenCode |
-| **PRD planning** | orchestratorX built-in multi-turn planning, outputs Hybrid Tree (Parent + Children) | Same as xwhole, then splits into parallel tasks | Skipped | Skipped |
-| **Evaluation loop** | evaluatorX auto-runs, up to N rounds | Multiple evaluator-teammates run in parallel | evaluatorX runs, up to N rounds | Only on explicit request |
-| **Dependency handling** | Deferred queue: blocked Children auto-queued for retry | Dependency graph auto-scheduling, independent tasks run in parallel | Deferred queue | None |
-| **Requirement changes** | Built-in change handling (adjust/optimize/scope/new branch) | Supported, updates docs and re-schedules automatically | Supported with Hybrid Tree | Terminate and restart |
-| **Checkpoints** | Auto-created each iteration | 7 hard checkpoints, blocking verification at each step | Auto-created each iteration | Not mandatory |
-| **Sandbox branch** | `-box` supported | `-box` supported | Not supported | Not supported |
-| **Worktree isolation** | ✅ Auto-enabled | ✅ Auto-enabled | ✅ Auto-enabled | Not used |
-| **Agent Teams** | Not used | Uses TeamCreate + Agent tool to spawn teammates | Not used | Not used |
+| **Use case** | New features, cross-module refactors | Multiple independent subtasks concurrently | 1-2 module changes | Single-file fixes |
+| **Platform support** | All platforms | **Claude Code only** | All platforms | All platforms |
+| **PRD planning** | Multi-turn dialogue → Hybrid Tree | Same as xwhole → auto-split into parallel tasks | Skipped | Skipped |
+| **Evaluation loop** | evaluatorX auto, up to N rounds | Multiple evaluator-teammates in parallel | evaluatorX, up to N rounds | Only on explicit request |
+| **Discovery** | Module 08 (Socratic + Proactive Challenge) | Same as xwhole | Module 08 (lightweight) | Skipped |
+| **Worktree isolation** | ✅ | ✅ | ✅ | ❌ |
 
-> **⚠️ `/xwhole -parallel` is Claude Code only**
->
-> Parallel mode relies on Claude Code's experimental Agent Teams feature (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`). Other platforms (Codex, Copilot, OpenCode) do not support this mode. For parallel execution on other platforms, manually split tasks and run them with `/xlocal` separately.
+> `/xwhole -parallel` requires Claude Code's experimental Agent Teams feature (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`).
 
-### 4. Walkthrough: A Complete `/xwhole` Session
-
-Suppose you want to add a "User Login" feature to your project:
+### Walkthrough: A Complete `/xwhole` Session
 
 ```
 ① Initiate the request
    /xwhole implement user login with email+password and OAuth support
 
 ② orchestratorX auto-routes to whole mode
-   → Conducts multi-turn requirement planning in current session
-   → Generates Hybrid Tree: [UserLogin]-hybrid.md (Parent) + sub-module Child docs
-   → You review the hybrid docs, confirm they're correct, reply "confirmed"
+   → Socratic questioning clarifies requirement boundaries (Module 08)
+   → Proactive challenge: OAuth token refresh strategy? Concurrent login limits?
+   → Multi-turn planning dialogue, generates Hybrid Tree
+   → You review docs, confirm requirements, reply "confirmed"
 
 ③ promptMasterX optimizes the execution prompt
-   → Translates confirmed requirements into precise coderX instructions
+   → Detects 37 anti-patterns, outputs precise coderX instructions
 
-④ coderX implements based on the prompt
-   → Outputs Change Summary Payload: "Completed auth module login logic,
-     added oauth_callback handling. Focus review on token refresh flow"
+④ coderX implements
+   → Outputs Change Summary Payload
 
-⑤ evaluatorX reviews directionally based on the Payload
-   → Outputs Evaluation Result Payload (AC status table + issue list + fix instructions)
-   → orchestratorX updates docs and decides whether to continue iterating (up to N rounds)
+⑤ evaluatorX independently audits (AC cross-validation)
+   → Outputs Evaluation Result Payload (AC status table + issue list)
 
 ⑥ Iteration complete
-   → evaluatorX confirms pass, hybrid doc finalized
-   → Optionally call abstracterX for a code summary
+   → evaluatorX confirms PASS, Hybrid Tree finalized
 ```
 
-**Human Intervention**: At any point between steps, you can directly edit the hybrid document to adjust requirements, modify constraints, or correct direction. Since orchestratorX is the sole document writer, your manual edits won't be overwritten — the next agent will automatically read your changes on startup. During iteration, if you need to change requirements, orchestratorX will automatically detect the change type (adjust/optimize/scope/new branch) and update documents accordingly.
+---
 
-### 6. Parallel Mode Configuration (Claude Code Only)
+## Framework Comparison
 
-`/xwhole -parallel` allows executing multiple independent subtasks concurrently, significantly improving development efficiency. Parallel mode is an extension of Mode A, sharing the same planning flow but using Agent Teams for parallel execution.
+> Full analysis (architecture, token consumption, AI pain points, detailed scoring) in [comparison-report.md](docs/comparison-report.md).
 
-**Prerequisites**:
-1. Claude Code v2.1.32+
-2. Set environment variable `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
-3. Configure `teammateMode: "in-process"` in `settings.json`
+### Weighted Scoring (out of 100)
 
-**Configuration example** (`.claude/settings.json`):
-```json
-{
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
-  },
-  "teammateMode": "in-process"
-}
-```
+<p align="center">
+  <img src="docs/design/images/04-scoring-comparison.png" alt="Weighted Scoring Comparison" width="960" />
+</p>
 
-**Workflow**:
-```
-/xwhole -parallel implement user, order, and product modules independently
-  ↓
-orchestratorX conducts planning dialogue (same as Mode A)
-  ↓
-Creates Agent Team, auto-generates Hybrid Tree, splits into parallel tasks
-  ↓
-Each teammate gets an isolated worktree (physical isolation)
-  ↓
-Multiple coder-teammates implement concurrently
-  ↓
-Multiple evaluator-teammates review concurrently
-  ↓
-Iterative fixes → All pass → Merge worktree branches → TeamDelete cleanup
-```
+| Category (Weight) | WorkflowX | Superpowers | OMC |
+|-------------------|:---------:|:-----------:|:---:|
+| Architecture & Design (25%) | **9.15** | 6.70 | 7.40 |
+| Workflow & Process (30%) | **9.20** | 7.60 | 7.50 |
+| Quality & Reliability (25%) | 7.85 | **8.55** | 7.70 |
+| Platform & Ecosystem (20%) | 6.40 | **9.60** | 6.60 |
+| **Weighted Total** | **83** | **80** | **73** |
 
-**Dual-layer isolation** (`-parallel` + `-box`):
-```
-main branch
-  └── sandbox/feature-x (sandbox branch)   ← Layer 1: protects main
-        ├── worktree/coder-1                ← Layer 2: agent isolation
-        ├── worktree/coder-2
-        ├── worktree/evaluator-1
-        └── worktree/evaluator-2
-```
+### Core Capabilities
 
-**Use cases**:
-- Parallel development of independent modules (e.g., user module, order module, product module)
-- Batch feature implementation (e.g., multiple API endpoints)
-- Quick validation of multiple independent design approaches
+| Capability | WorkflowX | Superpowers | OMC |
+|------------|:---------:|:-----------:|:---:|
+| **Hybrid Tree PRD tracking** | ✅ Unique | ❌ | ❌ |
+| **AC cross-validation** | ✅ Unique | ❌ | ❌ |
+| **Prompt optimization engine** | ✅ Unique | ❌ | ❌ |
+| **Cross-branch violation detection** | ✅ Unique | ❌ | ❌ |
+| **Socratic requirements discovery** | ✅ Weighted + Proactive | ✅ Basic | ✅ Basic |
+| **Code aesthetics framework** | ✅ Unique | ❌ | ❌ |
+| **Token incremental optimization** | ✅ Systematic | Partial | Partial |
+| **TDD iron rule** | ❌ | ✅ Strictest | Partial |
+| **Systematic debugging** | ❌ | ✅ 4-phase | Partial |
+| **Smart model routing** | ❌ | ❌ | ✅ |
+| **Multi-AI cross-validation** | ❌ | ❌ | ✅ |
+| **Security review (OWASP)** | Partial | ❌ | ✅ Professional |
+| **Multi-platform native** | 4 platforms | 8 platforms | 2 platforms |
 
-**Not suitable for**:
-- Modules with strong inter-dependencies (use serial execution)
-- Single-file modifications (use `/xunit`)
-- Deep planning dialogue needed (use `/xwhole`)
+<p align="center">
+  <img src="docs/design/images/05-capabilities.png" alt="WorkflowX Unique Capabilities" width="960" />
+</p>
 
-### 5. Multi-Platform Collaboration
+### Why WorkflowX?
 
-Since config directories are independent, you can use the same workflow across tools:
+<table>
+<tr>
+<td width="50%">
 
-- **Claude Code CLI**: `.claude/agents/orchestratorX.md` defines agent behavior, **the only platform supporting parallel mode (`/xwhole -parallel`)**
-- **VS Code + Copilot**: `.github/agents/orchestratorX.agent.md` uses VSCode-native tool bindings
-- **OpenAI Codex CLI**: `.codex/agents/orchestratorX.toml` uses TOML format config
-- **OpenCode**: `.opencode/agents/orchestratorX.md` + `.opencode/commands/` defines agents and commands, delegating subtasks via the Task tool
+**Most Structured**
+Hybrid Tree turns requirements into traceable, structured documents — not scattered chat history. Parent + Child MECE structure ensures every task has clear acceptance criteria.
 
-All four share the same skill definitions (in each platform's `skills/` directory), ensuring consistent workflow behavior. OpenCode auto-discovers skills from `.claude/skills/`, eliminating the need for duplication. Core skills are consolidated to 6: orchestrator-playbook (orchestration handbook + planning + requirement routing), evaluator-prd-audit, codex-spec-implementation, prompt-master, abstracter-code-summary, and guidelines.
+**Strictest Quality Control**
+evaluatorX independently verifies every AC via cross-validation, never trusting coderX's self-declarations. Cross-branch violation detection prevents parallel development conflicts.
 
-> **Parallel mode platform limitation**: `/xwhole -parallel` relies on Claude Code's Agent Teams feature (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + `teammateMode: "in-process"`). Other platforms cannot use this mode. For parallel execution on Codex/Copilot/OpenCode, manually split tasks and run them with `/xlocal` separately.
+</td>
+<td width="50%">
 
+**Most Token-Efficient**
+Section-level caching + incremental context + prompt compression saves 40-60% on multi-round iterations. Independent iteration counters + early-exit prevent unnecessary consumption.
 
-## 🌟 About
+**Deepest Requirements Discovery**
+Weighted 6-dimension clarity assessment + Socratic questioning + proactive challenge (contradictions/edge cases/risks/assumptions/conflicts/missing NFRs) surfaces issues during planning, not after coding.
+
+</td>
+</tr>
+</table>
+
+---
+
+## Platform Support
+
+| Platform | Config Directory | Supported Modes | Notes |
+|----------|-----------------|-----------------|-------|
+| **Claude Code** | `.claude/` | All 4 modes | agents + skills, native SubAgent + Agent Teams (parallel) |
+| **OpenAI Codex** | `.codex/` | 3 modes | agents (`.toml`) + skills, full parity |
+| **GitHub Copilot** | `.github/` | 3 modes | agents (`.agent.md`) + skills + instructions |
+| **OpenCode** | `.opencode/` | 3 modes | agents + commands + skills, Task tool delegation |
+
+> All four configurations share identical workflow logic — only tool-call syntax differs per platform. All modes auto-enable Worktree isolation (except xunit).
+
+---
+
+## About
 
 This is an open-source experimental project deployed across real communities, aiming to explore best practices and architectural designs for multi-agent collaborative development.
 

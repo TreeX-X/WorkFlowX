@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowX 工作流动画演示</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
+    background: #FAFAF8;
+    color: #1A1A1A;
+    width: 1200px;
+    height: 675px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .scene {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Progress bar */
+  .status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #E8E6E1;
+    z-index: 10;
+  }
+  .status-bar .progress {
+    height: 100%;
+    background: #C04A1A;
+    width: 0%;
+    animation: progressFill 12s ease-in-out forwards;
+  }
+
+  /* Title card */
+  .title-card {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards, fadeOut 0.5s ease forwards;
+    animation-delay: 0s, 2.2s;
+    z-index: 5;
+  }
+  .title-card h1 {
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    color: #1A1A1A;
+    margin-bottom: 12px;
+  }
+  .title-card .tagline {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 16px;
+    color: #9B9B9B;
+    letter-spacing: 0.08em;
+  }
+  .title-card .divider {
+    width: 48px;
+    height: 2px;
+    background: #C04A1A;
+    margin: 20px 0;
+  }
+
+  /* Flow canvas */
+  .flow-canvas {
+    position: absolute;
+    inset: 0;
+    padding: 48px 60px 40px;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    animation-delay: 2.5s;
+  }
+
+  /* Input prompt */
+  .input-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 22px;
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 4px;
+    margin-bottom: 36px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: slideUp 0.5s ease forwards;
+    animation-delay: 2.8s;
+  }
+  .input-bar .prompt-icon {
+    width: 32px;
+    height: 32px;
+    background: #C04A1A;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: -apple-system, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .input-bar .text {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 15px;
+    color: #6B6B6B;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .typing-text {
+    overflow: hidden;
+    white-space: nowrap;
+    width: 0;
+    display: inline-block;
+    border-right: 2px solid #C04A1A;
+    animation: typeExpand 1.5s steps(28) forwards, blink 0.6s step-end infinite;
+    animation-delay: 3.0s, 3.0s;
+    padding-right: 2px;
+  }
+  @keyframes typeExpand {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  @keyframes blink {
+    50% { border-color: transparent; }
+  }
+
+  /* Agent flow */
+  .agent-flow {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+  }
+  .agent-step {
+    flex: 1;
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 4px;
+    padding: 20px 18px;
+    opacity: 0;
+    transform: translateY(12px);
+    position: relative;
+    transition: box-shadow 0.3s ease;
+  }
+  .agent-step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 4px 4px 0 0;
+  }
+  .agent-step:nth-child(1) { animation: slideUp 0.5s ease forwards; animation-delay: 3.8s; }
+  .agent-step:nth-child(1)::before { background: #8B5CF6; }
+  .agent-step:nth-child(3) { animation: slideUp 0.5s ease forwards; animation-delay: 5.0s; }
+  .agent-step:nth-child(3)::before { background: #10B981; }
+  .agent-step:nth-child(5) { animation: slideUp 0.5s ease forwards; animation-delay: 6.2s; }
+  .agent-step:nth-child(5)::before { background: #EF4444; }
+  .agent-step:nth-child(7) { animation: slideUp 0.5s ease forwards; animation-delay: 7.4s; }
+  .agent-step:nth-child(7)::before { background: #C04A1A; }
+
+  /* Glow effect on active step */
+  .agent-step:nth-child(1) { animation: slideUp 0.5s ease forwards, glowPurple 2s ease-in-out 3.8s; }
+  .agent-step:nth-child(3) { animation: slideUp 0.5s ease forwards, glowGreen 2s ease-in-out 5.0s; }
+  .agent-step:nth-child(5) { animation: slideUp 0.5s ease forwards, glowRed 2s ease-in-out 6.2s; }
+  .agent-step:nth-child(7) { animation: slideUp 0.5s ease forwards, glowOrange 2s ease-in-out 7.4s; }
+
+  @keyframes glowPurple {
+    0%, 100% { box-shadow: 0 0 0 rgba(139,92,246,0); }
+    50% { box-shadow: 0 0 16px rgba(139,92,246,0.15); }
+  }
+  @keyframes glowGreen {
+    0%, 100% { box-shadow: 0 0 0 rgba(16,185,129,0); }
+    50% { box-shadow: 0 0 16px rgba(16,185,129,0.15); }
+  }
+  @keyframes glowRed {
+    0%, 100% { box-shadow: 0 0 0 rgba(239,68,68,0); }
+    50% { box-shadow: 0 0 16px rgba(239,68,68,0.15); }
+  }
+  @keyframes glowOrange {
+    0%, 100% { box-shadow: 0 0 0 rgba(192,74,26,0); }
+    50% { box-shadow: 0 0 16px rgba(192,74,26,0.15); }
+  }
+
+  .agent-step .agent-name {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .agent-step:nth-child(1) .agent-name { color: #8B5CF6; }
+  .agent-step:nth-child(3) .agent-name { color: #10B981; }
+  .agent-step:nth-child(5) .agent-name { color: #EF4444; }
+  .agent-step:nth-child(7) .agent-name { color: #C04A1A; }
+
+  .agent-step .action {
+    font-family: 'Georgia', serif;
+    font-size: 15px;
+    color: #1A1A1A;
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  .agent-step .detail {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 12px;
+    color: #9B9B9B;
+    line-height: 1.6;
+  }
+
+  /* Arrow connectors */
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 32px;
+    color: #A0A0A0;
+    font-size: 20px;
+    opacity: 0;
+    flex-shrink: 0;
+    width: 28px;
+  }
+  .flow-arrow:nth-child(2) { animation: fadeIn 0.3s ease forwards; animation-delay: 4.3s; }
+  .flow-arrow:nth-child(4) { animation: fadeIn 0.3s ease forwards; animation-delay: 5.5s; }
+  .flow-arrow:nth-child(6) { animation: fadeIn 0.3s ease forwards; animation-delay: 6.7s; }
+
+  /* Result badge */
+  .result-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+    opacity: 0;
+    animation: slideUp 0.5s ease forwards;
+    animation-delay: 8.2s;
+  }
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    border-radius: 4px;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+  .result-badge.pass {
+    background: #ECFDF5;
+    color: #059669;
+    border: 1px solid #A7F3D0;
+  }
+  .result-badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10B981;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  /* Bottom label */
+  .bottom-label {
+    position: absolute;
+    bottom: 32px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 11px;
+    color: #9B9B9B;
+    letter-spacing: 0.06em;
+    opacity: 0;
+    animation: fadeIn 0.6s ease forwards;
+    animation-delay: 9.0s;
+  }
+
+  /* Loop indicator */
+  .loop-indicator {
+    position: absolute;
+    bottom: 12px;
+    right: 20px;
+    font-family: -apple-system, sans-serif;
+    font-size: 10px;
+    color: #C0C0C0;
+    opacity: 0;
+    animation: fadeIn 0.4s ease forwards;
+    animation-delay: 9.5s;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  @keyframes progressFill {
+    0% { width: 0%; }
+    15% { width: 15%; }
+    30% { width: 30%; }
+    50% { width: 55%; }
+    70% { width: 75%; }
+    85% { width: 90%; }
+    100% { width: 100%; }
+  }
+
+  /* Loop: after 13s, reset everything and replay */
+  @keyframes loopReset {
+    0%, 99.9% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+</style>
+<script>
+  // Auto-loop: replay animation every 14 seconds
+  setInterval(() => {
+    const scene = document.querySelector('.scene');
+    const clone = scene.cloneNode(true);
+    scene.parentNode.replaceChild(clone, scene);
+  }, 14000);
+</script>
+</head>
+<body>
+<div class="scene">
+  <!-- Progress bar -->
+  <div class="status-bar"><div class="progress"></div></div>
+
+  <!-- Title card (0-2.2s) -->
+  <div class="title-card">
+    <h1>WorkflowX</h1>
+    <div class="divider"></div>
+    <div class="tagline">xwhole 模式 &middot; 完整工作流演示</div>
+  </div>
+
+  <!-- Flow canvas (2.5s+) -->
+  <div class="flow-canvas">
+    <!-- User input -->
+    <div class="input-bar">
+      <div class="prompt-icon">U</div>
+      <div class="text">
+        <span class="typing-text">「实现用户登录功能，包含 JWT 认证和角色权限管理」</span>
+      </div>
+    </div>
+
+    <!-- Agent flow -->
+    <div class="agent-flow">
+      <!-- Step 1: promptMasterX -->
+      <div class="agent-step">
+        <div class="agent-name">promptMasterX</div>
+        <div class="action">Prompt 优化</div>
+        <div class="detail">检测 37 种反模式<br/>注入 Karpathy 指南<br/>输出结构化指令</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+
+      <!-- Step 2: coderX -->
+      <div class="agent-step">
+        <div class="agent-name">coderX</div>
+        <div class="action">规格驱动编码</div>
+        <div class="detail">读取 Hybrid Tree AC<br/>实现 JWT 中间件<br/>角色权限路由守卫</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+
+      <!-- Step 3: evaluatorX -->
+      <div class="agent-step">
+        <div class="agent-name">evaluatorX</div>
+        <div class="action">AC 交叉验证</div>
+        <div class="detail">独立读取代码<br/>对照验收标准<br/>输出结构化报告</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+
+      <!-- Step 4: orchestratorX -->
+      <div class="agent-step">
+        <div class="agent-name">orchestratorX</div>
+        <div class="action">迭代决策</div>
+        <div class="detail">评估报告分析<br/>更新 Hybrid Tree<br/>记录知识图谱</div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-row">
+      <div class="result-badge pass">
+        <div class="dot"></div>
+        评估通过 · 迭代完成
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom label -->
+  <div class="bottom-label">WorkflowX &middot; 通过工程纪律实现结构性优势</div>
+  <div class="loop-indicator">自动循环播放</div>
+</div>
+</body>
+</html>

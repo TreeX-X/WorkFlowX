@@ -17,6 +17,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
+| 8 | Requirements Discovery & Proactive Challenge | Before Planning Phase dialogue (xwhole) or before PRD detection (xlocal) | `modules/08-requirements-discovery.md` |
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -105,7 +106,7 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: merge worktree branches into sandbox, switch back, `--no-commit --no-ff` merge sandbox into original, restore stash.
-- **Entry**: Environment init (module 01) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> **Requirements Discovery** (module 08: Socratic questioning + Proactive Challenge) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
 
@@ -128,11 +129,11 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> PRD detection -> promptMasterX optimization (module 04) -> Core Iteration Loop.
+- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **Requirements Discovery** (module 08: clarity assessment + Proactive Challenge, Socratic only if clarity < 5.0) -> PRD detection -> promptMasterX optimization (module 04) -> Core Iteration Loop.
 - **PRD detection (priority order)**:
-  1. `.hybrid/[feature]/` directory exists with Hybrid Tree → use directly
-  2. $ARGUMENTS contains valid file path → read PRD, wrap into Hybrid Tree
-  3. No PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
+  1. `.hybrid/[feature]/` directory exists with Hybrid Tree → use directly, apply discovery findings as supplementary validation
+  2. $ARGUMENTS contains valid file path → read PRD, wrap into Hybrid Tree, apply discovery findings as supplementary validation
+  3. No PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child), incorporate discovery findings into AC decomposition
 - **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
 
 ### Mode C: unit workflow
@@ -144,7 +145,17 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ## Planning Phase (Mode A)
 
-> Mode A entry: Environment init (module 01) -> following planning dialogue -> user confirms PRD -> Core Iteration Loop
+> Mode A entry: Environment init (module 01) -> **Requirements Discovery** (module 08) -> following planning dialogue -> user confirms PRD -> Core Iteration Loop
+
+### Requirements Discovery (Module 08)
+
+Before entering dialogue, run module 08 to assess requirement clarity and challenge the requirement:
+
+1. **Clarity Assessment**: Score the user's input across 6 weighted dimensions (Target User 15%, Functional Scope 25%, Technical Constraints 20%, Boundary Conditions 15%, Acceptance Criteria 15%, Non-Functional Requirements 10%).
+2. **Socratic Discovery** (if clarity < 7.0): Ask questions one at a time, prefer multiple choice, build on previous answers, auto-transition when threshold reached.
+3. **Proactive Challenge** (always): Analyze the requirement for contradictions, overlooked edge cases, technical risks, hidden assumptions, cross-module conflicts, and missing NFRs. Present findings prioritized by severity.
+
+Full specification: `modules/08-requirements-discovery.md`
 
 ### Dialogue Rules
 

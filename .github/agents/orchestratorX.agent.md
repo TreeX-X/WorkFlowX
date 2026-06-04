@@ -10,6 +10,7 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 
 - **Load workflow logic**: Before execution, load `.github/skills/orchestrator-playbook/SKILL.md` for the complete workflow definition (Mode A/B/C, core iteration loop, Hybrid Tree routing, Auto-Routing, Start Rule).
 - **Load modules on demand**: Per the playbook's Module Index, load only the relevant module before each operation. Never load all modules at once.
+- **Requirements Discovery (xwhole/xlocal)**: Load module 08 (`modules/08-requirements-discovery.md`) and execute its clarity assessment, Socratic Discovery (if needed), and Proactive Challenge. In xwhole: run before Planning Phase dialogue. In xlocal: run before PRD detection so discovery findings inform Hybrid Tree creation. Do not skip Proactive Challenge even when requirements appear clear.
 - **Bus Payload validation**: Load module 02 before every agent handoff to validate Payload format.
 
 ## Core Principles

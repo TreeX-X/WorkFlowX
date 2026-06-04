@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowX Unique Capabilities</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
+    background: #FAFAF8;
+    color: #1A1A1A;
+    padding: 64px 48px;
+    min-width: 960px;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 48px; }
+  .header h1 { font-size: 28px; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .header .subtitle { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 13px; color: #9B9B9B; letter-spacing: 0.12em; }
+  .capability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+  .cap-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 4px; padding: 28px 24px; position: relative; overflow: hidden; }
+  .cap-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 4px 4px 0 0; }
+  .cap-card.ht::before { background: #C04A1A; }
+  .cap-card.ac::before { background: #EF4444; }
+  .cap-card.pm::before { background: #8B5CF6; }
+  .cap-card.cb::before { background: #3B82F6; }
+  .cap-card.sd::before { background: #10B981; }
+  .cap-card.rx::before { background: #6366F1; }
+  .cap-card .icon-wrap {
+    width: 44px; height: 44px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    font-family: -apple-system, sans-serif; font-size: 16px; font-weight: 600; color: #FFFFFF;
+  }
+  .cap-card.ht .icon-wrap { background: #C04A1A; }
+  .cap-card.ac .icon-wrap { background: #EF4444; }
+  .cap-card.pm .icon-wrap { background: #8B5CF6; }
+  .cap-card.cb .icon-wrap { background: #3B82F6; }
+  .cap-card.sd .icon-wrap { background: #10B981; }
+  .cap-card.rx .icon-wrap { background: #6366F1; }
+  .cap-card .title { font-family: 'Georgia', serif; font-size: 16px; color: #1A1A1A; margin-bottom: 8px; line-height: 1.3; }
+  .cap-card .desc { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 12px; color: #6B6B6B; line-height: 1.7; }
+  .cap-card .tag {
+    display: inline-block;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 10px; letter-spacing: 0.06em;
+    padding: 4px 10px; margin-top: 12px; border-radius: 4px;
+    background: #F5F4F0; color: #6B6B6B;
+  }
+  .insight {
+    text-align: center; padding: 32px;
+    background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 4px; margin-top: 12px;
+  }
+  .insight .quote {
+    font-family: 'Georgia', serif; font-size: 16px; font-style: italic;
+    color: #1A1A1A; line-height: 1.6; max-width: 600px; margin: 0 auto;
+  }
+  .insight .attribution { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #9B9B9B; margin-top: 12px; }
+  .footer { text-align: center; margin-top: 40px; font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif; font-size: 11px; color: #9B9B9B; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Unique Capabilities</h1>
+    <div class="subtitle">Differentiated features exclusive to WorkflowX</div>
+  </div>
+  <div class="capability-grid">
+    <div class="cap-card ht">
+      <div class="icon-wrap">HT</div>
+      <div class="title">Hybrid Tree PRD Tracking</div>
+      <div class="desc">Parent + Child MECE structure. The only framework that documents, structures, and tracks requirements — not scattered in conversations.</div>
+      <div class="tag">Data Structure</div>
+    </div>
+    <div class="cap-card ac">
+      <div class="icon-wrap">AC</div>
+      <div class="title">AC Cross-Validation</div>
+      <div class="desc">evaluatorX does not trust coderX self-declarations. Independently reads code, checks against ACs, outputs structured reports.</div>
+      <div class="tag">Quality</div>
+    </div>
+    <div class="cap-card pm">
+      <div class="icon-wrap">PM</div>
+      <div class="title">Prompt Optimization</div>
+      <div class="desc">promptMasterX detects 37 anti-patterns before coding. Auto-matches optimal prompting strategy per model.</div>
+      <div class="tag">Input Quality</div>
+    </div>
+    <div class="cap-card cb">
+      <div class="icon-wrap">CB</div>
+      <div class="title">Cross-Branch Detection</div>
+      <div class="desc">File ownership tracking + shared file compatibility checks. Prevents conflicts in multi-branch development.</div>
+      <div class="tag">Safety</div>
+    </div>
+    <div class="cap-card sd">
+      <div class="icon-wrap">SD</div>
+      <div class="title">Socratic Discovery</div>
+      <div class="desc">Weighted 6-dimension clarity assessment. One question per turn. Proactive challenge of contradictions, boundaries, risks, hidden assumptions.</div>
+      <div class="tag">Planning</div>
+    </div>
+    <div class="cap-card rx">
+      <div class="icon-wrap">RX</div>
+      <div class="title">Code Aesthetics</div>
+      <div class="desc">razorX asks: "Can the path be shorter? Can cognitive load be lower?" Dual mode: surgical review + declarative generation.</div>
+      <div class="tag">Code Quality</div>
+    </div>
+  </div>
+  <div class="insight">
+    <div class="quote">WorkflowX does not teach AI how to code, nor how to use tools. It teaches AI how to do engineering — requirement tracking, quality audits, structured iteration.</div>
+    <div class="attribution">&mdash; Design Philosophy</div>
+  </div>
+  <div class="footer">WorkflowX &middot; Structural advantage through engineering discipline</div>
+</div>
+</body>
+</html>
