@@ -1,0 +1,37 @@
+{
+  "name": "workflowx",
+  "version": "1.0.0",
+  "description": "Multi-agent orchestration framework with Socratic requirements discovery, Hybrid Tree PRD management, and structured quality evaluation",
+  "author": {
+    "name": "TreeX"
+  },
+  "homepage": "https://github.com/TreeX/workflowx",
+  "repository": "https://github.com/TreeX/workflowx",
+  "license": "MIT",
+  "keywords": [
+    "multi-agent",
+    "orchestration",
+    "workflow",
+    "planning",
+    "evaluation"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WorkflowX",
+    "shortDescription": "Multi-agent orchestration with Socratic discovery and Hybrid Tree evaluation",
+    "longDescription": "WorkflowX orchestrates planning, coding, and evaluation agents through structured workflows. Features Socratic requirements discovery, Hybrid Tree PRD management, AC cross-validation, and token-optimized iteration loops.",
+    "developerName": "TreeX",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "/xwhole I want to build a new feature",
+      "/xlocal Fix the authentication bug",
+      "/xunit Add input validation to the login form"
+    ],
+    "websiteURL": "https://github.com/TreeX/workflowx"
+  }
+}

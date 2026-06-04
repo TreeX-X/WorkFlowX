@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkflowX Token Optimization</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', 'Source Serif Pro', 'Noto Serif SC', serif;
+    background: #FAFAF8;
+    color: #1A1A1A;
+    padding: 64px 48px;
+    min-width: 800px;
+  }
+  .container { max-width: 780px; margin: 0 auto; }
+  .header { text-align: center; margin-bottom: 48px; }
+  .header h1 { font-size: 28px; font-weight: 400; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .header .subtitle {
+    font-family: -apple-system, sans-serif;
+    font-size: 13px; color: #9B9B9B;
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+
+  .layers {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  /* Vertical connector */
+  .layers::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: repeating-linear-gradient(
+      to bottom,
+      #D4D2CC 0px,
+      #D4D2CC 6px,
+      transparent 6px,
+      transparent 12px
+    );
+    z-index: 0;
+  }
+
+  .layer {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 32px;
+    align-items: stretch;
+  }
+  .layer:nth-child(even) {
+    grid-template-columns: 1fr 160px;
+  }
+  .layer:nth-child(even) .layer-label { order: 2; }
+  .layer:nth-child(even) .layer-content { order: 1; }
+
+  .layer-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 2px;
+    text-align: center;
+  }
+  .layer-label .number {
+    font-family: 'Georgia', serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .layer-label .name {
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6B6B6B;
+    line-height: 1.4;
+  }
+
+  .layer-content {
+    padding: 28px 24px;
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 2px;
+  }
+  .layer-content .title {
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    color: #1A1A1A;
+    margin-bottom: 8px;
+  }
+  .layer-content .desc {
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    color: #6B6B6B;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .layer-content .effect {
+    display: inline-block;
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 1px;
+    letter-spacing: 0.04em;
+  }
+
+  /* Layer 1 - Blue */
+  .layer.l1 .layer-label { border-left: 3px solid #3B82F6; }
+  .layer.l1 .layer-label .number { color: #3B82F6; }
+  .layer.l1 .effect { background: #EFF6FF; color: #2563EB; }
+
+  /* Layer 2 - Green */
+  .layer.l2 .layer-label { border-left: 3px solid #10B981; }
+  .layer.l2 .layer-label .number { color: #10B981; }
+  .layer.l2 .effect { background: #ECFDF5; color: #059669; }
+
+  /* Layer 3 - Amber */
+  .layer.l3 .layer-label { border-left: 3px solid #F59E0B; }
+  .layer.l3 .layer-label .number { color: #F59E0B; }
+  .layer.l3 .effect { background: #FFFBEB; color: #D97706; }
+
+  /* Zones visualization */
+  .zones {
+    display: flex;
+    gap: 2px;
+    margin: 12px 0 8px;
+  }
+  .zone {
+    flex: 1;
+    padding: 8px 10px;
+    font-family: -apple-system, sans-serif;
+    font-size: 10px;
+    text-align: center;
+    border-radius: 1px;
+    color: #FFFFFF;
+  }
+  .zone.static { background: #3B82F6; }
+  .zone.incremental { background: #60A5FA; }
+  .zone.dynamic { background: #93C5FD; color: #1E40AF; }
+
+  .zone-labels {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+  .zone-label {
+    flex: 1;
+    text-align: center;
+    font-family: -apple-system, sans-serif;
+    font-size: 9px;
+    color: #9B9B9B;
+    letter-spacing: 0.04em;
+  }
+
+  /* Data flow arrow */
+  .flow-arrow {
+    text-align: center;
+    padding: 8px 0;
+    font-size: 18px;
+    color: #D4D2CC;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 48px;
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    color: #C0C0C0;
+    letter-spacing: 0.06em;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Three-Layer Token Optimization</h1>
+    <div class="subtitle">40-60% Savings on Multi-Round Iterations</div>
+  </div>
+
+  <div class="layers">
+    <!-- Layer 1 -->
+    <div class="layer l1">
+      <div class="layer-label">
+        <div class="number">L1</div>
+        <div class="name">Section-Level<br/>Caching</div>
+      </div>
+      <div class="layer-content">
+        <div class="title">Hybrid Document Topology</div>
+        <div class="desc">Strict zoning places rarely-changing sections at the top to continuously hit LLM Prompt Cache. Dynamic sections at the bottom overwrite without invalidating cached tokens.</div>
+        <div class="zone-labels">
+          <span class="zone-label">Static</span>
+          <span class="zone-label">Incremental</span>
+          <span class="zone-label">Dynamic</span>
+        </div>
+        <div class="zones">
+          <div class="zone static">Requirements / Scope / DoD</div>
+          <div class="zone incremental">AC / File Index</div>
+          <div class="zone dynamic">Evaluation Reports</div>
+        </div>
+        <div class="effect">40-60% token savings after first round</div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">&darr;</div>
+
+    <!-- Layer 2 -->
+    <div class="layer l2">
+      <div class="layer-content">
+        <div class="title">Trunk-Leaf Index Separation</div>
+        <div class="desc">Markdown documents retain only business trunk outlines. Entity relations, code structures, and knowledge details are maintained separately in the MCP Knowledge Graph. Agents fetch on-demand.</div>
+        <div class="effect">Lean documents &middot; On-demand retrieval</div>
+      </div>
+      <div class="layer-label">
+        <div class="number">L2</div>
+        <div class="name">Trunk-Leaf<br/>Index</div>
+      </div>
+    </div>
+
+    <div class="flow-arrow">&darr;</div>
+
+    <!-- Layer 3 -->
+    <div class="layer l3">
+      <div class="layer-label">
+        <div class="number">L3</div>
+        <div class="name">Memory Graph<br/>Snapshot</div>
+      </div>
+      <div class="layer-content">
+        <div class="title">Knowledge Graph Persistence</div>
+        <div class="desc">Hybrid Tree stores only skeleton pointers (entity names, relation summaries). Full leaf-node details are persisted by MCP server-memory. Cross-session, cross-agent knowledge sharing without redundant context transfer.</div>
+        <div class="effect">Cross-session sharing &middot; Minimum viable context</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">WorkflowX &middot; Every SubAgent Wake-Up Gets Minimum Viable Input Tokens</div>
+</div>
+</body>
+</html>

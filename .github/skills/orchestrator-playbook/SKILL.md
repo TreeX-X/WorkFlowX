@@ -16,6 +16,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
 | 7 | Status Report | `/xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
+| 8 | Requirements Discovery & Proactive Challenge | Before Planning Phase dialogue (xwhole) or before PRD detection (xlocal) | `modules/08-requirements-discovery.md` |
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -117,13 +118,13 @@ const sessionParams = {
 ### Mode A: whole workflow
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: switch back, `--no-commit --no-ff` merge, restore stash.
-- **Entry**: Environment init (module 01) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> **Requirements Discovery** (module 08: Socratic questioning + Proactive Challenge) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> promptMasterX optimization (module 04) -> **Has Hybrid Tree**: Core Iteration Loop. **No Hybrid Tree**: Simple Iteration Loop.
+- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **Requirements Discovery** (module 08: clarity assessment + Proactive Challenge, Socratic only if clarity < 5.0) -> PRD detection -> promptMasterX optimization (module 04) -> Core Iteration Loop.
 - **evaluatorX evaluation criteria**: With hybrid docs, evaluate per PRD. Without hybrid docs, fall back to prompt-based evaluation. After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
 
 ### Mode C: unit workflow
@@ -135,7 +136,17 @@ const sessionParams = {
 
 ## Planning Phase (Mode A)
 
-> Mode A entry: Environment init (module 01) -> following planning dialogue -> user confirms PRD -> Core Iteration Loop
+> Mode A entry: Environment init (module 01) -> **Requirements Discovery** (module 08) -> following planning dialogue -> user confirms PRD -> Core Iteration Loop
+
+### Requirements Discovery (Module 08)
+
+Before entering dialogue, run module 08 to assess requirement clarity and challenge the requirement:
+
+1. **Clarity Assessment**: Score the user's input across 6 weighted dimensions (Target User 15%, Functional Scope 25%, Technical Constraints 20%, Boundary Conditions 15%, Acceptance Criteria 15%, Non-Functional Requirements 10%).
+2. **Socratic Discovery** (if clarity < 7.0): Ask questions one at a time, prefer multiple choice, build on previous answers, auto-transition when threshold reached.
+3. **Proactive Challenge** (always): Analyze the requirement for contradictions, overlooked edge cases, technical risks, hidden assumptions, cross-module conflicts, and missing NFRs. Present findings prioritized by severity.
+
+Full specification: `modules/08-requirements-discovery.md`
 
 ### Dialogue Rules
 
