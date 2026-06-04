@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WorkflowX 工作流动画演示</title>
+<title>WorkflowX 工作流完整演示</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -11,7 +11,7 @@
     background: #FAFAF8;
     color: #1A1A1A;
     width: 1200px;
-    height: 675px;
+    height: 800px;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -27,9 +27,7 @@
   /* Progress bar */
   .status-bar {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 3px;
     background: #E8E6E1;
     z-index: 10;
@@ -38,7 +36,403 @@
     height: 100%;
     background: #C04A1A;
     width: 0%;
-    animation: progressFill 12s ease-in-out forwards;
+    animation: progressFill 24s linear forwards;
+  }
+  @keyframes progressFill {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+
+  /* Phase container */
+  .phase {
+    position: absolute;
+    inset: 0;
+    padding: 40px 56px;
+    opacity: 0;
+  }
+  .phase.visible {
+    animation: fadeIn 0.4s ease forwards;
+  }
+
+  /* Phase label */
+  .phase-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9B9B9B;
+    margin-bottom: 16px;
+  }
+  .phase-label .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #C04A1A;
+  }
+  .phase-label .step-num {
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    color: #C04A1A;
+  }
+
+  /* Section title */
+  .section-title {
+    font-family: 'Georgia', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #1A1A1A;
+    margin-bottom: 16px;
+    letter-spacing: 0.04em;
+  }
+
+  /* Chat messages */
+  .chat-area {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .msg {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .msg .avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .msg .avatar.user { background: #3B82F6; }
+  .msg .avatar.ai { background: #C04A1A; }
+  .msg .bubble {
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 13px;
+    color: #1A1A1A;
+    line-height: 1.6;
+    max-width: 560px;
+  }
+  .msg .bubble .options {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .msg .bubble .option {
+    font-size: 12px;
+    color: #6B6B6B;
+    padding: 4px 8px;
+    background: #F5F4F0;
+    border-radius: 3px;
+    border-left: 2px solid #C04A1A;
+  }
+  .msg .bubble .selected {
+    color: #C04A1A;
+    font-weight: 500;
+  }
+
+  /* Code editor mockup */
+  .editor {
+    background: #1E1E1E;
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: 'Menlo', 'Consolas', monospace;
+    font-size: 12px;
+  }
+  .editor .titlebar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #2D2D2D;
+  }
+  .editor .titlebar .dot-red { width: 10px; height: 10px; border-radius: 50%; background: #FF5F56; }
+  .editor .titlebar .dot-yel { width: 10px; height: 10px; border-radius: 50%; background: #FFBD2E; }
+  .editor .titlebar .dot-grn { width: 10px; height: 10px; border-radius: 50%; background: #27C93F; }
+  .editor .titlebar .filename {
+    margin-left: 12px;
+    font-size: 11px;
+    color: #9B9B9B;
+  }
+  .editor .body {
+    padding: 12px 16px;
+    line-height: 1.8;
+    color: #D4D4D4;
+    min-height: 120px;
+    position: relative;
+  }
+  .editor .body .line {
+    opacity: 0;
+  }
+  .editor .body .keyword { color: #C586C0; }
+  .editor .body .func { color: #DCDCAA; }
+  .editor .body .string { color: #CE9178; }
+  .editor .body .type { color: #4EC9B0; }
+  .editor .body .comment { color: #6A9955; font-style: italic; }
+  .editor .body .param { color: #9CDCFE; }
+  .editor .body .cursor {
+    display: inline-block;
+    width: 2px;
+    height: 14px;
+    background: #C04A1A;
+    animation: blink 0.8s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+
+  /* Hybrid Tree doc */
+  .doc-view {
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 4px;
+    padding: 20px 24px;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .doc-view .doc-title {
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    color: #1A1A1A;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #C04A1A;
+  }
+  .doc-view .section-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    opacity: 0;
+  }
+  .doc-view .section-item .icon {
+    width: 20px; height: 20px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .doc-view .section-item .icon.done { background: #ECFDF5; color: #059669; }
+  .doc-view .section-item .icon.wip { background: #FFFBEB; color: #D97706; }
+  .doc-view .section-item .text { color: #1A1A1A; font-size: 13px; }
+  .doc-view .section-item .tag {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .doc-view .section-item .tag.static { background: #EFF6FF; color: #2563EB; }
+  .doc-view .section-item .tag.dynamic { background: #FFFBEB; color: #D97706; }
+
+  /* AC Table */
+  .ac-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 12px;
+  }
+  .ac-table th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid #E8E6E1;
+    color: #6B6B6B;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .ac-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #F5F4F0;
+    color: #1A1A1A;
+  }
+  .ac-table .status-pass {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 3px;
+    background: #ECFDF5;
+    color: #059669;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .ac-table .status-fail {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 3px;
+    background: #FEF2F2;
+    color: #DC2626;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .ac-table tr { opacity: 0; }
+
+  /* Loop diagram */
+  .loop-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 24px 0;
+  }
+  .loop-node {
+    padding: 16px 24px;
+    border-radius: 4px;
+    text-align: center;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+  }
+  .loop-node.coder { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+  .loop-node.eval { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+  .loop-node.pass { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+  .loop-arrow {
+    font-size: 20px;
+    color: #A0A0A0;
+    opacity: 0;
+  }
+  .loop-count {
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    color: #9B9B9B;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* Preview mockup */
+  .preview-frame {
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .preview-frame .browser-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #F5F4F0;
+    border-bottom: 1px solid #E8E6E1;
+  }
+  .preview-frame .browser-bar .dots {
+    display: flex; gap: 5px;
+  }
+  .preview-frame .browser-bar .dot-r { width: 8px; height: 8px; border-radius: 50%; background: #FF5F56; }
+  .preview-frame .browser-bar .dot-y { width: 8px; height: 8px; border-radius: 50%; background: #FFBD2E; }
+  .preview-frame .browser-bar .dot-g { width: 8px; height: 8px; border-radius: 50%; background: #27C93F; }
+  .preview-frame .browser-bar .url {
+    flex: 1;
+    background: #FFFFFF;
+    border: 1px solid #E8E6E1;
+    border-radius: 3px;
+    padding: 4px 12px;
+    font-family: -apple-system, sans-serif;
+    font-size: 11px;
+    color: #9B9B9B;
+  }
+  .preview-frame .preview-body {
+    padding: 24px;
+    min-height: 200px;
+  }
+  .preview-frame .preview-body .mock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .preview-frame .preview-body .mock-logo {
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    color: #1A1A1A;
+  }
+  .preview-frame .preview-body .mock-nav {
+    display: flex; gap: 16px;
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    color: #6B6B6B;
+  }
+  .preview-frame .preview-body .mock-form {
+    max-width: 360px;
+  }
+  .preview-frame .preview-body .mock-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #E8E6E1;
+    border-radius: 4px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    font-family: -apple-system, sans-serif;
+    color: #9B9B9B;
+  }
+  .preview-frame .preview-body .mock-btn {
+    width: 100%;
+    padding: 10px;
+    background: #C04A1A;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: default;
+  }
+  .preview-frame .preview-body .mock-text {
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    color: #9B9B9B;
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* Result badge */
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 4px;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    background: #ECFDF5;
+    color: #059669;
+    border: 1px solid #A7F3D0;
+  }
+  .result-badge .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #10B981;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  /* Bottom label */
+  .bottom-label {
+    position: absolute;
+    bottom: 24px;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 11px;
+    color: #9B9B9B;
+    letter-spacing: 0.06em;
+    opacity: 0;
   }
 
   /* Title card */
@@ -50,260 +444,83 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    animation: fadeIn 0.8s ease forwards, fadeOut 0.5s ease forwards;
-    animation-delay: 0s, 2.2s;
+    animation: fadeIn 0.6s ease forwards, fadeOut 0.4s ease forwards;
+    animation-delay: 0s, 1.8s;
     z-index: 5;
   }
   .title-card h1 {
-    font-size: 42px;
+    font-size: 36px;
     font-weight: 400;
     letter-spacing: 0.06em;
     color: #1A1A1A;
-    margin-bottom: 12px;
-  }
-  .title-card .tagline {
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 16px;
-    color: #9B9B9B;
-    letter-spacing: 0.08em;
   }
   .title-card .divider {
-    width: 48px;
-    height: 2px;
+    width: 40px; height: 2px;
     background: #C04A1A;
-    margin: 20px 0;
+    margin: 16px 0;
   }
-
-  /* Flow canvas */
-  .flow-canvas {
-    position: absolute;
-    inset: 0;
-    padding: 48px 60px 40px;
-    opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
-    animation-delay: 2.5s;
-  }
-
-  /* Input prompt */
-  .input-bar {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 22px;
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 4px;
-    margin-bottom: 36px;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: slideUp 0.5s ease forwards;
-    animation-delay: 2.8s;
-  }
-  .input-bar .prompt-icon {
-    width: 32px;
-    height: 32px;
-    background: #C04A1A;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-family: -apple-system, sans-serif;
+  .title-card .subtitle {
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 14px;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-  .input-bar .text {
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 15px;
-    color: #6B6B6B;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .typing-text {
-    overflow: hidden;
-    white-space: nowrap;
-    width: 0;
-    display: inline-block;
-    border-right: 2px solid #C04A1A;
-    animation: typeExpand 1.5s steps(28) forwards, blink 0.6s step-end infinite;
-    animation-delay: 3.0s, 3.0s;
-    padding-right: 2px;
-  }
-  @keyframes typeExpand {
-    from { width: 0; }
-    to { width: 100%; }
-  }
-  @keyframes blink {
-    50% { border-color: transparent; }
-  }
-
-  /* Agent flow */
-  .agent-flow {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    position: relative;
-  }
-  .agent-step {
-    flex: 1;
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 4px;
-    padding: 20px 18px;
-    opacity: 0;
-    transform: translateY(12px);
-    position: relative;
-    transition: box-shadow 0.3s ease;
-  }
-  .agent-step::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    border-radius: 4px 4px 0 0;
-  }
-  .agent-step:nth-child(1) { animation: slideUp 0.5s ease forwards; animation-delay: 3.8s; }
-  .agent-step:nth-child(1)::before { background: #8B5CF6; }
-  .agent-step:nth-child(3) { animation: slideUp 0.5s ease forwards; animation-delay: 5.0s; }
-  .agent-step:nth-child(3)::before { background: #10B981; }
-  .agent-step:nth-child(5) { animation: slideUp 0.5s ease forwards; animation-delay: 6.2s; }
-  .agent-step:nth-child(5)::before { background: #EF4444; }
-  .agent-step:nth-child(7) { animation: slideUp 0.5s ease forwards; animation-delay: 7.4s; }
-  .agent-step:nth-child(7)::before { background: #C04A1A; }
-
-  /* Glow effect on active step */
-  .agent-step:nth-child(1) { animation: slideUp 0.5s ease forwards, glowPurple 2s ease-in-out 3.8s; }
-  .agent-step:nth-child(3) { animation: slideUp 0.5s ease forwards, glowGreen 2s ease-in-out 5.0s; }
-  .agent-step:nth-child(5) { animation: slideUp 0.5s ease forwards, glowRed 2s ease-in-out 6.2s; }
-  .agent-step:nth-child(7) { animation: slideUp 0.5s ease forwards, glowOrange 2s ease-in-out 7.4s; }
-
-  @keyframes glowPurple {
-    0%, 100% { box-shadow: 0 0 0 rgba(139,92,246,0); }
-    50% { box-shadow: 0 0 16px rgba(139,92,246,0.15); }
-  }
-  @keyframes glowGreen {
-    0%, 100% { box-shadow: 0 0 0 rgba(16,185,129,0); }
-    50% { box-shadow: 0 0 16px rgba(16,185,129,0.15); }
-  }
-  @keyframes glowRed {
-    0%, 100% { box-shadow: 0 0 0 rgba(239,68,68,0); }
-    50% { box-shadow: 0 0 16px rgba(239,68,68,0.15); }
-  }
-  @keyframes glowOrange {
-    0%, 100% { box-shadow: 0 0 0 rgba(192,74,26,0); }
-    50% { box-shadow: 0 0 16px rgba(192,74,26,0.15); }
-  }
-
-  .agent-step .agent-name {
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 11px;
+    color: #9B9B9B;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .agent-step:nth-child(1) .agent-name { color: #8B5CF6; }
-  .agent-step:nth-child(3) .agent-name { color: #10B981; }
-  .agent-step:nth-child(5) .agent-name { color: #EF4444; }
-  .agent-step:nth-child(7) .agent-name { color: #C04A1A; }
-
-  .agent-step .action {
-    font-family: 'Georgia', serif;
-    font-size: 15px;
-    color: #1A1A1A;
-    margin-bottom: 10px;
-    line-height: 1.3;
-  }
-  .agent-step .detail {
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 12px;
-    color: #9B9B9B;
-    line-height: 1.6;
   }
 
-  /* Arrow connectors */
-  .flow-arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 32px;
-    color: #A0A0A0;
-    font-size: 20px;
-    opacity: 0;
-    flex-shrink: 0;
-    width: 28px;
-  }
-  .flow-arrow:nth-child(2) { animation: fadeIn 0.3s ease forwards; animation-delay: 4.3s; }
-  .flow-arrow:nth-child(4) { animation: fadeIn 0.3s ease forwards; animation-delay: 5.5s; }
-  .flow-arrow:nth-child(6) { animation: fadeIn 0.3s ease forwards; animation-delay: 6.7s; }
-
-  /* Result badge */
-  .result-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 32px;
-    opacity: 0;
-    animation: slideUp 0.5s ease forwards;
-    animation-delay: 8.2s;
-  }
-  .result-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 28px;
-    border-radius: 4px;
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    font-weight: 500;
-  }
-  .result-badge.pass {
-    background: #ECFDF5;
-    color: #059669;
-    border: 1px solid #A7F3D0;
-  }
-  .result-badge .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #10B981;
-    animation: pulse 1.2s ease-in-out infinite;
+  /* Two-column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
   }
 
-  /* Bottom label */
-  .bottom-label {
-    position: absolute;
-    bottom: 32px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 11px;
-    color: #9B9B9B;
-    letter-spacing: 0.06em;
-    opacity: 0;
-    animation: fadeIn 0.6s ease forwards;
-    animation-delay: 9.0s;
-  }
+  /* Phase-specific animations with delays */
+  .phase-1 { animation-delay: 2.0s; }
+  .phase-2 { animation-delay: 6.5s; }
+  .phase-3 { animation-delay: 10.5s; }
+  .phase-4 { animation-delay: 14.0s; }
+  .phase-5 { animation-delay: 17.0s; }
+  .phase-6 { animation-delay: 20.5s; }
 
-  /* Loop indicator */
-  .loop-indicator {
-    position: absolute;
-    bottom: 12px;
-    right: 20px;
-    font-family: -apple-system, sans-serif;
-    font-size: 10px;
-    color: #C0C0C0;
-    opacity: 0;
-    animation: fadeIn 0.4s ease forwards;
-    animation-delay: 9.5s;
-  }
+  /* Msg animations */
+  .msg-1-1 { animation: slideUp 0.4s ease forwards; animation-delay: 2.8s; }
+  .msg-1-2 { animation: slideUp 0.4s ease forwards; animation-delay: 4.0s; }
+  .msg-1-3 { animation: slideUp 0.4s ease forwards; animation-delay: 5.2s; }
 
-  /* Animations */
+  /* Doc section animations */
+  .sec-1 { animation: slideUp 0.3s ease forwards; animation-delay: 7.5s; }
+  .sec-2 { animation: slideUp 0.3s ease forwards; animation-delay: 8.0s; }
+  .sec-3 { animation: slideUp 0.3s ease forwards; animation-delay: 8.5s; }
+  .sec-4 { animation: slideUp 0.3s ease forwards; animation-delay: 9.0s; }
+  .sec-5 { animation: slideUp 0.3s ease forwards; animation-delay: 9.5s; }
+
+  /* Code line animations */
+  .code-1 { animation: slideUp 0.25s ease forwards; animation-delay: 11.0s; }
+  .code-2 { animation: slideUp 0.25s ease forwards; animation-delay: 11.4s; }
+  .code-3 { animation: slideUp 0.25s ease forwards; animation-delay: 11.8s; }
+  .code-4 { animation: slideUp 0.25s ease forwards; animation-delay: 12.2s; }
+  .code-5 { animation: slideUp 0.25s ease forwards; animation-delay: 12.6s; }
+  .code-6 { animation: slideUp 0.25s ease forwards; animation-delay: 13.0s; }
+
+  /* AC row animations */
+  .ac-r1 { animation: slideUp 0.3s ease forwards; animation-delay: 14.8s; }
+  .ac-r2 { animation: slideUp 0.3s ease forwards; animation-delay: 15.3s; }
+  .ac-r3 { animation: slideUp 0.3s ease forwards; animation-delay: 15.8s; }
+  .ac-r4 { animation: slideUp 0.3s ease forwards; animation-delay: 16.3s; }
+
+  /* Loop animations */
+  .loop-n1 { animation: slideUp 0.4s ease forwards; animation-delay: 17.5s; }
+  .loop-a1 { animation: fadeIn 0.3s ease forwards; animation-delay: 18.0s; }
+  .loop-n2 { animation: slideUp 0.4s ease forwards; animation-delay: 18.3s; }
+  .loop-a2 { animation: fadeIn 0.3s ease forwards; animation-delay: 18.8s; }
+  .loop-n3 { animation: slideUp 0.4s ease forwards; animation-delay: 19.1s; }
+  .loop-a3 { animation: fadeIn 0.3s ease forwards; animation-delay: 19.6s; }
+  .loop-n4 { animation: slideUp 0.4s ease forwards; animation-delay: 19.9s; }
+
+  /* Preview animations */
+  .preview-anim { animation: slideUp 0.5s ease forwards; animation-delay: 21.0s; }
+  .result-anim { animation: slideUp 0.4s ease forwards; animation-delay: 22.5s; }
+  .label-anim { animation: fadeIn 0.4s ease forwards; animation-delay: 23.2s; }
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -313,106 +530,192 @@
     to { opacity: 0; }
   }
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(12px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
   }
-  @keyframes progressFill {
-    0% { width: 0%; }
-    15% { width: 15%; }
-    30% { width: 30%; }
-    50% { width: 55%; }
-    70% { width: 75%; }
-    85% { width: 90%; }
-    100% { width: 100%; }
+  @keyframes blink {
+    50% { opacity: 0; }
   }
 
-  /* Loop: after 13s, reset everything and replay */
-  @keyframes loopReset {
-    0%, 99.9% { opacity: 1; }
-    100% { opacity: 0; }
+  /* Typing animation */
+  .typing {
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid #C04A1A;
+    width: 0;
+    display: inline-block;
+    animation: typeExpand 1s steps(20) forwards;
+    padding-right: 2px;
+  }
+  @keyframes typeExpand {
+    from { width: 0; }
+    to { width: 100%; }
   }
 </style>
-<script>
-  // Auto-loop: replay animation every 14 seconds
-  setInterval(() => {
-    const scene = document.querySelector('.scene');
-    const clone = scene.cloneNode(true);
-    scene.parentNode.replaceChild(clone, scene);
-  }, 14000);
-</script>
 </head>
 <body>
 <div class="scene">
-  <!-- Progress bar -->
   <div class="status-bar"><div class="progress"></div></div>
 
-  <!-- Title card (0-2.2s) -->
+  <!-- Title Card (0-1.8s) -->
   <div class="title-card">
     <h1>WorkflowX</h1>
     <div class="divider"></div>
-    <div class="tagline">xwhole 模式 &middot; 完整工作流演示</div>
+    <div class="subtitle">xwhole 模式 · 完整工作流演示</div>
   </div>
 
-  <!-- Flow canvas (2.5s+) -->
-  <div class="flow-canvas">
-    <!-- User input -->
-    <div class="input-bar">
-      <div class="prompt-icon">U</div>
-      <div class="text">
-        <span class="typing-text">「实现用户登录功能，包含 JWT 认证和角色权限管理」</span>
+  <!-- Phase 1: 需求输入 + 苏格拉底式追问 (2.0-6.3s) -->
+  <div class="phase phase-1">
+    <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> 需求发现 · Socratic Discovery</div>
+    <div class="section-title">苏格拉底式需求澄清</div>
+    <div class="chat-area">
+      <div class="msg msg-1-1">
+        <div class="avatar user">U</div>
+        <div class="bubble">实现用户登录功能</div>
       </div>
-    </div>
-
-    <!-- Agent flow -->
-    <div class="agent-flow">
-      <!-- Step 1: promptMasterX -->
-      <div class="agent-step">
-        <div class="agent-name">promptMasterX</div>
-        <div class="action">Prompt 优化</div>
-        <div class="detail">检测 37 种反模式<br/>注入 Karpathy 指南<br/>输出结构化指令</div>
+      <div class="msg msg-1-2">
+        <div class="avatar ai">AI</div>
+        <div class="bubble">
+          需求还不够清晰，让我逐个确认：
+          <br/><br/>
+          <strong>认证方式？</strong>
+          <div class="options">
+            <div class="option selected">A. 邮箱 + 密码</div>
+            <div class="option">B. 手机号 + 验证码</div>
+            <div class="option">C. OAuth 第三方登录</div>
+            <div class="option">D. 以上全部</div>
+          </div>
+        </div>
       </div>
-      <div class="flow-arrow">&rarr;</div>
-
-      <!-- Step 2: coderX -->
-      <div class="agent-step">
-        <div class="agent-name">coderX</div>
-        <div class="action">规格驱动编码</div>
-        <div class="detail">读取 Hybrid Tree AC<br/>实现 JWT 中间件<br/>角色权限路由守卫</div>
-      </div>
-      <div class="flow-arrow">&rarr;</div>
-
-      <!-- Step 3: evaluatorX -->
-      <div class="agent-step">
-        <div class="agent-name">evaluatorX</div>
-        <div class="action">AC 交叉验证</div>
-        <div class="detail">独立读取代码<br/>对照验收标准<br/>输出结构化报告</div>
-      </div>
-      <div class="flow-arrow">&rarr;</div>
-
-      <!-- Step 4: orchestratorX -->
-      <div class="agent-step">
-        <div class="agent-name">orchestratorX</div>
-        <div class="action">迭代决策</div>
-        <div class="detail">评估报告分析<br/>更新 Hybrid Tree<br/>记录知识图谱</div>
-      </div>
-    </div>
-
-    <!-- Result -->
-    <div class="result-row">
-      <div class="result-badge pass">
-        <div class="dot"></div>
-        评估通过 · 迭代完成
+      <div class="msg msg-1-3">
+        <div class="avatar user">U</div>
+        <div class="bubble">D，全部都要。另外需要 JWT token 和角色权限管理。</div>
       </div>
     </div>
   </div>
 
-  <!-- Bottom label -->
-  <div class="bottom-label">WorkflowX &middot; 通过工程纪律实现结构性优势</div>
-  <div class="loop-indicator">自动循环播放</div>
+  <!-- Phase 2: Hybrid Tree 生成 (6.5-10.3s) -->
+  <div class="phase phase-2">
+    <div class="phase-label"><div class="dot"></div><span class="step-num">02</span> 文档生成 · Hybrid Tree</div>
+    <div class="section-title">结构化需求文档</div>
+    <div class="doc-view">
+      <div class="doc-title">Hybrid Tree · user-auth</div>
+      <div class="section-item sec-1">
+        <div class="icon done">S</div>
+        <div class="text"><strong>0. 需求摘要</strong> — 用户登录模块，支持邮箱/手机/OAuth</div>
+        <div class="tag static">静态区</div>
+      </div>
+      <div class="section-item sec-2">
+        <div class="icon done">S</div>
+        <div class="text"><strong>1. 功能范围</strong> — JWT 认证 · 角色权限 · Token 刷新</div>
+        <div class="tag static">静态区</div>
+      </div>
+      <div class="section-item sec-3">
+        <div class="icon done">S</div>
+        <div class="text"><strong>2. 技术约束</strong> — Node.js + Express · PostgreSQL · Redis session</div>
+        <div class="tag static">静态区</div>
+      </div>
+      <div class="section-item sec-4">
+        <div class="icon wip">A</div>
+        <div class="text"><strong>7. 验收标准</strong> — 6 项 AC 分解完毕</div>
+        <div class="tag dynamic">动态区</div>
+      </div>
+      <div class="section-item sec-5">
+        <div class="icon wip">I</div>
+        <div class="text"><strong>8. 文件索引</strong> — 扫描 12 个相关文件</div>
+        <div class="tag dynamic">动态区</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3: coderX 编码 (10.5-13.8s) -->
+  <div class="phase phase-3">
+    <div class="phase-label"><div class="dot"></div><span class="step-num">03</span> 规格驱动编码 · coderX</div>
+    <div class="section-title">代码实现</div>
+    <div class="editor">
+      <div class="titlebar">
+        <div class="dot-red"></div><div class="dot-yel"></div><div class="dot-grn"></div>
+        <div class="filename">src/middleware/auth.ts</div>
+      </div>
+      <div class="body">
+        <div class="line code-1"><span class="comment">// JWT 认证中间件</span></div>
+        <div class="line code-2"><span class="keyword">import</span> { <span class="type">Request</span>, <span class="type">Response</span>, <span class="type">NextFunction</span> } <span class="keyword">from</span> <span class="string">'express'</span>;</div>
+        <div class="line code-3"><span class="keyword">import</span> <span class="param">jwt</span> <span class="keyword">from</span> <span class="string">'jsonwebtoken'</span>;</div>
+        <div class="line code-4">&nbsp;</div>
+        <div class="line code-5"><span class="keyword">export const</span> <span class="func">authenticate</span> = (<span class="param">req</span>: <span class="type">Request</span>, <span class="param">res</span>: <span class="type">Response</span>, <span class="param">next</span>: <span class="type">NextFunction</span>) => {</div>
+        <div class="line code-6">&nbsp;&nbsp;<span class="keyword">const</span> <span class="param">token</span> = <span class="param">req</span>.headers.authorization?.split(<span class="string">' '</span>)[1];<span class="cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4: evaluatorX 验证 (14.0-16.8s) -->
+  <div class="phase phase-4">
+    <div class="phase-label"><div class="dot"></div><span class="step-num">04</span> AC 交叉验证 · evaluatorX</div>
+    <div class="section-title">验收标准逐项验证</div>
+    <table class="ac-table">
+      <thead><tr><th>验收标准</th><th>状态</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr class="ac-r1"><td>AC-1: 邮箱密码注册登录</td><td><span class="status-pass">PASS</span></td><td>JWT 签发 + bcrypt 哈希</td></tr>
+        <tr class="ac-r2"><td>AC-2: 手机验证码登录</td><td><span class="status-pass">PASS</span></td><td>短信服务集成完成</td></tr>
+        <tr class="ac-r3"><td>AC-3: OAuth 第三方登录</td><td><span class="status-fail">FAIL</span></td><td>缺少 token 刷新逻辑</td></tr>
+        <tr class="ac-r4"><td>AC-4: 角色权限路由守卫</td><td><span class="status-pass">PASS</span></td><td>RBAC 中间件已实现</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Phase 5: 迭代循环 (17.0-20.3s) -->
+  <div class="phase phase-5">
+    <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> 迭代修复 · Iteration Loop</div>
+    <div class="section-title">自动迭代直至全部通过</div>
+    <div class="loop-diagram">
+      <div class="loop-node coder loop-n1">coderX<br/><div class="loop-count">Round 1</div></div>
+      <div class="loop-arrow loop-a1">&rarr;</div>
+      <div class="loop-node eval loop-n2">evaluatorX<br/><div class="loop-count">AC-3 FAIL</div></div>
+      <div class="loop-arrow loop-a2">&rarr;</div>
+      <div class="loop-node coder loop-n3">coderX<br/><div class="loop-count">Round 2 · 修复</div></div>
+      <div class="loop-arrow loop-a3">&rarr;</div>
+      <div class="loop-node pass loop-n4">PASS<br/><div class="loop-count">全部通过</div></div>
+    </div>
+  </div>
+
+  <!-- Phase 6: 效果预览 (20.5-24s) -->
+  <div class="phase phase-6">
+    <div class="phase-label"><div class="dot"></div><span class="step-num">06</span> 交付 · Deliverable</div>
+    <div class="two-col">
+      <div>
+        <div class="preview-frame preview-anim">
+          <div class="browser-bar">
+            <div class="dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
+            <div class="url">localhost:3000/login</div>
+          </div>
+          <div class="preview-body">
+            <div class="mock-header">
+              <div class="mock-logo">MyApp</div>
+              <div class="mock-nav"><span>首页</span><span>关于</span><span>登录</span></div>
+            </div>
+            <div class="mock-form">
+              <div class="mock-input">请输入邮箱地址</div>
+              <div class="mock-input">请输入密码</div>
+              <div class="mock-btn">登 录</div>
+              <div class="mock-text">或使用手机验证码 / 第三方账号登录</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
+        <div class="result-badge result-anim">
+          <div class="dot"></div>
+          评估通过 · 迭代完成 · 交付就绪
+        </div>
+      </div>
+    </div>
+    <div class="bottom-label label-anim">WorkflowX · 通过工程纪律实现结构性优势</div>
+  </div>
+
 </div>
 </body>
 </html>
