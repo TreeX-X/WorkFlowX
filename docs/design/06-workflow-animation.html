@@ -36,22 +36,16 @@
     height: 100%;
     background: #C04A1A;
     width: 0%;
-    animation: progressFill 24s linear forwards;
-  }
-  @keyframes progressFill {
-    0% { width: 0%; }
-    100% { width: 100%; }
+    animation: progressFill 28s linear forwards;
   }
 
-  /* Phase container */
+  /* Phase: absolute, hidden by default */
   .phase {
     position: absolute;
     inset: 0;
     padding: 40px 56px;
     opacity: 0;
-  }
-  .phase.visible {
-    animation: fadeIn 0.4s ease forwards;
+    pointer-events: none;
   }
 
   /* Phase label */
@@ -66,50 +60,33 @@
     color: #9B9B9B;
     margin-bottom: 16px;
   }
-  .phase-label .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #C04A1A;
-  }
-  .phase-label .step-num {
-    font-family: 'Georgia', serif;
-    font-size: 11px;
-    color: #C04A1A;
-  }
+  .phase-label .dot { width: 6px; height: 6px; border-radius: 50%; background: #C04A1A; }
+  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 11px; color: #C04A1A; }
 
-  /* Section title */
   .section-title {
     font-family: 'Georgia', serif;
     font-size: 20px;
     font-weight: 400;
     color: #1A1A1A;
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     letter-spacing: 0.04em;
   }
 
   /* Chat messages */
-  .chat-area {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  .chat-area { display: flex; flex-direction: column; gap: 14px; }
   .msg {
     display: flex;
     gap: 12px;
     align-items: flex-start;
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   .msg .avatar {
-    width: 28px; height: 28px;
+    width: 30px; height: 30px;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     font-family: -apple-system, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: #fff;
+    font-size: 12px; font-weight: 600; color: #fff;
     flex-shrink: 0;
   }
   .msg .avatar.user { background: #3B82F6; }
@@ -118,442 +95,386 @@
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
     border-radius: 4px;
-    padding: 10px 14px;
+    padding: 12px 16px;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
     font-size: 13px;
     color: #1A1A1A;
     line-height: 1.6;
-    max-width: 560px;
+    max-width: 520px;
   }
-  .msg .bubble .options {
-    margin-top: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-  .msg .bubble .option {
-    font-size: 12px;
-    color: #6B6B6B;
-    padding: 4px 8px;
+  .msg .bubble strong { color: #C04A1A; }
+  .options { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+  .option {
+    font-size: 12px; color: #6B6B6B;
+    padding: 5px 10px;
     background: #F5F4F0;
     border-radius: 3px;
     border-left: 2px solid #C04A1A;
   }
-  .msg .bubble .selected {
-    color: #C04A1A;
-    font-weight: 500;
-  }
+  .option.selected { color: #C04A1A; font-weight: 500; background: #FDF2ED; }
 
-  /* Code editor mockup */
+  /* Code editor */
   .editor {
     background: #1E1E1E;
-    border-radius: 4px;
+    border-radius: 6px;
     overflow: hidden;
     font-family: 'Menlo', 'Consolas', monospace;
-    font-size: 12px;
+    font-size: 12.5px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
   }
   .editor .titlebar {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px;
     background: #2D2D2D;
   }
-  .editor .titlebar .dot-red { width: 10px; height: 10px; border-radius: 50%; background: #FF5F56; }
-  .editor .titlebar .dot-yel { width: 10px; height: 10px; border-radius: 50%; background: #FFBD2E; }
-  .editor .titlebar .dot-grn { width: 10px; height: 10px; border-radius: 50%; background: #27C93F; }
-  .editor .titlebar .filename {
-    margin-left: 12px;
-    font-size: 11px;
-    color: #9B9B9B;
-  }
+  .editor .titlebar .dot-r { width: 10px; height: 10px; border-radius: 50%; background: #FF5F56; }
+  .editor .titlebar .dot-y { width: 10px; height: 10px; border-radius: 50%; background: #FFBD2E; }
+  .editor .titlebar .dot-g { width: 10px; height: 10px; border-radius: 50%; background: #27C93F; }
+  .editor .titlebar .filename { margin-left: 14px; font-size: 11px; color: #9B9B9B; }
   .editor .body {
-    padding: 12px 16px;
-    line-height: 1.8;
+    padding: 14px 18px;
+    line-height: 1.9;
     color: #D4D4D4;
-    min-height: 120px;
-    position: relative;
+    min-height: 160px;
   }
-  .editor .body .line {
-    opacity: 0;
-  }
-  .editor .body .keyword { color: #C586C0; }
-  .editor .body .func { color: #DCDCAA; }
-  .editor .body .string { color: #CE9178; }
-  .editor .body .type { color: #4EC9B0; }
-  .editor .body .comment { color: #6A9955; font-style: italic; }
-  .editor .body .param { color: #9CDCFE; }
-  .editor .body .cursor {
-    display: inline-block;
-    width: 2px;
-    height: 14px;
+  .editor .body .line { opacity: 0; }
+  .editor .body .kw { color: #C586C0; }
+  .editor .body .fn { color: #DCDCAA; }
+  .editor .body .str { color: #CE9178; }
+  .editor .body .tp { color: #4EC9B0; }
+  .editor .body .cm { color: #6A9955; font-style: italic; }
+  .editor .body .pm { color: #9CDCFE; }
+  .editor .body .num { color: #B5CEA8; }
+  .cursor {
+    display: inline-block; width: 2px; height: 14px;
     background: #C04A1A;
     animation: blink 0.8s step-end infinite;
-    vertical-align: middle;
-    margin-left: 2px;
+    vertical-align: middle; margin-left: 2px;
   }
 
   /* Hybrid Tree doc */
   .doc-view {
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 4px;
-    padding: 20px 24px;
+    border-radius: 6px;
+    padding: 24px 28px;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 13px;
-    line-height: 1.8;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
   .doc-view .doc-title {
     font-family: 'Georgia', serif;
-    font-size: 16px;
-    color: #1A1A1A;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
+    font-size: 17px; color: #1A1A1A;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
     border-bottom: 2px solid #C04A1A;
+    display: flex; align-items: center; gap: 10px;
   }
-  .doc-view .section-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 0;
+  .doc-view .doc-title .badge {
+    font-family: -apple-system, sans-serif;
+    font-size: 10px; padding: 2px 8px;
+    border-radius: 3px;
+    background: #ECFDF5; color: #059669;
+    letter-spacing: 0.04em;
+  }
+  .section-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0;
     opacity: 0;
   }
-  .doc-view .section-item .icon {
-    width: 20px; height: 20px;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    font-weight: 600;
-    flex-shrink: 0;
+  .section-item .icon {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 600; flex-shrink: 0;
   }
-  .doc-view .section-item .icon.done { background: #ECFDF5; color: #059669; }
-  .doc-view .section-item .icon.wip { background: #FFFBEB; color: #D97706; }
-  .doc-view .section-item .text { color: #1A1A1A; font-size: 13px; }
-  .doc-view .section-item .tag {
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 3px;
-    margin-left: auto;
-    flex-shrink: 0;
+  .section-item .icon.done { background: #ECFDF5; color: #059669; }
+  .section-item .icon.wip { background: #FFFBEB; color: #D97706; }
+  .section-item .text { color: #1A1A1A; font-size: 13px; flex: 1; }
+  .section-item .text strong { color: #1A1A1A; }
+  .section-item .tag {
+    font-size: 10px; padding: 3px 10px;
+    border-radius: 3px; flex-shrink: 0;
   }
-  .doc-view .section-item .tag.static { background: #EFF6FF; color: #2563EB; }
-  .doc-view .section-item .tag.dynamic { background: #FFFBEB; color: #D97706; }
+  .section-item .tag.static { background: #EFF6FF; color: #2563EB; }
+  .section-item .tag.dynamic { background: #FFFBEB; color: #D97706; }
 
   /* AC Table */
   .ac-table {
     width: 100%;
     border-collapse: collapse;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 12px;
+    font-size: 13px;
   }
   .ac-table th {
-    text-align: left;
-    padding: 8px 12px;
+    text-align: left; padding: 10px 14px;
     border-bottom: 2px solid #E8E6E1;
-    color: #6B6B6B;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+    color: #6B6B6B; font-weight: 500;
+    font-size: 11px; letter-spacing: 0.06em;
   }
   .ac-table td {
-    padding: 8px 12px;
+    padding: 10px 14px;
     border-bottom: 1px solid #F5F4F0;
     color: #1A1A1A;
   }
-  .ac-table .status-pass {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 3px;
-    background: #ECFDF5;
-    color: #059669;
-    font-size: 11px;
-    font-weight: 500;
-  }
-  .ac-table .status-fail {
-    display: inline-block;
-    padding: 2px 10px;
-    border-radius: 3px;
-    background: #FEF2F2;
-    color: #DC2626;
-    font-size: 11px;
-    font-weight: 500;
-  }
   .ac-table tr { opacity: 0; }
+  .status-pass {
+    display: inline-block; padding: 3px 12px;
+    border-radius: 3px;
+    background: #ECFDF5; color: #059669;
+    font-size: 11px; font-weight: 500;
+  }
+  .status-fail {
+    display: inline-block; padding: 3px 12px;
+    border-radius: 3px;
+    background: #FEF2F2; color: #DC2626;
+    font-size: 11px; font-weight: 500;
+  }
 
   /* Loop diagram */
   .loop-diagram {
-    display: flex;
-    align-items: center;
+    display: flex; align-items: center;
     justify-content: center;
-    gap: 20px;
-    padding: 24px 0;
+    gap: 24px;
+    padding: 32px 0;
   }
   .loop-node {
-    padding: 16px 24px;
-    border-radius: 4px;
+    padding: 18px 28px;
+    border-radius: 6px;
     text-align: center;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px; font-weight: 500;
     opacity: 0;
   }
+  .loop-node .sub { font-size: 11px; color: #9B9B9B; margin-top: 4px; font-weight: 400; }
   .loop-node.coder { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
   .loop-node.eval { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
   .loop-node.pass { background: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
-  .loop-arrow {
-    font-size: 20px;
-    color: #A0A0A0;
-    opacity: 0;
-  }
-  .loop-count {
-    font-family: 'Georgia', serif;
-    font-size: 11px;
-    color: #9B9B9B;
-    text-align: center;
-    margin-top: 4px;
-  }
+  .loop-arrow { font-size: 22px; color: #A0A0A0; opacity: 0; }
 
-  /* Preview mockup */
+  /* Preview */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: center;
+  }
   .preview-frame {
     background: #FFFFFF;
     border: 1px solid #E8E6E1;
-    border-radius: 4px;
+    border-radius: 6px;
     overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.08);
   }
   .preview-frame .browser-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
     padding: 10px 16px;
     background: #F5F4F0;
     border-bottom: 1px solid #E8E6E1;
   }
-  .preview-frame .browser-bar .dots {
-    display: flex; gap: 5px;
-  }
+  .preview-frame .browser-bar .dots { display: flex; gap: 5px; }
   .preview-frame .browser-bar .dot-r { width: 8px; height: 8px; border-radius: 50%; background: #FF5F56; }
   .preview-frame .browser-bar .dot-y { width: 8px; height: 8px; border-radius: 50%; background: #FFBD2E; }
   .preview-frame .browser-bar .dot-g { width: 8px; height: 8px; border-radius: 50%; background: #27C93F; }
   .preview-frame .browser-bar .url {
-    flex: 1;
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 3px;
-    padding: 4px 12px;
+    flex: 1; background: #FFFFFF;
+    border: 1px solid #E8E6E1; border-radius: 3px;
+    padding: 5px 14px;
     font-family: -apple-system, sans-serif;
-    font-size: 11px;
-    color: #9B9B9B;
+    font-size: 11px; color: #9B9B9B;
   }
-  .preview-frame .preview-body {
-    padding: 24px;
-    min-height: 200px;
-  }
-  .preview-frame .preview-body .mock-header {
-    display: flex;
-    align-items: center;
+  .preview-body { padding: 28px; min-height: 220px; }
+  .mock-header {
+    display: flex; align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #F5F4F0;
   }
-  .preview-frame .preview-body .mock-logo {
+  .mock-logo { font-family: 'Georgia', serif; font-size: 18px; color: #1A1A1A; }
+  .mock-nav { display: flex; gap: 18px; font-family: -apple-system, sans-serif; font-size: 12px; color: #6B6B6B; }
+  .mock-form { max-width: 340px; margin: 0 auto; }
+  .mock-form .form-title {
     font-family: 'Georgia', serif;
-    font-size: 16px;
-    color: #1A1A1A;
+    font-size: 18px; color: #1A1A1A;
+    text-align: center; margin-bottom: 20px;
   }
-  .preview-frame .preview-body .mock-nav {
-    display: flex; gap: 16px;
+  .mock-input {
+    width: 100%; padding: 11px 14px;
+    border: 1px solid #E8E6E1; border-radius: 4px;
+    font-size: 13px; margin-bottom: 10px;
+    font-family: -apple-system, sans-serif; color: #9B9B9B;
+    background: #FFFFFF;
+  }
+  .mock-btn {
+    width: 100%; padding: 11px;
+    background: #C04A1A; color: #fff;
+    border: none; border-radius: 4px;
     font-family: -apple-system, sans-serif;
-    font-size: 12px;
-    color: #6B6B6B;
+    font-size: 14px; font-weight: 500;
+    cursor: default; margin-top: 4px;
   }
-  .preview-frame .preview-body .mock-form {
-    max-width: 360px;
-  }
-  .preview-frame .preview-body .mock-input {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1px solid #E8E6E1;
-    border-radius: 4px;
-    font-size: 13px;
-    margin-bottom: 10px;
+  .mock-divider {
+    text-align: center; margin: 16px 0;
     font-family: -apple-system, sans-serif;
-    color: #9B9B9B;
+    font-size: 11px; color: #C0C0C0;
+    display: flex; align-items: center; gap: 12px;
   }
-  .preview-frame .preview-body .mock-btn {
-    width: 100%;
-    padding: 10px;
-    background: #C04A1A;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-family: -apple-system, sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: default;
+  .mock-divider::before, .mock-divider::after {
+    content: ''; flex: 1; height: 1px; background: #E8E6E1;
   }
-  .preview-frame .preview-body .mock-text {
+  .mock-social {
+    display: flex; gap: 10px; justify-content: center;
+  }
+  .mock-social-btn {
+    flex: 1; padding: 9px;
+    border: 1px solid #E8E6E1; border-radius: 4px;
+    text-align: center;
     font-family: -apple-system, sans-serif;
-    font-size: 12px;
-    color: #9B9B9B;
+    font-size: 11px; color: #6B6B6B;
+    background: #FFFFFF;
+  }
+
+  .result-badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 36px;
+    border-radius: 6px;
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    font-size: 15px; letter-spacing: 0.04em; font-weight: 500;
+    background: #ECFDF5; color: #059669;
+    border: 1px solid #A7F3D0;
+    box-shadow: 0 2px 8px rgba(16,185,129,0.1);
+  }
+  .result-badge .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%; background: #10B981;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .result-sub {
+    font-family: -apple-system, sans-serif;
+    font-size: 12px; color: #9B9B9B;
     margin-top: 12px;
     text-align: center;
   }
 
-  /* Result badge */
-  .result-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 32px;
-    border-radius: 4px;
-    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.04em;
-    font-weight: 500;
-    background: #ECFDF5;
-    color: #059669;
-    border: 1px solid #A7F3D0;
-  }
-  .result-badge .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: #10B981;
-    animation: pulse 1.2s ease-in-out infinite;
-  }
-
-  /* Bottom label */
   .bottom-label {
     position: absolute;
-    bottom: 24px;
-    left: 0; right: 0;
+    bottom: 28px; left: 0; right: 0;
     text-align: center;
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 11px;
-    color: #9B9B9B;
+    font-size: 11px; color: #9B9B9B;
     letter-spacing: 0.06em;
     opacity: 0;
   }
 
   /* Title card */
   .title-card {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
     opacity: 0;
-    animation: fadeIn 0.6s ease forwards, fadeOut 0.4s ease forwards;
-    animation-delay: 0s, 1.8s;
     z-index: 5;
   }
-  .title-card h1 {
-    font-size: 36px;
-    font-weight: 400;
-    letter-spacing: 0.06em;
-    color: #1A1A1A;
-  }
-  .title-card .divider {
-    width: 40px; height: 2px;
-    background: #C04A1A;
-    margin: 16px 0;
-  }
+  .title-card h1 { font-size: 40px; font-weight: 400; letter-spacing: 0.06em; }
+  .title-card .divider { width: 44px; height: 2px; background: #C04A1A; margin: 18px 0; }
   .title-card .subtitle {
     font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-    font-size: 14px;
-    color: #9B9B9B;
-    letter-spacing: 0.08em;
+    font-size: 15px; color: #9B9B9B; letter-spacing: 0.08em;
   }
 
-  /* Two-column layout */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
+  /* ======================== */
+  /* TIMELINE ANIMATIONS      */
+  /* ======================== */
 
-  /* Phase-specific animations with delays */
-  .phase-1 { animation-delay: 2.0s; }
-  .phase-2 { animation-delay: 6.5s; }
-  .phase-3 { animation-delay: 10.5s; }
-  .phase-4 { animation-delay: 14.0s; }
-  .phase-5 { animation-delay: 17.0s; }
-  .phase-6 { animation-delay: 20.5s; }
+  /* Title: 0s in, 2.5s out */
+  .title-card { animation: fadeIn 0.6s ease 0s forwards, fadeOut 0.5s ease 2.5s forwards; }
 
-  /* Msg animations */
-  .msg-1-1 { animation: slideUp 0.4s ease forwards; animation-delay: 2.8s; }
-  .msg-1-2 { animation: slideUp 0.4s ease forwards; animation-delay: 4.0s; }
-  .msg-1-3 { animation: slideUp 0.4s ease forwards; animation-delay: 5.2s; }
+  /* Phase 1: Socratic Discovery (2.8s - 7.5s) */
+  .p1 { animation: fadeIn 0.4s ease 2.8s forwards, fadeOut 0.4s ease 7.5s forwards; }
+  .p1 .m1 { animation: slideUp 0.4s ease 3.2s forwards; }
+  .p1 .m2 { animation: slideUp 0.4s ease 4.5s forwards; }
+  .p1 .m3 { animation: slideUp 0.4s ease 6.0s forwards; }
 
-  /* Doc section animations */
-  .sec-1 { animation: slideUp 0.3s ease forwards; animation-delay: 7.5s; }
-  .sec-2 { animation: slideUp 0.3s ease forwards; animation-delay: 8.0s; }
-  .sec-3 { animation: slideUp 0.3s ease forwards; animation-delay: 8.5s; }
-  .sec-4 { animation: slideUp 0.3s ease forwards; animation-delay: 9.0s; }
-  .sec-5 { animation: slideUp 0.3s ease forwards; animation-delay: 9.5s; }
+  /* Phase 2: Hybrid Tree (7.8s - 13s) */
+  .p2 { animation: fadeIn 0.4s ease 7.8s forwards, fadeOut 0.4s ease 13s forwards; }
+  .p2 .s1 { animation: slideUp 0.3s ease 8.5s forwards; }
+  .p2 .s2 { animation: slideUp 0.3s ease 9.0s forwards; }
+  .p2 .s3 { animation: slideUp 0.3s ease 9.5s forwards; }
+  .p2 .s4 { animation: slideUp 0.3s ease 10.0s forwards; }
+  .p2 .s5 { animation: slideUp 0.3s ease 10.5s forwards; }
+  .p2 .s6 { animation: slideUp 0.3s ease 11.0s forwards; }
 
-  /* Code line animations */
-  .code-1 { animation: slideUp 0.25s ease forwards; animation-delay: 11.0s; }
-  .code-2 { animation: slideUp 0.25s ease forwards; animation-delay: 11.4s; }
-  .code-3 { animation: slideUp 0.25s ease forwards; animation-delay: 11.8s; }
-  .code-4 { animation: slideUp 0.25s ease forwards; animation-delay: 12.2s; }
-  .code-5 { animation: slideUp 0.25s ease forwards; animation-delay: 12.6s; }
-  .code-6 { animation: slideUp 0.25s ease forwards; animation-delay: 13.0s; }
+  /* Phase 3: Code (13.3s - 18s) */
+  .p3 { animation: fadeIn 0.4s ease 13.3s forwards, fadeOut 0.4s ease 18s forwards; }
+  .p3 .c1 { animation: codeLine 0.25s ease 14.0s forwards; }
+  .p3 .c2 { animation: codeLine 0.25s ease 14.4s forwards; }
+  .p3 .c3 { animation: codeLine 0.25s ease 14.8s forwards; }
+  .p3 .c4 { animation: codeLine 0.25s ease 15.2s forwards; }
+  .p3 .c5 { animation: codeLine 0.25s ease 15.6s forwards; }
+  .p3 .c6 { animation: codeLine 0.25s ease 16.0s forwards; }
+  .p3 .c7 { animation: codeLine 0.25s ease 16.4s forwards; }
+  .p3 .c8 { animation: codeLine 0.25s ease 16.8s forwards; }
 
-  /* AC row animations */
-  .ac-r1 { animation: slideUp 0.3s ease forwards; animation-delay: 14.8s; }
-  .ac-r2 { animation: slideUp 0.3s ease forwards; animation-delay: 15.3s; }
-  .ac-r3 { animation: slideUp 0.3s ease forwards; animation-delay: 15.8s; }
-  .ac-r4 { animation: slideUp 0.3s ease forwards; animation-delay: 16.3s; }
+  /* Phase 4: AC Validation (18.3s - 22.5s) */
+  .p4 { animation: fadeIn 0.4s ease 18.3s forwards, fadeOut 0.4s ease 22.5s forwards; }
+  .p4 .r1 { animation: slideUp 0.3s ease 19.0s forwards; }
+  .p4 .r2 { animation: slideUp 0.3s ease 19.5s forwards; }
+  .p4 .r3 { animation: slideUp 0.3s ease 20.0s forwards; }
+  .p4 .r4 { animation: slideUp 0.3s ease 20.5s forwards; }
+  .p4 .r5 { animation: slideUp 0.3s ease 21.0s forwards; }
 
-  /* Loop animations */
-  .loop-n1 { animation: slideUp 0.4s ease forwards; animation-delay: 17.5s; }
-  .loop-a1 { animation: fadeIn 0.3s ease forwards; animation-delay: 18.0s; }
-  .loop-n2 { animation: slideUp 0.4s ease forwards; animation-delay: 18.3s; }
-  .loop-a2 { animation: fadeIn 0.3s ease forwards; animation-delay: 18.8s; }
-  .loop-n3 { animation: slideUp 0.4s ease forwards; animation-delay: 19.1s; }
-  .loop-a3 { animation: fadeIn 0.3s ease forwards; animation-delay: 19.6s; }
-  .loop-n4 { animation: slideUp 0.4s ease forwards; animation-delay: 19.9s; }
+  /* Phase 5: Iteration (22.8s - 26s) */
+  .p5 { animation: fadeIn 0.4s ease 22.8s forwards, fadeOut 0.4s ease 26s forwards; }
+  .p5 .n1 { animation: slideUp 0.4s ease 23.3s forwards; }
+  .p5 .a1 { animation: fadeIn 0.3s ease 23.8s forwards; }
+  .p5 .n2 { animation: slideUp 0.4s ease 24.1s forwards; }
+  .p5 .a2 { animation: fadeIn 0.3s ease 24.6s forwards; }
+  .p5 .n3 { animation: slideUp 0.4s ease 24.9s forwards; }
+  .p5 .a3 { animation: fadeIn 0.3s ease 25.4s forwards; }
+  .p5 .n4 { animation: slideUp 0.4s ease 25.7s forwards; }
 
-  /* Preview animations */
-  .preview-anim { animation: slideUp 0.5s ease forwards; animation-delay: 21.0s; }
-  .result-anim { animation: slideUp 0.4s ease forwards; animation-delay: 22.5s; }
-  .label-anim { animation: fadeIn 0.4s ease forwards; animation-delay: 23.2s; }
+  /* Phase 6: Deliverable (26.3s - 30s) */
+  .p6 { animation: fadeIn 0.5s ease 26.3s forwards; }
+  .p6 .preview { animation: slideUp 0.5s ease 26.8s forwards; opacity: 0; }
+  .p6 .badge { animation: slideUp 0.4s ease 28.0s forwards; opacity: 0; }
+  .p6 .label { animation: fadeIn 0.4s ease 28.8s forwards; }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
+  /* Keyframes */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
   @keyframes slideUp {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes codeLine {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
   }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
   }
-  @keyframes blink {
-    50% { opacity: 0; }
+  @keyframes blink { 50% { opacity: 0; } }
+  @keyframes progressFill {
+    0% { width: 0%; }
+    100% { width: 100%; }
   }
 
-  /* Typing animation */
-  .typing {
-    overflow: hidden;
-    white-space: nowrap;
-    border-right: 2px solid #C04A1A;
-    width: 0;
-    display: inline-block;
-    animation: typeExpand 1s steps(20) forwards;
-    padding-right: 2px;
+  /* Progress dots animation for loop */
+  .progress-dots {
+    display: inline-flex; gap: 3px;
+    margin-left: 8px;
   }
-  @keyframes typeExpand {
-    from { width: 0; }
-    to { width: 100%; }
+  .progress-dots span {
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: #C04A1A;
+    animation: dotPulse 1s ease-in-out infinite;
+  }
+  .progress-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .progress-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
   }
 </style>
 </head>
@@ -561,159 +482,171 @@
 <div class="scene">
   <div class="status-bar"><div class="progress"></div></div>
 
-  <!-- Title Card (0-1.8s) -->
+  <!-- Title Card -->
   <div class="title-card">
     <h1>WorkflowX</h1>
     <div class="divider"></div>
     <div class="subtitle">xwhole 模式 · 完整工作流演示</div>
   </div>
 
-  <!-- Phase 1: 需求输入 + 苏格拉底式追问 (2.0-6.3s) -->
-  <div class="phase phase-1">
+  <!-- Phase 1: Socratic Discovery -->
+  <div class="phase p1">
     <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> 需求发现 · Socratic Discovery</div>
     <div class="section-title">苏格拉底式需求澄清</div>
     <div class="chat-area">
-      <div class="msg msg-1-1">
+      <div class="msg m1">
         <div class="avatar user">U</div>
         <div class="bubble">实现用户登录功能</div>
       </div>
-      <div class="msg msg-1-2">
+      <div class="msg m2">
         <div class="avatar ai">AI</div>
         <div class="bubble">
-          需求还不够清晰，让我逐个确认：
-          <br/><br/>
-          <strong>认证方式？</strong>
+          需求需要进一步澄清。第一个问题：<br/><br/>
+          <strong>认证方式选择：</strong>
           <div class="options">
-            <div class="option selected">A. 邮箱 + 密码</div>
+            <div class="option selected">A. 邮箱 + 密码（推荐）</div>
             <div class="option">B. 手机号 + 验证码</div>
-            <div class="option">C. OAuth 第三方登录</div>
+            <div class="option">C. OAuth 第三方（Google / GitHub）</div>
             <div class="option">D. 以上全部</div>
           </div>
         </div>
       </div>
-      <div class="msg msg-1-3">
+      <div class="msg m3">
         <div class="avatar user">U</div>
-        <div class="bubble">D，全部都要。另外需要 JWT token 和角色权限管理。</div>
+        <div class="bubble">D，全部支持。另外需要 JWT token 认证和 RBAC 角色权限管理，支持 admin / editor / viewer 三种角色。</div>
       </div>
     </div>
   </div>
 
-  <!-- Phase 2: Hybrid Tree 生成 (6.5-10.3s) -->
-  <div class="phase phase-2">
+  <!-- Phase 2: Hybrid Tree -->
+  <div class="phase p2">
     <div class="phase-label"><div class="dot"></div><span class="step-num">02</span> 文档生成 · Hybrid Tree</div>
-    <div class="section-title">结构化需求文档</div>
+    <div class="section-title">结构化需求文档自动生成</div>
     <div class="doc-view">
-      <div class="doc-title">Hybrid Tree · user-auth</div>
-      <div class="section-item sec-1">
-        <div class="icon done">S</div>
-        <div class="text"><strong>0. 需求摘要</strong> — 用户登录模块，支持邮箱/手机/OAuth</div>
+      <div class="doc-title">Hybrid Tree · user-auth <span class="badge">已生成</span></div>
+      <div class="section-item s1">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>0. 需求摘要</strong> — 用户登录模块，三种认证方式 + JWT + RBAC</div>
         <div class="tag static">静态区</div>
       </div>
-      <div class="section-item sec-2">
-        <div class="icon done">S</div>
-        <div class="text"><strong>1. 功能范围</strong> — JWT 认证 · 角色权限 · Token 刷新</div>
+      <div class="section-item s2">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>1. 功能范围</strong> — 注册 / 登录 / Token 刷新 / 角色路由守卫</div>
         <div class="tag static">静态区</div>
       </div>
-      <div class="section-item sec-3">
-        <div class="icon done">S</div>
-        <div class="text"><strong>2. 技术约束</strong> — Node.js + Express · PostgreSQL · Redis session</div>
+      <div class="section-item s3">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>2. 技术约束</strong> — Node.js + Express + PostgreSQL + Redis</div>
         <div class="tag static">静态区</div>
       </div>
-      <div class="section-item sec-4">
-        <div class="icon wip">A</div>
-        <div class="text"><strong>7. 验收标准</strong> — 6 项 AC 分解完毕</div>
+      <div class="section-item s4">
+        <div class="icon done">&#10003;</div>
+        <div class="text"><strong>5. 边界条件</strong> — 并发登录限制 / Token 过期策略 / 密码强度</div>
+        <div class="tag static">静态区</div>
+      </div>
+      <div class="section-item s5">
+        <div class="icon wip">AC</div>
+        <div class="text"><strong>7. 验收标准</strong> — 6 项 AC 从需求分解而来</div>
         <div class="tag dynamic">动态区</div>
       </div>
-      <div class="section-item sec-5">
-        <div class="icon wip">I</div>
-        <div class="text"><strong>8. 文件索引</strong> — 扫描 12 个相关文件</div>
+      <div class="section-item s6">
+        <div class="icon wip">IDX</div>
+        <div class="text"><strong>8. 文件索引</strong> — 扫描项目结构，定位 12 个相关文件</div>
         <div class="tag dynamic">动态区</div>
       </div>
     </div>
   </div>
 
-  <!-- Phase 3: coderX 编码 (10.5-13.8s) -->
-  <div class="phase phase-3">
+  <!-- Phase 3: Code Implementation -->
+  <div class="phase p3">
     <div class="phase-label"><div class="dot"></div><span class="step-num">03</span> 规格驱动编码 · coderX</div>
-    <div class="section-title">代码实现</div>
+    <div class="section-title">按验收标准逐项实现</div>
     <div class="editor">
       <div class="titlebar">
-        <div class="dot-red"></div><div class="dot-yel"></div><div class="dot-grn"></div>
+        <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
         <div class="filename">src/middleware/auth.ts</div>
       </div>
       <div class="body">
-        <div class="line code-1"><span class="comment">// JWT 认证中间件</span></div>
-        <div class="line code-2"><span class="keyword">import</span> { <span class="type">Request</span>, <span class="type">Response</span>, <span class="type">NextFunction</span> } <span class="keyword">from</span> <span class="string">'express'</span>;</div>
-        <div class="line code-3"><span class="keyword">import</span> <span class="param">jwt</span> <span class="keyword">from</span> <span class="string">'jsonwebtoken'</span>;</div>
-        <div class="line code-4">&nbsp;</div>
-        <div class="line code-5"><span class="keyword">export const</span> <span class="func">authenticate</span> = (<span class="param">req</span>: <span class="type">Request</span>, <span class="param">res</span>: <span class="type">Response</span>, <span class="param">next</span>: <span class="type">NextFunction</span>) => {</div>
-        <div class="line code-6">&nbsp;&nbsp;<span class="keyword">const</span> <span class="param">token</span> = <span class="param">req</span>.headers.authorization?.split(<span class="string">' '</span>)[1];<span class="cursor"></span></div>
+        <div class="line c1"><span class="cm">// JWT 认证中间件 — AC-1, AC-4</span></div>
+        <div class="line c2"><span class="kw">import</span> { <span class="tp">Request</span>, <span class="tp">Response</span>, <span class="tp">NextFunction</span> } <span class="kw">from</span> <span class="str">'express'</span>;</div>
+        <div class="line c3"><span class="kw">import</span> <span class="pm">jwt</span> <span class="kw">from</span> <span class="str">'jsonwebtoken'</span>;</div>
+        <div class="line c4"><span class="kw">import</span> { <span class="pm">Role</span> } <span class="kw">from</span> <span class="str">'../types/auth'</span>;</div>
+        <div class="line c5">&nbsp;</div>
+        <div class="line c6"><span class="kw">export const</span> <span class="fn">authenticate</span> = (<span class="pm">req</span>: <span class="tp">Request</span>, <span class="pm">res</span>: <span class="tp">Response</span>, <span class="pm">next</span>: <span class="tp">NextFunction</span>) => {</div>
+        <div class="line c7">&nbsp;&nbsp;<span class="kw">const</span> <span class="pm">token</span> = <span class="pm">req</span>.headers.authorization?.split(<span class="str">' '</span>)[<span class="num">1</span>];</div>
+        <div class="line c8">&nbsp;&nbsp;<span class="kw">if</span> (!token) <span class="kw">return</span> <span class="pm">res</span>.status(<span class="num">401</span>).json({ error: <span class="str">'Unauthorized'</span> });<span class="cursor"></span></div>
       </div>
     </div>
   </div>
 
-  <!-- Phase 4: evaluatorX 验证 (14.0-16.8s) -->
-  <div class="phase phase-4">
+  <!-- Phase 4: AC Validation -->
+  <div class="phase p4">
     <div class="phase-label"><div class="dot"></div><span class="step-num">04</span> AC 交叉验证 · evaluatorX</div>
-    <div class="section-title">验收标准逐项验证</div>
+    <div class="section-title">独立验证每项验收标准</div>
     <table class="ac-table">
-      <thead><tr><th>验收标准</th><th>状态</th><th>说明</th></tr></thead>
+      <thead><tr><th style="width:35%">验收标准</th><th style="width:12%">状态</th><th>验证说明</th></tr></thead>
       <tbody>
-        <tr class="ac-r1"><td>AC-1: 邮箱密码注册登录</td><td><span class="status-pass">PASS</span></td><td>JWT 签发 + bcrypt 哈希</td></tr>
-        <tr class="ac-r2"><td>AC-2: 手机验证码登录</td><td><span class="status-pass">PASS</span></td><td>短信服务集成完成</td></tr>
-        <tr class="ac-r3"><td>AC-3: OAuth 第三方登录</td><td><span class="status-fail">FAIL</span></td><td>缺少 token 刷新逻辑</td></tr>
-        <tr class="ac-r4"><td>AC-4: 角色权限路由守卫</td><td><span class="status-pass">PASS</span></td><td>RBAC 中间件已实现</td></tr>
+        <tr class="r1"><td>AC-1: 邮箱密码注册登录</td><td><span class="status-pass">PASS</span></td><td>bcrypt 哈希 + JWT 签发，逻辑完整</td></tr>
+        <tr class="r2"><td>AC-2: 手机验证码登录</td><td><span class="status-pass">PASS</span></td><td>短信服务集成 + 60s 过期机制</td></tr>
+        <tr class="r3"><td>AC-3: OAuth 第三方登录</td><td><span class="status-fail">FAIL</span></td><td>P0: 缺少 token 刷新逻辑，过期后无法续期</td></tr>
+        <tr class="r4"><td>AC-4: RBAC 角色路由守卫</td><td><span class="status-pass">PASS</span></td><td>admin/editor/viewer 三级权限已实现</td></tr>
+        <tr class="r5"><td>AC-5: JWT Token 刷新机制</td><td><span class="status-fail">FAIL</span></td><td>P1: refresh token 未存入 Redis</td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Phase 5: 迭代循环 (17.0-20.3s) -->
-  <div class="phase phase-5">
+  <!-- Phase 5: Iteration Loop -->
+  <div class="phase p5">
     <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> 迭代修复 · Iteration Loop</div>
     <div class="section-title">自动迭代直至全部通过</div>
     <div class="loop-diagram">
-      <div class="loop-node coder loop-n1">coderX<br/><div class="loop-count">Round 1</div></div>
-      <div class="loop-arrow loop-a1">&rarr;</div>
-      <div class="loop-node eval loop-n2">evaluatorX<br/><div class="loop-count">AC-3 FAIL</div></div>
-      <div class="loop-arrow loop-a2">&rarr;</div>
-      <div class="loop-node coder loop-n3">coderX<br/><div class="loop-count">Round 2 · 修复</div></div>
-      <div class="loop-arrow loop-a3">&rarr;</div>
-      <div class="loop-node pass loop-n4">PASS<br/><div class="loop-count">全部通过</div></div>
+      <div class="loop-node coder n1">coderX<div class="sub">Round 1</div></div>
+      <div class="loop-arrow a1">&rarr;</div>
+      <div class="loop-node eval n2">evaluatorX<div class="sub">AC-3, AC-5 FAIL</div></div>
+      <div class="loop-arrow a2">&rarr;</div>
+      <div class="loop-node coder n3">coderX<div class="sub">Round 2 · 修复中<span class="progress-dots"><span></span><span></span><span></span></span></div></div>
+      <div class="loop-arrow a3">&rarr;</div>
+      <div class="loop-node pass n4">PASS<div class="sub">全部 AC 通过</div></div>
     </div>
   </div>
 
-  <!-- Phase 6: 效果预览 (20.5-24s) -->
-  <div class="phase phase-6">
+  <!-- Phase 6: Deliverable -->
+  <div class="phase p6">
     <div class="phase-label"><div class="dot"></div><span class="step-num">06</span> 交付 · Deliverable</div>
     <div class="two-col">
-      <div>
-        <div class="preview-frame preview-anim">
-          <div class="browser-bar">
-            <div class="dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
-            <div class="url">localhost:3000/login</div>
+      <div class="preview-frame preview">
+        <div class="browser-bar">
+          <div class="dots"><div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div></div>
+          <div class="url">localhost:3000/login</div>
+        </div>
+        <div class="preview-body">
+          <div class="mock-header">
+            <div class="mock-logo">MyApp</div>
+            <div class="mock-nav"><span>首页</span><span>产品</span><span>关于</span><span>登录</span></div>
           </div>
-          <div class="preview-body">
-            <div class="mock-header">
-              <div class="mock-logo">MyApp</div>
-              <div class="mock-nav"><span>首页</span><span>关于</span><span>登录</span></div>
-            </div>
-            <div class="mock-form">
-              <div class="mock-input">请输入邮箱地址</div>
-              <div class="mock-input">请输入密码</div>
-              <div class="mock-btn">登 录</div>
-              <div class="mock-text">或使用手机验证码 / 第三方账号登录</div>
+          <div class="mock-form">
+            <div class="form-title">登录到 MyApp</div>
+            <div class="mock-input">请输入邮箱地址</div>
+            <div class="mock-input">请输入密码</div>
+            <div class="mock-btn">登 录</div>
+            <div class="mock-divider">或</div>
+            <div class="mock-social">
+              <div class="mock-social-btn">Google</div>
+              <div class="mock-social-btn">GitHub</div>
+              <div class="mock-social-btn">手机验证</div>
             </div>
           </div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
-        <div class="result-badge result-anim">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="result-badge badge">
           <div class="dot"></div>
-          评估通过 · 迭代完成 · 交付就绪
+          评估通过 · 交付就绪
         </div>
+        <div class="result-sub">6 项 AC 全部 PASS · 2 轮迭代 · coderX + evaluatorX</div>
       </div>
     </div>
-    <div class="bottom-label label-anim">WorkflowX · 通过工程纪律实现结构性优势</div>
+    <div class="bottom-label label">WorkflowX · 通过工程纪律实现结构性优势</div>
   </div>
 
 </div>
