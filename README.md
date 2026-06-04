@@ -27,7 +27,7 @@
 ## 工作流演示
 
 <p align="center">
-  <img src="docs/design/images/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="960" />
+  <img src="docs/design/images/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="720" />
   <br/>
   <sub>xwhole 模式完整工作流：需求输入 → promptMasterX 优化 → coderX 编码 → evaluatorX 验证 → 迭代完成</sub>
 </p>
@@ -73,18 +73,25 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 
 ## 系统架构
 
-<p align="center">
-  <img src="docs/design/images/01-architecture-zh.png" alt="WorkflowX 系统架构" width="960" />
-</p>
+<table>
+<tr>
+<td width="55%">
 
-**核心机制：**
+<img src="docs/design/images/01-architecture-zh.png" alt="WorkflowX 系统架构" width="520" />
 
-| 机制 | 说明 |
-|------|------|
-| **Bus Payload 通信** | 3 种结构化 Payload（Change Summary / Evaluation Result / Requirement Change），零上下文污染 |
-| **Hybrid Tree** | Parent 路由层 + Children 需求层，MECE 分工，Section-Level Caching |
-| **Worktree 隔离** | 每个子智能体在独立 git worktree 中工作，物理隔离 |
-| **AC 交叉验证** | evaluatorX 不信任 coderX 声明，独立验证每个验收标准 |
+</td>
+<td width="45%">
+
+**orchestratorX** 是唯一文档写入者，通过 Bus Payload 调度子智能体：
+
+- **Bus Payload 通信** — 3 种结构化 Payload（Change Summary / Evaluation Result / Requirement Change），零上下文污染
+- **Hybrid Tree** — Parent 路由层 + Children 需求层，MECE 分工，Section-Level Caching
+- **Worktree 隔离** — 每个子智能体在独立 git worktree 中工作，物理隔离
+- **AC 交叉验证** — evaluatorX 不信任 coderX 声明，独立验证每个验收标准
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -109,15 +116,13 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 
 ### 三层 Token 优化
 
-<p align="center">
-  <img src="docs/design/images/03-token-optimization-zh.png" alt="三层 Token 优化" width="960" />
-</p>
+> 多轮迭代场景节省 40-60%，每次 SubAgent 唤醒的输入 Token 压缩到最小。
 
 | 层 | 策略 | 效果 |
 |---|------|------|
-| **L1: Section-Level Caching** | 静态区置顶命中 LLM Prompt Cache，动态区底部覆写不影响缓存 | 首次后节省 40-60% |
-| **L2: 干叶分离索引** | Markdown 仅保留大纲，实体关联由 MCP Knowledge Graph 独立维护 | 文档精瘦 |
-| **L3: 记忆图谱快照** | Hybrid Tree 仅存骨架指针，完整节点由 MCP server-memory 持久化 | 跨会话共享 |
+| **L1: Section-Level Caching** | 混合文档严格分区：极少变动的静态区（需求/范围/DoD）置顶命中 LLM Prompt Cache，动态区（评估报告）底部覆写不影响缓存 | 首次后节省 40-60% |
+| **L2: 干叶分离索引** | Markdown 仅保留业务「树干」大纲，实体关联等「树叶」由 MCP Knowledge Graph 独立维护，按需动态检索 | 文档精瘦 · 按需检索 |
+| **L3: 记忆图谱快照** | Hybrid Tree 仅存骨架指针（实体名称、关系概要），完整节点由 MCP server-memory 持久化 | 跨会话共享 · 最小可行上下文 |
 
 ### AC 交叉验证
 
@@ -193,9 +198,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 
 ### 工作流模式
 
-<p align="center">
-  <img src="docs/design/images/02-workflow-modes-zh.png" alt="工作流模式" width="960" />
-</p>
+四种模式覆盖从全仓库到单文件的完整粒度，自动路由到 orchestratorX：
 
 | | `/xwhole` 全局模式 | `/xwhole -parallel` 并行模式 | `/xlocal` 局部模式 | `/xunit` 单元模式 |
 |---|---|---|---|---|
@@ -241,10 +244,6 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 
 ### 加权评分（满分 100）
 
-<p align="center">
-  <img src="docs/design/images/04-scoring-comparison-zh.png" alt="加权评分对比" width="960" />
-</p>
-
 | 大类 (权重) | WorkflowX | Superpowers | OMC |
 |-------------|:---------:|:-----------:|:---:|
 | 架构与设计 (25%) | **9.15** | 6.70 | 7.40 |
@@ -272,7 +271,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | **多平台原生** | 4 平台 | 8 平台 | 2 平台 |
 
 <p align="center">
-  <img src="docs/design/images/05-capabilities-zh.png" alt="WorkflowX 独有能力" width="960" />
+  <img src="docs/design/images/05-capabilities-zh.png" alt="WorkflowX 独有能力" width="720" />
 </p>
 
 ### 为什么选择 WorkflowX？

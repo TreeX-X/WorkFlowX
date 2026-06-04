@@ -27,7 +27,7 @@
 ## Workflow Demo
 
 <p align="center">
-  <img src="docs/design/images/06-workflow-animation.gif" alt="WorkflowX xwhole Workflow Demo" width="960" />
+  <img src="docs/design/images/06-workflow-animation.gif" alt="WorkflowX xwhole Workflow Demo" width="720" />
   <br/>
   <sub>xwhole mode full workflow: Requirements → promptMasterX → coderX → evaluatorX → Iteration Complete</sub>
 </p>
@@ -73,18 +73,25 @@ Requirement changes propagate automatically. Dependencies auto-retry via deferre
 
 ## System Architecture
 
-<p align="center">
-  <img src="docs/design/images/01-architecture.png" alt="WorkflowX System Architecture" width="960" />
-</p>
+<table>
+<tr>
+<td width="55%">
 
-**Core Mechanisms:**
+<img src="docs/design/images/01-architecture.png" alt="WorkflowX System Architecture" width="520" />
 
-| Mechanism | Description |
-|-----------|-------------|
-| **Bus Payload Communication** | 3 structured Payload types (Change Summary / Evaluation Result / Requirement Change) — zero context pollution |
-| **Hybrid Tree** | Parent routing layer + Children requirement layer, MECE division, Section-Level Caching |
-| **Worktree Isolation** | Each sub-agent works in an independent git worktree — physical isolation |
-| **AC Cross-Validation** | evaluatorX doesn't trust coderX's declarations — independently verifies every acceptance criterion |
+</td>
+<td width="45%">
+
+**orchestratorX** is the sole document writer, dispatching sub-agents via Bus Payload:
+
+- **Bus Payload Communication** — 3 structured Payload types (Change Summary / Evaluation Result / Requirement Change), zero context pollution
+- **Hybrid Tree** — Parent routing layer + Children requirement layer, MECE division, Section-Level Caching
+- **Worktree Isolation** — Each sub-agent works in an independent git worktree, physical isolation
+- **AC Cross-Validation** — evaluatorX doesn't trust coderX's declarations, independently verifies every acceptance criterion
+
+</td>
+</tr>
+</table>
 
 ---
 
@@ -109,15 +116,13 @@ Built-in **prompt-master** skill generates production-grade prompts for 20+ AI t
 
 ### Three-Layer Token Optimization
 
-<p align="center">
-  <img src="docs/design/images/03-token-optimization.png" alt="Three-Layer Token Optimization" width="960" />
-</p>
+> 40-60% token savings in multi-round iterations. Every SubAgent wake-up gets the minimum viable input.
 
 | Layer | Strategy | Effect |
 |-------|----------|--------|
-| **L1: Section-Level Caching** | Static zone at top hits LLM Prompt Cache; dynamic zone at bottom doesn't invalidate cache on overwrite | 40-60% savings after first round |
-| **L2: Trunk-Leaf Index** | Markdown retains only outline; entity relations maintained separately in MCP Knowledge Graph | Lean documents |
-| **L3: Memory Graph Snapshot** | Hybrid Tree stores skeleton pointers only; full nodes persisted by MCP server-memory | Cross-session sharing |
+| **L1: Section-Level Caching** | Strict zoning: rarely-changing static sections (requirements/scope/DoD) pinned at top for LLM Prompt Cache; dynamic sections (evaluation reports) at bottom don't invalidate cache | 40-60% savings after first round |
+| **L2: Trunk-Leaf Index** | Markdown retains only the business outline; entity relations maintained separately in MCP Knowledge Graph, retrieved on demand | Lean documents, on-demand retrieval |
+| **L3: Memory Graph Snapshot** | Hybrid Tree stores skeleton pointers only (entity names, relation summaries); full nodes persisted by MCP server-memory | Cross-session sharing, minimum viable context |
 
 ### AC Cross-Validation
 
@@ -193,9 +198,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 
 ### Workflow Modes
 
-<p align="center">
-  <img src="docs/design/images/02-workflow-modes.png" alt="Workflow Modes" width="960" />
-</p>
+Four modes covering the full granularity from repository-wide to single-file, auto-routed through orchestratorX:
 
 | | `/xwhole` Global | `/xwhole -parallel` Parallel | `/xlocal` Scoped | `/xunit` Minimal |
 |---|---|---|---|---|
@@ -241,10 +244,6 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 
 ### Weighted Scoring (out of 100)
 
-<p align="center">
-  <img src="docs/design/images/04-scoring-comparison.png" alt="Weighted Scoring Comparison" width="960" />
-</p>
-
 | Category (Weight) | WorkflowX | Superpowers | OMC |
 |-------------------|:---------:|:-----------:|:---:|
 | Architecture & Design (25%) | **9.15** | 6.70 | 7.40 |
@@ -272,7 +271,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | **Multi-platform native** | 4 platforms | 8 platforms | 2 platforms |
 
 <p align="center">
-  <img src="docs/design/images/05-capabilities.png" alt="WorkflowX Unique Capabilities" width="960" />
+  <img src="docs/design/images/05-capabilities.png" alt="WorkflowX Unique Capabilities" width="720" />
 </p>
 
 ### Why WorkflowX?
