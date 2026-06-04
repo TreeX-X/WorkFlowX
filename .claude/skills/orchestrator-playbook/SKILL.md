@@ -39,39 +39,29 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | `-parallel` | `-parallel` | xwhole | off | Enable Agent Teams parallel execution within Mode A |
 | `-team` | `-team [name]` | xwhole (with `-parallel`) | `workflow-{timestamp}` | Agent Team name for parallel workflow |
 
-### Parsing Rules (Optimized: Precompiled Regex + Session Object)
-
-**Step 0: Precompile Regex Patterns (Session Init)**
-
-```javascript
-// Precompile once per session, store in session memory
-const PARAM_PATTERNS = {
-  mode: /^\/(xwhole|xlocal|xunit|xprompt)\b/,
-  N: /-N\s+(\d+)/,
-  box: /-box\s+(\S+)/,
-  team: /-team\s+(\S+)/,
-  parallel: /-parallel\b/
-};
-```
+### Parsing Rules
 
 **Step 1: Extract parameters from $ARGUMENTS**
 
-```
-Input: "/xwhole -N 5 -box feature-test Add user authentication"
-Parsed:
-  - mode: xwhole
-  - N: 5
-  - box: "feature-test"
-  - parallel: false
-  - requirement: "Add user authentication"
+Extract sequentially from `$ARGUMENTS`: command name → optional flags → requirement text.
 
-Input: "/xwhole -parallel -team my-team Implement auth module"
-Parsed:
-  - mode: xwhole
-  - N: 2 (default)
-  - parallel: true
-  - team: "my-team"
-  - requirement: "Implement auth module"
+| Param | Match Rule | Default | Description |
+|-------|-----------|---------|-------------|
+| mode | Starts with `/xwhole`, `/xlocal`, `/xunit`, `/xprompt` | — | Command determines mode |
+| `-N` | Positive integer (1-10) after `-N` | `2` | Max evaluation iterations per Child |
+| `-box` | Branch name (alphanumeric, hyphens, underscores) after `-box` | skip | Sandbox branch name |
+| `-parallel` | Presence flag | off | Agent Teams parallel mode |
+| `-team` | Name after `-team` | `workflow-{timestamp}` | Team name for parallel mode |
+| requirement | Remaining text after removing above params | — | User requirement |
+
+**Examples**:
+
+```
+/xwhole -N 5 -box feature-test Add user authentication
+  → mode=xwhole, N=5, box="feature-test", parallel=false, requirement="Add user authentication"
+
+/xwhole -parallel -team my-team Implement auth module
+  → mode=xwhole, N=2, parallel=true, team="my-team", requirement="Implement auth module"
 ```
 
 **Step 2: Validate parameters**
@@ -80,25 +70,9 @@ Parsed:
 - `-box`: Must be valid branch name (alphanumeric, hyphens, underscores). If empty, skip sandbox.
 - `-parallel`: No value needed. Presence flag enables Agent Teams mode within xwhole.
 
-**Step 3: Store in Session Parameter Object**
+**Step 3: Remember parsed parameters**
 
-```javascript
-// Structured session parameter object (persisted across workflow)
-const sessionParams = {
-  mode: 'xwhole',           // xwhole | xlocal | xunit
-  iteration_limit: 2,       // from -N, default 2
-  sandbox_branch: null,     // from -box, null if not provided
-  team_name: null,          // from -team, null if not provided
-  is_parallel: false,       // -parallel flag
-  requirement: '',          // remaining text after param extraction
-  parsed_at: ISO_TIMESTAMP  // for cache invalidation
-};
-```
-
-**Usage in Workflow**:
-- All parameter access goes through `sessionParams` object
-- No re-parsing on subsequent access
-- Per-child iteration counters initialized from `sessionParams.iteration_limit`
+Store extracted results as session working memory (mode, iteration_limit, sandbox_branch, team_name, is_parallel, requirement). Reference directly in subsequent steps, no re-parsing.
 
 ### Usage in Workflow
 
@@ -246,49 +220,6 @@ coderX and evaluatorX receive (Parent, Child) paths, then read according to the 
 | Child | 8.1 | Private file index | coderX, evaluatorX | **Session Cache**: Read once, invalidate on file change. |
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
-
-### Cache Implementation
-
-```javascript
-// Session-level section cache
-const sectionCache = {
-  parent_static: null,      // §0-6 (rarely changes)
-  parent_routing: null,      // §7 (changes on child add/remove)
-  parent_shared_files: null, // §8.1 (changes on file structure change)
-  parent_knowledge: null,    // §8.2 (session-level)
-  parent_dependencies: null, // §8.3 (changes on requirement change)
-  child_files: {},           // {child_path: §8.1 content}
-};
-
-// Cache read function
-function readSection(doc_type, section, force_refresh = false) {
-  const cache_key = `${doc_type}_${section}`;
-  if (!force_refresh && sectionCache[cache_key]) {
-    return sectionCache[cache_key]; // Cache hit
-  }
-  // Cache miss: read from disk
-  const content = readFromDisk(doc_type, section);
-  sectionCache[cache_key] = content;
-  return content;
-}
-
-// Selective invalidation
-function invalidateCache(reason) {
-  switch(reason) {
-    case 'requirement_change':
-      sectionCache.parent_dependencies = null;
-      sectionCache.parent_routing = null;
-      break;
-    case 'file_structure_change':
-      sectionCache.parent_shared_files = null;
-      sectionCache.child_files = {};
-      break;
-    case 'child_added':
-      sectionCache.parent_routing = null;
-      break;
-  }
-}
-```
 
 ---
 
@@ -507,41 +438,3 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrator-playbook/hybrid-template.md`). unit exempt.
 4. **Concurrency protection**: Before starting any workflow, check for `.hybrid/.workflow-lock`. If lock exists, warn user and abort. Otherwise, create lock file with timestamp and mode. Remove lock on workflow completion or interruption.
 
----
-
-## Optimization Summary (Implemented)
-
-### Tier 1: Core Optimizations (Active)
-
-| # | Optimization | Location | Impact |
-|---|--------------|----------|--------|
-| 1 | Module Memory Cache | SKILL.md §Module Index | Eliminates repeated disk I/O for skill modules |
-| 2 | Parameter Regex Precompilation | SKILL.md §Parameter Parsing | Single-pass parameter extraction |
-| 3 | Dependency Graph + Ready Queue | SKILL.md §Core Iteration Loop | O(1) dependency resolution, no polling |
-| 4 | Early PASS Termination | SKILL.md + Module 03 | Immediate completion, no wasted iterations |
-| 5 | Per-Child Iteration Counter | SKILL.md + Module 06 | Precise iteration tracking |
-| 6 | Incremental Hybrid Tree Update | Module 03 | Targeted section updates only |
-| 7 | Conditional Sandbox | SKILL.md §Sandbox | No overhead without -box flag |
-| 8 | Fast Merge Strategy | SKILL.md §Sandbox | 3-tier merge: ff-only → squash → no-ff |
-| 9 | Prompt Compression | Module 04 §4.3 | 30-50% token reduction in iterations |
-
-### Tier 2: Advanced Optimizations (Active)
-
-| # | Optimization | Location | Impact |
-|---|--------------|----------|--------|
-| 10 | Section-Level Caching | SKILL.md §Hybrid Tree Section Map | Parent §0-6 cached, 40-60% I/O reduction |
-| 11 | Critical Path Analysis | SKILL.md §Pre-Loop Setup | Priority scheduling for high-impact Children |
-| 12 | Predictive Module Prefetch | Module 01 §1.2 | Pre-loads likely needed modules |
-| 13 | Payload Fast-Path Validation | Module 02 §2.4 | Skip validation for known-good payloads |
-| 14 | Incremental Context Passing | Module 02 §2.5 | 40-60% token reduction in multi-iteration |
-| 15 | AC-Level Granular Tracking | Module 03 §Iteration Decision | Precise AC targeting, better progress |
-
-### Performance Expectations
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| First iteration startup | Full I/O | Cached I/O | ~50% faster |
-| Multi-iteration token use | 100% | 40-60% | 40-60% reduction |
-| Dependency resolution | O(n) scan | O(1) lookup | Near-instant |
-| Sandbox overhead (no -box) | Full stash/checkout | None | 100% elimination |
-| Merge conflicts | Manual | Auto ff-only | Most cases auto-resolved |

@@ -1,7 +1,7 @@
 ---
 name: evaluatorX
 description: Lean code audit and evaluation agent. Reads Parent+Child hybrid docs for ground truth, inspects git diffs and project code, then produces structured evaluation reports in Hybrid Tree workflows.
-tools: ["execute", "read", "edit", "search", "todo"]
+tools: ["execute", "read", "search", "todo"]
 ---
 
 # evaluatorX Agent

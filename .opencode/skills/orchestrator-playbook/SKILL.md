@@ -15,8 +15,6 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
-| 5 | Parallel Setup | `/xwhole -parallel` 指令触发 | `modules/05-parallel-setup.md` |
-| 6 | Task Coordination | Module 05 完成后，持续运行 | `modules/06-task-coordination.md` |
 | 7 | Status Report | `/xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
 
 **Loading rule (Optimized)**: 
@@ -37,7 +35,6 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 |-----------|--------|-------|---------|-------------|
 | `-N` | `-N [number]` | xwhole, xlocal | `2` | Maximum evaluation iteration rounds per Child |
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
-| `-team` | `-team [name]` | xwhole -parallel | `workflow-{timestamp}` | Agent Team name for parallel workflow |
 
 ### Parsing Rules (Optimized: Precompiled Regex + Session Object)
 
@@ -49,8 +46,6 @@ const PARAM_PATTERNS = {
   mode: /^\/(xwhole|xlocal|xunit|xprompt)\b/,
   N: /-N\s+(\d+)/,
   box: /-box\s+(\S+)/,
-  team: /-team\s+(\S+)/,
-  parallel: /-parallel\b/
 };
 ```
 
@@ -78,8 +73,6 @@ const sessionParams = {
   mode: 'xwhole',           // xwhole | xlocal | xunit
   iteration_limit: 2,       // from -N, default 2
   sandbox_branch: null,     // from -box, null if not provided
-  team_name: null,          // from -team, null if not provided
-  is_parallel: false,       // -parallel flag
   requirement: '',          // remaining text after param extraction
   parsed_at: ISO_TIMESTAMP  // for cache invalidation
 };
@@ -137,24 +130,6 @@ const sessionParams = {
 - Scope: Minimal tasks: single fix, single file, minimal change.
 - **Entry**: promptMasterX optimization (module 04) -> coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
 - **coderX lightweight mode**: Only loads `karpathy-guidelines`, does not load `codex-spec-implementation`, no Bus Payload needed.
-
-### Mode A-parallel: parallel workflow (Agent Teams)
-- Scope: 多个子任务并行执行，需要智能调度和依赖管理。
-- **Entry**: Environment init (module 01) -> Parallel setup (module 05) -> Task coordination (module 06)
-- **前提条件**: 需要启用 Agent Teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`)，Claude Code v2.1.32+
-- **核心特性**:
-  - 使用 Agent Teams 替代 subagent 模式
-  - 多个 coder-teammate + evaluator-teammate 并行工作
-  - 动态任务调度：基于依赖关系的任务分配
-  - 文件冲突检查：运行时检测，防止多人修改同一文件
-  - 需求变更实时接入：用户可随时提出新需求
-- **降级策略**: 如果 Agent Teams 不可用，回退到 Mode A/B 的 subagent 模式
-
-**队友角色定义**:
-- `.claude/agents/coder-teammate.md`: 代码实现队友
-- `.claude/agents/evaluator-teammate.md`: 代码评估队友
-
-**详细流程**: 参见 Module 05 和 Module 06
 
 ---
 
@@ -477,13 +452,12 @@ When user does not explicitly specify a mode, route by the following rules:
 1. **Explicit commands first**: `/xwhole`, `/xlocal`, `/xunit` bypass auto-routing.
 2. **Scope inference**:
 
-   | Dimension | whole | local | unit | parallel |
-   |-----------|-------|-------|------|----------|
-   | **Files involved** | 3+ modules/directories | 1-2 modules | Single file | 3+ modules (并行) |
-   | **Keywords** | "new feature", "module", "refactor" | "modify", "optimize", "supplement" | "fix", "typo", "single function" | "parallel", "同时", "并行" |
-   | **Code impact** | New files + modify existing | Modify existing only | 1-2 logic changes | 多模块并行修改 |
-   | **Needs PRD** | Yes | No | No | Yes |
-   | **并行需求** | No | No | No | Yes |
+   | Dimension | whole | local | unit |
+   |-----------|-------|-------|------|
+   | **Files involved** | 3+ modules/directories | 1-2 modules | Single file |
+   | **Keywords** | "new feature", "module", "refactor" | "modify", "optimize", "supplement" | "fix", "typo", "single function" |
+   | **Code impact** | New files + modify existing | Modify existing only | 1-2 logic changes |
+   | **Needs PRD** | Yes | No | No |
 
 3. **Fallback**: When uncertain, show inference results and 3 options for user selection. Never silently default.
 
@@ -495,7 +469,7 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 
 1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`.
 2. **State isolation**: Stay in current workflow mode until completion. No cross-mode calls.
-3. **Hybrid Tree**: whole, local, and parallel must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrator-playbook/hybrid-template.md`). unit exempt.
+3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrator-playbook/hybrid-template.md`). unit exempt.
 
 ---
 
@@ -509,7 +483,7 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 | 2 | Parameter Regex Precompilation | SKILL.md §Parameter Parsing | Single-pass parameter extraction |
 | 3 | Dependency Graph + Ready Queue | SKILL.md §Core Iteration Loop | O(1) dependency resolution, no polling |
 | 4 | Early PASS Termination | SKILL.md + Module 03 | Immediate completion, no wasted iterations |
-| 5 | Per-Child Iteration Counter | SKILL.md + Module 06 | Precise iteration tracking |
+| 5 | Per-Child Iteration Counter | SKILL.md | Precise iteration tracking |
 | 6 | Incremental Hybrid Tree Update | Module 03 | Targeted section updates only |
 | 7 | Conditional Sandbox | SKILL.md §Sandbox | No overhead without -box flag |
 | 8 | Fast Merge Strategy | SKILL.md §Sandbox | 3-tier merge: ff-only → squash → no-ff |

@@ -8,7 +8,7 @@ Invoke the orchestratorX agent in local mode (Mode B: local) to execute the foll
 
 User input: $ARGUMENTS
 
-Execution flow:
+**Execution flow:**
 1. Parse parameters from $ARGUMENTS (see orchestrator-playbook Parameter Parsing section)
 2. Load runtime environment (Module 01)
 3. PRD detection (priority order):

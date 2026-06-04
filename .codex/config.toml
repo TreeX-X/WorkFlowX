@@ -29,7 +29,7 @@ command = "npx.cmd"
 args = [
     "-y",
     "@modelcontextprotocol/server-filesystem",
-    "E:\\Tree Workspace\\obsidian"
+    "${OBSIDIAN_VAULT_PATH}"
 ]
 
 [mcp_servers.server-memory]

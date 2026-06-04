@@ -17,6 +17,23 @@
 
 ## 数据收集流程
 
+### Step 0: 读取上次报告（趋势计算）
+
+在生成新报告前，尝试读取现有 `status-report.html`（默认路径或 `--output` 指定路径）：
+
+```bash
+# 若文件存在，提取上次 COMPLETION_RATE
+if [ -f "{output_path}" ]; then
+  grep -oP '(?<=class="value accent">)\d+' "{output_path}" | head -1
+fi
+```
+
+- 若提取成功：计算 `delta = current_rate - previous_rate`
+  - `delta > 0` → 趋势 `up`，符号 `▲`，提示 `相比上次报告: +{delta}%`
+  - `delta < 0` → 趋势 `down`，符号 `▼`，提示 `相比上次报告: {delta}%`
+  - `delta == 0` → 趋势 `flat`，符号 `→`，提示 `相比上次报告: 持平`
+- 若文件不存在或提取失败：不显示趋势指示器（`{TREND_INDICATOR}` 替换为空字符串）
+
 ### Step 1: 扫描 `.hybrid/` 目录
 
 ```bash
@@ -30,6 +47,34 @@ ls -la .hybrid/
   - **Section 9** (Aggregation): 提取整体进度统计
 - 读取每个 `[feature]-child-N-hybrid.md`（Child 文档）
   - **Section 9** (Evaluation Report): 提取评估轮次、最后状态、Fix 历史
+
+### Step 1.1: 增强数据提取（Hover 详情）
+
+对每个 Child，额外提取以下数据用于悬浮提示：
+
+| 数据项 | 来源 | 提取方式 |
+|--------|------|----------|
+| P0 issue 数量 | Parent Section 9 Aggregation 表 → `P0 Count` 列 | 按 Child 文件名匹配行 |
+| P1 issue 数量 | Parent Section 9 Aggregation 表 → `P1 Count` 列 | 按 Child 文件名匹配行 |
+| Issue 摘要（前 3 条） | Child Section 9.3 Code Issue List 表 | 取前 3 行的 Issue 列文本 |
+| Fix 指令概要 | Child Section 9.3 Fix Instructions 列 | 取前 3 行的 Fix 列摘要 |
+| 评估趋势 | Child Section 9.1 + 历史轮次 | 格式: `→ PASS (2 rounds)` 或 `↻ Needs Fix x3` |
+| 阻塞依赖 | Parent Section 8.3 Cross-Branch Dependencies | 匹配当前 Child ID 的被依赖关系 |
+
+**组装 hover 文本**（用于 `title` 属性）:
+```
+详细信息:
+• P0: {n} | P1: {n}
+• Issues: {issue1}; {issue2}; {issue3}
+• 评估: {eval_trend}
+• 阻塞: {blocked_by 或 "无"}
+```
+
+**Mode A-parallel 额外提取**（团队上下文）：
+若 `~/.claude/teams/{team-name}/config.json` 存在，为每个 teammate 提取：
+- 当前任务 Child ID + 描述（从 task list 推断）
+- 工作时长（从 task created_at 计算）
+- 最后更新时间
 
 **根据 Section 7 第一列的 `Mode` 字段**判断该 feature 属于哪个工作流：
 - `A` → Mode A (xwhole)
@@ -87,13 +132,29 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 | `{ACTIVE_COUNT}` | 数字 |
 | `{TOTAL_CHILDREN}` | 数字 |
 | `{COMPLETION_RATE}` | 数字（不带 %） |
+| `{TREND_INDICATOR}` | `<span class="trend-indicator {direction}" title="...">{arrow}</span>` 或空字符串 |
 | `{FAILED_COUNT}` | 数字 |
 | `{MODE_A_SECTION}` | 完整 `<h2>...</h2>` 块或空字符串 |
 | `{MODE_B_SECTION}` | 同上 |
 | `{MODE_PARALLEL_SECTION}` | 同上 |
 | `{MODE_C_SECTION}` | 表格或空字符串 |
 
-**空 section 规则**：若某模式无活跃 workflow，整段 section 替换为**空字符串**（不显示标题），保持页面干净。
+**空 section 规则**：若某模式无活跃 workflow，显示极简占位符（而非空字符串），保持布局节奏并提供启动指引：
+```html
+<section class="workflow empty-state">
+  <h2>{MODE_LABEL} <span class="count">0 active</span></h2>
+  <p class="empty">暂无活跃的{MODE_DESC}工作流<br>
+  <span class="hint">{COMMAND_HINT}</span></p>
+</section>
+```
+
+各模式占位符：
+| 模式 | MODE_LABEL | MODE_DESC | COMMAND_HINT |
+|------|-----------|-----------|-------------|
+| Mode A | Mode A · xwhole | 全局 | 使用 /xwhole [-N num] [-box name] 需求 启动 |
+| Mode B | Mode B · xlocal | 局部 | 使用 /xlocal 需求 启动 |
+| Mode A-parallel | Mode A · parallel | 并行 | 使用 /xwhole -parallel 需求 启动 |
+| Mode C | Mode C · xunit | 单元 | 使用 /xunit 需求 启动 |
 
 ## 各工作流展示格式
 
@@ -104,7 +165,7 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 <article class="workflow">
   <header class="workflow-header">
     <div class="workflow-title">
-      <span class="mode-badge">Mode A</span>
+      <span class="mode-badge" title="Mode A: 全局工作流 (xwhole)">A</span>
       <h3>{feature-name}</h3>
     </div>
     <div class="progress-group">
@@ -117,19 +178,19 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
       <span class="icon">✓</span>
       <span class="id">{CHILD_ID}</span>
       <span class="name">{child-name}<span class="desc">{brief-description}</span></span>
-      <span class="meta">PASS · <strong>{R}</strong> rounds · {files} files</span>
+      <span class="meta meta-enhanced" title="详细信息:\n• P0: {p0} | P1: {p1}\n• Issues: {issue_summary}\n• 评估: → PASS ({R} rounds)\n• 阻塞: 无">PASS · <strong>{R}</strong> rounds · {files} files <span class="detail-hint">(?)</span></span>
     </li>
     <li class="child status-in-progress">
       <span class="icon">⚙</span>
       <span class="id">{CHILD_ID}</span>
       <span class="name">{child-name}<span class="desc">{brief-description}</span></span>
-      <span class="meta">Round <strong>{R}/{N}</strong> · {agent} active</span>
+      <span class="meta meta-enhanced" title="详细信息:\n• P0: {p0} | P1: {p1}\n• Issues: {issue_summary}\n• 评估: {eval_trend}\n• 阻塞: {blocked_by}">Round <strong>{R}/{N}</strong> · {agent} active <span class="detail-hint">(?)</span></span>
     </li>
     <li class="child status-pending">
       <span class="icon">⏸</span>
       <span class="id">{CHILD_ID}</span>
       <span class="name">{child-name}<span class="desc">{brief-description}</span></span>
-      <span class="meta">Blocked by {CHILD_ID}</span>
+      <span class="meta meta-enhanced" title="详细信息:\n• 阻塞依赖: {blocked_by_id}\n• 等待原因: {block_reason}">Blocked by {CHILD_ID} <span class="detail-hint">(?)</span></span>
     </li>
   </ul>
 </article>
@@ -157,7 +218,7 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 <article class="workflow">
   <header class="workflow-header">
     <div class="workflow-title">
-      <span class="mode-badge mode-a-parallel">Mode A · parallel</span>
+      <span class="mode-badge mode-a-parallel" title="Mode A-parallel: Agent Teams 并行工作流">A&#x2225;</span>
       <h3>{feature-name}</h3>
     </div>
     <div class="progress-group">...</div>
@@ -170,11 +231,11 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
       <h4>Agent Team · {team-name}</h4>
       <div class="teammate">
         <span class="role">coder-<span class="num">1</span></span>
-        <span class="teammate-status active">active · C-02</span>
+        <span class="teammate-status active" title="当前任务: C-02 ({task_description})\n工作时长: {duration}\n最后更新: {last_update}">active · C-02</span>
       </div>
       <div class="teammate">
         <span class="role">evaluator-<span class="num">1</span></span>
-        <span class="teammate-status idle">idle</span>
+        <span class="teammate-status idle" title="最后任务: {last_task}\n空闲时长: {idle_duration}">idle</span>
       </div>
     </aside>
   </div>

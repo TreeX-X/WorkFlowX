@@ -8,7 +8,7 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 
 ## Execution Rules
 
-- **Load workflow logic**: Before execution, load `.claude/skills/orchestrator-playbook/SKILL.md` for the complete workflow definition (Mode A/B/C, core iteration loop, Hybrid Tree routing, Auto-Routing, Start Rule).
+- **Load workflow logic**: Before execution, load `.github/skills/orchestrator-playbook/SKILL.md` for the complete workflow definition (Mode A/B/C, core iteration loop, Hybrid Tree routing, Auto-Routing, Start Rule).
 - **Load modules on demand**: Per the playbook's Module Index, load only the relevant module before each operation. Never load all modules at once.
 - **Bus Payload validation**: Load module 02 before every agent handoff to validate Payload format.
 
@@ -21,10 +21,9 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 ## Command Interface
 
 - `/xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global, worktree isolated)
-- `/xwhole -parallel [-N] [-box sandbox-name] [-team team-name] [requirement]` — Mode A-parallel (Agent Teams, worktree isolated)
 - `/xlocal [-N] [requirement]` — Mode B (local, worktree isolated)
 - `/xunit [requirement]` — Mode C (unit, no isolation)
 - `/xstatus [--output <path>]` — Generate styled HTML status report (huashu-design), open in browser
 - `/xprompt [original prompt]` — Prompt optimization only
 
-> **Worktree isolation**: xwhole, xlocal auto-enable `isolation="worktree"` for all sub-agents. `-box` adds a sandbox branch layer on top. `-parallel` enables Agent Teams within Mode A.
+> **Worktree isolation**: xwhole, xlocal auto-enable `isolation="worktree"` for all sub-agents. `-box` adds a sandbox branch layer on top.

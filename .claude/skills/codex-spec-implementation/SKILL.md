@@ -19,8 +19,7 @@ Prioritize reading documents explicitly handed off by upstream agents or activel
 
 ### File Access Rules
 
-- `.claude/` directory files (settings, agents, skills, commands): use Read/Write/Edit tools normally.
-- Project source files: check CLAUDE.md for file access rules. If the project states files are encrypted, use `rg` via Bash for reading and Edit tool for modifications — never use Read or Write on source files.
+Follow CLAUDE.md §File Read/Write Rules.
 
 ### Hybrid Tree: Reading Parent+Child Documents
 

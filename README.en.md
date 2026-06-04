@@ -125,6 +125,23 @@ Three platform configurations are provided out of the box:
 3. Mount MCP config in your AI client (see `mcp.json.template`; OpenCode users can use the `opencode.json` at project root which includes MCP configuration)
 4. Start using: call orchestratorX in your chat and deliver your requirements
 
+**OpenCode-Specific Configuration:**
+
+OpenCode users should pay attention to these configuration files:
+
+| Config Item | File | Description |
+|-------------|------|-------------|
+| MCP Servers | `opencode.json` → `mcp` | Pre-configured memory + sequential-thinking; adjust paths for your environment |
+| Agent Permissions | `opencode.json` → `agent` | Tool permissions for 5 agents (orchestratorX / coderX / evaluatorX / promptMasterX / abstracterX) |
+| Command Definitions | `opencode.json` → `command` | 5 commands registered (xwhole / xlocal / xunit / xprompt / xstatus) |
+| Command Templates | `.opencode/commands/*.md` | Detailed execution flow for each command, with YAML frontmatter |
+| Agent Definitions | `.opencode/agents/*.md` | Behavior definitions for 5 agents |
+| Skill Discovery | `.opencode/skills/` | OpenCode auto-discovers skills from `.claude/skills/`, no duplication needed |
+
+OpenCode's `opencode.json` includes MCP configuration out of the box — no need to create a separate `mcp.json`. If your Node.js installation path differs, update the `command` field in `opencode.json`.
+
+> Parallel mode (`/xwhole -parallel`) relies on Claude Code's Agent Teams feature and is not available on OpenCode. For parallelism, manually split tasks and run multiple `/xlocal` calls.
+
 ### 2. Command Reference
 
 | Command | Description | Example |

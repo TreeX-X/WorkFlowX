@@ -133,6 +133,16 @@
     .stat .value.failed { color: var(--failed); }
     .stat .value.accent { color: var(--accent); }
 
+    /* Trend indicator · 完成率微趋势 */
+    .trend-indicator {
+      font-size: 0.9rem;
+      margin-left: 4px;
+      vertical-align: sub;
+    }
+    .trend-indicator.up { color: var(--pass); }
+    .trend-indicator.down { color: var(--failed); }
+    .trend-indicator.flat { color: var(--muted); }
+
     /* Workflow Card · 核心容器 */
     .workflow {
       background: var(--surface);
@@ -158,6 +168,8 @@
       color: var(--bg);
       letter-spacing: 0.05em;
       white-space: nowrap;
+      min-width: 28px;
+      text-align: center;
     }
     .mode-badge.mode-a-parallel { background: var(--accent); }
 
@@ -232,6 +244,16 @@
     .status-in-progress .meta strong { color: var(--in-progress); }
     .status-needs-fix .meta strong { color: var(--needs-fix); }
     .status-failed .meta strong { color: var(--failed); }
+
+    /* Hover detail hints · 子任务元数据悬浮详情 */
+    .detail-hint {
+      font-size: 0.7rem;
+      opacity: 0.7;
+      margin-left: 6px;
+      cursor: help;
+    }
+    .detail-hint:hover { opacity: 1; }
+    .meta-enhanced:hover { background: var(--surface-alt); border-radius: 3px; }
 
     /* Parallel Mode · Team 状态侧栏 */
     .parallel-body {
@@ -309,6 +331,16 @@
       color: var(--muted);
       font-style: italic;
     }
+    .empty-state { background: var(--surface-alt); }
+    .empty-state h2 { margin-bottom: 12px; border-bottom: none; }
+    .empty-state .empty { padding: 28px 0; }
+    .hint {
+      font-size: 0.9rem;
+      color: var(--accent);
+      margin-top: 12px;
+      display: block;
+      font-style: normal;
+    }
 
     /* Footer */
     footer {
@@ -374,7 +406,7 @@
       </div>
       <div class="stat">
         <div class="label">Completion</div>
-        <div class="value accent">{COMPLETION_RATE}<span style="font-size:1rem">%</span></div>
+        <div class="value accent">{COMPLETION_RATE}<span style="font-size:1rem">%</span>{TREND_INDICATOR}</div>
       </div>
       <div class="stat">
         <div class="label">Failed / Stalled</div>

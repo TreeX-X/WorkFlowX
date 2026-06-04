@@ -96,56 +96,32 @@ When all tasks are done and you need to call `TeamDelete`:
 2. If teammate does not respond within a reasonable time (stays idle), manually edit the team config at `~/.claude/teams/{team-name}/config.json` to remove the teammate from the `members` array
 3. Then call `TeamDelete()`
 
-### Mode A-parallel Workflow Summary (HARD CHECKPOINTS)
+### Mode A-parallel Workflow (3 Phases)
 
-**Checkpoint 0: Prerequisites — BLOCK if failed**
-- Verify `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` in env
-- Verify `teammateMode: "in-process"` in settings
-- If either missing → ABORT with error, do NOT fall back to other modes
+**Phase 1: Init — prerequisites + team/tasks/deps/teammate setup**
 
-**Checkpoint 1: Team created — BLOCK until TeamCreate succeeds**
-- Call `TeamCreate(team_name, description)`
-- Verify team_name returned, store for all subsequent operations
-- Do NOT proceed to Step 2 until team exists
+Sequential, each step must succeed before proceeding:
+1. Verify env: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` + `teammateMode: "in-process"` → ABORT if missing
+2. `TeamCreate(team_name, description)` → store team_name
+3. Read Parent Section 7 → `TaskCreate` for each Child
+4. Read Parent Section 8.3 → `TaskUpdate(addBlockedBy=...)` for dependencies
+5. Count unblocked tasks → `Agent(subagent_type="coder-teammate")` + `Agent(subagent_type="evaluator-teammate")` (min 1 coder + 1 evaluator, each must include `team_name`)
+6. For ready tasks: `TaskUpdate(owner="coder-N", status="in_progress")` + `SendMessage` to notify coder
 
-**Checkpoint 2: Tasks created — BLOCK until all Children have tasks**
-- Read Parent Section 7 for all Children
-- Call `TaskCreate` for each Child
-- Store task IDs for assignment
-- Do NOT proceed to Step 3 until all tasks created
+**Phase 2: Loop — event-driven code-evaluate iteration**
 
-**Checkpoint 3: Dependencies set — BLOCK until addBlockedBy applied**
-- Read Parent Section 8.3 for cross-branch dependencies
-- Call `TaskUpdate(addBlockedBy=...)` for each dependency
-- Do NOT proceed to Step 4 until all dependencies set
+Wait for teammate messages (arrive automatically), handle by type:
+- coder done → `SendMessage` dispatch to evaluator
+- evaluator PASS → `TaskUpdate(status="completed")` → unlock dependents → assign next ready task
+- evaluator Needs Fix → `SendMessage` fix instructions to coder (bounded by `-N` iteration limit)
+- Iteration limit exhausted → `TaskUpdate(status="failed")` → report to user
 
-**Checkpoint 4: Teammates spawned — BLOCK until Agent tool called for ALL teammates**
-- Count independent tasks (no blockers) → determine teammate count
-- Call `Agent(subagent_type="coder-teammate", name="coder-N", team_name=...)` for each coder
-- Call `Agent(subagent_type="evaluator-teammate", name="evaluator-N", team_name=...)` for each evaluator
-- **VERIFY**: You MUST call the Agent tool at least twice (1 coder + 1 evaluator)
-- **VERIFY**: Each Agent call MUST include `team_name` parameter
-- Do NOT proceed to Step 5 until ALL teammates spawned via Agent tool
-- Do NOT skip this step. Do NOT claim tool is unavailable.
+**Phase 3: Cleanup**
 
-**Checkpoint 5: Tasks assigned — BLOCK until SendMessage sent to all ready coders**
-- Find tasks with status="pending" and no blockers
-- `TaskUpdate(owner="coder-N", status="in_progress")` for each
-- `SendMessage(to="coder-N", ...)` to notify each coder
-- Do NOT proceed until all ready tasks assigned
-
-**Checkpoint 6: Event loop — process teammate messages**
-- Wait for teammate messages (arrive automatically)
-- On coder completion → dispatch evaluator via SendMessage
-- On evaluator PASS → TaskUpdate(status="completed") → unlock dependents → assign next
-- On evaluator Needs Fix → SendMessage fix instructions to coder (within iteration limit)
-- On iteration limit reached → TaskUpdate(status="failed") → report to user
-
-**Checkpoint 7: Cleanup — TeamDelete after all tasks done**
-- Verify all tasks status = "completed" or "failed"
-- Send shutdown_request to each teammate
-- Call `TeamDelete()`
-- Output final summary
+1. Verify all tasks status = "completed" or "failed"
+2. `SendMessage({type: "shutdown_request"})` to each teammate
+3. `TeamDelete()`
+4. Output final summary
 
 ## Command Interface
 

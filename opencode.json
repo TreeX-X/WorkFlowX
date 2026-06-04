@@ -3,21 +3,20 @@
   "mcp": {
     "memory": {
       "type": "local",
-      "command": ["mcp-server-memory"],
+      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-memory"],
       "environment": {
-        "MEMORY_FILE_PATH": "C:/Users/77777/.cache/mcp-memory/memory.json"
+        "MEMORY_FILE_PATH": "${MCP_MEMORY_FILE_PATH}"
       },
       "enabled": true
     },
     "sequential-thinking": {
       "type": "local",
-      "command": ["mcp-server-sequential-thinking"],
+      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-sequential-thinking"],
       "enabled": true
     }
   },
   "agent": {
     "orchestratorX": {
-      "description": "WorkflowX core orchestration agent. Sole document writer. Coordinates planning dialogue, coderX, evaluatorX across xwhole/xlocal/xunit modes.",
       "mode": "primary",
       "permission": {
         "read": "allow",
@@ -41,7 +40,6 @@
       }
     },
     "coderX": {
-      "description": "Lean coding agent. Owns implementation of features, bug fixes, refactors, and tests. Applies karpathy-guidelines and codex-spec-implementation skills.",
       "mode": "subagent",
       "permission": {
         "read": "allow",
@@ -56,7 +54,6 @@
       }
     },
     "evaluatorX": {
-      "description": "Lean code audit and evaluation agent. Reads Parent+Child hybrid docs, inspects git diffs and project code, produces structured evaluation reports.",
       "mode": "subagent",
       "permission": {
         "read": "allow",
@@ -71,7 +68,6 @@
       }
     },
     "promptMasterX": {
-      "description": "Prompt preprocessing agent. Receives raw requirement text, identifies the target tool, and outputs an optimized production-grade prompt.",
       "mode": "subagent",
       "permission": {
         "read": "allow",
@@ -85,7 +81,6 @@
       }
     },
     "abstracterX": {
-      "description": "Code and engineering analysis agent. Produces structured Markdown code summarization and analysis reports.",
       "mode": "subagent",
       "permission": {
         "read": "allow",
@@ -123,6 +118,12 @@
       "agent": "promptMasterX",
       "subtask": true,
       "template": ".opencode/commands/xprompt.md"
+    },
+    "xstatus": {
+      "description": "Generate huashu-styled HTML workflow status report and open in browser",
+      "agent": "orchestratorX",
+      "subtask": true,
+      "template": ".opencode/commands/xstatus.md"
     }
   }
 }

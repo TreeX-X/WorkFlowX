@@ -16,12 +16,11 @@
 
 ### Quick Commands
 
-- `/whole [task description]` — Full-repo workflow (planner → coder → evaluator)
-- `/local [task description]` — Single-module local development workflow
-- `/unit [task description]` — Minimal unit task, direct modification
-- `/parallel [task description]` — Parallel workflow using Agent Teams (多任务并行执行)
+- `/xwhole [task description]` — Full-repo workflow (planner -> coder -> evaluator)
+- `/xlocal [task description]` — Single-module local development workflow
+- `/xunit [task description]` — Minimal unit task, direct modification
 - `/xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
-- `/prompt [raw prompt]` — Prompt optimization only, no workflow triggered
+- `/xprompt [raw prompt]` — Prompt optimization only, no workflow triggered
 
 ## File Read/Write Rules (Mandatory)
 

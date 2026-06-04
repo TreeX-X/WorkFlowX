@@ -33,10 +33,20 @@
 | 指令 | 模式 | 说明 |
 |------|------|------|
 | `/xwhole [需求]` | Mode A | 全仓库级完整工作流（planner → coder → evaluator） |
+| `/xwhole -parallel [需求]` | Mode A-parallel | Agent Teams 并行执行模式（仅 Claude Code） |
 | `/xlocal [需求]` | Mode B | 单模块局部开发工作流 |
 | `/xunit [需求]` | Mode C | 最小单元任务，直接修改 |
 | `/xstatus [--output <path>]` | — | 生成 huashu-styled HTML 状态报告并打开 |
 | `/xprompt [prompt]` | — | 仅做 prompt 优化，调用 `Agent(promptMasterX)` |
+
+**参数说明**（用于 `/xwhole` 和 `/xlocal`）：
+
+| 参数 | 格式 | 说明 |
+|------|------|------|
+| `-N` | `-N [数字]` | 每个 Child 的最大评估迭代轮数（默认 2，范围 1-10） |
+| `-box` | `-box [名称]` | 创建沙箱分支进行隔离执行 |
+| `-parallel` | `-parallel` | 启用 Agent Teams 并行模式（仅 `/xwhole`，仅 Claude Code） |
+| `-team` | `-team [名称]` | 设置 Agent Team 名称（默认 `workflow-{timestamp}`，需配合 `-parallel`） |
 
 **调用方式**：
 ```

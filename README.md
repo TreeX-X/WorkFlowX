@@ -129,6 +129,23 @@ WorkflowX 本质上是一套**轻量纯粹的配置文件与指令集系统**。
 3. 在 AI 客户端中挂载 MCP 配置（参考 `mcp.json.template`；OpenCode 用户可直接使用项目根目录的 `opencode.json`，MCP 已内置配置）
 4. 开始使用：在对话中呼叫 orchestratorX 并投递需求
 
+**OpenCode 专项配置说明：**
+
+OpenCode 用户需要关注以下配置文件：
+
+| 配置项 | 文件 | 说明 |
+|--------|------|------|
+| MCP 服务器 | `opencode.json` → `mcp` | 已预配置 memory + sequential-thinking，路径需按本机环境调整 |
+| 智能体权限 | `opencode.json` → `agent` | 5 个智能体（orchestratorX / coderX / evaluatorX / promptMasterX / abstracterX）的工具权限 |
+| 指令定义 | `opencode.json` → `command` | 5 条指令（xwhole / xlocal / xunit / xprompt / xstatus）已注册 |
+| 指令模板 | `.opencode/commands/*.md` | 每条指令的详细执行流程定义，支持 YAML frontmatter |
+| 智能体定义 | `.opencode/agents/*.md` | 5 个智能体的行为定义文件 |
+| 技能发现 | `.opencode/skills/` | OpenCode 会自动从 `.claude/skills/` 发现技能，无需重复配置 |
+
+OpenCode 的 `opencode.json` 已内置 MCP 配置，无需额外创建 `mcp.json`。如需调整 MCP 服务器路径（如 Node.js 安装位置不同），修改 `opencode.json` 中 `command` 字段的路径即可。
+
+> 并行模式（`/xwhole -parallel`）依赖 Claude Code 的 Agent Teams 功能，OpenCode 不支持。如需并行效果，请手动拆分任务后分别使用 `/xlocal` 执行。
+
 ### 2. 指令速查
 
 | 指令 | 说明 | 示例 |

@@ -2,7 +2,6 @@ name = "coderX"
 description = "Lean coding agent. Owns implementation of features, bug fixes, refactors, and tests."
 
 developer_instructions = """
-tools: [Bash, Read, Write, Edit, Glob, Grep, Agent, TodoWrite, mcp]
 ---
 
 # coderX Agent

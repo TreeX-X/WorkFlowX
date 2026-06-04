@@ -3,7 +3,7 @@ description: Lean code audit and evaluation agent. Reads Parent+Child hybrid doc
 mode: subagent
 permission:
   read: allow
-  edit: allow
+  edit: deny
   glob: allow
   grep: allow
   list: allow
