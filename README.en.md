@@ -4,7 +4,7 @@
 
 # WorkflowX
 
-### SubAgent-based Hybrid Multi-Agent Orchestration Framework
+### Hybrid-Doc-Driven Multi-Agent Collaboration Framework
 
 ![WorkflowX Logo](docs/design/images/WorkFlowX-Logo.png)
 
