@@ -15,7 +15,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
-| 7 | Status Report | `/xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
+| 7 | Status Report | `xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
 | 8 | Requirements Discovery & Proactive Challenge | Before Planning Phase dialogue (xwhole) or before PRD detection (xlocal) | `modules/08-requirements-discovery.md` |
 
 **Loading rule (Optimized)**: 
@@ -44,7 +44,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 ```javascript
 // Precompile once per session, store in session memory
 const PARAM_PATTERNS = {
-  mode: /^\/(xwhole|xlocal|xunit|xprompt)\b/,
+  mode: /^\/?(xwhole|xlocal|xunit|xstatus|xprompt)\b/,
   N: /-N\s+(\d+)/,
   box: /-box\s+(\S+)/,
   team: /-team\s+(\S+)/,
@@ -55,7 +55,7 @@ const PARAM_PATTERNS = {
 **Step 1: Extract parameters from $ARGUMENTS**
 
 ```
-Input: "/xwhole -N 5 -box feature-test Add user authentication"
+Input: "xwhole -N 5 -box feature-test Add user authentication"
 Parsed:
   - mode: xwhole
   - N: 5
@@ -362,7 +362,7 @@ child_iterations = {
 7. If PASS: done
 ```
 
-**Requirement Change**: Simple Loop has no documents to update. When user raises new requirements, terminate current loop and guide user to restart workflow with `/xlocal` or `/xwhole`.
+**Requirement Change**: Simple Loop has no documents to update. When user raises new requirements, terminate current loop and guide user to restart workflow with `xlocal` or `xwhole`.
 
 ---
 
@@ -451,7 +451,7 @@ When user does not explicitly specify a mode, route by the following rules:
 
 ### Routing Rules (by priority)
 
-1. **Explicit commands first**: `/xwhole`, `/xlocal`, `/xunit` bypass auto-routing.
+1. **Explicit commands first**: `xwhole`, `xlocal`, `xunit` bypass auto-routing.
 2. **Scope inference**:
 
    | Dimension | whole | local | unit |
@@ -469,7 +469,7 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 
 ## Start Rule
 
-1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`.
+1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `xwhole`, `xlocal`, `xunit`.
 2. **State isolation**: Stay in current workflow mode until completion. No cross-mode calls.
 3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrator-playbook/hybrid-template.md`). unit exempt.
 

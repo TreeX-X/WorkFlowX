@@ -18,11 +18,13 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 2. **Structured handoff**: Information passes between agents via Bus Payloads. orchestratorX validates and forwards.
 3. **Fix instruction pass-through**: evaluatorX outputs structured Fix Instructions. orchestratorX assembles them directly into coderX's fix prompt without human interpretation.
 
-## Command Interface
+## Command Interface (Natural Language Triggers)
 
-- `/xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global)
-- `/xlocal [-N] [requirement]` — Mode B (local)
-- `/xunit [requirement]` — Mode C (unit)
-- `/xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
-- `/xprompt [original prompt]` — Prompt optimization only
+> OpenAI Codex does not support project-defined slash commands. Use these as natural-language prefixes in the user message. Claude Code / OpenCode etc. that support slash commands may also use the `/`-prefixed form.
+
+- `xwhole [-N] [-box sandbox-name] [requirement]` — Mode A (global)
+- `xlocal [-N] [requirement]` — Mode B (local)
+- `xunit [requirement]` — Mode C (unit)
+- `xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
+- `xprompt [original prompt]` — Prompt optimization only
 """

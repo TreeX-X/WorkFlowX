@@ -1,6 +1,6 @@
 # Module 07: Status Report (xstatus)
 
-> **Trigger**: `/xstatus` 或 `/xstatus --output <path>` 指令触发。
+> **Trigger**: `xstatus` 或 `xstatus --output <path>` 指令触发。
 > **Output**: `./status-report.html` (默认) 或指定路径，生成后自动用默认浏览器打开。
 > **Style**: huashu-design（暖白底 + 衬线 display + rust 橙 accent，反 AI slop）
 
@@ -151,10 +151,10 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 各模式占位符：
 | 模式 | MODE_LABEL | MODE_DESC | COMMAND_HINT |
 |------|-----------|-----------|-------------|
-| Mode A | Mode A · xwhole | 全局 | 使用 /xwhole [-N num] [-box name] 需求 启动 |
-| Mode B | Mode B · xlocal | 局部 | 使用 /xlocal 需求 启动 |
-| Mode A-parallel | Mode A · parallel | 并行 | 使用 /xwhole -parallel 需求 启动 |
-| Mode C | Mode C · xunit | 单元 | 使用 /xunit 需求 启动 |
+| Mode A | Mode A · xwhole | 全局 | 使用 xwhole [-N num] [-box name] 需求 启动 |
+| Mode B | Mode B · xlocal | 局部 | 使用 xlocal 需求 启动 |
+| Mode A-parallel | Mode A · parallel | 并行 | 使用 xwhole -parallel 需求 启动 |
+| Mode C | Mode C · xunit | 单元 | 使用 xunit 需求 启动 |
 
 ## 各工作流展示格式
 

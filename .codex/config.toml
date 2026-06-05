@@ -4,8 +4,6 @@
 # date : 26-04-11
 
 # Model settings
-#model = "gpt-5.3-codex"
-#model = "gpt-5.4-mini"
 model_reasoning_effort = "medium"
 
 # Sandbox policy
@@ -19,10 +17,8 @@ approval_policy = "never"
 
 # Skills
 [skills]
-# Controls whether built-in skills are enabled
 [skills.bundled]
 enabled = true
-
 
 [mcp_servers.obsidianX_x]
 command = "npx.cmd"

@@ -16,12 +16,12 @@ When the user input satisfies **any** of the following conditions, skip promptMa
 
 | Mode | Scenario | Call promptMasterX? | Description |
 |---|---|---|---|
-| `/xunit` | Before calling coderX | Yes (auto) | Optimize user requirement + pass original requirement together to coderX |
-| `/xlocal` | Before first calling coderX | Yes (auto) | Same as above |
-| `/xwhole` | Planner phase | No | Planner phase needs to retain original intent for conversational clarification |
-| `/xwhole` | Coder phase (after PRD confirmation) | No | PRD itself is already structured |
-| `/xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge and optimize evaluator suggestions + user supplements before passing to coderX |
-| `/xprompt` | Direct call | Yes | Does not enter any workflow; only performs prompt engineering |
+| `xunit` | Before calling coderX | Yes (auto) | Optimize user requirement + pass original requirement together to coderX |
+| `xlocal` | Before first calling coderX | Yes (auto) | Same as above |
+| `xwhole` | Planner phase | No | Planner phase needs to retain original intent for conversational clarification |
+| `xwhole` | Coder phase (after PRD confirmation) | No | PRD itself is already structured |
+| `xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge and optimize evaluator suggestions + user supplements before passing to coderX |
+| `xprompt` | Direct call | Yes | Does not enter any workflow; only performs prompt engineering |
 
 **Passing Specification**: The optimized prompt is passed as the main body to the downstream agent, with the original requirement text attached in context to prevent intent loss.
 

@@ -14,13 +14,15 @@
    - Git operations (commit, branch, status, etc.)
    - User explicitly says "do it directly" or skips orchestration
 
-### Quick Commands
+### Codex Mode Aliases
 
-- `/xwhole [task description]` — Full-repo workflow (planner -> coder -> evaluator)
-- `/xlocal [task description]` — Single-module local development workflow
-- `/xunit [task description]` — Minimal unit task, direct modification
-- `/xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
-- `/xprompt [raw prompt]` — Prompt optimization only, no workflow triggered
+OpenAI Codex does not support project-defined slash commands. Use these as natural-language prefixes in the user message:
+
+- `xwhole [task description]` — Full-repo workflow (planner -> coder -> evaluator)
+- `xlocal [task description]` — Single-module local development workflow
+- `xunit [task description]` — Minimal unit task, direct modification
+- `xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
+- `xprompt [raw prompt]` — Prompt optimization only, no workflow triggered
 
 ## File Read/Write Rules (Mandatory)
 
@@ -63,9 +65,9 @@ WorkflowX is a multi-agent collaborative development framework. orchestratorX co
 
 | Mode | Command | Description |
 |------|---------|-------------|
-| **Mode A** | `/xwhole` | 全局工作流，适合大规模、高影响力的任务 |
-| **Mode B** | `/xlocal` | 本地工作流，适合需求明确、范围有限的任务 |
-| **Mode C** | `/xunit` | 单元工作流，适合最小任务：单个修复、单个文件 |
+| **Mode A** | `xwhole` | 全局工作流，适合大规模、高影响力的任务 |
+| **Mode B** | `xlocal` | 本地工作流，适合需求明确、范围有限的任务 |
+| **Mode C** | `xunit` | 单元工作流，适合最小任务：单个修复、单个文件 |
 
 
 ### Agent Teams (Mode A-parallel)
