@@ -6,41 +6,58 @@
 <title>WorkflowX 独有能力 · 数据与质量</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 720px; padding: 48px 40px 40px; }
-  .phase-label { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; letter-spacing: 0.1em; color: #9B9B9B; margin-bottom: 12px; }
-  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
-  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
-  .section-title { font-family: 'Georgia', serif; font-size: 28px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 24px; }
-  .cap-grid { display: flex; flex-direction: column; gap: 14px; }
-  .cap-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; padding: 22px 20px; display: flex; gap: 18px; align-items: flex-start; }
-  .cap-card .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: #FFFFFF; flex-shrink: 0; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 1024px; }
+  .window { width: 1024px; border-radius: 10px; border: 1px solid #E8E6E1; overflow: hidden; background: #FFFFFF; }
+  .window-header { height: 36px; background: #F5F4F0; display: flex; align-items: center; padding: 0 16px; gap: 8px; border-bottom: 1px solid #E8E6E1; }
+  .window-header .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .window-header .dot.red { background: #FF5F56; }
+  .window-header .dot.yellow { background: #FFBD2E; }
+  .window-header .dot.green { background: #27C93F; }
+  .window-header .title { font-family: 'Georgia', serif; font-size: 14px; color: #6B6B6B; margin-left: 8px; letter-spacing: 0.04em; }
+  .window-body { background: #FAFAF8; padding: 32px 40px 28px; }
+  .section-title { font-family: 'Georgia', serif; font-size: 24px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 24px; text-align: center; }
+  .cap-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .cap-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; padding: 20px 18px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .cap-card .avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; color: #FFFFFF; margin-bottom: 12px; }
   .cap-card.ht .avatar { background: #C04A1A; }
   .cap-card.ac .avatar { background: #EF4444; }
   .cap-card.pm .avatar { background: #8B5CF6; }
-  .cap-card .content { flex: 1; }
-  .cap-card .title { font-family: 'Georgia', serif; font-size: 17px; color: #1A1A1A; margin-bottom: 4px; }
-  .cap-card .desc { font-size: 14px; color: #6B6B6B; line-height: 1.7; }
-  .cap-card .tag { display: inline-block; font-size: 14px; padding: 3px 10px; margin-top: 8px; border-radius: 4px; background: #F5F4F0; color: #6B6B6B; letter-spacing: 0.04em; }
-  .footer { text-align: center; margin-top: 28px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
+  .cap-card .title { font-family: 'Georgia', serif; font-size: 16px; color: #1A1A1A; margin-bottom: 6px; }
+  .cap-card .desc { font-size: 14px; color: #6B6B6B; line-height: 1.6; }
+  .cap-card .tag { display: inline-block; font-size: 14px; padding: 3px 10px; margin-top: 10px; border-radius: 4px; background: #F5F4F0; color: #6B6B6B; letter-spacing: 0.04em; }
+  .footer { text-align: center; margin-top: 20px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>
-  <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> 独有能力 · 数据与质量</div>
-  <div class="section-title">差异化特性（上）</div>
-  <div class="cap-grid">
-    <div class="cap-card ht">
-      <div class="avatar">HT</div>
-      <div class="content"><div class="title">Hybrid Tree 需求追踪</div><div class="desc">Parent + Child 的 MECE 结构。唯一将需求文档化、结构化、可追踪的框架，而非散落在对话中。</div><div class="tag">数据结构</div></div>
-    </div>
-    <div class="cap-card ac">
-      <div class="avatar">AC</div>
-      <div class="content"><div class="title">AC 交叉验证</div><div class="desc">evaluatorX 不信任 coderX 的自我声明。独立读取代码、对照验收标准、输出结构化评估报告。</div><div class="tag">质量控制</div></div>
-    </div>
-    <div class="cap-card pm">
-      <div class="avatar">PM</div>
-      <div class="content"><div class="title">Prompt 优化引擎</div><div class="desc">promptMasterX 在编码前检测 37 种反模式。根据目标模型自动匹配最优提示策略。</div><div class="tag">输入质量</div></div>
-    </div>
+<div class="window">
+  <div class="window-header">
+    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+    <div class="title">Step 05 · 独有能力 · 数据与质量</div>
   </div>
-  <div class="footer">WorkflowX · 通过工程纪律实现结构性优势</div>
+  <div class="window-body">
+    <div class="section-title">差异化特性（上）</div>
+    <div class="cap-grid">
+      <div class="cap-card ht">
+        <div class="avatar">HT</div>
+        <div class="title">Hybrid Tree 需求追踪</div>
+        <div class="desc">Parent + Child 的 MECE 结构。唯一将需求文档化、结构化、可追踪的框架。</div>
+        <div class="tag">数据结构</div>
+      </div>
+      <div class="cap-card ac">
+        <div class="avatar">AC</div>
+        <div class="title">AC 交叉验证</div>
+        <div class="desc">evaluatorX 不信任 coderX 的自我声明。独立读取代码、对照验收标准、输出结构化评估报告。</div>
+        <div class="tag">质量控制</div>
+      </div>
+      <div class="cap-card pm">
+        <div class="avatar">PM</div>
+        <div class="title">Prompt 优化引擎</div>
+        <div class="desc">promptMasterX 在编码前检测 37 种反模式。根据目标模型自动匹配最优提示策略。</div>
+        <div class="tag">输入质量</div>
+      </div>
+    </div>
+    <div class="footer">WorkflowX · 通过工程纪律实现结构性优势</div>
+  </div>
+</div>
 </body>
 </html>

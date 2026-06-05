@@ -6,240 +6,62 @@
 <title>WorkflowX Architecture · Data & Communication</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
-    background: #FAFAF8;
-    color: #1A1A1A;
-    width: 720px;
-    padding: 8px 36px;
-  }
-  .container { width: 100%; }
-
-  /* huashu: phase-label */
-  .phase-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #9B9B9B;
-    margin-bottom: 16px;
-  }
-  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
-  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
-
-  /* huashu: section-title */
-  .section-title {
-    font-family: 'Georgia', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: #1A1A1A;
-    margin-bottom: 20px;
-    letter-spacing: 0.04em;
-    text-align: center;
-  }
-
-  .header { text-align: center; margin-bottom: 16px; }
-
-  /* huashu: doc-view card */
-  .doc-view {
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 8px;
-    padding: 20px 24px;
-    font-family: -apple-system, 'Segoe UI', sans-serif;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    margin-bottom: 14px;
-  }
-  .doc-view .doc-title {
-    font-family: 'Georgia', serif;
-    font-size: 18px; color: #1A1A1A;
-    margin-bottom: 14px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid #C04A1A;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .doc-view .doc-title .badge {
-    font-size: 13px; padding: 3px 10px;
-    border-radius: 4px;
-    background: #ECFDF5; color: #059669;
-    letter-spacing: 0.04em;
-  }
-
-  /* huashu: section-item list */
-  .section-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 6px 0;
-  }
-  .section-item .icon {
-    width: 24px; height: 24px;
-    border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 600; flex-shrink: 0;
-  }
-  .section-item .icon.done { background: #ECFDF5; color: #059669; }
-  .section-item .text { color: #1A1A1A; font-size: 15px; flex: 1; }
-  .section-item .text strong { color: #1A1A1A; }
-  .section-item .tag {
-    font-size: 13px; padding: 3px 10px;
-    border-radius: 4px; flex-shrink: 0;
-  }
-  .section-item .tag.static { background: #EFF6FF; color: #2563EB; }
-  .section-item .tag.dynamic { background: #FFFBEB; color: #D97706; }
-
-  /* huashu: badge-style payload items */
-  .payload-row {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid #E8E6E1;
-    flex-wrap: wrap;
-  }
-  .payload-badge {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    color: #6B6B6B;
-  }
-  .payload-badge .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
+  body { font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 1024px; }
+  .window { width: 1024px; border-radius: 10px; border: 1px solid #E8E6E1; overflow: hidden; background: #FFFFFF; }
+  .window-header { height: 36px; background: #F5F4F0; display: flex; align-items: center; padding: 0 16px; gap: 8px; border-bottom: 1px solid #E8E6E1; }
+  .window-header .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .window-header .dot.red { background: #FF5F56; }
+  .window-header .dot.yellow { background: #FFBD2E; }
+  .window-header .dot.green { background: #27C93F; }
+  .window-header .title { font-family: 'Georgia', serif; font-size: 14px; color: #6B6B6B; margin-left: 8px; letter-spacing: 0.04em; }
+  .window-body { background: #FAFAF8; padding: 28px 36px 24px; }
+  .section-title { font-family: 'Georgia', serif; font-size: 24px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 20px; text-align: center; }
+  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .doc-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; padding: 18px 16px; }
+  .doc-card .label { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #C04A1A; margin-bottom: 8px; font-weight: 500; }
+  .doc-card .title { font-family: 'Georgia', serif; font-size: 17px; color: #1A1A1A; margin-bottom: 6px; }
+  .doc-card .desc { font-size: 14px; color: #6B6B6B; line-height: 1.7; }
+  .payload-row { display: flex; justify-content: center; gap: 18px; padding: 14px 0; border-top: 1px solid #E8E6E1; border-bottom: 1px solid #E8E6E1; margin-bottom: 18px; flex-wrap: wrap; }
+  .payload-badge { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B6B6B; }
+  .payload-badge .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .payload-badge .dot.p1 { background: #10B981; }
   .payload-badge .dot.p2 { background: #EF4444; }
   .payload-badge .dot.p3 { background: #F59E0B; }
-
-  /* huashu: dashed parallel section */
-  .parallel-section {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 1px dashed #E8E6E1;
-    text-align: center;
-  }
-  .parallel-label {
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #9B9B9B;
-    margin-bottom: 12px;
-  }
-  .parallel-agents {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-  }
-  .parallel-card {
-    padding: 10px 14px;
-    border: 1px dashed #D4D2CC;
-    border-radius: 8px;
-    text-align: center;
-    background: #FAFAF8;
-  }
-  .parallel-card .name {
-    font-family: 'Georgia', serif;
-    font-size: 15px;
-    color: #6B6B6B;
-  }
-  .parallel-card .desc {
-    font-size: 14px;
-    color: #9B9B9B;
-    margin-top: 4px;
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 14px;
-    font-size: 14px;
-    color: #9B9B9B;
-    letter-spacing: 0.06em;
-  }
+  .parallel { text-align: center; }
+  .parallel .label { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #9B9B9B; margin-bottom: 12px; }
+  .parallel .cards { display: flex; justify-content: center; gap: 16px; }
+  .parallel .card { padding: 12px 20px; border: 1px dashed #D4D2CC; border-radius: 6px; text-align: center; background: #FAFAF8; }
+  .parallel .card .name { font-family: 'Georgia', serif; font-size: 15px; color: #6B6B6B; }
+  .parallel .card .pdesc { font-size: 14px; color: #9B9B9B; margin-top: 4px; }
+  .footer { text-align: center; margin-top: 18px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> Data & Communication</div>
-    <div class="section-title">Architecture · Data & Communication</div>
+<div class="window">
+  <div class="window-header">
+    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+    <div class="title">Step 01 · Architecture · Data &amp; Communication</div>
   </div>
-
-  <!-- Data Layer: 2-column doc-view -->
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
-    <div class="doc-view">
-      <div class="doc-title">Hybrid Tree <span class="badge">Data Structure</span></div>
-      <div class="section-item">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>Parent Routing</strong> — Global spec + routing table</div>
-        <div class="tag static">Static</div>
-      </div>
-      <div class="section-item">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>Children Requirements</strong> — MECE decomposition</div>
-        <div class="tag static">Static</div>
-      </div>
-      <div class="section-item">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>Section-Level Caching</strong> — Token optimization</div>
-        <div class="tag dynamic">Incremental</div>
+  <div class="window-body">
+    <div class="section-title">Data Layer &amp; Payload Communication</div>
+    <div class="doc-grid">
+      <div class="doc-card"><div class="label">Data Structure</div><div class="title">Hybrid Tree</div><div class="desc">Parent routing layer + Children requirement layer. MECE decomposition. Section-Level Caching for token optimization.</div></div>
+      <div class="doc-card"><div class="label">Knowledge</div><div class="title">MCP Memory Graph</div><div class="desc">Hybrid Tree stores skeleton pointers only. Full nodes persist via MCP server-memory. Cross-session knowledge sharing.</div></div>
+    </div>
+    <div class="payload-row">
+      <div class="payload-badge"><div class="dot p1"></div><span>Change Summary — coderX → orchestratorX</span></div>
+      <div class="payload-badge"><div class="dot p2"></div><span>Evaluation Result — evaluatorX → orchestratorX</span></div>
+      <div class="payload-badge"><div class="dot p3"></div><span>Req Change — orchestratorX internal</span></div>
+    </div>
+    <div class="parallel">
+      <div class="label">Parallel Mode (Agent Teams)</div>
+      <div class="cards">
+        <div class="card"><div class="name">coder-teammate</div><div class="pdesc">Parallel coding</div></div>
+        <div class="card"><div class="name">evaluator-teammate</div><div class="pdesc">Parallel evaluation</div></div>
       </div>
     </div>
-    <div class="doc-view">
-      <div class="doc-title">MCP Memory Graph <span class="badge">Knowledge</span></div>
-      <div class="section-item">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>Skeleton Pointers</strong> — Hybrid Tree stores refs only</div>
-        <div class="tag static">Static</div>
-      </div>
-      <div class="section-item">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>Persistent Nodes</strong> — server-memory storage</div>
-        <div class="tag dynamic">Dynamic</div>
-      </div>
-      <div class="section-item">
-        <div class="icon done">&#10003;</div>
-        <div class="text"><strong>Cross-Session Sharing</strong> — No redundant context</div>
-        <div class="tag dynamic">Dynamic</div>
-      </div>
-    </div>
+    <div class="footer">WorkflowX · Structural advantage through engineering discipline</div>
   </div>
-
-  <!-- Payload Badges -->
-  <div class="payload-row">
-    <div class="payload-badge">
-      <div class="dot p1"></div>
-      <span>Change Summary — coderX → orchestratorX</span>
-    </div>
-    <div class="payload-badge">
-      <div class="dot p2"></div>
-      <span>Evaluation Result — evaluatorX → orchestratorX</span>
-    </div>
-    <div class="payload-badge">
-      <div class="dot p3"></div>
-      <span>Req Change — orchestratorX internal</span>
-    </div>
-  </div>
-
-  <!-- Parallel Mode -->
-  <div class="parallel-section">
-    <div class="parallel-label">Parallel Mode (Agent Teams)</div>
-    <div class="parallel-agents">
-      <div class="parallel-card">
-        <div class="name">coder-teammate</div>
-        <div class="desc">Parallel coding</div>
-      </div>
-      <div class="parallel-card">
-        <div class="name">evaluator-teammate</div>
-        <div class="desc">Parallel evaluation</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">WorkflowX &middot; File-driven multi-agent orchestration framework</div>
 </div>
 </body>
 </html>

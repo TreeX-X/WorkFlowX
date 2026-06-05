@@ -6,176 +6,65 @@
 <title>WorkflowX Unique Capabilities · Safety & Discovery</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif;
-    background: #FAFAF8;
-    color: #1A1A1A;
-    width: 720px;
-    padding: 8px 36px;
-  }
-  .container { width: 100%; }
-
-  /* huashu: phase-label */
-  .phase-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #9B9B9B;
-    margin-bottom: 12px;
-  }
-  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
-  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
-
-  /* huashu: section-title */
-  .section-title {
-    font-family: 'Georgia', serif;
-    font-size: 28px;
-    font-weight: 400;
-    color: #1A1A1A;
-    margin-bottom: 14px;
-    letter-spacing: 0.04em;
-    text-align: center;
-  }
-
-  .header { text-align: center; margin-bottom: 12px; }
-
-  /* huashu: capability card with 4px top color-bar */
-  .capability-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-  .cap-card {
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 8px;
-    padding: 12px 12px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-  }
-  .cap-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 4px;
-    border-radius: 8px 8px 0 0;
-  }
-  .cap-card.cb::before { background: #3B82F6; }
-  .cap-card.sd::before { background: #10B981; }
-  .cap-card.rx::before { background: #6366F1; }
-
-  /* huashu: circular avatar-style icon */
-  .cap-card .icon-wrap {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 6px;
-    font-size: 15px;
-    font-weight: 600;
-    color: #FFFFFF;
-  }
-  .cap-card.cb .icon-wrap { background: #3B82F6; }
-  .cap-card.sd .icon-wrap { background: #10B981; }
-  .cap-card.rx .icon-wrap { background: #6366F1; }
-
-  .cap-card .title {
-    font-family: 'Georgia', serif;
-    font-size: 15px;
-    color: #1A1A1A;
-    margin-bottom: 6px;
-    line-height: 1.3;
-  }
-  .cap-card .desc {
-    font-size: 14px;
-    color: #6B6B6B;
-    line-height: 1.4;
-  }
-  .cap-card .tag {
-    display: inline-block;
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    padding: 3px 10px;
-    margin-top: 6px;
-    border-radius: 4px;
-    background: #F5F4F0;
-    color: #6B6B6B;
-  }
-
-  /* huashu: insight quote card */
-  .insight {
-    text-align: center;
-    padding: 12px 16px;
-    background: #FFFFFF;
-    border: 1px solid #E8E6E1;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-  }
-  .insight .quote {
-    font-family: 'Georgia', serif;
-    font-size: 15px;
-    font-style: italic;
-    color: #1A1A1A;
-    line-height: 1.5;
-    max-width: 580px;
-    margin: 0 auto;
-  }
-  .insight .attribution {
-    font-size: 14px;
-    color: #9B9B9B;
-    margin-top: 8px;
-  }
-
-  .footer {
-    text-align: center;
-    margin-top: 12px;
-    font-size: 14px;
-    color: #9B9B9B;
-    letter-spacing: 0.06em;
-  }
+  body { font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 1024px; }
+  .window { width: 1024px; border-radius: 10px; border: 1px solid #E8E6E1; overflow: hidden; background: #FFFFFF; }
+  .window-header { height: 36px; background: #F5F4F0; display: flex; align-items: center; padding: 0 16px; gap: 8px; border-bottom: 1px solid #E8E6E1; }
+  .window-header .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .window-header .dot.red { background: #FF5F56; }
+  .window-header .dot.yellow { background: #FFBD2E; }
+  .window-header .dot.green { background: #27C93F; }
+  .window-header .title { font-family: 'Georgia', serif; font-size: 14px; color: #6B6B6B; margin-left: 8px; letter-spacing: 0.04em; }
+  .window-body { background: #FAFAF8; padding: 28px 36px 24px; }
+  .section-title { font-family: 'Georgia', serif; font-size: 24px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 20px; text-align: center; }
+  .main-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+  .cap-col { display: flex; flex-direction: column; gap: 10px; }
+  .cap-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; padding: 14px 16px; display: flex; gap: 14px; align-items: flex-start; }
+  .cap-card .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #FFFFFF; flex-shrink: 0; }
+  .cap-card.cb .avatar { background: #3B82F6; }
+  .cap-card.sd .avatar { background: #10B981; }
+  .cap-card.rx .avatar { background: #6366F1; }
+  .cap-card .content { flex: 1; }
+  .cap-card .title { font-family: 'Georgia', serif; font-size: 15px; color: #1A1A1A; margin-bottom: 3px; }
+  .cap-card .desc { font-size: 14px; color: #6B6B6B; line-height: 1.6; }
+  .cap-card .tag { display: inline-block; font-size: 13px; padding: 2px 8px; margin-top: 6px; border-radius: 4px; background: #F5F4F0; color: #6B6B6B; letter-spacing: 0.04em; }
+  .insight { display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px 18px; background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; }
+  .insight .quote { font-family: 'Georgia', serif; font-size: 15px; font-style: italic; color: #1A1A1A; line-height: 1.6; }
+  .insight .attr { font-size: 14px; color: #9B9B9B; margin-top: 10px; }
+  .footer { text-align: center; margin-top: 18px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="phase-label"><div class="dot"></div><span class="step-num">05</span> Safety & Discovery</div>
-    <div class="section-title">Unique Capabilities · Safety & Discovery</div>
+<div class="window">
+  <div class="window-header">
+    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+    <div class="title">Step 05 · Unique Capabilities · Safety &amp; Discovery</div>
   </div>
-
-  <div class="capability-grid">
-    <div class="cap-card cb">
-      <div class="icon-wrap">CB</div>
-      <div class="title">Cross-Branch Violation Detection</div>
-      <div class="desc">File ownership tracking + shared file compatibility checks. Prevents conflicts in parallel development.</div>
-      <div class="tag">Safety</div>
+  <div class="window-body">
+    <div class="section-title">Differentiated Features (Part II)</div>
+    <div class="main-row">
+      <div class="cap-col">
+        <div class="cap-card cb">
+          <div class="avatar">CB</div>
+          <div class="content"><div class="title">Cross-Branch Violation Detection</div><div class="desc">File ownership tracking + shared file compatibility checks. Prevents conflicts in parallel development.</div><div class="tag">Safety</div></div>
+        </div>
+        <div class="cap-card sd">
+          <div class="avatar">SD</div>
+          <div class="content"><div class="title">Socratic Requirements Discovery</div><div class="desc">Weighted 6-dimension clarity assessment. One question at a time. Proactively challenges contradictions and risks.</div><div class="tag">Planning</div></div>
+        </div>
+        <div class="cap-card rx">
+          <div class="avatar">RX</div>
+          <div class="content"><div class="title">Code Aesthetics Framework</div><div class="desc">razorX asks: "Can the path be shorter? Can cognitive load be lower?" Dual-mode: surgical review + declarative generation.</div><div class="tag">Code Quality</div></div>
+        </div>
+      </div>
+      <div class="insight">
+        <div>
+          <div class="quote">WorkflowX does not teach AI how to write code, nor how to use tools. It teaches AI how to do engineering — requirement tracing, quality auditing, structured iteration.</div>
+          <div class="attr">&mdash; Design Philosophy</div>
+        </div>
+      </div>
     </div>
-    <div class="cap-card sd">
-      <div class="icon-wrap">SD</div>
-      <div class="title">Socratic Requirements Discovery</div>
-      <div class="desc">Weighted 6-dimension clarity assessment. One question at a time. Proactively challenges contradictions and risks.</div>
-      <div class="tag">Planning</div>
-    </div>
-    <div class="cap-card rx">
-      <div class="icon-wrap">RX</div>
-      <div class="title">Code Aesthetics Framework</div>
-      <div class="desc">razorX asks: "Can the path be shorter? Can cognitive load be lower?" Dual-mode review.</div>
-      <div class="tag">Code Quality</div>
-    </div>
+    <div class="footer">WorkflowX · Structural advantage through engineering discipline</div>
   </div>
-
-  <div class="insight">
-    <div class="quote">WorkflowX does not teach AI how to write code, nor how to use tools. It teaches AI how to do engineering — requirement tracing, quality auditing, structured iteration.</div>
-    <div class="attribution">&mdash; Design Philosophy</div>
-  </div>
-
-  <div class="footer">WorkflowX &middot; Structural advantage through engineering discipline</div>
 </div>
 </body>
 </html>

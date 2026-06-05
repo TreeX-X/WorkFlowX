@@ -6,50 +6,62 @@
 <title>WorkflowX 数据与通信</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 720px; padding: 48px 40px 40px; }
-  .phase-label { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; letter-spacing: 0.1em; color: #9B9B9B; margin-bottom: 12px; }
-  .phase-label .dot { width: 8px; height: 8px; border-radius: 50%; background: #C04A1A; }
-  .phase-label .step-num { font-family: 'Georgia', serif; font-size: 15px; color: #C04A1A; }
-  .section-title { font-family: 'Georgia', serif; font-size: 28px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 24px; }
-  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 24px; }
-  .doc-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; padding: 20px 18px; }
+  body { font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif; background: #FAFAF8; color: #1A1A1A; width: 1024px; }
+  .window { width: 1024px; border-radius: 10px; border: 1px solid #E8E6E1; overflow: hidden; background: #FFFFFF; }
+  .window-header { height: 36px; background: #F5F4F0; display: flex; align-items: center; padding: 0 16px; gap: 8px; border-bottom: 1px solid #E8E6E1; }
+  .window-header .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .window-header .dot.red { background: #FF5F56; }
+  .window-header .dot.yellow { background: #FFBD2E; }
+  .window-header .dot.green { background: #27C93F; }
+  .window-header .title { font-family: 'Georgia', serif; font-size: 14px; color: #6B6B6B; margin-left: 8px; letter-spacing: 0.04em; }
+  .window-body { background: #FAFAF8; padding: 28px 36px 24px; }
+  .section-title { font-family: 'Georgia', serif; font-size: 24px; font-weight: 400; color: #1A1A1A; letter-spacing: 0.04em; margin-bottom: 20px; text-align: center; }
+  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .doc-card { background: #FFFFFF; border: 1px solid #E8E6E1; border-radius: 6px; padding: 18px 16px; }
   .doc-card .label { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #C04A1A; margin-bottom: 8px; font-weight: 500; }
   .doc-card .title { font-family: 'Georgia', serif; font-size: 17px; color: #1A1A1A; margin-bottom: 6px; }
   .doc-card .desc { font-size: 14px; color: #6B6B6B; line-height: 1.7; }
-  .payload-row { display: flex; justify-content: center; gap: 18px; padding: 18px 0; border-top: 1px solid #E8E6E1; border-bottom: 1px solid #E8E6E1; margin-bottom: 24px; flex-wrap: wrap; }
+  .payload-row { display: flex; justify-content: center; gap: 18px; padding: 14px 0; border-top: 1px solid #E8E6E1; border-bottom: 1px solid #E8E6E1; margin-bottom: 18px; flex-wrap: wrap; }
   .payload-badge { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #6B6B6B; }
   .payload-badge .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .payload-badge .dot.p1 { background: #10B981; }
   .payload-badge .dot.p2 { background: #EF4444; }
   .payload-badge .dot.p3 { background: #F59E0B; }
   .parallel { text-align: center; }
-  .parallel .label { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #9B9B9B; margin-bottom: 14px; }
+  .parallel .label { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: #9B9B9B; margin-bottom: 12px; }
   .parallel .cards { display: flex; justify-content: center; gap: 16px; }
-  .parallel .card { padding: 14px 22px; border: 1px dashed #D4D2CC; border-radius: 6px; text-align: center; background: #FAFAF8; }
+  .parallel .card { padding: 12px 20px; border: 1px dashed #D4D2CC; border-radius: 6px; text-align: center; background: #FAFAF8; }
   .parallel .card .name { font-family: 'Georgia', serif; font-size: 15px; color: #6B6B6B; }
-  .parallel .card .desc { font-size: 14px; color: #9B9B9B; margin-top: 4px; }
-  .footer { text-align: center; margin-top: 28px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
+  .parallel .card .pdesc { font-size: 14px; color: #9B9B9B; margin-top: 4px; }
+  .footer { text-align: center; margin-top: 18px; font-size: 14px; color: #9B9B9B; letter-spacing: 0.06em; }
 </style>
 </head>
 <body>
-  <div class="phase-label"><div class="dot"></div><span class="step-num">01</span> 系统架构 · 数据与通信</div>
-  <div class="section-title">数据层与 Payload 通信</div>
-  <div class="doc-grid">
-    <div class="doc-card"><div class="label">数据结构</div><div class="title">Hybrid Tree</div><div class="desc">Parent 路由层 + Children 需求层。MECE 分工。Section-Level Caching 实现 Token 优化。</div></div>
-    <div class="doc-card"><div class="label">知识管理</div><div class="title">MCP 记忆图谱</div><div class="desc">Hybrid Tree 仅存骨架指针。完整节点由 MCP server-memory 持久化。跨会话知识共享。</div></div>
+<div class="window">
+  <div class="window-header">
+    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+    <div class="title">Step 01 · 系统架构 · 数据与通信</div>
   </div>
-  <div class="payload-row">
-    <div class="payload-badge"><div class="dot p1"></div><span>变更摘要 — coderX → orchestratorX</span></div>
-    <div class="payload-badge"><div class="dot p2"></div><span>评估结果 — evaluatorX → orchestratorX</span></div>
-    <div class="payload-badge"><div class="dot p3"></div><span>需求变更 — orchestratorX 内部</span></div>
-  </div>
-  <div class="parallel">
-    <div class="label">并行模式（Agent Teams）</div>
-    <div class="cards">
-      <div class="card"><div class="name">coder-teammate</div><div class="desc">并行编码</div></div>
-      <div class="card"><div class="name">evaluator-teammate</div><div class="desc">并行评估</div></div>
+  <div class="window-body">
+    <div class="section-title">数据层与 Payload 通信</div>
+    <div class="doc-grid">
+      <div class="doc-card"><div class="label">数据结构</div><div class="title">Hybrid Tree</div><div class="desc">Parent 路由层 + Children 需求层。MECE 分工。Section-Level Caching 实现 Token 优化。</div></div>
+      <div class="doc-card"><div class="label">知识管理</div><div class="title">MCP 记忆图谱</div><div class="desc">Hybrid Tree 仅存骨架指针。完整节点由 MCP server-memory 持久化。跨会话知识共享。</div></div>
     </div>
+    <div class="payload-row">
+      <div class="payload-badge"><div class="dot p1"></div><span>变更摘要 — coderX → orchestratorX</span></div>
+      <div class="payload-badge"><div class="dot p2"></div><span>评估结果 — evaluatorX → orchestratorX</span></div>
+      <div class="payload-badge"><div class="dot p3"></div><span>需求变更 — orchestratorX 内部</span></div>
+    </div>
+    <div class="parallel">
+      <div class="label">并行模式（Agent Teams）</div>
+      <div class="cards">
+        <div class="card"><div class="name">coder-teammate</div><div class="pdesc">并行编码</div></div>
+        <div class="card"><div class="name">evaluator-teammate</div><div class="pdesc">并行评估</div></div>
+      </div>
+    </div>
+    <div class="footer">WorkflowX · 通过工程纪律实现结构性优势</div>
   </div>
-  <div class="footer">WorkflowX · 通过工程纪律实现结构性优势</div>
+</div>
 </body>
 </html>
