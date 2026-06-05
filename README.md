@@ -4,7 +4,7 @@
 
 # WorkflowX
 
-### 基于 SubAgent 调度的混合多智能体工作流框架
+### 混合文档驱动的多智能体协作框架
 
 ![WorkflowX Logo](docs/design/images/WorkFlowX-Logo.png)
 
