@@ -341,6 +341,12 @@ If this project helps you, feel free to give it a ⭐ so more people can join us
 
 ---
 
+## Friend Links
+
+- [Linux.Do](https://linux.do/) — Dedicated to providing high-quality discussions and resource-sharing for tech enthusiasts and professionals
+
+---
+
 <div align="center">
 
 [MIT License](./LICENSE) · Free to use / Modify / Redistribute
