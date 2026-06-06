@@ -169,10 +169,10 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 
 | 平台 | 安装命令 |
 |------|----------|
-| **Claude Code** | `/plugin marketplace add https://github.com/TreeX/workflowx` → `/plugin install workflowx` |
+| **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → 搜索 `workflowx` → Install Plugin |
-| **GitHub Copilot** | `copilot plugin marketplace add https://github.com/TreeX/workflowx` → `copilot plugin install workflowx@workflowx` |
-| **OpenCode** | 在 `opencode.json` 中添加 `"plugin": ["workflowx@git+https://github.com/TreeX/workflowx.git"]` |
+| **GitHub Copilot** | `copilot plugin marketplace add https://github.com/TreeX-X/workflowX` → `copilot plugin install workflowx@workflowx` |
+| **OpenCode** | 在 `opencode.json` 中添加 `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` |
 
 **方式二：手动部署**
 

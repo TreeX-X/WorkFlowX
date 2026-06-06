@@ -62,7 +62,7 @@ backup_existing() {
             items=(agents skills commands settings.json CLAUDE.local.md)
             ;;
         codex)
-            items=(agents skills commands config.toml)
+            items=(agents skills config.toml)
             ;;
         copilot)
             items=(agents prompts skills instructions hooks copilot-instuctions.md)
@@ -121,7 +121,7 @@ deploy_platform() {
             done
             ;;
         codex)
-            for item in agents skills commands config.toml; do
+            for item in agents skills config.toml; do
                 if [ -e "$src/$item" ]; then
                     if [ -d "$src/$item" ]; then
                         copy_tree "$src/$item" "$dst/$item"
@@ -180,7 +180,6 @@ verify_deploy() {
             check "config.toml"
             check "agents"
             check "skills"
-            check "commands"
             ;;
         copilot)
             check "agents"

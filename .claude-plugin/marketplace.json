@@ -13,9 +13,9 @@
       "author": {
         "name": "TreeX"
       },
-      "source": "./",
+      "source": "./.claude",
       "category": "productivity",
-      "homepage": "https://github.com/TreeX/workflowx",
+      "homepage": "https://github.com/TreeX-X/workflowX",
       "tags": [
         "multi-agent",
         "orchestration",
