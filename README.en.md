@@ -169,10 +169,10 @@ A single command generates a high-fidelity HTML status report, built on `huashu-
 
 | Platform | Install Command |
 |----------|----------------|
-| **Claude Code** | `/plugin marketplace add https://github.com/TreeX/workflowx` → `/plugin install workflowx` |
+| **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → search `workflowx` → Install Plugin |
-| **GitHub Copilot** | `copilot plugin marketplace add https://github.com/TreeX/workflowx` → `copilot plugin install workflowx@workflowx` |
-| **OpenCode** | Add `"plugin": ["workflowx@git+https://github.com/TreeX/workflowx.git"]` to `opencode.json` |
+| **GitHub Copilot** | `copilot plugin marketplace add https://github.com/TreeX-X/workflowX` → `copilot plugin install workflowx@workflowx` |
+| **OpenCode** | Add `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` to `opencode.json` |
 
 **Option 2: Manual Setup**
 

@@ -5,8 +5,8 @@
   "author": {
     "name": "TreeX"
   },
-  "homepage": "https://github.com/TreeX/workflowx",
-  "repository": "https://github.com/TreeX/workflowx",
+  "homepage": "https://github.com/TreeX-X/workflowX",
+  "repository": "https://github.com/TreeX-X/workflowX",
   "license": "MIT",
   "keywords": [
     "multi-agent",
@@ -32,6 +32,6 @@
       "/xlocal Fix the authentication bug",
       "/xunit Add input validation to the login form"
     ],
-    "websiteURL": "https://github.com/TreeX/workflowx"
+    "websiteURL": "https://github.com/TreeX-X/workflowX"
   }
 }
