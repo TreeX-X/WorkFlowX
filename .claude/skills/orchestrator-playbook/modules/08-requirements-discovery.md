@@ -6,15 +6,19 @@
 
 ### When to Activate
 
-Before entering the standard Planning Phase dialogue, assess requirement clarity. If the user's initial input meets **any** of the following conditions, activate Socratic Discovery:
+Before entering the standard Planning Phase dialogue (Mode A) or PRD detection (Mode B), assess requirement clarity using the 6-dimension scoring system.
 
-- Requirement is a vague idea ("I want to build X", "make something that does Y")
-- No specific file paths, function names, or technical details mentioned
-- No acceptance criteria or success metrics provided
-- Scope is ambiguous (could be 1 hour or 1 week of work)
-- User explicitly says "I'm not sure", "something like", "maybe"
+**Activation criteria by mode**:
 
-If the requirement already contains specific file paths, clear AC, technical constraints, and defined scope, skip Socratic Discovery and go directly to Proactive Challenge (Section 8.2).
+- **Mode A (whole)**: Activate Socratic Discovery if clarity score < 7.0
+  - Rationale: Whole-codebase workflows require high clarity to minimize rework
+  - If score >= 7.0: Skip Socratic, proceed to Proactive Challenge
+
+- **Mode B (local)**: Activate Socratic Discovery if clarity score < 5.0
+  - Rationale: Local workflows assume "requirements relatively clear"
+  - If score >= 5.0: Skip Socratic, proceed to Proactive Challenge
+
+- **Mode C (unit)**: Socratic Discovery not used (overhead not justified for minimal tasks)
 
 ### Clarity Dimensions & Weights
 
@@ -33,12 +37,17 @@ Assess requirement clarity across 6 dimensions. Each dimension scores 0-10:
 
 ### Clarity Threshold
 
-| Score | Action |
-|-------|--------|
-| >= 7.0 | Skip Socratic Discovery, go to Proactive Challenge |
-| 5.0 - 6.9 | Light Discovery: 2-3 targeted questions on lowest-scoring dimensions |
-| 3.0 - 4.9 | Standard Discovery: 4-6 questions, cover all dimensions below 5 |
-| < 3.0 | Deep Discovery: 6-10 questions, systematic coverage of all dimensions |
+**Mode-specific thresholds**:
+- **Mode A (whole)**: >= 7.0 to skip Socratic Discovery
+- **Mode B (local)**: >= 5.0 to skip Socratic Discovery
+- **Mode C (unit)**: Socratic Discovery not used
+
+| Score | Action (Mode A) | Action (Mode B) |
+|-------|----------------|-----------------|
+| >= 7.0 | Skip Socratic Discovery | Light Discovery: 1-2 questions |
+| 5.0 - 6.9 | Light Discovery: 2-3 questions | Skip Socratic Discovery |
+| 3.0 - 4.9 | Standard Discovery: 4-6 questions | Light Discovery: 2-3 questions |
+| < 3.0 | Deep Discovery: 6-10 questions | Standard Discovery: 4-6 questions |
 
 ### Questioning Rules
 
@@ -82,7 +91,7 @@ B) 否，当前假设成立即可
 
 ### Auto-Transition
 
-After each user answer, re-evaluate the clarity score. When the score reaches the threshold (>= 7.0), output a brief summary of the discovered requirements and transition to Proactive Challenge:
+After each user answer, re-evaluate the clarity score. When the score reaches the mode-specific threshold (Mode A: >= 7.0, Mode B: >= 5.0), output a brief summary of the discovered requirements and transition to Proactive Challenge:
 
 ```
 需求清晰度已达阈值。以下是确认的需求摘要：

@@ -1,9 +1,27 @@
-Invoke the orchestratorX agent in unit mode (Mode C: unit) to execute the following requirement.
+---
+description: Execute Mode C workflow (unit task, minimal change)
+---
 
-User input: $ARGUMENTS
+Agent(
+  subagent_type="orchestratorX",
+  description="Execute Mode C workflow",
+  prompt="Mode: xunit
 
-Execution flow:
-1. Load runtime environment (Module 01)
-2. Invoke promptMasterX to optimize the execution instruction (Module 04)
-3. Invoke coderX to perform a minimal change (lightweight mode: only loads karpathy-guidelines, does not load codex-spec-implementation)
-4. Report completion to user; evaluatorX is only invoked if the user explicitly requests it
+Requirement: $ARGUMENTS
+
+Execute Mode C workflow following orchestrator-playbook:
+
+1. Environment Init (Module 01): MCP probe, concurrency lock
+2. promptMasterX optimization (Module 04, optional if input contains file path)
+3. coderX lightweight mode: single minimal change
+   - Only loads karpathy-guidelines
+   - Skip codex-spec-implementation
+   - No Bus Payload output
+   - No worktree isolation (direct on current branch)
+4. Report to user
+
+Key behaviors:
+- Minimal overhead, fast execution
+- evaluatorX only if user explicitly requests
+- No Hybrid Tree generation"
+)

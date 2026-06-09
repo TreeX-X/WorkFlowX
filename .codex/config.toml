@@ -7,7 +7,7 @@
 model_reasoning_effort = "medium"
 
 # Sandbox policy
-sandbox_mode = "workspace-write"
+sandbox_mode = "danger-full-access"
 
 # Approval policy
 approval_policy = "never"
@@ -19,14 +19,6 @@ approval_policy = "never"
 [skills]
 [skills.bundled]
 enabled = true
-
-[mcp_servers.obsidianX_x]
-command = "npx.cmd"
-args = [
-    "-y",
-    "@modelcontextprotocol/server-filesystem",
-    "${OBSIDIAN_VAULT_PATH}"
-]
 
 [mcp_servers.server-memory]
 command = "npx"

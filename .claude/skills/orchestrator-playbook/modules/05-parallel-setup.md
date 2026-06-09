@@ -12,7 +12,27 @@
 2. **If prerequisites NOT met → ABORT immediately**
    - Do NOT fall back to Mode A/B
    - Do NOT proceed without Agent Teams
-   - Output error: `❌ Agent Teams not available. -parallel requires CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 and teammateMode="in-process". Aborting.`
+   - Output detailed error with configuration steps:
+   
+   ```
+   ❌ Agent Teams not available. -parallel mode requires:
+   
+   1. Environment variable:
+      export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+      
+   2. Claude Code settings.json:
+      "teammateMode": "in-process"
+      
+   To configure:
+   - Run: /config to open settings
+   - Or manually edit ~/.claude/settings.json
+   - Add: "teammateMode": "in-process"
+   
+   For more details: https://docs.anthropic.com/claude/docs/agent-teams
+   
+   Aborting workflow.
+   ```
+   
    - Delete workflow lock and terminate
 
 ## Team Creation Flow

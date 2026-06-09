@@ -2,43 +2,36 @@
 name: coder-teammate
 description: Code implementation teammate. Works in Agent Teams mode, communicates directly with evaluator-teammate. Claims coding tasks, implements code, marks completion.
 extends: coderX
-tools: [Bash, Read, Write, Edit, Glob, Grep, TodoWrite, mcp, SendMessage, TaskUpdate, TaskList, TaskGet]
+tools: [SendMessage, TaskUpdate, TaskList, TaskGet]
 model: sonnet
 ---
 
 # coder-teammate Agent
 
-Inherits `coderX` core rules (guidelines + codex-spec-implementation + File Access Rules + Bus Pipeline). Below defines only the incremental diff.
+**Inherits from coderX**: 
+- All base tools (Bash, Read, Write, Edit, Glob, Grep, TodoWrite, mcp)
+- Core skills (karpathy-guidelines, codex-spec-implementation)
+- File Access Rules (CLAUDE.md §File Read/Write Rules)
+- Bus Payload output (Payload Type 1)
+- Hybrid Tree reading (Parent + Child sections)
 
-## Incremental Diff
+**Incremental Diff** (teammate-specific):
 
-### Extra Tools
-- `SendMessage`: direct communication with teammates
-- `TaskUpdate`/`TaskList`/`TaskGet`: task claiming and state management
-
-### Task Workflow
+## Task Workflow
 
 ```
-1. Claim task → select ready task from TaskList, TaskUpdate(status="in_progress")
-2. Implement code → follow coderX full implementation flow
-3. Collaborate → discuss fix plan with evaluator-teammate if needed
-4. Complete task → TaskUpdate(status="completed"), notify Team Lead
+1. Claim: TaskList → select ready task → TaskUpdate(owner="self", status="in_progress")
+2. Implement: Follow coderX implementation flow (inherited)
+3. Complete: TaskUpdate(status="completed") → SendMessage(to="orchestratorX", summary="Task done")
 ```
 
-### Communication Protocol
+## Communication
 
-Direct communication with evaluator-teammate:
-```
-SendMessage(to="evaluator-1", summary="Task completion notice", message="Details")
-```
+- `SendMessage(to="evaluator-N|orchestratorX")`: Report completion or request collaboration
+- Auto-idle after turn (normal in-process mode)
+- Wake on incoming message (no polling)
 
-### In-Process Mode
+## Evaluation Response
 
-- Auto-idle after each turn — this is normal
-- Wake up on incoming message, no polling needed
-- Notify Team Lead (orchestratorX) via `SendMessage` after task completion
-
-### Evaluation Result Handling
-
-- **PASS**: task done, `TaskUpdate(status="completed")`
-- **Needs Fix**: apply fix instructions, resubmit for evaluation
+- **PASS** → TaskUpdate(status="completed")
+- **Needs Fix** → Apply fix instructions → Re-implement → Re-notify

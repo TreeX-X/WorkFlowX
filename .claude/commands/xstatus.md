@@ -9,33 +9,28 @@ User input: $ARGUMENTS
 /xstatus --output <path>      # Specify custom output path, still opens in browser after generation
 ```
 
-## Execution Flow
+---
+description: Generate huashu-styled HTML status report for workflow state
+---
 
-1. **Parse arguments**: Detect `--output <path>` if present, default to `./status-report.html`
-2. **Load module**: Read `.claude/skills/orchestrator-playbook/modules/07-status-report.md` for the full procedure
-3. **Collect data**:
-   - Scan `.hybrid/` for Parent + Child hybrid documents
-   - Classify each feature by Mode (A / B / A-parallel)
-   - Run `git log --since="24 hours ago"` for Mode C (xunit) inference
-   - Get current branch / user / repo via git
-4. **Aggregate stats**: Active workflows, total children, completion rate, failed count
-5. **Render HTML**: Read template at `.claude/skills/orchestrator-playbook/templates/status-report.html`, perform string substitution
-6. **Write file**: Save to output path (creates parent dirs if needed)
-7. **Open browser**: Cross-platform launch (`start ""` on Windows, `open` on macOS, `xdg-open` on Linux)
+Agent(
+  subagent_type="orchestratorX",
+  description="Generate workflow status report",
+  prompt="Mode: xstatus
 
-## Output Design
+Arguments: $ARGUMENTS
 
-The report uses **huashu-design style**:
-- Warm off-white background (`#fafaf7`) + rust orange accent (`#c04a1a`)
-- Serif display font (Newsreader) + system sans + JetBrains Mono
-- 4 workflow modes each have distinct layout:
-  - **Mode A / B**: Tree of children with progress bar + iteration rounds
-  - **Mode A-parallel**: Tree + Agent Team sidebar (active/idle teammates)
-  - **Mode C**: Git-inferred activity table (since no Hybrid Tree documents)
+Generate huashu-styled HTML status report per Module 07 (status-report.md):
 
-## Constraints
+1. Parse arguments: --output <path> (default: ./status-report.html)
+2. Scan .hybrid/ for Hybrid Trees → classify by Mode A/B/A-parallel
+3. Parse sections: Parent §7 (routing), §9 (aggregation), Child §7 (AC), §9 (eval)
+4. Git log for xunit activities (last 7 days, commits outside .hybrid/)
+5. Render huashu-styled HTML: hero, Children progress, issue heatmap, dependency graph
+6. Write to output path + auto-open in browser
 
-- **Read-only operation**: Never modifies project source files or Hybrid Tree documents
-- **Idempotent**: Default path (`./status-report.html`) is overwritten each run
-- **No watch mode**: Single snapshot only, no auto-refresh
-- **Empty sections hidden**: Sections with no active workflows are omitted entirely (no empty headers)
+Constraints:
+- Read-only (no code/doc modifications)
+- Idempotent (overwrite ./status-report.html)
+- Empty sections hidden"
+)
