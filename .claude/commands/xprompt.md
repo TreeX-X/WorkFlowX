@@ -1,8 +1,19 @@
-Invoke the promptMasterX agent to optimize the following prompt only, without triggering any development workflow.
+---
+description: Optimize prompt without triggering workflow
+---
 
-Original prompt: $ARGUMENTS
+Agent(
+  subagent_type="promptMasterX",
+  description="Prompt optimization only",
+  prompt="Original prompt: $ARGUMENTS
+
+Task: Optimize this prompt into production-grade format.
 
 Output requirements:
-- Output the optimized production-grade prompt
-- Annotate the target tool and optimization rationale
-- User can directly copy and use it
+- Optimized prompt text
+- Target tool annotation
+- Optimization rationale
+- Copy-paste ready format
+
+Do NOT trigger any development workflow (xwhole/xlocal/xunit)."
+)

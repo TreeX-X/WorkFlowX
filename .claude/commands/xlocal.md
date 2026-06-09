@@ -1,21 +1,30 @@
-Invoke the orchestratorX agent in local mode (Mode B: local) to execute the following requirement.
+---
+description: Execute Mode B workflow (local module, PRD detection)
+---
 
-User input: $ARGUMENTS
+Agent(
+  subagent_type="orchestratorX",
+  description="Execute Mode B workflow",
+  prompt="Mode: xlocal
 
-Execution flow:
-1. Parse parameters from $ARGUMENTS (see orchestrator-playbook Parameter Parsing section)
-2. Load runtime environment (Module 01)
-3. PRD detection (priority order):
-   a. Check `.hybrid/[feature]/` directory → if Hybrid Tree exists, use directly, skip to step 5
-   b. Check $ARGUMENTS for file path (e.g. `/xlocal ./docs/prd.md`) → if valid file, read PRD and wrap into Hybrid Tree (Parent + Child), skip to step 5
-   c. No PRD found → auto-generate minimal Hybrid Tree:
-      - Scan project code (Glob, Grep, rg) for files related to the requirement
-      - Generate Parent: fill Sections 0-6 (minimal from requirement), Section 7 routing table (single Child), 8.1 file index, 8.2 knowledge graph outline, 8.3 empty
-      - Generate Child: fill Section 7 AC (decomposed from requirement), 8.1 private file index
-      - Write to `.hybrid/[feature-name]/`
-4. Invoke promptMasterX to optimize the execution instruction (Module 04)
-5. Enter Core Iteration Loop: dispatch coderX → bus payload validation (Module 02) → evaluatorX → post-evaluation update (Module 03)
-6. If fixes needed, loop steps 5-6 (max iterations determined by -N parameter, default 2). **Early exit**: if evaluatorX returns `Evaluation Result: PASS`, terminate iteration immediately
+Requirement: $ARGUMENTS
 
-Supported parameters (parsed from $ARGUMENTS):
-- `-N [number]`: Set the maximum number of evaluation iteration rounds (default: 2, range: 1-10)
+Execute Mode B workflow following orchestrator-playbook:
+
+1. Environment Init (Module 01): MCP probe, concurrency lock
+2. Requirements Discovery (Module 08): Quick clarity check, Socratic Discovery (only if clarity < 5.0), Proactive Challenge (always)
+3. PRD Detection (priority order):
+   a. Existing Hybrid Tree in .hybrid/[feature]/ → use directly
+   b. File path in $ARGUMENTS (e.g. ./docs/prd.md) → read and wrap into Hybrid Tree
+   c. No PRD → auto-generate minimal Hybrid Tree (code scan → Parent + Child)
+4. promptMasterX optimization (Module 04)
+5. Core Iteration Loop: coderX (isolation=worktree) ↔ evaluatorX (isolation=worktree)
+
+Parameters (auto-parsed from $ARGUMENTS):
+- -N [1-10]: Max evaluation iterations (default: 2)
+
+Key behaviors:
+- worktree isolation enabled by default
+- PRD auto-generation if not found
+- Early exit on PASS"
+)
