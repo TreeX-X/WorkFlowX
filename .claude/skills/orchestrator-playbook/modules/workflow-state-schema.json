@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WorkflowX State Tracking Schema",
+  "description": "Fixed-path state file at .hybrid/.workflow-state.json, overwritten per workflow execution",
+  "type": "object",
+  "required": ["workflow", "execution", "parallel_mode", "hybrid"],
+  "properties": {
+    "workflow": {
+      "type": "object",
+      "required": ["mode", "phase", "started"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["xwhole", "xlocal", "xunit"],
+          "description": "Active workflow mode"
+        },
+        "phase": {
+          "type": "string",
+          "enum": ["env_init", "phase1", "phase2", "core_loop", "complete"],
+          "description": "Current execution phase"
+        },
+        "started": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO8601 timestamp of workflow start"
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "required": ["current_child", "iteration", "agent"],
+      "properties": {
+        "current_child": {
+          "type": ["string", "null"],
+          "pattern": "^child-.*\\.md$|^null$",
+          "description": "Active Child document filename or null"
+        },
+        "iteration": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current iteration count for active Child"
+        },
+        "agent": {
+          "type": ["string", "null"],
+          "enum": ["coderX", "evaluatorX", null],
+          "description": "Currently executing agent or null"
+        }
+      }
+    },
+    "parallel_mode": {
+      "type": "object",
+      "required": ["enabled", "team_name", "active_tasks"],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether Agent Teams parallel mode is active"
+        },
+        "team_name": {
+          "type": ["string", "null"],
+          "description": "Team name for parallel execution or null"
+        },
+        "active_tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["task_id", "child", "agent"],
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "Unique task identifier"
+              },
+              "child": {
+                "type": "string",
+                "pattern": "^child-.*\\.md$",
+                "description": "Child document assigned to task"
+              },
+              "agent": {
+                "type": "string",
+                "enum": ["coderX", "evaluatorX"],
+                "description": "Agent type for this task"
+              }
+            }
+          },
+          "description": "List of parallel tasks in flight"
+        }
+      }
+    },
+    "hybrid": {
+      "type": ["string", "null"],
+      "pattern": "^\\.hybrid/[^/]+/$|^null$",
+      "description": "Path to active Hybrid Tree directory or null"
+    }
+  }
+}
