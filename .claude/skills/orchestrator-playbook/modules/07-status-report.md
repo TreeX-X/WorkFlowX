@@ -316,7 +316,7 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 
 ## 实现提示
 
-- **单次工具调用完成**：orchestratorX 一次性收集所有数据并写入 HTML，避免多轮 token 消耗
+- **单次工具调用完成**：Main Agent 一次性收集所有数据并写入 HTML，避免多轮 token 消耗
 - **字符串模板替换**：用 `Read` + `Write` 工具完成，避免在模板中嵌入复杂逻辑
 - **Browser 启动**：用 `Bash` 工具执行 `start ""` (Windows) / `open` (macOS) / `xdg-open` (Linux)
 - **样式验证**：若有时间，用 `npx playwright screenshot` 验证渲染效果（参考 huashu-design 的验证流程）

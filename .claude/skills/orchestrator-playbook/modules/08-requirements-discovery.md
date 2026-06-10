@@ -1,6 +1,6 @@
 # 8. Discovery & Solution Design
 
-> **Phase 1 of orchestratorX workflow**: Exploration and design consensus. Does NOT generate Hybrid Tree until user confirms in Phase 2.
+> **Phase 1 of Main Agent workflow**: Exploration and design consensus. Does NOT generate Hybrid Tree until user confirms in Phase 2.
 
 ## 8.1 Two-Phase Split
 
@@ -26,7 +26,7 @@
 等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。
 ```
 
-### Phase 2: Document Generation (orchestratorX main flow)
+### Phase 2: Document Generation (Main Agent main flow)
 
 **Trigger**: User confirmation keywords: "确认" / "开始实现" / "生成文档" / "开始开发" / "start implementation"
 
@@ -219,9 +219,9 @@ Before waiting for user confirmation, output design consensus:
 等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。
 ```
 
-### Phase 2 Entry (orchestratorX main flow)
+### Phase 2 Entry (Main Agent main flow)
 
-**After user confirms**, orchestratorX executes Phase 2:
+**After user confirms**, Main Agent executes Phase 2:
 
 1. **Create Hybrid Tree** (Parent + Children) with findings mapped to sections
 2. **Write to `.hybrid/[feature]/`**
@@ -229,7 +229,7 @@ Before waiting for user confirmation, output design consensus:
 
 ### Findings → Hybrid Tree Mapping (Phase 2)
 
-**Phase 2 responsibility**: orchestratorX writes confirmed findings into appropriate sections:
+**Phase 2 responsibility**: Main Agent writes confirmed findings into appropriate sections:
 
 | Finding Type | Target Section | What to Write |
 |-------------|---------------|---------------|
@@ -269,7 +269,7 @@ Environment init (module 01)
     → Design consensus reached
     → Output Phase 1 exit signal (wait for confirmation)
   → User confirms ("确认" / "开始实现" / etc.)
-  → Phase 2: Document Generation (orchestratorX):
+  → Phase 2: Document Generation (Main Agent):
     → Create Hybrid Tree with all findings
     → Write to .hybrid/
   → Core Iteration Loop

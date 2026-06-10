@@ -14,7 +14,7 @@
 - File browsing: "查看 README", "show me config.json", "搜索关键词"
 - Configuration edits: settings.json, CLAUDE.md modifications
 
-**Action**: Handle directly without calling orchestratorX. Use Read, Grep, Bash tools as needed.
+**Action**: Handle directly without workflow execution. Use Read/Grep/Bash tools as needed.
 
 ### Route 2: Smart Mode Recommendation (Ask User)
 
@@ -162,12 +162,8 @@ AskUserQuestion({
 const selectedMode = userAnswer; // "xwhole - 完整规划", "xlocal - 快速实现", or "xunit - 最小改动"
 const mode = selectedMode.split(" - ")[0]; // Extract "xwhole", "xlocal", or "xunit"
 
-// Call orchestratorX with selected mode
-Agent({
-  subagent_type: "orchestratorX",
-  description: `执行 ${mode} 工作流`,
-  prompt: `Mode: ${mode}\n\nRequirement: ${original_user_request}`
-});
+// Execute selected workflow directly (Main Agent is the orchestrator)
+// Parse parameters, follow mode execution flow in CLAUDE.md
 ```
 
 ---
@@ -176,7 +172,7 @@ Agent({
 
 ### CLAUDE.md Update
 
-Remove "所有任务必须通过 orchestratorX" rule. Replace with:
+Remove "所有任务必须通过 orchestrator" rule. Replace with:
 
 ```markdown
 ## 默认行为：智能路由

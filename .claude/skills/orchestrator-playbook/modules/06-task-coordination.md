@@ -4,7 +4,7 @@
 
 ## Team Lead Responsibilities
 
-orchestratorX as Team Lead:
+Main Agent as Team Lead:
 
 1. **Task scheduling**: Based on dependency graph's ready queue scheduling
 2. **File conflict check**: Before assignment, check file overlap
@@ -15,11 +15,11 @@ orchestratorX as Team Lead:
 
 ## Core Coordination Loop (Optimized: Graph-Based)
 
-The coordination loop is **event-driven**. Teammates send messages to the Team Lead when they complete work. orchestratorX processes each message and dispatches the next action.
+The coordination loop is **event-driven**. Teammates send messages to the Team Lead when they complete work. Main Agent processes each message and dispatches the next action.
 
 ### Step 1: Wait for Teammate Messages
 
-After initial dispatch (Module 05), orchestratorX waits for teammate messages. Messages arrive automatically as conversation turns — no polling needed.
+After initial dispatch (Module 05), Main Agent waits for teammate messages. Messages arrive automatically as conversation turns — no polling needed.
 
 When a message arrives from a teammate, proceed to Step 2.
 
