@@ -5,7 +5,7 @@ const { PNG } = require('pngjs');
 const GifEncoder = require('omggif').GifWriter;
 
 const BASE = path.join(__dirname, '..', 'docs', 'design');
-const OUT = path.join(BASE, 'images', '06-workflow-animation.gif');
+const OUT = path.join(__dirname, '..', 'docs', 'assets', '06-workflow-animation.gif');
 const HTML = path.join(BASE, '06-workflow-animation.html');
 
 const WIDTH = 1200;

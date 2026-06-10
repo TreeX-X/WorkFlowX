@@ -81,14 +81,9 @@ Requirement changes propagate automatically. Dependencies auto-retry via deferre
 - **AC Cross-Validation** — evaluatorX doesn't trust coderX's declarations, independently verifies every acceptance criterion
 
 <p align="center">
-  <img src="docs/assets/01a-architecture.png" alt="WorkflowX Architecture · Orchestration Layer" width="960" />
+  <img src="docs/assets/01-architecture.png" alt="WorkflowX System Architecture" width="960" />
   <br/>
-  <sub>Orchestration: orchestratorX dispatches 4 sub-agents (promptMasterX / coderX / evaluatorX / abstracterX)</sub>
-</p>
-<p align="center">
-  <img src="docs/assets/01b-architecture.png" alt="WorkflowX Architecture · Data & Communication" width="960" />
-  <br/>
-  <sub>Data Layer: Hybrid Tree + MCP Memory Graph + Payload Communication + Parallel Mode</sub>
+  <sub>Orchestration + Data Layer: orchestratorX dispatches 4 sub-agents via Hybrid Tree + MCP Memory Graph</sub>
 </p>
 
 ---
@@ -117,14 +112,9 @@ Built-in **prompt-master** skill generates production-grade prompts for 20+ AI t
 > 40-60% token savings in multi-round iterations. Every SubAgent wake-up gets the minimum viable input.
 
 <p align="center">
-  <img src="docs/assets/03a-token-optimization.png" alt="WorkflowX Token Optimization · L1 Section-Level Caching" width="960" />
+  <img src="docs/assets/03-token-optimization.png" alt="WorkflowX Three-Layer Token Optimization" width="960" />
   <br/>
-  <sub>L1: Hybrid document topological sort, strict zoning for LLM Prompt Cache</sub>
-</p>
-<p align="center">
-  <img src="docs/assets/03b-token-optimization.png" alt="WorkflowX Token Optimization · Trunk-Leaf & Memory Graph" width="960" />
-  <br/>
-  <sub>L2 Trunk-Leaf Separation + L3 Memory Graph: lean docs, on-demand retrieval, cross-session sharing</sub>
+  <sub>L1 Section-Level Caching + L2 Trunk-Leaf Separation + L3 Memory Graph: 40-60% savings in multi-round iterations</sub>
 </p>
 
 | Layer | Strategy | Effect |
@@ -280,14 +270,9 @@ Four modes covering the full granularity from repository-wide to single-file, au
 | **Multi-platform native** | 4 platforms | 8 platforms | 2 platforms |
 
 <p align="center">
-  <img src="docs/assets/05a-capabilities.png" alt="WorkflowX Unique Capabilities · Data & Quality" width="960" />
+  <img src="docs/assets/05-capabilities.png" alt="WorkflowX Unique Capabilities" width="960" />
   <br/>
-  <sub>Hybrid Tree Requirement Tracing / AC Cross-Validation / Prompt Optimization Engine</sub>
-</p>
-<p align="center">
-  <img src="docs/assets/05b-capabilities.png" alt="WorkflowX Unique Capabilities · Safety & Discovery" width="960" />
-  <br/>
-  <sub>Cross-Branch Violation Detection / Socratic Discovery / Code Aesthetics Framework</sub>
+  <sub>6 unique capabilities: Hybrid Tree / AC Cross-Validation / Prompt Optimization / Cross-Branch Detection / Socratic Discovery / Code Aesthetics</sub>
 </p>
 
 ### Why WorkflowX?

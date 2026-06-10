@@ -81,14 +81,9 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 - **AC 交叉验证** — evaluatorX 不信任 coderX 声明，独立验证每个验收标准
 
 <p align="center">
-  <img src="docs/assets/01a-architecture-zh.png" alt="WorkflowX 系统架构 · 编排层" width="960" />
+  <img src="docs/assets/01-architecture-zh.png" alt="WorkflowX 系统架构" width="960" />
   <br/>
-  <sub>编排层：orchestratorX 调度 4 个子智能体（promptMasterX / coderX / evaluatorX / abstracterX）</sub>
-</p>
-<p align="center">
-  <img src="docs/assets/01b-architecture-zh.png" alt="WorkflowX 系统架构 · 数据与通信" width="960" />
-  <br/>
-  <sub>数据层：Hybrid Tree + MCP 记忆图谱 + Payload 通信 + 并行模式</sub>
+  <sub>编排层 + 数据层：orchestratorX 调度 4 个子智能体，通过 Hybrid Tree + MCP 记忆图谱实现结构化协作</sub>
 </p>
 
 ---
@@ -117,14 +112,9 @@ orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能
 > 多轮迭代场景节省 40-60%，每次 SubAgent 唤醒的输入 Token 压缩到最小。
 
 <p align="center">
-  <img src="docs/assets/03a-token-optimization-zh.png" alt="WorkflowX Token 优化 · L1 Section-Level Caching" width="960" />
+  <img src="docs/assets/03-token-optimization-zh.png" alt="WorkflowX 三层 Token 优化" width="960" />
   <br/>
-  <sub>L1：混合文档拓扑排序，严格分区命中 LLM Prompt Cache</sub>
-</p>
-<p align="center">
-  <img src="docs/assets/03b-token-optimization-zh.png" alt="WorkflowX Token 优化 · 干叶分离与记忆图谱" width="960" />
-  <br/>
-  <sub>L2 干叶分离 + L3 记忆图谱快照：文档精瘦、按需检索、跨会话共享</sub>
+  <sub>L1 Section-Level Caching + L2 干叶分离 + L3 记忆图谱快照：多轮迭代节省 40-60%</sub>
 </p>
 
 | 层 | 策略 | 效果 |
@@ -281,14 +271,9 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | **多平台原生** | 4 平台 | 8 平台 | 2 平台 |
 
 <p align="center">
-  <img src="docs/assets/05a-capabilities-zh.png" alt="WorkflowX 独有能力 · 数据与质量" width="960" />
+  <img src="docs/assets/05-capabilities-zh.png" alt="WorkflowX 独有能力" width="960" />
   <br/>
-  <sub>Hybrid Tree 需求追踪 / AC 交叉验证 / Prompt 优化引擎</sub>
-</p>
-<p align="center">
-  <img src="docs/assets/05b-capabilities-zh.png" alt="WorkflowX 独有能力 · 安全与发现" width="960" />
-  <br/>
-  <sub>跨分支违规检测 / 苏格拉底式需求发现 / 代码美学框架</sub>
+  <sub>6 项独有能力：Hybrid Tree / AC 交叉验证 / Prompt 优化 / 跨分支检测 / 苏格拉底发现 / 代码美学</sub>
 </p>
 
 ### 为什么选择 WorkflowX？
