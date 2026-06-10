@@ -1,248 +1,292 @@
-# 8. Requirements Discovery & Proactive Challenge
+# 8. Discovery & Solution Design
 
-> This module defines two mechanisms for the Planning Phase: (1) Socratic Requirements Discovery for vague requirements, and (2) Proactive Challenge for all requirements including clear ones. Both run before Hybrid Tree creation.
+> **Phase 1 of Main Agent workflow**: Exploration and design consensus. Does NOT generate Hybrid Tree until user confirms in Phase 2.
 
-## 8.1 Socratic Requirements Discovery
+## 8.1 Two-Phase Split
+
+### Phase 1: Discovery & Solution Design (this module)
+
+**Purpose**: Think, explore, design, and reach consensus with user
+
+**Behaviors**:
+- Ask pointed questions, then **actively search** for answers in the codebase
+- Surface findings to user as "here's what I found" rather than "can you tell me"
+- Challenge assumptions based on **actual code evidence**
+- Propose 2-3 solutions with trade-offs derived from exploration
+- Iterate with user to refine approach
+
+**Output**: Design consensus — NOT a Hybrid Tree
+
+**Exit Signal**: 
+```
+方案设计完成。以下是推荐方案：
+
+[Brief design consensus summary]
+
+等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。
+```
+
+### Phase 2: Document Generation (Main Agent main flow)
+
+**Trigger**: User confirmation keywords: "确认" / "开始实现" / "生成文档" / "开始开发" / "start implementation"
+
+**Actions**:
+1. Generate Hybrid Tree (Parent + Children) based on Phase 1 consensus
+2. Write to `.hybrid/[feature]/` directory
+3. Enter Core Iteration Loop
 
 ### When to Activate
 
-Before entering the standard Planning Phase dialogue (Mode A) or PRD detection (Mode B), assess requirement clarity using the 6-dimension scoring system.
+**Mode A (whole)**: Always activate. Phase 1 replaces both Requirements Discovery and Planning Phase dialogue.
 
-**Activation criteria by mode**:
+**Mode B (local)**: NOT activated. xlocal skips directly to PRD detection.
 
-- **Mode A (whole)**: Activate Socratic Discovery if clarity score < 7.0
-  - Rationale: Whole-codebase workflows require high clarity to minimize rework
-  - If score >= 7.0: Skip Socratic, proceed to Proactive Challenge
+**Mode C (unit)**: NOT activated (overhead not justified for minimal tasks).
 
-- **Mode B (local)**: Activate Socratic Discovery if clarity score < 5.0
-  - Rationale: Local workflows assume "requirements relatively clear"
-  - If score >= 5.0: Skip Socratic, proceed to Proactive Challenge
+## 8.2 Discovery Turn Structure
 
-- **Mode C (unit)**: Socratic Discovery not used (overhead not justified for minimal tasks)
+Each turn follows this unified flow:
 
-### Clarity Dimensions & Weights
+### Step 1: Confirm Understanding (if applicable)
+Restate the user's latest input in 1-2 sentences, confirming shared context.
 
-Assess requirement clarity across 6 dimensions. Each dimension scores 0-10:
+### Step 2: Identify Critical Gaps
+Analyze requirement across 6 dimensions to identify what's most unclear or risky:
 
-| Dimension | Weight | What to Assess |
-|-----------|--------|----------------|
-| **Target User/Scenario** | 15% | Who uses this? What problem does it solve? What's the context? |
-| **Functional Scope** | 25% | What features? What's in/out of scope? What are the key behaviors? |
-| **Technical Constraints** | 20% | Tech stack? Performance requirements? Compatibility constraints? |
-| **Boundary Conditions** | 15% | Edge cases? Error handling? Failure modes? Limits? |
-| **Acceptance Criteria** | 15% | How do we know it's done? What does "working" look like? |
-| **Non-Functional Requirements** | 10% | Security? Maintainability? Scalability? Accessibility? |
+| Dimension | What to Assess |
+|-----------|----------------|
+| **Target User/Scenario** | Who uses this? What problem does it solve? Context? |
+| **Functional Scope** | What features? In/out of scope? Key behaviors? |
+| **Technical Constraints** | Tech stack? Performance? Compatibility? |
+| **Boundary Conditions** | Edge cases? Error handling? Failure modes? |
+| **Acceptance Criteria** | How do we know it's done? What does "working" look like? |
+| **Non-Functional Requirements** | Security? Maintainability? Scalability? |
 
-**Clarity Score** = sum of (dimension_score * weight)
+**Priority**: Address gaps that would most impact design decisions.
 
-### Clarity Threshold
+### Step 3: Autonomous Exploration
+**Don't wait for user to answer — explore first:**
 
-**Mode-specific thresholds**:
-- **Mode A (whole)**: >= 7.0 to skip Socratic Discovery
-- **Mode B (local)**: >= 5.0 to skip Socratic Discovery
-- **Mode C (unit)**: Socratic Discovery not used
+1. **Search codebase** (Glob, Grep, rg):
+   - Find related files, existing patterns, similar features
+   - Check constraints: tech stack files, config, dependencies
+   - Identify integration points, shared utilities, edge case handling
 
-| Score | Action (Mode A) | Action (Mode B) |
-|-------|----------------|-----------------|
-| >= 7.0 | Skip Socratic Discovery | Light Discovery: 1-2 questions |
-| 5.0 - 6.9 | Light Discovery: 2-3 questions | Skip Socratic Discovery |
-| 3.0 - 4.9 | Standard Discovery: 4-6 questions | Light Discovery: 2-3 questions |
-| < 3.0 | Deep Discovery: 6-10 questions | Standard Discovery: 4-6 questions |
+2. **Build File Index** (session memory):
+   - Path, purpose, association reason
+   - Accumulates across turns → written to Hybrid Tree Section 8.1
 
-### Questioning Rules
+3. **Extract insights**:
+   - Existing patterns we should follow
+   - Constraints we must respect (APIs, data models, conventions)
+   - Edge cases already handled elsewhere
+   - Potential conflicts or integration points
 
-1. **One question per turn.** Never batch multiple questions. Each question should be its own message.
-2. **Prefer multiple choice.** Offer 2-4 options with a recommendation. Use open-ended only when options would constrain thinking.
-3. **Build on previous answers.** Each question must reference or build on what the user just said. Never ask disconnected questions.
-4. **Progressive depth.** Start with high-level (scope, user), then drill into details (edge cases, constraints).
-5. **Surface trade-offs.** When presenting options, explain the trade-offs of each choice.
-6. **No redundant questions.** If the user already answered something implicitly, don't ask again.
-7. **Respect "I don't know".** If the user is unsure, propose a reasonable default and ask for confirmation.
+### Step 4: Present Findings & Challenge
+Surface what you discovered and challenge the requirement:
 
-### Question Template Patterns
-
-**Scope clarification:**
+**Format**:
 ```
-你提到想做 [X]。这听起来可能涉及几个不同的方向：
+我在代码库中发现了以下相关信息：
 
-A) [具体方向1] — [优点]，[缺点]
-B) [具体方向2] — [优点]，[缺点]
-C) [具体方向3] — [优点]，[缺点]
+**现有模式**:
+- [file path]: [what it does, how it's relevant]
+- [file path]: [existing approach we could follow/avoid]
 
-你倾向哪个？或者你有其他想法？
-```
+**约束条件**:
+- [constraint from exploration]: [implication for our design]
 
-**Boundary probing:**
-```
-关于 [X] 的边界情况：当 [具体场景] 发生时，你期望的行为是？
+**需要确认的点**:
+1. [Question based on findings] — 我看到 [code evidence]，这意味着 [implication]
+   建议方向: [proposal based on exploration]
 
-A) [行为1] — 简单但可能丢失 [某东西]
-B) [行为2] — 更完善但增加复杂度
+2. [Potential conflict/risk] — [why it matters based on code]
+   方案选项:
+   A) [approach 1] — [pros/cons from codebase context]
+   B) [approach 2] — [pros/cons from codebase context]
 ```
 
-**Hidden assumption surfacing:**
+### Step 5: Propose Solutions (when appropriate)
+When enough context is gathered, propose 2-3 concrete approaches with trade-offs:
+
+**Format**:
 ```
-我注意到你的需求隐含了一个假设：[假设内容]。
-这个假设在 [某场景] 下可能不成立。我们需要考虑这种情况吗？
+基于当前需求和代码库现状，我整理出几个可行方案：
 
-A) 是，需要处理这种情况
-B) 否，当前假设成立即可
-```
+**方案 A: [name]**
+- 核心思路: [brief description]
+- 优势: [based on codebase patterns]
+- 劣势: [based on technical constraints]
+- 适合场景: [when to choose this]
 
-### Auto-Transition
+**方案 B: [name]**
+- 核心思路: [brief description]
+- 优势: [based on codebase patterns]
+- 劣势: [based on technical constraints]
+- 适合场景: [when to choose this]
 
-After each user answer, re-evaluate the clarity score. When the score reaches the mode-specific threshold (Mode A: >= 7.0, Mode B: >= 5.0), output a brief summary of the discovered requirements and transition to Proactive Challenge:
-
-```
-需求清晰度已达阈值。以下是确认的需求摘要：
-
-- **目标**: [一句话]
-- **范围**: [关键功能列表]
-- **约束**: [技术/业务约束]
-- **验收标准**: [初步AC]
-
-接下来我会分析这个需求中可能存在的问题和遗漏。
+**推荐**: [Which and why, referencing code evidence]
 ```
 
-## 8.2 Proactive Challenge Mechanism
+## 8.3 Challenge Categories
 
-### When to Activate
+Analyze requirement for issues across 6 categories (reference code evidence):
 
-**Always activate** after Socratic Discovery completes (or is skipped), before Hybrid Tree creation. This mechanism runs even when the user provides a clear, detailed requirement.
-
-### Challenge Categories
-
-Analyze the requirement across 6 categories. For each category that has findings, present them to the user:
 
 #### 1. Contradictions & Inconsistencies
-- Requirements that conflict with each other
+- Requirements that conflict with each other (cite user's words)
 - Stated constraints that contradict desired behaviors
-- Scope that conflicts with timeline or resources
+- Conflicts with **actual codebase patterns** (reference files)
 
 #### 2. Overlooked Edge Cases & Boundary Conditions
-- Empty/null/undefined inputs
-- Concurrent access scenarios
+- Empty/null/undefined inputs (check existing validation patterns)
+- Concurrent access scenarios (check existing locking/sync patterns)
 - Resource exhaustion (disk full, memory limit, API rate limit)
-- Partial failure states (half-completed operations)
-- Large scale inputs (what happens with 10x expected data?)
-- Time-related edge cases (timezone, DST, leap seconds)
+- Partial failure states (check existing error recovery)
+- Large scale inputs (check existing limits in code)
+- Time-related edge cases (timezone, DST — reference existing time handling)
 
 #### 3. Technical Feasibility & Risks
-- Dependencies on unavailable or unstable services
-- Performance bottlenecks in the proposed approach
-- Compatibility issues with existing codebase
-- Known limitations of chosen technology
+- Dependencies on unavailable/unstable services (check package.json, imports)
+- Performance bottlenecks (reference similar patterns' perf issues)
+- **Compatibility issues with existing code** (cite actual file conflicts)
+- Known limitations of chosen technology (reference existing workarounds)
 
 #### 4. Hidden Assumptions
-- Assumptions about user behavior
-- Assumptions about data format or quality
-- Assumptions about system environment
-- Assumptions about external service availability
+- Assumptions about user behavior (challenge with actual usage data if available)
+- Assumptions about data format/quality (check actual data models)
+- Assumptions about system environment (check deployment configs)
+- Assumptions about external service availability (check existing retry logic)
 
 #### 5. Cross-Module Conflicts
-- Potential conflicts with existing features
-- Shared resources that might cause contention
-- API contracts that might break
-- Data model changes that affect other modules
+- **Conflicts with existing features** (cite actual file/function conflicts)
+- **Shared resources** causing contention (reference actual shared state)
+- **API contracts that might break** (cite actual API signatures)
+- **Data model changes** affecting other modules (reference actual schema dependencies)
 
 #### 6. Missing Non-Functional Requirements
-- Security: authentication, authorization, input validation, data protection
-- Performance: response time, throughput, resource usage
-- Maintainability: code complexity, documentation, testability
-- Reliability: error recovery, retry logic, graceful degradation
-- Accessibility: if UI-related
+- Security: authentication, authorization, input validation (check existing patterns)
+- Performance: response time, throughput (reference existing benchmarks if any)
+- Maintainability: code complexity, documentation (check project standards)
+- Reliability: error recovery, retry logic (reference existing patterns)
+- Accessibility: if UI-related (check existing a11y patterns)
 
-### Challenge Output Format
+## 8.4 Dialogue Rules
 
-Present challenges in a structured but conversational format. Prioritize by severity:
+1. **One topic per turn.** Address the most critical gap/risk/question first.
+2. **Explore before asking.** Always search code before presenting a question. Frame as "I found X, which suggests Y — confirm?"
+3. **Build on previous turns.** Reference earlier findings and user responses. Accumulate context.
+4. **Progressive depth.** Start high-level (scope, user), drill into details (edge cases, implementation).
+5. **Evidence over speculation.** When making claims, cite file paths, line ranges, or specific patterns.
+6. **Propose solutions, not just problems.** Every challenge should include a suggested approach or trade-off.
+7. **Respect user decisions.** If user acknowledges a risk and proceeds, record it and move on.
+8. **No redundant questions.** If the user already answered implicitly or explicitly, don't re-ask.
+
+## 8.5 Phase 1 Exit Protocol
+
+### Confirmation Trigger
+
+**Stop designing when user signals confirmation:**
+- "确认" / "开始实现" / "生成文档" / "开始开发"
+- "start implementation" / "generate document"
+- Explicit approval of proposed solution
+
+**Do NOT generate Hybrid Tree in Phase 1** — only output design consensus and wait.
+
+### Phase 1 Exit Output
+
+Before waiting for user confirmation, output design consensus:
 
 ```
-我分析了你的需求，发现以下几个需要确认的点：
+方案设计完成。以下是推荐方案：
 
-**需要确认 (可能导致方案调整):**
-1. [问题描述] — [为什么重要] — [建议]
+**核心目标**: [一句话目标]
 
-**值得考虑 (不阻塞但建议纳入):**
-2. [问题描述] — [影响范围]
+**技术方案**: [选定的方案，简要说明]
 
-**低风险提示 (可忽略):**
-3. [问题描述]
+**关键约束**:
+- [constraint 1]: [implication]
+- [constraint 2]: [implication]
+
+**风险与应对**:
+- [risk]: [mitigation approach]
+
+**文件范围** (共 [N] 个):
+- [file 1]: [role]
+- [file 2]: [role]
+...
+
+等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。
 ```
 
-### Challenge Rules
+### Phase 2 Entry (Main Agent main flow)
 
-1. **Be specific, not generic.** Don't say "consider security" — say "这个 API 端点没有输入验证，可能导致 SQL 注入"。
-2. **Reference actual code.** When pointing out conflicts with existing code, cite file paths and line numbers.
-3. **Propose solutions, not just problems.** For each challenge, suggest a concrete approach or trade-off.
-4. **Respect user decisions.** If the user acknowledges a risk and decides to proceed, record it but don't block.
-5. **Don't over-warn.** Only flag issues that are genuinely likely to cause problems. Don't be a "Chicken Little".
-6. **Prioritize P0 issues.** Contradictions and feasibility blockers are P0 — these must be resolved before proceeding.
+**After user confirms**, Main Agent executes Phase 2:
 
-### User Response Handling
+1. **Create Hybrid Tree** (Parent + Children) with findings mapped to sections
+2. **Write to `.hybrid/[feature]/`**
+3. **Enter Core Iteration Loop**
 
-After presenting challenges:
+### Findings → Hybrid Tree Mapping (Phase 2)
 
-- **User resolves all P0 issues** → Proceed to Hybrid Tree creation
-- **User wants to adjust requirement** → Re-enter Socratic Discovery for the changed parts, re-challenge
-- **User acknowledges risks and proceeds** → Record acknowledged risks in Parent Section 4 (Non-Functional Requirements) as accepted risks, proceed to Hybrid Tree creation
-- **User disagrees with challenge** → Accept user's judgment, record the decision, proceed
+**Phase 2 responsibility**: Main Agent writes confirmed findings into appropriate sections:
 
-### Challenge Findings → Hybrid Tree Mapping
+| Finding Type | Target Section | What to Write |
+|-------------|---------------|---------------|
+| Confirmed scope | Parent §1 Project Overview | Feature description with context |
+| Technical constraints | Parent §3 Technical Constraints | Constraints from code exploration |
+| Edge cases | Child §7 AC | AC items for edge case handling |
+| NFRs (security, perf) | Parent §4 NFR | Non-functional requirements |
+| Risk mitigations | Child §7 AC | AC for mitigation approach |
+| Accepted risks | Parent §4 NFR | Accepted risk with note |
+| Cross-module dependencies | Parent §8.3 Dependencies | Dependency edges |
+| File index | Parent §8.1 (shared), Child §8.1 (private) | Accumulated file index |
+| Knowledge insights | Parent §8.2 Knowledge Graph | Key insights from exploration |
 
-When Proactive Challenge findings are confirmed or acknowledged by the user, write them into the appropriate Hybrid Tree sections:
+### Knowledge Graph Writeback (Phase 2)
 
-| Finding Category | Target Section | What to Write |
-|-----------------|---------------|---------------|
-| Contradictions resolved | Child §7 AC | Updated AC reflecting the resolution |
-| Edge cases acknowledged | Child §7 AC | New AC items for edge case handling |
-| Technical risks accepted | Parent §4 NFR | Accepted risk with mitigation note |
-| Technical risks mitigated | Child §7 AC | AC for the mitigation approach |
-| Hidden assumptions confirmed | Parent §1 (Project Overview) | Clarified assumptions in scope description |
-| Hidden assumptions invalidated | Child §7 AC | AC addressing the invalidated assumption |
-| Cross-module conflicts | Parent §8.3 Dependencies | Dependency edge between affected Children |
-| Missing NFRs added | Parent §4 NFR | New non-functional requirement |
+**Phase 2 responsibility**: If MCP memory is available:
+1. Read confirmed facts from `mcp/server-memory` for current session
+2. Generate structured knowledge graph
+3. Clean up: retain only user-confirmed facts, delete speculation
+4. Serialize and write to Parent Section 8.4
+5. Overwrite old snapshot with timestamp preserved (no duplicates)
 
-For Mode B (no Hybrid Tree yet): findings are held in session memory and incorporated during PRD detection / Hybrid Tree auto-generation.
-
-## 8.3 Integration with Planning Phase
+## 8.6 Mode-Specific Adaptations
 
 ### Mode A (Whole) Integration
 
 ```
 Environment init (module 01)
-  → Requirements Discovery (module 08):
-    → Clarity assessment
-    → Socratic Discovery (if needed)
-    → Proactive Challenge (always)
-  → Planning Phase dialogue (existing rules)
-    → Confirmed Understanding
-    → File Index Discovery
-    → Unclear Questions
-    → Constructive Thoughts
-  → User confirms PRD (Summary trigger)
-  → Hybrid Tree creation
+  → Phase 1: Discovery & Solution Design (module 08):
+    → Turn 1-N:
+      → Confirm understanding
+      → Identify gaps in 6 dimensions
+      → Autonomous exploration (Glob, Grep, rg)
+      → Present findings + challenge
+      → Propose solutions (when ready)
+      → User responds/refines
+    → Design consensus reached
+    → Output Phase 1 exit signal (wait for confirmation)
+  → User confirms ("确认" / "开始实现" / etc.)
+  → Phase 2: Document Generation (Main Agent):
+    → Create Hybrid Tree with all findings
+    → Write to .hybrid/
   → Core Iteration Loop
 ```
+
+**Intensity**: Deep exploration. Spend 3-6 turns accumulating context before proposing solutions.
 
 ### Mode B (Local) Integration
 
+Mode B does NOT use this module. xlocal skips directly to PRD detection.
+
 ```
 Environment init (module 01)
-  → Requirements Discovery (module 08):
-    → Clarity assessment (quick)
-    → Socratic Discovery (only if clarity < 5.0)
-    → Proactive Challenge (always)
-  → PRD detection (findings from discovery inform PRD validation/AC decomposition)
-  → promptMasterX optimization (module 04)
+  → PRD detection
   → Core Iteration Loop
 ```
 
-For Mode B, Requirements Discovery runs **before** PRD detection so that:
-- If an existing PRD is found, discovery findings serve as supplementary validation
-- If no PRD exists, discovery findings inform the auto-generated Hybrid Tree's AC decomposition
-- Socratic Discovery is lighter (skipped if clarity >= 5.0) since Mode B assumes "requirements relatively clear"
-- Proactive Challenge always runs regardless of clarity score
+### Mode C (Unit)
 
-### Mode C (Unit) Integration
-
-Mode C does **not** use Requirements Discovery. Unit tasks are minimal and the overhead is not justified.
+Not used. Unit tasks skip discovery entirely.

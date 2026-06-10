@@ -14,10 +14,12 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal/xunit | `modules/01-environment-init.md` |
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
-| 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
-| 8 | Requirements Discovery & Proactive Challenge | Before Planning Phase dialogue (xwhole) or before PRD detection (xlocal) | `modules/08-requirements-discovery.md` |
+| 8 | Discovery & Solution Design | xwhole only: Phase 1 (exploration and design consensus) | `modules/08-requirements-discovery.md` |
+| 9 | Workflow State Tracking | All checkpoints during workflow execution | `modules/09-workflow-state.md` |
+
+**Note**: Module 00 (Auto-Routing) exists in `modules/00-auto-routing.md` but is NOT used by orchestratorX. It serves as a reference guide for the main Claude agent (defined in CLAUDE.md) to perform intelligent request classification before calling orchestratorX. orchestratorX always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -106,7 +108,7 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: merge worktree branches into sandbox, switch back, `--no-commit --no-ff` merge sandbox into original, restore stash.
-- **Entry**: Environment init (module 01) -> **Requirements Discovery** (module 08: Socratic questioning + Proactive Challenge) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> user confirms -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
 
@@ -129,64 +131,113 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **Requirements Discovery** (module 08: clarity assessment + Proactive Challenge, Socratic only if clarity < 5.0) -> PRD detection -> promptMasterX optimization (module 04) -> Core Iteration Loop.
+- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> Core Iteration Loop.
 - **PRD detection (priority order)**:
-  1. `.hybrid/[feature]/` directory exists with Hybrid Tree → use directly, apply discovery findings as supplementary validation
-  2. $ARGUMENTS contains valid file path → read PRD, wrap into Hybrid Tree, apply discovery findings as supplementary validation
-  3. No PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child), incorporate discovery findings into AC decomposition
+  1. `.hybrid/[feature]/` directory exists with Hybrid Tree → use directly
+  2. $ARGUMENTS contains valid file path → read PRD, wrap into Hybrid Tree
+  3. No PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
 - **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
-- **Entry**: promptMasterX optimization (module 04) -> coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
+- **Entry**: coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
 - **coderX lightweight mode**: Only loads `karpathy-guidelines`, does not load `codex-spec-implementation`, no Bus Payload needed.
 
 ---
 
-## Planning Phase (Mode A)
+## Discovery & Solution Design (Mode A)
 
-> Mode A entry: Environment init (module 01) -> **Requirements Discovery** (module 08) -> following planning dialogue -> user confirms PRD -> Core Iteration Loop
+> Mode A entry: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08) -> user confirms -> **Phase 2: Document Generation** (Hybrid Tree creation) -> Core Iteration Loop
 
-### Requirements Discovery (Module 08)
+### Two-Phase Workflow
 
-Before entering dialogue, run module 08 to assess requirement clarity and challenge the requirement:
+**Phase 1: Discovery & Solution Design** (module 08) — thinking and design stage:
+- Autonomous exploration, gap identification, risk surfacing
+- Propose 2-3 solutions with trade-offs
+- Multi-turn refinement with user
+- **Output**: Design consensus (no Hybrid Tree yet)
+- **Exit signal**: "等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。"
 
-1. **Clarity Assessment**: Score the user's input across 6 weighted dimensions (Target User 15%, Functional Scope 25%, Technical Constraints 20%, Boundary Conditions 15%, Acceptance Criteria 15%, Non-Functional Requirements 10%).
-2. **Socratic Discovery** (if clarity < 7.0): Ask questions one at a time, prefer multiple choice, build on previous answers, auto-transition when threshold reached.
-3. **Proactive Challenge** (always): Analyze the requirement for contradictions, overlooked edge cases, technical risks, hidden assumptions, cross-module conflicts, and missing NFRs. Present findings prioritized by severity.
+**Phase 2: Document Generation** — triggered by user confirmation:
+- **Trigger keywords**: "确认" / "开始实现" / "生成文档" / "开始开发" / "start implementation"
+- Generate Hybrid Tree (Parent + Children) based on Phase 1 consensus
+- Write to `.hybrid/[feature]/` directory
+- Enter Core Iteration Loop
 
-Full specification: `modules/08-requirements-discovery.md`
+**Core behaviors (Phase 1)**:
+- Ask pointed questions, then **autonomously search** the codebase for answers
+- Present findings as "here's what I found" rather than "can you tell me"
+- Challenge assumptions based on **actual code evidence**
+- Propose 2-3 solutions with trade-offs derived from exploration
+- Iterate with user to refine approach
+
+### Discovery Turn Structure
+
+Each turn follows this flow:
+
+1. **Confirm Understanding**: Restate user's latest input (1-2 sentences)
+2. **Identify Critical Gaps**: Analyze across 6 dimensions (Target User, Functional Scope, Technical Constraints, Boundary Conditions, Acceptance Criteria, NFRs) — prioritize gaps that impact design decisions
+3. **Autonomous Exploration**: 
+   - Search codebase (Glob, Grep, rg) for related files, patterns, constraints
+   - Build File Index in session memory (accumulates → written to Hybrid Tree §8.1)
+   - Extract insights: existing patterns, constraints, edge cases, conflicts
+4. **Present Findings & Challenge**: Surface discoveries and challenge the requirement across 6 categories (Contradictions, Edge Cases, Technical Risks, Hidden Assumptions, Cross-Module Conflicts, Missing NFRs)
+5. **Propose Solutions**: When ready, present 2-3 concrete approaches with trade-offs based on codebase context
 
 ### Dialogue Rules
 
-Each turn advances with the following structure, addressing only the most critical topic:
+- **One topic per turn** — address the most critical gap/risk first
+- **Explore before asking** — always search code before presenting questions
+- **Build on previous turns** — reference earlier findings, accumulate context
+- **Evidence over speculation** — cite file paths, line ranges, specific patterns
+- **Propose solutions, not just problems** — every challenge includes suggested approach
+- **Respect user decisions** — record acknowledged risks and move on
 
-- **Confirmed Understanding**: Restate the user's latest expression in 1-2 sentences, confirming shared understanding.
-- **File Index Discovery**: Proactively search the project (Glob, Grep, rg) for related files. Record to a running file index in session memory (path, purpose, association reason). This index accumulates across turns and is written to the final Hybrid Tree.
-- **Unclear Questions**: Only raise questions about genuinely unclear requirements. Do not ask already-confirmed questions.
-- **Constructive Thoughts**: Provide suggestions, design directions, or 2-3 alternatives with trade-offs.
+Full specification: `modules/08-requirements-discovery.md`
 
-### Context Index Maintenance
+### Phase Transition
 
-Continuously maintain "engineering file index + knowledge index", recording only confirmed information: file path, purpose, association reason, knowledge entry, summary, priority, recommended reading order. Unconfirmed information must not be written to the index.
+**Phase 1 exit criteria:**
+- User signals confirmation with keywords: "确认" / "开始实现" / "生成文档" / "开始开发" / "start implementation"
+- Output design consensus summary, then **wait for explicit confirmation before Phase 2**
+
+**Phase 1 exit signal template:**
+```
+方案设计完成。以下是推荐方案：
+
+[Brief design consensus summary]
+
+等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。
+```
+
+**Phase 2 entry:**
+- After user confirms, generate Hybrid Tree with all discoveries written to appropriate sections
+- Proceed to Core Iteration Loop
 
 ### Knowledge Graph Writeback
 
-When the user inputs `Summary` or expresses intent like "hand off to coder / start development / finish planning":
+When the user triggers Summary:
 
 1. Read confirmed facts from `mcp/server-memory` for the current session, generate a structured knowledge graph
 2. Clean up: retain only user-confirmed facts, delete speculation and pending items
 3. Serialize and write to Parent Section 8.4
 4. If old snapshot exists, overwrite with timestamp preserved, do not add duplicates
 
-### Summary Trigger Words
+### Findings → Hybrid Tree Mapping
 
-Stop asking questions when the user inputs `Summary` or the following signals:
-- "hand off to coder", "start development", "finish planning"
-- "output final document", "generate deliverable draft"
-- Conversation has clearly entered the development phase
+Write confirmed findings into appropriate sections during Hybrid Tree creation:
 
-After trigger: execute knowledge graph writeback first -> output complete Hybrid Tree (Parent + Children)
+| Finding Type | Target Section |
+|-------------|---------------|
+| Confirmed scope | Parent §1 Project Overview |
+| Technical constraints | Parent §3 Technical Constraints |
+| Edge cases | Child §7 AC |
+| NFRs (security, perf) | Parent §4 NFR |
+| Risk mitigations | Child §7 AC |
+| Accepted risks | Parent §4 NFR |
+| Cross-module dependencies | Parent §8.3 Dependencies |
+| File index | Parent §8.1 (shared), Child §8.1 (private) |
+| Knowledge insights | Parent §8.2 Knowledge Graph |
 
 ### Hybrid Tree Creation
 
@@ -210,9 +261,10 @@ After trigger: execute knowledge graph writeback first -> output complete Hybrid
 ### Quality Gates
 
 - Must not lock specific business rules without user confirmation
-- Do not output low-level code snippets or overly detailed API designs
-- Maintain dialogue and questioning mode outside Summary stage
+- Do not output low-level code snippets or overly detailed API designs during discovery
+- Maintain exploratory dialogue mode outside Summary stage
 - Focus on product context, high-level boundaries, and executable acceptance criteria
+- Always ground findings in actual code evidence (file paths, patterns, constraints)
 
 ---
 

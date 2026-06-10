@@ -2,29 +2,16 @@
 description: Execute Mode B workflow (local module, PRD detection)
 ---
 
-Agent(
-  subagent_type="orchestratorX",
-  description="Execute Mode B workflow",
-  prompt="Mode: xlocal
+# /xlocal - Fast Implementation Flow
 
-Requirement: $ARGUMENTS
+**Executed by Main Agent directly, no orchestratorX sub-agent.**
 
-Execute Mode B workflow following orchestrator-playbook:
+When user inputs `/xlocal [requirement]`:
 
-1. Environment Init (Module 01): MCP probe, concurrency lock
-2. Requirements Discovery (Module 08): Quick clarity check, Socratic Discovery (only if clarity < 5.0), Proactive Challenge (always)
-3. PRD Detection (priority order):
-   a. Existing Hybrid Tree in .hybrid/[feature]/ → use directly
-   b. File path in $ARGUMENTS (e.g. ./docs/prd.md) → read and wrap into Hybrid Tree
-   c. No PRD → auto-generate minimal Hybrid Tree (code scan → Parent + Child)
-4. promptMasterX optimization (Module 04)
-5. Core Iteration Loop: coderX (isolation=worktree) ↔ evaluatorX (isolation=worktree)
+1. Parse parameters (-N, -box)
+2. Execute Mode B flow:
+   - Environment init (Module 01)
+   - PRD detection (priority: existing Hybrid Tree > file path > auto-generate)
+   - Core Iteration Loop (dispatch coderX/evaluatorX)
 
-Parameters (auto-parsed from $ARGUMENTS):
-- -N [1-10]: Max evaluation iterations (default: 2)
-
-Key behaviors:
-- worktree isolation enabled by default
-- PRD auto-generation if not found
-- Early exit on PASS"
-)
+Detailed flow reference: `CLAUDE.md` §Mode Execution

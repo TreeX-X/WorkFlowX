@@ -1,6 +1,6 @@
 # 3. Post-Evaluation Document Update (Optimized: Incremental Updates)
 
-> orchestratorX loads this module after evaluatorX outputs the Evaluation Result Payload to perform document updates.
+> Main Agent loads this module after evaluatorX outputs the Evaluation Result Payload to perform document updates.
 
 ## Timestamp Generation
 
@@ -14,7 +14,7 @@ Store the result in a variable and reuse across all update steps. **Never use pl
 
 ## Execution Flow (Incremental)
 
-After evaluatorX outputs the Evaluation Result Payload, orchestratorX reads and executes:
+After evaluatorX outputs the Evaluation Result Payload, Main Agent reads and executes:
 
 ### Step 0: Generate Real Timestamp
 

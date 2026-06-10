@@ -141,7 +141,7 @@ Agent(
 2. Claim a task: TaskUpdate(taskId=X, owner='coder-1', status='in_progress')
 3. Read Parent + Child hybrid docs from the task description
 4. Implement code following codex-spec-implementation skill
-5. When done: TaskUpdate(taskId=X, status='completed') then SendMessage to orchestratorX with completion summary
+5. When done: TaskUpdate(taskId=X, status='completed') then send completion summary (messages auto-deliver to team lead)
 6. Check TaskList for next available task
 If no ready tasks, wait for new messages."
 )
@@ -153,11 +153,11 @@ Agent(
   team_name="{team-name}",
   description="Evaluator teammate for parallel review",
   prompt="You are evaluator-1 in team '{team-name}'. Your workflow:
-1. Wait for evaluation requests from orchestratorX via SendMessage
+1. Wait for evaluation requests from team lead via SendMessage
 2. When received: read Parent + Child hybrid docs, check git diff
 3. Evaluate against acceptance criteria
 4. Output Evaluation Result Payload
-5. SendMessage result back to orchestratorX
+5. Send result back (messages auto-deliver to team lead)
 6. Go idle until next request"
 )
 ```
