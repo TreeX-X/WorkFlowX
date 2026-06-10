@@ -1,9 +1,17 @@
 ﻿.mcp.json
 PLATFORM-MAP.md
 
-
-
+# Resources
 /memories
 /docx
+*.html
+*.png
+*.jpg
+*.gif
+
+# Exclude README assets
+!docs/assets/**
+
+# Skills
 .opencode/skills/huashu-design/
 node_modules/
