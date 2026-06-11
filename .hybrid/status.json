@@ -1,0 +1,16 @@
+{
+  "status": "wait",
+  "workflow": {
+    "mode": null,
+    "phase": null
+  },
+  "execution": {
+    "current_child": null,
+    "iteration": 0,
+    "agent": null
+  },
+  "task": {
+    "type": null,
+    "subject": null
+  }
+}

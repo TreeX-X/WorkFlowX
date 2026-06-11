@@ -1,142 +1,136 @@
 # 9. Workflow State Tracking
 
-> **Purpose**: Persist workflow execution state to `.hybrid/.workflow-state.json` for CLI-agnostic monitoring and recovery.
+> **Purpose**: Persist workflow execution state to `.hybrid/status.json` for routing, monitoring, and recovery.
+>
+> **Design**: Persistent file (never deleted), only Main Agent writes.
 
-## 9.1 State File Location
+## 9.1 Status File Location
 
-**Fixed path**: `.hybrid/.workflow-state.json`
+**Fixed path**: `.hybrid/status.json`
 
 **Lifecycle**:
-- Created at workflow start
+- Created at first conversation with `status: "wait"`
 - Overwritten at each update checkpoint
-- Deleted at workflow completion
-
-**Single file design**: Always write to the same path, never versioned or archived. Current state only.
+- Never deleted (persists across sessions)
 
 ---
 
-## 9.2 State Schema
+## 9.2 Status Schema
 
 ```json
 {
+  "status": "normal|wait|xwhole|xlocal|xunit",
   "workflow": {
-    "mode": "xwhole|xlocal|xunit",
-    "phase": "env_init|phase1|phase2|core_loop|complete",
-    "started": "2026-06-10T12:30:00Z"
+    "mode": "xwhole|xlocal|xunit|null",
+    "phase": "env_init|phase1|phase2|core_loop|waiting|null",
+    "started": "2026-06-10T12:30:00Z|null"
   },
   "execution": {
-    "current_child": "child-login.md",
-    "iteration": 2,
+    "current_child": "child-login.md|null",
+    "iteration": 0,
     "agent": "coderX|evaluatorX|null"
   },
-  "parallel_mode": {
-    "enabled": false,
-    "team_name": null,
-    "active_tasks": []
-  },
-  "hybrid": ".hybrid/user-auth/"
-}
-```
-
-**Full schema**: `modules/workflow-state-schema.json`
-
----
-
-## 9.3 Update Checkpoints
-
-| Checkpoint | Update Fields | Example |
-|------------|---------------|---------|
-| **Workflow start** | All fields init | `{ "workflow": { "mode": "xwhole", "phase": "env_init", "started": "..." }, ... }` |
-| **Phase transition** | `workflow.phase` | `"phase": "phase1"` → `"phase": "phase2"` |
-| **Child switch** | `execution.current_child`, reset `iteration` to 0 | `"current_child": "child-register.md"`, `"iteration": 0` |
-| **Agent dispatch** | `execution.agent` | `"agent": "coderX"` |
-| **Iteration increment** | `execution.iteration` | `"iteration": 2` → `"iteration": 3` |
-| **Parallel mode start** | `parallel_mode.*` | `{ "enabled": true, "team_name": "auth-team", "active_tasks": [...] }` |
-| **Parallel task update** | `parallel_mode.active_tasks` | Add/remove task entries |
-| **Workflow end** | Delete file | `rm .hybrid/.workflow-state.json` |
-
----
-
-## 9.4 Update Implementation
-
-Use Write tool to overwrite state file:
-
-```javascript
-// Example: Update at Child switch
-const state = {
-  workflow: { mode: "xwhole", phase: "core_loop", started: "2026-06-10T12:30:00Z" },
-  execution: { current_child: "child-register.md", iteration: 0, agent: null },
-  parallel_mode: { enabled: false, team_name: null, active_tasks: [] },
-  hybrid: ".hybrid/user-auth/"
-};
-
-Write({
-  file_path: ".hybrid/.workflow-state.json",
-  content: JSON.stringify(state, null, 2)
-});
-```
-
-**Rules**:
-- Always write full state object (no partial updates)
-- Use 2-space indentation for readability
-- ISO8601 format for `workflow.started`
-- `null` for inactive fields (`current_child`, `agent`, `team_name`)
-
----
-
-## 9.5 Phase Values
-
-| Phase | Description |
-|-------|-------------|
-| `env_init` | Module 01 environment initialization |
-| `phase1` | Mode A only: Discovery & Solution Design (Module 08) |
-| `phase2` | Mode A only: Hybrid Tree generation |
-| `core_loop` | Core iteration loop (coderX/evaluatorX dispatch) |
-| `complete` | Workflow finished, about to delete state file |
-
----
-
-## 9.6 Parallel Mode State
-
-**When `parallel_mode.enabled = true`**:
-
-```json
-{
-  "parallel_mode": {
-    "enabled": true,
-    "team_name": "auth-team",
-    "active_tasks": [
-      { "task_id": "1", "child": "child-login.md", "agent": "coderX" },
-      { "task_id": "2", "child": "child-register.md", "agent": "coderX" }
-    ]
+  "hybrid": ".hybrid/user-auth/|null",
+  "task": {
+    "type": "analysis|coding|git|browse",
+    "subject": "描述性摘要"
   }
 }
 ```
 
-**Update on**:
-- Task dispatch: Add to `active_tasks`
-- Task completion: Remove from `active_tasks`
-- All tasks done: Set `enabled: false`, clear `active_tasks`
+---
+
+## 9.3 Status Values
+
+| Status | Meaning | Allowed Routes | Transition |
+|--------|---------|----------------|------------|
+| `normal` | Route 1 work in progress | Route 1 only | task done → `wait` |
+| `wait` | Idle, between tasks | Route 1 / Route 2 | coding request → workflow mode |
+| `xwhole` | xwhole workflow active | Route 0 | exit signal → `wait` |
+| `xlocal` | xlocal workflow active | Route 0 | exit signal → `wait` |
+| `xunit` | xunit workflow active (ephemeral) | Route 0 | auto-complete → `wait` |
+
+**Route 2 gateway**: Route 2 ONLY fires when `status = wait`.
+
+---
+
+## 9.4 Phase Values
+
+| Phase | Description |
+|-------|-------------|
+| `null` | No active workflow (status = normal / wait) |
+| `env_init` | Module 01 environment initialization |
+| `phase1` | xwhole only: Discovery & Solution Design |
+| `phase2` | xwhole only: Hybrid Tree generation |
+| `core_loop` | Active iteration (coderX/evaluatorX dispatch) |
+| `waiting` | xwhole/xlocal: Core Loop finished, waiting for user input |
+
+---
+
+## 9.5 Update Checkpoints
+
+| Event | Update |
+|-------|--------|
+| First conversation | Create status.json with `status: "wait"` |
+| Route 1 task starts | `status: "normal"`, `task.*` |
+| Route 1 task ends | `status: "wait"`, clear `task.*` |
+| Route 2 user selects mode | `status: "{mode}"`, init `workflow.*` |
+| Phase transition | `workflow.phase` |
+| Child switch | `execution.current_child`, reset `iteration` to 0 |
+| Agent dispatch | `execution.agent` |
+| Iteration increment | `execution.iteration` |
+| Core Loop finished | `workflow.phase: "waiting"` |
+| New input in workflow | `workflow.phase: "core_loop"` |
+| Exit signal (xwhole/xlocal) | `status: "wait"`, clear `workflow.*` |
+| xunit auto-complete | `status: "wait"`, clear `workflow.*` |
+
+---
+
+## 9.6 Update Implementation
+
+Use Write tool to overwrite status file:
+
+```javascript
+// Example: After user selects xwhole mode
+const status = {
+  status: "xwhole",
+  workflow: { mode: "xwhole", phase: "env_init", started: "2026-06-10T12:30:00Z" },
+  execution: { current_child: null, iteration: 0, agent: null },
+  hybrid: null,
+  task: { type: "coding", subject: "重构数据库层" }
+};
+
+Write({
+  file_path: ".hybrid/status.json",
+  content: JSON.stringify(status, null, 2)
+});
+```
+
+**Rules**:
+- Always write full status object (no partial updates)
+- Use 2-space indentation for readability
+- ISO8601 format for `workflow.started`
+- `null` for inactive fields
 
 ---
 
 ## 9.7 Error Handling
 
-**If state file creation fails**: Log warning, continue workflow (state tracking is non-blocking)
+**If status file creation fails**: Log warning, continue workflow (status tracking is non-blocking)
 
-**If state file is missing mid-workflow**: Workflow continues without state tracking
+**If status file is corrupted**: Overwrite with fresh status at next checkpoint
 
-**If state file is corrupted**: Overwrite with fresh state at next checkpoint
+**If status file is missing**: Create new one with `status: "wait"`
 
 ---
 
 ## 9.8 Integration Points
 
-**CLAUDE.md reference**: `## Workflow State & Incremental Iteration` section
+**CLAUDE.md reference**: `## Status Management` section
 
 **Mode execution flows**:
-- Mode A (xwhole): Update at env_init → phase1 → phase2 → core_loop → complete
-- Mode B (xlocal): Update at env_init → core_loop → complete (skip phase1/phase2)
-- Mode C (xunit): Update at env_init → core_loop → complete (single iteration)
+- Mode A (xwhole): status=xwhole → env_init → phase1 → phase2 → core_loop → waiting → (repeat or exit → wait)
+- Mode B (xlocal): status=xlocal → env_init → core_loop → waiting → (repeat or exit → wait)
+- Mode C (xunit): status=xunit → env_init → core_loop → auto-complete → wait
 
-**Module 03 integration**: Update state file after each document write operation
+**Module 03 integration**: Update status file after each document write operation
