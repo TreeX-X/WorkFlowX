@@ -19,7 +19,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 8 | Discovery & Solution Design | xwhole only: Phase 1 (exploration and design consensus) | `modules/08-requirements-discovery.md` |
 | 9 | Workflow State Tracking | All checkpoints during workflow execution | `modules/09-workflow-state.md` |
 
-**Note**: Module 00 (Auto-Routing) exists in `modules/00-auto-routing.md` but is NOT used by orchestratorX. It serves as a reference guide for the main Claude agent (defined in CLAUDE.md) to perform intelligent request classification before calling orchestratorX. orchestratorX always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
+**Note**: Module 00 (Auto-Routing) has been superseded by `.claude/skills/auto-routing/SKILL.md` — the consolidated routing specification for the main Claude agent. orchestratorX always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -474,23 +474,7 @@ Read change analysis results, execute:
 
 ## Auto-Routing
 
-When user does not explicitly specify a mode, route by the following rules:
-
-### Routing Rules (by priority)
-
-1. **Explicit commands first**: `/xwhole`, `/xlocal`, `/xunit` bypass auto-routing. `/xwhole -parallel` triggers parallel execution within Mode A.
-2. **Scope inference**:
-
-   | Dimension | whole | local | unit | whole-parallel |
-   |-----------|-------|-------|------|----------------|
-   | **Files involved** | 3+ modules/directories | 1-2 modules | Single file | 3+ modules (parallel) |
-   | **Keywords** | "new feature", "module", "refactor" | "modify", "optimize", "supplement" | "fix", "typo", "single function" | "parallel", "simultaneously" |
-   | **Code impact** | New files + modify existing | Modify existing only | 1-2 logic changes | Multi-module parallel modification |
-   | **Needs PRD** | Yes | No | No | Yes |
-
-3. **Fallback**: When uncertain, show inference results and 3 options for user selection. Never silently default.
-
-Auto-route (notify user) when 2+ dimensions align; otherwise show options and wait. Auto-routing does not skip gate checks.
+> **Delegated**: Full routing logic is in `.claude/skills/auto-routing/SKILL.md`. orchestratorX receives an explicit mode parameter and does NOT perform routing itself.
 
 ---
 
