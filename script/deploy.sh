@@ -12,9 +12,9 @@ HOME_DIR="$HOME"
 BACKUP_BASE="$HOME_DIR/.wfx-backup"
 
 # 平台定义
-declare -A PLATFORM_NAME=( [claude]="Claude Code" [codex]="Codex CLI" [copilot]="Copilot CLI" )
-declare -A PLATFORM_SRC=( [claude]="$PROJECT_DIR/.claude" [codex]="$PROJECT_DIR/.codex" [copilot]="$PROJECT_DIR/.github" )
-declare -A PLATFORM_DST=( [claude]="$HOME_DIR/.claude" [codex]="$HOME_DIR/.codex" [copilot]="$HOME_DIR/.copilot" )
+declare -A PLATFORM_NAME=( [claude]="Claude Code" [codex]="Codex CLI" )
+declare -A PLATFORM_SRC=( [claude]="$PROJECT_DIR/.claude" [codex]="$PROJECT_DIR/.codex" )
+declare -A PLATFORM_DST=( [claude]="$HOME_DIR/.claude" [codex]="$HOME_DIR/.codex" )
 
 # ── 工具函数 ──────────────────────────────────────────────
 
@@ -63,9 +63,6 @@ backup_existing() {
             ;;
         codex)
             items=(agents skills config.toml)
-            ;;
-        copilot)
-            items=(agents prompts skills instructions hooks copilot-instuctions.md)
             ;;
     esac
 
@@ -133,19 +130,6 @@ deploy_platform() {
                 fi
             done
             ;;
-        copilot)
-            for item in agents prompts skills instructions hooks; do
-                if [ -d "$src/$item" ]; then
-                    copy_tree "$src/$item" "$dst/$item"
-                    info "$item/"
-                fi
-            done
-            if [ -f "$src/copilot-instuctions.md" ]; then
-                mkdir -p "$dst"
-                cp "$src/copilot-instuctions.md" "$dst/"
-                info "copilot-instuctions.md"
-            fi
-            ;;
     esac
 
     echo ""
@@ -181,12 +165,6 @@ verify_deploy() {
             check "agents"
             check "skills"
             ;;
-        copilot)
-            check "agents"
-            check "prompts"
-            check "skills"
-            check "instructions"
-            ;;
     esac
 
     if [ "$fail_count" -eq 0 ]; then
@@ -210,16 +188,14 @@ main() {
             case "$arg" in
                 --claude)  deploy_platform claude ;;
                 --codex)   deploy_platform codex ;;
-                --copilot) deploy_platform copilot ;;
-                --all)     deploy_platform claude; deploy_platform codex; deploy_platform copilot ;;
+                --all)     deploy_platform claude; deploy_platform codex ;;
                 --help|-h)
                     echo "用法: bash deploy.sh [选项]"
                     echo ""
                     echo "选项:"
                     echo "  --claude    部署到 Claude Code (~/.claude/)"
                     echo "  --codex     部署到 Codex CLI  (~/.codex/)"
-                    echo "  --copilot   部署到 Copilot CLI (~/.copilot/)"
-                    echo "  --all       部署全部三个平台"
+                    echo "  --all       部署全部平台"
                     echo "  无参数      进入交互式菜单"
                     ;;
                 *) fail "未知参数: $arg" ;;
@@ -234,17 +210,15 @@ main() {
         echo ""
         echo "  [1] Claude Code   → ~/.claude/"
         echo "  [2] Codex CLI     → ~/.codex/"
-        echo "  [3] Copilot CLI   → ~/.copilot/"
-        echo "  [4] 全部部署"
+        echo "  [3] 全部部署"
         echo "  [0] 退出"
         echo ""
-        read -rp "  请选择 [0-4]: " choice
+        read -rp "  请选择 [0-3]: " choice
 
         case "$choice" in
             1) deploy_platform claude ;;
             2) deploy_platform codex ;;
-            3) deploy_platform copilot ;;
-            4) deploy_platform claude; deploy_platform codex; deploy_platform copilot ;;
+            3) deploy_platform claude; deploy_platform codex ;;
             0) echo ""; info "退出"; exit 0 ;;
             *) warn "无效选择: $choice" ;;
         esac

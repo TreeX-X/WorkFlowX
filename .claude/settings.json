@@ -10,7 +10,6 @@
   },
   "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
-    "obsidian",
     "server-memory",
     "server-sequential-thinking"
   ],

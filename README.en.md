@@ -17,7 +17,6 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97706?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
-![VSCode Copilot](https://img.shields.io/badge/VSCode_Copilot-Skill-6F42C1?style=flat-square&logo=github&logoColor=white)
 ![OpenCode](https://img.shields.io/badge/OpenCode-Skill-3B82F6?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMiAxNWwtNS01IDEuNDEtMS40MUwxMCAxNC4xN2w3LjU5LTcuNTlMMTkgOGwtOSA5eiIvPjwvc3ZnPg==&logoColor=white)
 
 </div>
@@ -161,7 +160,6 @@ A single command generates a high-fidelity HTML status report, built on `huashu-
 |----------|----------------|
 | **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → search `workflowx` → Install Plugin |
-| **GitHub Copilot** | `copilot plugin marketplace add https://github.com/TreeX-X/workflowX` → `copilot plugin install workflowx@workflowx` |
 | **OpenCode** | Add `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` to `opencode.json` |
 
 **Option 2: Manual Setup**
@@ -308,10 +306,9 @@ Weighted 6-dimension clarity assessment + Socratic questioning + proactive chall
 |----------|-----------------|-----------------|-------|
 | **Claude Code** | `.claude/` | All 4 modes | agents + skills, native SubAgent + Agent Teams (parallel) |
 | **OpenAI Codex** | `.codex/` | 3 modes | agents (`.toml`) + skills, full parity |
-| **GitHub Copilot** | `.github/` | 3 modes | agents (`.agent.md`) + skills + instructions |
 | **OpenCode** | `.opencode/` | 3 modes | agents + commands + skills, Task tool delegation |
 
-> All four configurations share identical workflow logic — only tool-call syntax differs per platform. All modes auto-enable Worktree isolation (except xunit).
+> All three configurations share identical workflow logic — only tool-call syntax differs per platform. All modes auto-enable Worktree isolation (except xunit).
 
 ---
 

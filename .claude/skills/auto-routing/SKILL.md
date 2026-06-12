@@ -97,6 +97,43 @@ When iteration finishes all Children (PASS or limit reached), phase updates to `
 
 **Status flow**: `normal` → task completes → `wait`
 
+**Status Write Checkpoint (MANDATORY)**:
+```
+Route 1 task starts
+  │
+  ▼
+Write status.json: { status: "normal", task: { type: "{analysis|git|browse}", subject: "{description}" } }
+  │
+  ▼
+Execute task (Read/Grep/Bash)
+  │
+  ▼
+Task completes
+  │
+  ▼
+Write status.json: { status: "wait", task: { type: null, subject: null } }
+```
+
+**Template — Route 1 task starts**:
+```json
+{
+  "status": "normal",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "{analysis|git|browse}", "subject": "{task_description}" }
+}
+```
+
+**Template — Route 1 task ends**:
+```json
+{
+  "status": "wait",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": null, "subject": null }
+}
+```
+
 ---
 
 ## 5. Route 2 — Workflow Selection (status = wait ONLY)
@@ -173,7 +210,35 @@ AskUserQuestion({
 })
 ```
 
-After user selects → update status to selected mode → execute Mode Execution flow.
+After user selects → **immediately** update status.json (see template below) → execute Mode Execution flow.
+
+**Status Write Checkpoint (MANDATORY — before Mode Execution)**:
+
+```
+User selects mode in AskUserQuestion
+  │
+  ▼
+Write status.json IMMEDIATELY (before any Mode Execution step)
+  │
+  ├─ Selected xwhole → write: { status: "xwhole", workflow: { mode: "xwhole", phase: "env_init", ... }, ... }
+  ├─ Selected xlocal  → write: { status: "xlocal", workflow: { mode: "xlocal", phase: "env_init", ... }, ... }
+  └─ Selected xunit   → write: { status: "xunit", workflow: { mode: "xunit", phase: "env_init", ... }, ... }
+  │
+  ▼
+THEN proceed to Mode Execution (env_init)
+```
+
+**Template — Route 2 mode selected**:
+```json
+{
+  "status": "{xwhole|xlocal|xunit}",
+  "workflow": { "mode": "{selected_mode}", "phase": "env_init", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{task_summary}" }
+}
+```
+
+**Why this order matters**: Writing status.json BEFORE env_init ensures that if the session interrupts during env_init, the status correctly reflects an active workflow on restart. Without this, a crash during env_init leaves status=wait, and the workflow is lost.
 
 **Fallback**: If request is too ambiguous to analyze (e.g. "改一下登录"), ask a clarifying question first — do NOT guess or proceed directly.
 
@@ -199,6 +264,32 @@ After user selects → update status to selected mode → execute Mode Execution
 **Trigger**: `/xwhole`, `/xlocal`, `/xunit`, `/xprompt`, `/xstatus`
 
 **Action**: Execute immediately. No AskUserQuestion needed. If a workflow is active, it is replaced by the new workflow.
+
+**Status Write Checkpoint (MANDATORY)**:
+```
+/x* command received
+  │
+  ▼
+If active workflow exists → write exit status first:
+  { status: "wait", workflow: { mode: null, phase: null, started: null }, ... }
+  │
+  ▼
+Write new workflow status immediately:
+  { status: "{target_mode}", workflow: { mode: "{target_mode}", phase: "env_init", started: "{ISO}" }, ... }
+  │
+  ▼
+THEN execute Mode Execution
+```
+
+**Template — Route 3 command**:
+```json
+{
+  "status": "{xwhole|xlocal|xunit}",
+  "workflow": { "mode": "{target_mode}", "phase": "env_init", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{requirement_from_arguments}" }
+}
+```
 
 ---
 

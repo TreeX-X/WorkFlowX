@@ -84,6 +84,123 @@
 | Exit signal (xwhole/xlocal) | `status: "wait"`, clear `workflow.*` |
 | xunit auto-complete | `status: "wait"`, clear `workflow.*` |
 
+### Dispatch Self-Check Protocol (MANDATORY)
+
+> **Every agent dispatch MUST follow this protocol. No exceptions.**
+
+**Before dispatch (coderX or evaluatorX)**:
+1. Read `.hybrid/status.json`
+2. Update: `execution.current_child`, `execution.iteration`, `execution.agent`
+3. Write `.hybrid/status.json` (full overwrite)
+4. THEN dispatch agent
+
+**After agent returns**:
+1. Read `.hybrid/status.json`
+2. Set `execution.agent = null`
+3. Write `.hybrid/status.json`
+
+**When switching to next Child**:
+1. Read `.hybrid/status.json`
+2. Update: `execution.current_child` (new child), `execution.iteration = 0`, `execution.agent = null`
+3. Write `.hybrid/status.json`
+4. THEN dispatch coderX for new Child
+
+---
+
+## 9.5a Phase Transition Templates (MANDATORY)
+
+> **Rule**: Copy the template, fill in values. Never construct status JSON from memory.
+
+### env_init → phase1 (xwhole)
+```json
+{
+  "status": "xwhole",
+  "workflow": { "mode": "xwhole", "phase": "phase1", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+### phase1 → phase2 (xwhole, user confirmed design)
+```json
+{
+  "status": "xwhole",
+  "workflow": { "mode": "xwhole", "phase": "phase2", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "Generate Hybrid Tree: {requirement_summary}" }
+}
+```
+
+### phase2 → core_loop (xwhole, Hybrid Tree created)
+```json
+{
+  "status": "xwhole",
+  "workflow": { "mode": "xwhole", "phase": "core_loop", "started": "{ISO8601}" },
+  "execution": { "current_child": "{first_child}.md", "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+### env_init → core_loop (xlocal)
+```json
+{
+  "status": "xlocal",
+  "workflow": { "mode": "xlocal", "phase": "core_loop", "started": "{ISO8601}" },
+  "execution": { "current_child": "{first_child}.md", "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+### env_init → core_loop (xunit)
+```json
+{
+  "status": "xunit",
+  "workflow": { "mode": "xunit", "phase": "core_loop", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": "coderX" },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+### core_loop → waiting (all Children done)
+```json
+{
+  "status": "{xwhole|xlocal}",
+  "workflow": { "mode": "{mode}", "phase": "waiting", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "All Children completed" }
+}
+```
+
+### exit signal → wait (workflow ends)
+```json
+{
+  "status": "wait",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": null, "subject": null }
+}
+```
+
+### Route 1 task starts
+```json
+{
+  "status": "normal",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "{analysis|git|browse}", "subject": "{task_description}" }
+}
+```
+
+### Route 1 task ends
+```json
+{
+  "status": "wait",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": null, "subject": null }
+}
+```
+
 ---
 
 ## 9.6 Update Implementation

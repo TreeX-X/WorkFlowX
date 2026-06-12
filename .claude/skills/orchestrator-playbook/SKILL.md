@@ -104,6 +104,102 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 
 ## Workflow Modes
 
+### Phase Transition Status Templates (MANDATORY)
+
+> **Rule**: Every phase transition MUST write status.json using the exact template below. Do not construct JSON from memory — copy the template and fill in values.
+
+#### Template: env_init → phase1 (xwhole only)
+```json
+{
+  "status": "xwhole",
+  "workflow": { "mode": "xwhole", "phase": "phase1", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+#### Template: phase1 → phase2 (xwhole only, after user confirms design)
+```json
+{
+  "status": "xwhole",
+  "workflow": { "mode": "xwhole", "phase": "phase2", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "Generate Hybrid Tree: {requirement_summary}" }
+}
+```
+
+#### Template: phase2 → core_loop (xwhole, after Hybrid Tree created)
+```json
+{
+  "status": "xwhole",
+  "workflow": { "mode": "xwhole", "phase": "core_loop", "started": "{ISO8601}" },
+  "execution": { "current_child": "{first_child}.md", "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+#### Template: env_init → core_loop (xlocal, after Hybrid Tree generated)
+```json
+{
+  "status": "xlocal",
+  "workflow": { "mode": "xlocal", "phase": "core_loop", "started": "{ISO8601}" },
+  "execution": { "current_child": "{first_child}.md", "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+#### Template: env_init → core_loop (xunit)
+```json
+{
+  "status": "xunit",
+  "workflow": { "mode": "xunit", "phase": "core_loop", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": "coderX" },
+  "task": { "type": "coding", "subject": "{requirement_summary}" }
+}
+```
+
+#### Template: core_loop → waiting (xwhole/xlocal, all Children done)
+```json
+{
+  "status": "{xwhole|xlocal}",
+  "workflow": { "mode": "{mode}", "phase": "waiting", "started": "{ISO8601}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "All Children completed" }
+}
+```
+
+#### Template: exit signal → wait (any workflow ends)
+```json
+{
+  "status": "wait",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": null, "subject": null }
+}
+```
+
+#### Template: Route 1 task starts (normal)
+```json
+{
+  "status": "normal",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "{analysis|git|browse}", "subject": "{task_description}" }
+}
+```
+
+#### Template: Route 1 task ends (back to wait)
+```json
+{
+  "status": "wait",
+  "workflow": { "mode": null, "phase": null, "started": null },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": null, "subject": null }
+}
+```
+
+---
+
 ### Mode A: whole workflow
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
@@ -111,6 +207,14 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 - **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> user confirms -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
+- **Status transitions (use templates above)**:
+  1. env_init → write `env_init → phase1` template
+  2. Phase 1 starts → write `phase1` template (phase already set above)
+  3. User confirms design → write `phase1 → phase2` template
+  4. Hybrid Tree created → write `phase2 → core_loop` template
+  5. Each dispatch → use Dispatch Self-Check Protocol (pre/post)
+  6. All Children done → write `core_loop → waiting` template
+  7. Exit signal → write `exit signal → wait` template
 
 #### Mode A-parallel (`-parallel`)
 When `-parallel` is specified, Mode A uses Agent Teams for parallel execution instead of sequential sub-agent dispatch:
@@ -137,11 +241,20 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
   2. $ARGUMENTS contains valid file path → read PRD, wrap into Hybrid Tree
   3. No PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
 - **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
+- **Status transitions (use templates above)**:
+  1. env_init → write `env_init → core_loop (xlocal)` template (skip phase1/phase2)
+  2. Each dispatch → use Dispatch Self-Check Protocol (pre/post)
+  3. All Children done → write `core_loop → waiting` template
+  4. Exit signal → write `exit signal → wait` template
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
 - **Entry**: coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
 - **coderX lightweight mode**: Only loads `karpathy-guidelines`, does not load `codex-spec-implementation`, no Bus Payload needed.
+- **Status transitions (use templates above)**:
+  1. env_init → write `env_init → core_loop (xunit)` template
+  2. Dispatch coderX → use Dispatch Self-Check Protocol (pre/post)
+  3. Auto-complete → write `exit signal → wait` template
 
 ---
 
@@ -290,6 +403,79 @@ coderX and evaluatorX receive (Parent, Child) paths, then read according to the 
 
 > Shared by Mode A and Mode B (with Hybrid Tree).
 
+### Dispatch Self-Check Protocol (MANDATORY — NEVER SKIP)
+
+> **Purpose**: Guarantee status.json is always synchronized with actual workflow state.
+>
+> **Enforcement**: This protocol runs before AND after every agent dispatch. Skipping any step is forbidden.
+
+#### Pre-Dispatch Checklist (Before EVERY coderX / evaluatorX dispatch)
+
+```
+□ Step 1: Read .hybrid/status.json
+□ Step 2: Verify status matches current workflow (xwhole/xlocal/xunit)
+□ Step 3: Update execution fields:
+           - execution.current_child = target Child filename
+           - execution.agent = "coderX" or "evaluatorX"
+           - execution.iteration = current round number
+□ Step 4: Write .hybrid/status.json (full overwrite)
+□ Step 5: THEN dispatch agent
+```
+
+**Template — Pre-dispatch for coderX**:
+```json
+{
+  "status": "{xwhole|xlocal}",
+  "workflow": { "mode": "{mode}", "phase": "core_loop", "started": "{ISO}" },
+  "execution": { "current_child": "{child-name}", "iteration": {N}, "agent": "coderX" },
+  "task": { "type": "coding", "subject": "{brief description}" }
+}
+```
+
+**Template — Pre-dispatch for evaluatorX**:
+```json
+{
+  "status": "{xwhole|xlocal}",
+  "workflow": { "mode": "{mode}", "phase": "core_loop", "started": "{ISO}" },
+  "execution": { "current_child": "{child-name}", "iteration": {N}, "agent": "evaluatorX" },
+  "task": { "type": "analysis", "subject": "Evaluate {child-name} round {N}" }
+}
+```
+
+#### Post-Dispatch Checklist (After EVERY coderX / evaluatorX returns)
+
+```
+□ Step 1: Read .hybrid/status.json
+□ Step 2: Update execution fields:
+           - execution.agent = null
+           - (keep current_child and iteration unchanged until next dispatch)
+□ Step 3: Write .hybrid/status.json (full overwrite)
+```
+
+**Template — Post-dispatch cleanup**:
+```json
+{
+  "status": "{xwhole|xlocal}",
+  "workflow": { "mode": "{mode}", "phase": "core_loop", "started": "{ISO}" },
+  "execution": { "current_child": "{child-name}", "iteration": {N}, "agent": null },
+  "task": { "type": "coding", "subject": "{brief description}" }
+}
+```
+
+#### Child Switch Checklist (When moving to next Child)
+
+```
+□ Step 1: Read .hybrid/status.json
+□ Step 2: Update execution fields:
+           - execution.current_child = NEW child filename
+           - execution.iteration = 0 (reset)
+           - execution.agent = null
+□ Step 3: Write .hybrid/status.json
+□ Step 4: THEN dispatch coderX for new Child
+```
+
+---
+
 ### Pre-Loop Setup: Build Dependency Graph
 
 ```
@@ -319,13 +505,21 @@ While ready_queue is not empty:
      - If child_iterations[current].remaining <= 0:
        mark as "Limit Reached", report to human, continue to next
   
-  1. Dispatch coderX: (Parent, current) + [prior Fix Instructions, if any]
-  2. coderX implements, outputs Change Summary Payload
-  3. Validate Payload (module 02), forward to evaluatorX: (Parent, current, Change Summary)
-  4. evaluatorX evaluates, outputs Evaluation Result Payload
-  5. Load module 03 for Post-Evaluation document update (incremental, see §6)
+  1. [STATUS CHECK] Execute Pre-Dispatch Checklist (coderX):
+     - Read status.json → update current_child, iteration, agent="coderX" → write status.json
+  2. Dispatch coderX: (Parent, current) + [prior Fix Instructions, if any]
+  3. coderX implements, outputs Change Summary Payload
+  4. [STATUS CHECK] Execute Post-Dispatch Checklist:
+     - Read status.json → set agent=null → write status.json
+  5. [STATUS CHECK] Execute Pre-Dispatch Checklist (evaluatorX):
+     - Read status.json → update agent="evaluatorX" → write status.json
+  6. Validate Payload (module 02), forward to evaluatorX: (Parent, current, Change Summary)
+  7. evaluatorX evaluates, outputs Evaluation Result Payload
+  8. [STATUS CHECK] Execute Post-Dispatch Checklist:
+     - Read status.json → set agent=null → write status.json
+  9. Load module 03 for Post-Evaluation document update (incremental, see §6)
   
-  6. Result handling:
+  10. Result handling:
      - PASS:
        a. Mark current as PASS
        b. For each dependent in adj[current]:
@@ -338,6 +532,23 @@ While ready_queue is not empty:
      - Needs Fix + child_iterations[current].remaining <= 0:
        a. Mark as "Limit Reached", report to human
        b. Do NOT enqueue dependents (they remain blocked)
+
+  11. [STATUS CHECK] After Child completes (PASS or Limit Reached):
+     - If next Child in ready_queue:
+       → Execute Child Switch Checklist (current_child = next child, iteration = 0)
+     - If ready_queue empty (all done):
+       → Update status.json: workflow.phase = "waiting", execution.agent = null
+```
+
+**Final status update (Core Loop exits)**:
+```json
+{
+  "status": "{xwhole|xlocal}",
+  "workflow": { "mode": "{mode}", "phase": "waiting", "started": "{ISO}" },
+  "execution": { "current_child": null, "iteration": 0, "agent": null },
+  "task": { "type": "coding", "subject": "All Children completed" }
+}
+```
 ```
 
 ### Phase 2 — Blocked Queue Resolution

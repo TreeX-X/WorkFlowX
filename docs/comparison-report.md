@@ -57,7 +57,7 @@
 | **核心语言** | Markdown (Agent 定义) | Shell/Markdown | TypeScript |
 | **定位** | 多智能体编排框架 | 开发方法论 + 技能库 | 多智能体编排平台 |
 | **作者** | TreeX | Jesse Vincent (obra) | Yeachan Heo |
-| **多平台支持** | 4 平台 (Claude / Codex / Copilot / OpenCode) | 8 平台 (Claude / Codex App / Codex CLI / Factory Droid / Gemini CLI / OpenCode / Cursor / Copilot CLI) | 2 平台 (Claude Code + Codex CLI via omc) |
+| **多平台支持** | 3 平台 (Claude / Codex / OpenCode) | 8 平台 (Claude / Codex App / Codex CLI / Factory Droid / Gemini CLI / OpenCode / Cursor / Copilot CLI) | 2 平台 (Claude Code + Codex CLI via omc) |
 | **安装方式** | Plugin Marketplace + 手动部署 | Plugin Marketplace | npm + Plugin Marketplace |
 | **依赖** | 零依赖 (纯 Markdown) | 零依赖 (纯 Shell/Markdown) | TypeScript (npm 包 ~59MB) |
 | **协议** | MIT | MIT | MIT |
@@ -403,7 +403,7 @@
 5. **Prompt 优化内置** — promptMasterX 37 反模式检测
 6. **代码美学框架** — razorX 独特的代码审美标准
 7. **迭代控制最精确** — 独立计数器 + 早退 + 上限，无无限循环风险
-8. **Plugin Marketplace 已就绪** — 支持 Claude / Codex / Copilot / OpenCode 四平台一键安装
+8. **Plugin Marketplace 已就绪** — 支持 Claude / Codex / OpenCode 三平台一键安装
 
 **劣势:**
 1. **社区规模小** — 新项目，生态和社区支持有限

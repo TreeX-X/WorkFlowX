@@ -202,13 +202,6 @@ Identify the tool and route accordingly. Read full templates from [references/te
 
 ---
 
-**GitHub Copilot**
-- Write the exact function signature, docstring, or comment immediately before invoking
-- Describe input types, return type, edge cases, and what the function must NOT do
-- Copilot completes what it predicts, not what you intend — leave no ambiguity in the comment
-
----
-
 **Bolt / v0 / Lovable / Figma Make / Google Stitch**
 - Full-stack generators default to bloated boilerplate — scope it down explicitly
 - Always specify: stack, version, what NOT to scaffold, clear component boundaries
