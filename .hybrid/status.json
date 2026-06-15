@@ -2,7 +2,8 @@
   "status": "wait",
   "workflow": {
     "mode": null,
-    "phase": null
+    "phase": null,
+    "started": null
   },
   "execution": {
     "current_child": null,

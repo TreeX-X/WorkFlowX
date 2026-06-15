@@ -1,22 +1,41 @@
 const { chromium } = require('playwright');
 const path = require('path');
 
-const htmlPath = path.join(__dirname, '..', 'docs', 'design', 'WorkFlowX-Logo-v3.html').replace(/\\/g, '/');
+const htmlPath = path.join(__dirname, '..', 'docs', 'design', 'WorkFlowX-Logo.html').replace(/\\/g, '/');
 const outPath = path.join(__dirname, '..', 'docs', 'assets', 'WorkFlowX-Logo.png');
 
+async function launchBrowser() {
+  try {
+    return await chromium.launch({ channel: 'msedge', headless: true });
+  } catch {
+    return await chromium.launch({ headless: true });
+  }
+}
+
 (async () => {
-  const browser = await chromium.launch({ channel: 'msedge', headless: true });
-  const page = await browser.newPage();
-  await page.setViewportSize({ width: 960, height: 480 });
+  const browser = await launchBrowser();
+  const context = await browser.newContext({
+    viewport: { width: 1400, height: 420 },
+    deviceScaleFactor: 2,
+  });
+  const page = await context.newPage();
   await page.goto('file:///' + htmlPath);
-  await page.waitForTimeout(500);
-  // Clip: centered crop around the content with comfortable padding
-  // Content is ~400x110, centered in 960x480 → clip 560x180 at (200, 150)
+  await page.waitForTimeout(300);
+  const box = await page.locator('.logo-lockup').boundingBox();
+  const padding = 72;
+  const x = Math.max(0, box.x - padding);
+  const y = Math.max(0, box.y - padding);
   await page.screenshot({
     path: outPath,
     type: 'png',
-    clip: { x: 200, y: 150, width: 560, height: 180 },
+    clip: {
+      x,
+      y,
+      width: Math.min(1400 - x, box.width + padding * 2),
+      height: Math.min(420 - y, box.height + padding * 2),
+    },
   });
   console.log('Done:', outPath);
+  await context.close();
   await browser.close();
 })();

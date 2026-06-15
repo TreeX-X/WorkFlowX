@@ -1,0 +1,12 @@
+{
+  "id": "a3e39d52-3eba-43ae-8594-be396e3d1aa1",
+  "terminalId": "2717808b-2890-45f4-8c38-4cf26456d5a7",
+  "conversationIndex": 3,
+  "createdAt": "2026-06-12T10:13:49.696Z",
+  "engine": "claude",
+  "branch": "main",
+  "prompt": "Error loading config.toml: Failed to read project config file E:\\Tree Workspace\\workflowX\\.codex\\config.toml: invalid utf-8 sequence of 1 bytes from index提交推送一下代码",
+  "stashRef": "stash@{0}",
+  "filesSnapshot": {},
+  "status": "pending"
+}

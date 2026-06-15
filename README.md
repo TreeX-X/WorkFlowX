@@ -4,16 +4,18 @@
 
 # WorkflowX
 
-### 混合文档驱动的多智能体协作框架
+### 让 AI 写代码像团队协作一样可控
 
-![WorkflowX Logo](docs/assets/WorkFlowX-Logo.png)
+<p align="center">
+  <img src="docs/assets/WorkFlowX-Logo.png" alt="WorkflowX Logo" width="620" />
+</p>
 
-**纯文件驱动 · 零依赖部署 · 结构化需求追踪 · AC 交叉验证 · Token 极致优化**
+**一个纯文件驱动的多智能体协作框架 —— 把"和 AI 聊天写代码"升级为"有规划、有验收、可追踪"的工程流程**
 
 [![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-8-10B981?style=for-the-badge)](#-核心能力)
-[![Agents](https://img.shields.io/badge/Agents-7-10B981?style=for-the-badge)](#-核心能力)
-[![Modules](https://img.shields.io/badge/Modules-8-F59E0B?style=for-the-badge)](#-核心能力)
+[![Skills](https://img.shields.io/badge/Skills-8-10B981?style=for-the-badge)](#深入设计)
+[![Agents](https://img.shields.io/badge/Agents-7-10B981?style=for-the-badge)](#深入设计)
+[![Modules](https://img.shields.io/badge/Modules-8-F59E0B?style=for-the-badge)](#深入设计)
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97706?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
@@ -23,224 +25,296 @@
 
 ---
 
-## 工作流演示
+## 这是什么？
+
+**WorkflowX 是一套装进你 AI 编程工具里的工作流框架。** 它把单个 AI"边聊边写"的随意模式，变成一条有角色分工的流水线：**一个编排者负责规划、派活、记录，一个程序员智能体负责写代码，一个评估员智能体负责独立验收**——不达标就打回重做，达标才收工。
+
+你不需要安装任何服务或运行时。把配置文件拷进项目，它就能在 **Claude Code / OpenAI Codex / OpenCode** 里直接运行。
 
 <p align="center">
-  <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="720" />
+  <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="880" />
   <br/>
-  <sub>xwhole 模式完整工作流：需求输入 → promptMasterX 优化 → coderX 编码 → evaluatorX 验证 → 迭代完成</sub>
+  <sub>一次完整的 xwhole 工作流：需求收束 → Hybrid Tree → 指令优化 → 编码 → 独立验收 → 修复回流 → PASS 收口</sub>
 </p>
 
 ---
 
-## 设计理念
+## 为什么需要它？
 
-> **通过纯净独立的上下文保持智能体的最高水准状态，通过混合文档（Hybrid Docs）实现优雅的自动化与半自动化无缝切换。**
+直接和单个 AI 聊天写代码，你大概率遇到过这些坑。WorkflowX 针对每一个都给了机制化的答案：
 
-<table>
-<tr>
-<td width="50%">
-
-**单一写入者，状态一致**
-orchestratorX 是唯一的文档写入者，杜绝多源冲突。所有子智能体（coderX、evaluatorX）均为只读 + Payload 输出，不直接写入文档。
-
-</td>
-<td width="50%">
-
-**零依赖部署，配置即运行**
-纯 Markdown 驱动，无需安装服务、无需搭建运行时。将配置文件拷贝到项目中即可完成部署。
-
-</td>
-</tr>
-<tr>
-<td>
-
-**降低幻觉成本，极限提升单步效率**
-纯净上下文 + 结构化 Payload 通信 + Worktree 物理隔离，将每次 SubAgent 唤醒的输入 Token 压缩到最小。
-
-</td>
-<td>
-
-**单点切入，全局联动**
-需求变更自动传播，依赖自动排队重试。Hybrid Tree 的 MECE 结构确保每个任务都有明确的负责人和验收标准。
-
-</td>
-</tr>
-</table>
+| 用 AI 写代码的痛点 | WorkflowX 的解法 |
+|---|---|
+| **长对话后上下文失控**，信息越堆越乱、成本越来越高 | 每个智能体在**独立上下文**中工作，只通过结构化 Payload 通信 |
+| **AI 声称完成，但实际没做或做错** | **评估员独立验收**，不采信程序员的自我声明，逐条核对验收标准后才放行 |
+| **需求散落在聊天记录里**，变更难追踪 | 需求沉淀为结构化 **Hybrid Tree**，支持追踪、增量修改和影响联动 |
+| **编码后才发现需求理解偏差** | 规划阶段通过苏格拉底式追问和主动质疑提前暴露假设、边界与风险 |
+| **多轮迭代 Token 消耗过快** | 三层 Token 优化让多轮场景节省 40–60% |
+| **并行任务互相覆盖、产生分支冲突** | 每个智能体在独立 git worktree 中工作，配合跨分支违规检测 |
 
 ---
 
-## 系统架构
+## 30 秒理解工作原理
 
-**orchestratorX** 是唯一文档写入者，通过 Bus Payload 调度子智能体：
+整套框架只有一个核心循环。你只跟一个角色对话，剩下的它替你协调：
 
-- **Bus Payload 通信** — 3 种结构化 Payload（Change Summary / Evaluation Result / Requirement Change），零上下文污染
-- **Hybrid Tree** — Parent 路由层 + Children 需求层，MECE 分工，Section-Level Caching
-- **Worktree 隔离** — 每个子智能体在独立 git worktree 中工作，物理隔离
-- **AC 交叉验证** — evaluatorX 不信任 coderX 声明，独立验证每个验收标准
-
-<p align="center">
-  <img src="docs/assets/01-architecture-zh.png" alt="WorkflowX 系统架构" width="960" />
-  <br/>
-  <sub>编排层 + 数据层：orchestratorX 调度 4 个子智能体，通过 Hybrid Tree + MCP 记忆图谱实现结构化协作</sub>
-</p>
-
----
-
-## 核心能力
-
-### 苏格拉底式需求发现 (Module 08)
-
-> 规划阶段暴露隐藏假设和边界条件，而非在编码后才发现需求偏差。
-
-- **加权清晰度评估**：6 维度加权打分（目标用户 15% / 功能范围 25% / 技术约束 20% / 边界条件 15% / 验收标准 15% / 非功能需求 10%）
-- **一次一题，优先多选**：每个问题基于上一个回答，层层深入
-- **主动质疑**：即使需求清晰，也必须分析矛盾、边界、风险、隐含假设、跨模块冲突、遗漏的非功能需求
-
-### Prompt 优化引擎 (promptMasterX)
-
-内置 **prompt-master** 技能，为 20+ 种 AI 工具生成生产级提示词：
-
-- **9 维意图解析**：静默分析任务、目标工具、输出格式、约束条件等维度
-- **工具专属路由**：根据目标模型自动匹配最优提示策略（如推理模型不追加 CoT）
-- **6 类故障扫描**：自动检测并修复任务歧义、上下文缺失、格式偏差等常见问题
-- **一键即用**：输出可直接复制粘贴的提示词块，零二次修改
-
-### 三层 Token 优化
-
-> 多轮迭代场景节省 40-60%，每次 SubAgent 唤醒的输入 Token 压缩到最小。
-
-<p align="center">
-  <img src="docs/assets/03-token-optimization-zh.png" alt="WorkflowX 三层 Token 优化" width="960" />
-  <br/>
-  <sub>L1 Section-Level Caching + L2 干叶分离 + L3 记忆图谱快照：多轮迭代节省 40-60%</sub>
-</p>
-
-| 层 | 策略 | 效果 |
-|---|------|------|
-| **L1: Section-Level Caching** | 混合文档严格分区：极少变动的静态区（需求/范围/DoD）置顶命中 LLM Prompt Cache，动态区（评估报告）底部覆写不影响缓存 | 首次后节省 40-60% |
-| **L2: 干叶分离索引** | Markdown 仅保留业务「树干」大纲，实体关联等「树叶」由 MCP Knowledge Graph 独立维护，按需动态检索 | 文档精瘦 · 按需检索 |
-| **L3: 记忆图谱快照** | Hybrid Tree 仅存骨架指针（实体名称、关系概要），完整节点由 MCP server-memory 持久化 | 跨会话共享 · 最小可行上下文 |
-
-### AC 交叉验证
-
-**evaluatorX 不信任 coderX 的自我声明**——它独立读取代码、对照验收标准、输出结构化评估报告（AC 状态表：pass / partial / fail / unevaluable + P0/P1/P2 问题列表 + 修复指令）。
-
-### 代码美学框架 (razorX)
-
-> "路径能否更短？认知负荷能否更低？"
-
-双模式工作：
-- **Review 模式**：逐行扫描，外科手术式优化
-- **Generation 模式**：声明式、stdlib 优先、可组合函数
-
-### 工作流状态可视化 (`/xstatus`)
-
-一条指令生成高保真 HTML 状态报告，基于 `huashu-design` 设计语言——暖白底 + 衬线 display 字体 + rust 橙 accent，反 AI slop。
-
-```bash
-/xstatus                            # 输出到 ./status-report.html 并打开
-/xstatus --output ./reports/today.html  # 输出到指定路径
 ```
+        你 ──提需求──▶  orchestratorX（编排者，唯一文档写入者）
+                              │
+                  ① 把需求写成 Hybrid Tree（结构化需求文档）
+                              │
+                  ②  ┌───────────────────────────────┐
+                     ▼                               │ 不达标，带修复指令重来
+              coderX 编码  ──Change Summary──▶  evaluatorX 独立验收
+                                                     │
+                  ③  达标 ──────────────────────────┘ → 收口为最终版本
+```
+
+- **orchestratorX —— 编排者**：你唯一对话的对象。负责规划需求、拆解任务、派活、记录状态。它是唯一能改需求文档的角色，因此状态一致、不会多方写乱。
+- **coderX —— 程序员**：只读需求并写代码，完成后输出结构化 Change Summary。
+- **evaluatorX —— 评估员**：拿到摘要后独立读取代码，对照验收标准（AC）核验。不达标就产出修复指令打回，达标才放行。
+- **Hybrid Tree —— 需求文档树**：`Parent`（总纲/路由）+ 多个 `Child`（子任务，含各自验收标准）。这是整个流程的事实来源，需求变更只改这里。
+
+> 一句话：**编排者规划，程序员实现，评估员把关，文档树记账。** 每一轮"编码→验收"不通过就自动再来（默认最多 2 轮），通过就收口。
+
+<p align="center">
+  <img src="docs/assets/01-architecture-zh.png" alt="WorkflowX 系统架构" width="880" />
+  <br/>
+  <sub>编排层 + 数据层：orchestratorX 调度子智能体，通过 Hybrid Tree + MCP 记忆图谱实现结构化协作</sub>
+</p>
 
 ---
 
 ## 快速开始
 
-### 环境要求
+**环境要求**：Node.js v18+
 
-- Node.js v18+
-- MCP 工具：`npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking`
+**① 安装 MCP 依赖**（用于跨会话记忆）
 
-### 安装
+```bash
+npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
+```
 
-**方式一：Plugin Marketplace（推荐）**
+**② 安装 WorkflowX**
 
-| 平台 | 安装命令 |
+| 平台 | 安装方式 |
 |------|----------|
 | **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → 搜索 `workflowx` → Install Plugin |
-| **OpenCode** | 在 `opencode.json` 中添加 `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` |
+| **OpenCode** | 在 `opencode.json` 添加 `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` |
+| **手动部署** | 把 `.claude/`（或 `.codex/` `.opencode/`）目录拷进项目根目录，再按 `mcp.json.template` 挂载 MCP 配置 |
 
-**方式二：手动部署**
+**③ 跑第一条指令**
 
 ```bash
-# 1. 复制配置目录到项目根目录
-cp -r .claude/ /your/project/
-
-# 2. 安装 MCP 依赖
-npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
-
-# 3. 在 AI 客户端中挂载 MCP 配置（参考 mcp.json.template）
+xwhole 实现用户登录功能，支持邮箱+密码和 OAuth 两种方式
 ```
+
+> 接下来编排者会反问你几个关键问题、给出方案，你确认后它就自动进入"编码 → 验收 → 迭代"循环。完整示例见下方[一次完整的工作流](#一次完整的工作流)。
 
 ---
 
-## 使用指南
+## 四种模式：用哪个？
 
-### 指令速查
+按"改动范围"从大到小选。**不确定就直接说需求**——框架会自动分析并推荐合适的模式让你确认。
 
-| 指令 | 说明 | 示例 |
-|------|------|------|
-| `xwhole [需求]` | 全仓库级完整工作流（规划 → 编码 → 评估） | `xwhole 实现用户登录模块` |
-| `/xwhole -parallel [需求]` | **并行工作流**，多个子任务同时执行（仅 Claude Code） | `/xwhole -parallel 实现用户、订单、商品三个独立模块` |
-| `xwhole -box demo` | 在沙箱分支 `demo` 中执行，隔离主线 | `xwhole -box auth 重构鉴权逻辑` |
-| `xwhole -N 3` | 限定评估最多迭代 3 轮（默认 2 轮） | `xwhole -N 3 优化数据库查询性能` |jiang
-| `xlocal [需求]` | 局部模块开发，跳过 PRD 规划阶段 | `xlocal 修复订单列表分页 bug` |
-| `xunit [需求]` | 最小单元任务，直接修改，无评估 | `xunit 给 Config 类添加超时配置` |
-| `xstatus` | 生成 HTML 工作流状态报告 | `xstatus` 或 `xstatus --output ./reports/today.html` |
-| `xprompt [文本]` | 仅优化提示词，不触发开发流程 | `xprompt 帮我写一个登录页面的提示词` |
+| 模式 | 一句话场景 | 规划 | 验收迭代 | 触发示例 |
+|------|-----------|------|---------|---------|
+| **`xwhole`** 全局 | 新功能、跨模块重构 | 多轮对话 → 生成 Hybrid Tree | 自动，最多 N 轮 | `xwhole 实现订单中心` |
+| **`xwhole -parallel`** 并行 | 多个互相独立的子任务同时做<br/>*(仅 Claude Code)* | 同 xwhole，自动拆分并行 | 多评估员并行 | `/xwhole -parallel 实现用户、订单、商品三个模块` |
+| **`xlocal`** 局部 | 1–2 个模块内的修改/修 bug | 跳过（自动检测/生成 PRD） | 自动，最多 N 轮 | `xlocal 修复订单列表分页 bug` |
+| **`xunit`** 单元 | 单文件、小改动 | 跳过 | 默认不评估 | `xunit 给 Config 加超时配置` |
 
-> 默认行为：所有开发类请求会自动路由经过 orchestratorX。纯文件读取、配置修改、Git 操作等例外场景可直接执行。
-> OpenAI Codex 不支持项目自定义 slash command，请使用无斜杠的自然语言触发词，例如 `xwhole 实现用户登录模块`。Claude Code / OpenCode 等支持 slash command 的平台可继续使用 `/xwhole`。
+**常用参数**：`-N 3` 限定最多迭代 3 轮（默认 2）｜ `-box demo` 在沙箱分支隔离执行（仅 xwhole）
 
-### 工作流模式
+**其他指令**：
 
-四种模式覆盖从全仓库到单文件的完整粒度，自动路由到 orchestratorX：
+| 指令 | 作用 |
+|------|------|
+| `xstatus` | 一键生成高保真 HTML 工作流状态报告 |
+| `xprompt [文本]` | 只优化提示词，不触发开发流程 |
 
-| | `xwhole` 全局模式 | `/xwhole -parallel` 并行模式 | `xlocal` 局部模式 | `xunit` 单元模式 |
-|---|---|---|---|---|
-| **适用场景** | 新功能、跨模块重构 | 多个独立子任务并行执行 | 1-2 个模块内的修改 | 单文件修复、小改动 |
-| **平台支持** | 全平台 | **仅 Claude Code** | 全平台 | 全平台 |
-| **PRD 规划** | 多轮对话 → Hybrid Tree | 同 xwhole → 自动拆分并行任务 | 跳过 | 跳过 |
-| **评估迭代** | evaluatorX 自动，最多 N 轮 | 多 evaluator-teammate 并行 | evaluatorX，最多 N 轮 | 仅明确要求时 |
-| **需求发现** | Module 08 (苏格拉底 + 主动质疑) | 同 xwhole | Module 08 (轻量) | 跳过 |
-| **Worktree 隔离** | ✅ | ✅ | ✅ | ❌ |
+> **触发语法差异**：Claude Code 与 OpenCode 用斜杠命令（`/xwhole`）；**OpenAI Codex 用自然语言前缀**（消息开头直接写 `xwhole`，无斜杠）。`-parallel` 并行模式**仅 Claude Code 支持**。
 
-> `/xwhole -parallel` 依赖 Claude Code 的实验性 Agent Teams 功能（`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`）。
+---
 
-### 实战示例：一次完整的 `xwhole` 工作流
+## 一次完整的工作流
+
+以 `xwhole 实现用户登录功能` 为例，你会经历这 6 步：
 
 ```
-① 发起请求
-   xwhole 实现用户登录功能，支持邮箱+密码和 OAuth 两种方式
+①  你发起需求
+    xwhole 实现用户登录功能，支持邮箱+密码和 OAuth 两种方式
 
-② orchestratorX 自动路由到 whole 模式
-   → 苏格拉底式追问澄清需求边界（Module 08）
-   → 主动质疑：OAuth token 刷新策略？并发登录限制？
-   → 多轮规划对话，生成 Hybrid Tree
-   → 您审阅文档，确认需求无误后回复"确认"
+②  编排者规划（Phase 1：需求发现）
+    → 苏格拉底式追问：OAuth token 如何刷新？是否限制并发登录？
+    → 自主探索代码库，给出 2-3 个方案及取舍
+    → 你审阅后回复"确认" → 生成 Hybrid Tree
 
-③ promptMasterX 优化执行指令
-   → 检测 37 种反模式，输出精确的 coderX 执行提示词
+③  指令优化（promptMasterX）
+    → 自动检测反模式，产出精确无歧义的执行指令
 
-④ coderX 编码实现
-   → 输出 Change Summary Payload
+④  coderX 编码
+    → 实现功能，输出 Change Summary（改动摘要）
 
-⑤ evaluatorX 独立审计（AC 交叉验证）
-   → 输出 Evaluation Result Payload（AC 状态表 + 问题列表）
+⑤  evaluatorX 独立验收
+    → 对照每条验收标准核验，输出 AC 状态表 + 问题清单
+    → 不达标 → 带修复指令打回 ④，再来一轮
 
-⑥ 迭代完成
-   → evaluatorX 确认 PASS，Hybrid Tree 收口为最终版本
+⑥  收口
+    → 评估员确认 PASS，Hybrid Tree 落定为最终版本
 ```
+
+整个过程中你只需做两件事：**回答编排者的澄清提问**，以及**在关键节点确认方案**。其余协调、派活、验收、记账全部自动完成。
+
+---
+
+## 深入设计
+
+> 上面已经够你上手了。如果想了解"为什么它更省、更准、更可控"，展开下面的细节。
+
+<details>
+<summary><b>Hybrid Tree —— 结构化需求文档树</b></summary>
+
+<br/>
+
+所有规划产物都落成 Hybrid Tree，而不是散落在对话里：
+
+- **Parent（总纲层）**：全局规范、NFR、DoD、路由表、全局文件索引、知识图谱概要。
+- **Child（需求层）**：每个子模块一份，含本分支的**验收标准（AC）**和私有文件索引。
+- **MECE 分工**：各 Child 互斥且穷尽，无遗漏、无重叠，每个任务都有明确负责人和验收标准。
+- **依赖自动排队**：Child 间依赖记录在 Parent，核心循环用就绪队列（Ready Queue）按依赖顺序调度，依赖未满足的任务自动等待。
+- **需求变更可追踪**：改需求只改文档树对应 Section，受影响的 Child 自动标记"需重新评估"并重入循环。
+
+</details>
+
+<details>
+<summary><b>AC 交叉验证 —— 评估员不信任程序员</b></summary>
+
+<br/>
+
+evaluatorX 是一道**独立**的质量门，它不采信 coderX 的自我声明，而是：
+
+1. 独立读取实际代码；
+2. 逐条对照 Child 的验收标准（AC）；
+3. 输出结构化评估报告：**AC 状态表**（pass / partial / fail / unevaluable）+ **P0/P1/P2 问题清单** + **修复指令**。
+
+只有所有 AC 为 pass 才放行；否则修复指令回流给 coderX 进入下一轮（默认最多 2 轮，可用 `-N` 调整）。配合**独立迭代计数器 + 早退机制**，避免无效消耗。
+
+</details>
+
+<details>
+<summary><b>三层 Token 优化 —— 多轮迭代省 40–60%</b></summary>
+
+<br/>
+
+<p align="center">
+  <img src="docs/assets/03-token-optimization-zh.png" alt="WorkflowX 三层 Token 优化" width="880" />
+</p>
+
+| 层 | 策略 | 效果 |
+|---|------|------|
+| **L1 分区缓存** | 混合文档严格分区：极少变动的静态区（需求/范围/DoD）置顶，命中 LLM Prompt Cache；动态区（评估报告）置底覆写，不影响缓存 | 首轮后省 40–60% |
+| **L2 干叶分离** | Markdown 只留业务"树干"大纲，实体关联等"树叶"交给 MCP 知识图谱独立维护、按需检索 | 文档精瘦 |
+| **L3 记忆快照** | Hybrid Tree 只存骨架指针（实体名、关系概要），完整节点由 MCP server-memory 持久化 | 跨会话共享 · 最小上下文 |
+
+</details>
+
+<details>
+<summary><b>苏格拉底式需求发现 —— 在规划阶段暴露问题</b></summary>
+
+<br/>
+
+xwhole 的 Phase 1 不急着写代码，而是先把需求问清楚：
+
+- **加权清晰度评估**：6 维打分（功能范围 25% / 技术约束 20% / 目标用户 15% / 边界条件 15% / 验收标准 15% / 非功能需求 10%）。
+- **一次一题、先探索再发问**：每个问题都基于上一个回答，且先自主搜索代码库再提问——以"我发现了 X"而非"你能告诉我 X 吗"的姿态推进。
+- **主动质疑**：即使需求看起来很清晰，也强制分析 6 类风险——矛盾、边界、技术风险、隐含假设、跨模块冲突、遗漏的非功能需求。
+
+</details>
+
+<details>
+<summary><b>智能路由系统 —— 每个请求先经状态门控</b></summary>
+
+<br/>
+
+WorkflowX 内置四层路由，所有输入先读 `.hybrid/status.json` 再分发：
+
+| 路由 | 触发条件 | 处理方式 |
+|------|----------|----------|
+| **Route 0** | 活跃工作流（status=xwhole/xlocal/xunit） | 输入视为当前工作流一部分，支持需求增量变更 |
+| **Route 1** | 探索/只读（查看/分析/搜索/git/配置） | 直接处理，不派子智能体、不改代码 |
+| **Route 2** | 编码意图 + status=wait | 5 维度分析 → 推荐模式 → **弹窗必须确认** → 启动 |
+| **Route 3** | 显式命令（`/x*` 或 `x*`） | 立即执行，覆盖现有工作流，无需确认 |
+
+**状态机**：`wait`（空闲）｜`normal`（Route 1 执行中）｜`xwhole`/`xlocal`/`xunit`（对应工作流进行中）。状态由 Main Agent 唯一写入 `.hybrid/status.json`，**会话中断重启后可自动恢复**。
+
+</details>
+
+<details>
+<summary><b>其他内置能力</b></summary>
+
+<br/>
+
+- **promptMasterX（Prompt 优化引擎）**：内置 `prompt-master` 技能，为 20+ 种 AI 工具生成生产级提示词，包括 9 维意图解析、工具专属路由、6 类故障扫描和一键可用输出。
+- **razorX（代码美学框架）**：以"路径能否更短？认知负荷能否更低？"为准绳，Review 模式逐行扫描，Generation 模式声明式优先。
+- **xstatus（状态可视化）**：一条指令生成高保真 HTML 工作流状态报告，基于 `huashu-design` 的暖白底、衬线字体和 rust 橙设计语言。
+  ```bash
+  xstatus                                 # 输出到 ./status-report.html 并打开
+  xstatus --output ./reports/today.html   # 输出到指定路径
+  ```
+
+</details>
+
+---
+
+## 平台支持
+
+三套配置工作流逻辑**完全一致**，仅触发语法与并行能力因平台而异。除 xunit 外，所有模式自动启用 Worktree 隔离。
+
+| 平台 | 配置目录 | 触发方式 | 并行模式 |
+|------|----------|----------|----------|
+| **Claude Code** | `.claude/` | 斜杠命令 `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | 支持 `/xwhole -parallel`（Agent Teams） |
+| **OpenAI Codex** | `.codex/` | **自然语言前缀** `xwhole` `xlocal` …（无斜杠） | 不支持 |
+| **OpenCode** | `.opencode/` | 斜杠命令 `/xwhole` `/xlocal` … | 不支持 |
 
 ---
 
 ## 框架对比
 
-> 完整对比分析（含架构、Token 消耗、AI 痛点解决、评分明细）请参阅 [comparison-report.md](docs/comparison-report.md)。
+> 完整对比（架构、Token 消耗、AI 痛点解决、评分明细）见 [comparison-report.md](docs/comparison-report.md)。
 
-### 加权评分（满分 100）
+<table>
+<tr>
+<td width="50%">
+
+**WorkflowX 的 6 项独有能力**
+- Hybrid Tree 需求追踪
+- AC 交叉验证
+- Prompt 优化引擎
+- 跨分支违规检测
+- 加权苏格拉底式需求发现
+- 代码美学框架
+
+</td>
+<td width="50%">
+
+**加权总分（满分 100）**
+
+| 框架 | 总分 |
+|------|:---:|
+| **WorkflowX** | **83** |
+| Superpowers | 80 |
+| OMC | 73 |
+
+</td>
+</tr>
+</table>
+
+<details>
+<summary>展开详细评分与能力对比</summary>
+
+<br/>
 
 | 大类 (权重) | WorkflowX | Superpowers | OMC |
 |-------------|:---------:|:-----------:|:---:|
@@ -250,97 +324,49 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | 平台与生态 (20%) | 6.40 | **9.60** | 6.60 |
 | **加权总分** | **83** | **80** | **73** |
 
-### 核心能力对比
-
 | 能力 | WorkflowX | Superpowers | OMC |
 |------|:---------:|:-----------:|:---:|
-| **Hybrid Tree 需求追踪** | ✅ 独有 | ❌ | ❌ |
-| **AC 交叉验证** | ✅ 独有 | ❌ | ❌ |
-| **Prompt 优化引擎** | ✅ 独有 | ❌ | ❌ |
-| **跨分支违规检测** | ✅ 独有 | ❌ | ❌ |
-| **苏格拉底式需求发现** | ✅ 加权清晰度 + 主动质疑 | ✅ 基础 | ✅ 基础 |
-| **代码美学框架** | ✅ 独有 | ❌ | ❌ |
-| **Token 增量优化** | ✅ 系统化 | 部分 | 部分 |
-| **TDD 铁律** | ❌ | ✅ 最严格 | 部分 |
-| **系统化调试** | ❌ | ✅ 四阶段法 | 部分 |
-| **智能模型路由** | ❌ | ❌ | ✅ |
-| **多 AI 交叉验证** | ❌ | ❌ | ✅ |
-| **安全审查 (OWASP)** | 部分 | ❌ | ✅ 专业 |
-| **多平台原生** | 4 平台 | 8 平台 | 2 平台 |
+| Hybrid Tree 需求追踪 | 独有 | 不支持 | 不支持 |
+| AC 交叉验证 | 独有 | 不支持 | 不支持 |
+| Prompt 优化引擎 | 独有 | 不支持 | 不支持 |
+| 跨分支违规检测 | 独有 | 不支持 | 不支持 |
+| 苏格拉底式需求发现 | 加权 + 主动质疑 | 基础 | 基础 |
+| 代码美学框架 | 独有 | 不支持 | 不支持 |
+| Token 增量优化 | 系统化 | 部分 | 部分 |
+| TDD 铁律 | 不支持 | 最严格 | 部分 |
+| 系统化调试 | 不支持 | 四阶段法 | 部分 |
+| 智能模型路由 | 不支持 | 不支持 | 支持 |
+| 多 AI 交叉验证 | 不支持 | 不支持 | 支持 |
+| 安全审查 (OWASP) | 部分 | 不支持 | 专业 |
+| 多平台原生 | 4 平台 | 8 平台 | 2 平台 |
 
 <p align="center">
-  <img src="docs/assets/05-capabilities-zh.png" alt="WorkflowX 独有能力" width="960" />
-  <br/>
-  <sub>6 项独有能力：Hybrid Tree / AC 交叉验证 / Prompt 优化 / 跨分支检测 / 苏格拉底发现 / 代码美学</sub>
+  <img src="docs/assets/05-capabilities-zh.png" alt="WorkflowX 独有能力" width="880" />
 </p>
 
-### 为什么选择 WorkflowX？
-
-<table>
-<tr>
-<td width="50%">
-
-**结构化最强**
-Hybrid Tree 将需求文档化、结构化、可追踪，而非散落在对话中。Parent + Child 的 MECE 结构确保每个任务都有明确的验收标准。
-
-**质量控制最严**
-evaluatorX 通过 AC 交叉验证独立核实每个验收标准，不信任 coderX 的自我声明。跨分支违规检测防止多分支并行冲突。
-
-</td>
-<td width="50%">
-
-**Token 最省**
-Section 级缓存 + 增量上下文传递 + prompt 压缩，多轮迭代场景节省 40-60%。独立迭代计数器 + 早退机制避免无效消耗。
-
-**需求发现最深**
-加权 6 维清晰度评估 + 苏格拉底式追问 + 主动质疑机制（矛盾/边界/风险/假设/冲突/遗漏），在规划阶段而非编码后暴露问题。
-
-</td>
-</tr>
-</table>
-
----
-
-## 平台支持
-
-| 平台 | 配置目录 | 支持模式 | 说明 |
-|------|----------|----------|------|
-| **Claude Code** | `.claude/` | 全部 4 种模式 | agents + skills，原生 SubAgent + Agent Teams（并行） |
-| **OpenAI Codex** | `.codex/` | 3 种模式 | agents (`.toml`) + skills，自然语言模式别名 |
-| **OpenCode** | `.opencode/` | 3 种模式 | agents + commands + skills，Task tool 委派 |
-
-> 三套配置的工作流逻辑完全一致，仅工具调用语法因平台而异。所有模式均自动启用 Worktree 隔离（xunit 除外）。
+</details>
 
 ---
 
 ## 关于
 
-这是真实投入各个社区使用的一个开源实验性项目，旨在探索多智能体协同开发的最佳实践与架构设计。
+这是一个真实投入各社区使用的开源实验性项目，旨在探索多智能体协同开发的最佳实践与架构设计。
 
-欢迎任何形式的讨论、建议与贡献！
-如何贡献：Fork 本仓库，提交 Pull Request，或直接在 Issues 中提出你的想法。
+欢迎任何形式的讨论、建议与贡献！Fork 本仓库提交 Pull Request，或在 Issues 中分享你的想法。
 
-公众号：[TreeX-AI]
+公众号：**TreeX-AI**　·　如果对你有帮助，欢迎 Star，让更多人一起探索 AI 开发的未来。
 
-如果开源对你有帮助，欢迎点亮 ⭐，让更多人加入一起探索 AI 开发的未来！
-
----
-
-## 友情链接
-
-- [Linux.Do](https://linux.do/) — 致力于为技术爱好者和专业人士提供高质量的讨论和资源分享环境
+**友情链接**：[Linux.Do](https://linux.do/) —— 为技术爱好者和专业人士提供高质量讨论与资源分享的社区。
 
 ---
 
 <div align="center">
 
-[MIT License](./LICENSE) · 自由使用 / 修改 / 再分发
-
-Made by [@TreeX-X](https://github.com/TreeX-X)
+[MIT License](./LICENSE) · 自由使用 / 修改 / 再分发　·　Made by [@TreeX-X](https://github.com/TreeX-X)
 
 </div>
 
-## ⭐ 星级历史
+## 星级历史
 
 <a href="https://www.star-history.com/#TreeX-X/workflowX&Date">
  <picture>

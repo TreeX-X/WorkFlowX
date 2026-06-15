@@ -2,9 +2,23 @@
 
 > orchestratorX loads this module after evaluatorX outputs the Evaluation Result Payload to perform document updates.
 
+## Timestamp Generation
+
+**Mandatory**: All timestamps must be real, generated at execution time. Use Bash to get current UTC time:
+
+```bash
+date -u +%Y-%m-%dT%H:%M:%SZ
+```
+
+Store the result in a variable and reuse across all update steps. **Never use placeholder or hardcoded timestamps.**
+
 ## Execution Flow (Incremental)
 
 After evaluatorX outputs the Evaluation Result Payload, orchestratorX reads and executes:
+
+### Step 0: Generate Real Timestamp
+
+Run `date -u +%Y-%m-%dT%H:%M:%SZ` to get current UTC ISO timestamp. Use this value for ALL timestamp fields in Steps 1-6.
 
 ### Step 1: Write to Child Section 9 (Incremental)
 
@@ -17,28 +31,48 @@ After evaluatorX outputs the Evaluation Result Payload, orchestratorX reads and 
 
 **Optimization**: Use Edit tool for targeted updates instead of full file rewrite.
 
-### Step 2: Update Parent Section 7 Routing Table (Incremental)
+### Step 2: Update Child Section 7 AC Checkboxes
+
+Read Child Section 7 AC list. For each AC that passed (Status = Pass in Evaluation Result 9.2):
+- Replace `- [ ] AC-N:` with `- [x] AC-N:`
+
+This ensures the AC checklist reflects actual evaluation results.
+
+### Step 3: Update Child Document Status
+
+Read the evaluation conclusion from Step 1:
+- If **PASS**: Update Child header from `**Document Status**: Draft` to `**Document Status**: Completed`
+- If **Needs Fix**: Update Child header to `**Document Status**: In Progress`
+
+### Step 4: Update Parent Section 7 Routing Table (Incremental)
 
 **Only update current Child's row** in Parent Section 7:
 - Locate row by Child identifier
 - Update only changed columns:
   - `Status` column: PASS / Needs Fix / In Progress
-  - `Last Eval` column: current ISO timestamp
+  - `Last Eval` column: the real timestamp from Step 0
   - `AC Count` column: update only if AC count changed
 
 **Optimization**: Use Edit tool to replace only the target row, not the entire table.
 
-### Step 3: Update Parent Section 9 Aggregation Table (Incremental)
+### Step 5: Update Parent Section 9 Aggregation Table (Incremental)
 
 **Only update current Child's row** in Parent Section 9:
 - `Eval Result`: PASS / Needs Fix
 - `P0 Count`: number of P0 issues in Issue List
 - `P1 Count`: number of P1 issues in Issue List
-- `Last Eval`: current ISO timestamp
+- `Last Eval`: the real timestamp from Step 0
 
 **Recalculate aggregated metrics** (Section 9.1) only after all Children processed or on explicit request.
 
-### Step 4: Scope of Non-Modification
+### Step 6: Update Parent Document Status
+
+After updating Section 9.1, check aggregated metrics:
+- If **all Children are PASS**: Update Parent header from `**Document Status**: Draft` to `**Document Status**: Completed`
+- If **any Children are In Progress or Needs Fix**: Update Parent header to `**Document Status**: In Progress`
+- If **no Children started**: Leave as `**Document Status**: Draft`
+
+### Step 7: Scope of Non-Modification
 
 **Never modify** Parent Sections 0-6, 8.1, 8.2, 8.3. These areas are managed by other processes (planning, requirement change).
 
@@ -57,7 +91,7 @@ After reading the Evaluation Result Payload, decide next steps based on the `Eva
 | **Needs Fix** | child_iterations[current].remaining <= 0 | Stop iteration, report to human |
 | **Blocking Dependencies** | Present | Update in_degree map, enqueue if resolved |
 
-### AC-Level Tracking (NEW)
+### AC-Level Tracking (Optimized)
 
 Instead of treating Child as monolithic, track AC status individually:
 
@@ -105,12 +139,6 @@ Focus on AC-2 P0 issue first:
 
 After P0 fix, address AC-3:
 2. [file:line] — [fix action] (Priority: P1)
-
-Please load the codex-spec-implementation skill and fix the above issues. After fixing, output the Change Summary Payload.
-```
-The following P0/P1 issues need to be fixed:
-1. [file:line] — [fix action]
-2. [file:line] — [fix action]
 
 Please load the codex-spec-implementation skill and fix the above issues. After fixing, output the Change Summary Payload.
 ```
