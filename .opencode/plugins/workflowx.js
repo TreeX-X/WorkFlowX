@@ -13,6 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SKILLS_DIR = path.resolve(__dirname, '..', 'skills');
 const AGENTS_DIR = path.resolve(__dirname, '..', 'agents');
 const COMMANDS_DIR = path.resolve(__dirname, '..', 'commands');
+const MCP_CONFIG_PATH = path.resolve(__dirname, '..', 'mcp.json');
 
 export default {
   name: 'workflowx',
@@ -36,6 +37,18 @@ export default {
     // Register commands directory
     if (fs.existsSync(COMMANDS_DIR)) {
       ctx.registerCommandsDir(COMMANDS_DIR);
+    }
+
+    // Register MCP servers from .opencode/mcp.json when runtime exposes a registrar
+    if (fs.existsSync(MCP_CONFIG_PATH) && typeof ctx.registerMcpServers === 'function') {
+      try {
+        const mcpConfig = JSON.parse(fs.readFileSync(MCP_CONFIG_PATH, 'utf8'));
+        if (mcpConfig.mcpServers) {
+          ctx.registerMcpServers(mcpConfig.mcpServers);
+        }
+      } catch (err) {
+        // Non-fatal: OpenCode may load mcp.json itself or not support runtime registration.
+      }
     }
   },
 

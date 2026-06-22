@@ -17,6 +17,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
 | 7 | Status Report | `xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
 | 8 | Requirements Discovery & Proactive Challenge | Before Planning Phase dialogue (xwhole) or before PRD detection (xlocal) | `modules/08-requirements-discovery.md` |
+| 10 | Memory Hygiene | End of planning, before each evaluation, before PASS/FAIL | `modules/10-memory-hygiene.md` |
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -46,9 +47,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 const PARAM_PATTERNS = {
   mode: /^\/?(xwhole|xlocal|xunit|xstatus|xprompt)\b/,
   N: /-N\s+(\d+)/,
-  box: /-box\s+(\S+)/,
-  team: /-team\s+(\S+)/,
-  parallel: /-parallel\b/
+  box: /-box\s+(\S+)/
 };
 ```
 
@@ -76,8 +75,6 @@ const sessionParams = {
   mode: 'xwhole',           // xwhole | xlocal | xunit
   iteration_limit: 2,       // from -N, default 2
   sandbox_branch: null,     // from -box, null if not provided
-  team_name: null,          // from -team, null if not provided
-  is_parallel: false,       // -parallel flag
   requirement: '',          // remaining text after param extraction
   parsed_at: ISO_TIMESTAMP  // for cache invalidation
 };
@@ -222,6 +219,8 @@ coderX and evaluatorX receive (Parent, Child) paths, then read according to the 
 | Child | 8.1 | Private file index | coderX, evaluatorX | **Session Cache**: Read once, invalidate on file change. |
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
+
+> **Context hand-off rule (Optimized)**: In the **first round**, pass full Parent + Child documents to coderX/evaluatorX. In subsequent rounds, prefer a lightweight trunk: pass only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions). Tell the subagent to call `mcp__server-memory__open_nodes` with the exact entity names from §8.2 to pull node details on demand; only fall back to `mcp__server-memory__search_nodes` when an exact name is missing. This mirrors the savings measured in TEST-MEMORY-001 (~13,506 chars / ~3,377 tokens for full context vs ~1,369 chars / ~342 tokens for trunk + on-demand retrieval).
 
 ### Cache Implementation
 

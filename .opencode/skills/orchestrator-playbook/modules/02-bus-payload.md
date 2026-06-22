@@ -134,17 +134,18 @@ Full context: Parent §0-6, §7, §8.1, §8.2, §8.3 + Child §7, §8.1
 ```
 
 ### Subsequent Iterations (Same Child)
+
 ```
 Incremental context:
-- Parent §0-6: [Cached, see Parent document §0-6]
-- Parent §7: [Cached, see Parent document §7]
-- Parent §8.1: [Cached, see Parent document §8.1]
-- Parent §8.2: [Cached, see Parent document §8.2]
-- Parent §8.3: [Cached, see Parent document §8.3]
-- Child §7: [Full content - may have changed]
-- Child §8.1: [Full content - may have changed]
+- Parent §8.2 Memory Pointers: include the trunk only (entity names and relation summaries)
+- Child §7: [Full content — branch AC, may have changed]
+- Child §9: [Full content — prior evaluation report / fix instructions]
 - Change Summary: [Current iteration's changes]
 - Fix Instructions: [From last evaluation, if any]
 ```
 
-**Expected Savings**: 40-60% token reduction in multi-iteration scenarios.
+> Deep node facts are **not** included in the prompt. The subagent reads the exact entity names from Parent §8.2 and retrieves detailed facts on demand by calling `mcp__server-memory__open_nodes(names=[...])`. Only fall back to `mcp__server-memory__search_nodes` when an exact name is missing.
+>
+> **Evidence**: In diagnostic TEST-MEMORY-001, full Parent+Child context was ~13,506 chars (~3,377 tokens), while the §8.2 trunk plus on-demand `open_nodes` retrieval was ~1,369 chars (~342 tokens) — roughly a 90% prompt-size reduction.
+
+**Expected Savings**: ~90% token reduction in multi-iteration scenarios when using trunk + on-demand `open_nodes`.

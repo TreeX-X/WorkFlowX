@@ -11,6 +11,17 @@ permission:
   task: deny
   skill: allow
   todowrite: allow
+tools:
+  - mcp__server-memory__create_entities
+  - mcp__server-memory__create_relations
+  - mcp__server-memory__read_graph
+  - mcp__server-memory__open_nodes
+  - mcp__server-memory__search_nodes
+  - mcp__server-memory__add_observations
+  - mcp__server-memory__delete_observations
+  - mcp__server-memory__delete_entities
+  - mcp__server-memory__delete_relations
+  - mcp__server-sequential-thinking__sequentialthinking
 ---
 
 # coderX Agent
