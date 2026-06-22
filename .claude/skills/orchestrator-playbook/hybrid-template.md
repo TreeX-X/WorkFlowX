@@ -65,6 +65,8 @@
 - [ ] All code must pass Linter static checks with no warnings or errors.
 - [ ] No `TODO` or `FIXME` remains in core logic code.
 - [ ] If `mcp/server-memory` is enabled, corresponding session memory has been serialized and written back to `8.2 Memory Pointers`.
+  - Memory observations have been reconciled against committed file truth.
+  - Stale, contradictory, or diagnostic-only entities/relations have been updated or removed.
 - [ ] The `9. Evaluation Report` section in each Child has been reserved for the evaluation agent to overwrite.
 - [ ] [Other engineering or business-level completion criteria]
 
@@ -99,7 +101,8 @@
 
 ### 8.2 Memory Pointers (Root-Level Knowledge Graph)
 > **Scope**: Project-level knowledge graph. This is the **sole location** for the knowledge graph — Child documents do not contain their own knowledge graph.
-> **Note**: Markdown only retains the "trunk" (high-level skeleton/outline) of knowledge nodes. Leaf nodes are stored in `mcp/server-memory`.
+> **Note**: Markdown only retains the "trunk" (high-level skeleton/outline) of knowledge nodes. Leaf nodes are stored in `mcp/server-memory`. On each access, use the exact entity names from this trunk in `mcp__server-memory__open_nodes`; do not rely on broad `search_nodes` patterns unless an exact name is missing.
+> Diagnostic, test, sandbox or throw-away entities should be prefixed with `TEST_` or `DIAG_` and should be deleted once validation is complete to avoid polluting the long-term project knowledge graph.
 - **Root Nodes**: [Project-level entity names/IDs]
 - **Root Relations**: [Top-level architectural relationships]
 

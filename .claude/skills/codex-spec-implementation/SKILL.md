@@ -29,7 +29,11 @@ coderX receives (Parent, Child) paths, reads corresponding Sections per `.claude
 
 ### Knowledge Graph
 
-After reading `8.2` for node outlines, **must call MCP** (`mcp_memory_open_nodes` / `mcp_memory_search_nodes`) to get detailed entities. Markdown only stores outlines; details live in MCP nodes.
+1. Read Parent §8.2 to collect the exact entity names and relation summaries (the "trunk").
+2. Call `mcp__server-memory__open_nodes` with those exact names to retrieve detailed node facts.
+3. Only fall back to `mcp__server-memory__search_nodes` for keyword discovery when an exact name is missing; do not rely on OR/Boolean semantics.
+
+> **Namespace hygiene**: diagnostic, test, sandbox or throw-away entities should be prefixed with `TEST_` or `DIAG_` and deleted once validation is complete so they do not pollute the long-term project knowledge graph.
 
 ## Execution Process
 
@@ -42,9 +46,13 @@ After reading `8.2` for node outlines, **must call MCP** (`mcp_memory_open_nodes
 ### Step 2: Context-Oriented Loading (MCP Deep Retrieval)
 
 1. First read the `8.1` main index to confirm the involved core files, modules, and entry points.
-2. Read `8.2` to obtain the core architecture graph outline and referenced nodes.
-3. **Call MCP Graph Layer Retrieval**: Based on the obtained outline pointers, use `mcp_memory_open_nodes` or related MCP tools to accurately retrieve specific code logic relationships and constraints relevant to your currently focused module, using them as real context.
+2. Read `8.2` to obtain exact entity names and relation pointers (the trunk only).
+3. **Call MCP Graph Layer Retrieval**: Use `mcp__server-memory__open_nodes` with the exact names from §8.2 to pull detailed node facts relevant to your focused module. Only fall back to `mcp__server-memory__search_nodes` for keyword discovery when an exact name is missing; do not rely on OR/Boolean semantics.
 4. Then read the `8.3` incremental index, prioritizing the loading of context related to this round's changes.
+
+### Memory vs. Code Truth
+
+If a memory observation contradicts the current file content, `git diff`, or actual code, the code/file truth wins. The agent must flag the discrepancy in the Change Summary Payload or Evaluation Report and must update or delete the stale memory observation using `mcp__server-memory__add_observations` or `mcp__server-memory__delete_observations`.
 
 ### Step 3: Audit Feedback Handling (Combined with Bus Communication, Conditional Execution)
 

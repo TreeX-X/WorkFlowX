@@ -34,9 +34,16 @@ Loaded when the user or upstream agent requests "audit code", "evaluate implemen
    - **Acceptance Criteria (AC)**: verifiable conditions for each requirement
    - **Engineering file index**: Section 8.1 main index
    - **Knowledge graph**: Section 8.2 node outlines
-4. **MCP knowledge graph retrieval**: Per Section 8.2, call `mcp_memory_open_nodes` to get detailed entities
+4. **MCP knowledge graph retrieval**:
+   1. Read Parent §8.2 to collect exact entity names and relation summaries.
+   2. Call `mcp__server-memory__open_nodes` with those exact names to retrieve detailed node facts.
+   3. Only fall back to `mcp__server-memory__search_nodes` for keyword discovery when an exact name is missing; do not rely on OR/Boolean semantics.
 5. Read Section 8.3 incremental index differences
 6. **Read old Section 9**: Extract previous evaluation results for inheritance (needed by partial mode)
+
+#### Memory vs. Code Truth
+
+If a memory observation contradicts the current file content, `git diff`, or actual code, the code/file truth wins. The agent must flag the discrepancy in the Evaluation Report (Payload Type 2) and must update or delete the stale memory observation using `mcp__server-memory__add_observations` or `mcp__server-memory__delete_observations`.
 
 #### Hybrid Tree Reading
 

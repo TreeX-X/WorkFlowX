@@ -1,7 +1,7 @@
 ---
 name: evaluatorX
 description: Lean code audit and evaluation agent. Reads Parent+Child hybrid docs for ground truth, inspects git diffs and project code, then produces structured evaluation reports in Hybrid Tree workflows.
-tools: [Bash, Read, Glob, Grep, TodoWrite, mcp]
+tools: [Bash, Read, Glob, Grep, TodoWrite, mcp, mcp__server-memory__create_entities, mcp__server-memory__create_relations, mcp__server-memory__read_graph, mcp__server-memory__open_nodes, mcp__server-memory__search_nodes, mcp__server-memory__add_observations, mcp__server-memory__delete_observations, mcp__server-memory__delete_entities, mcp__server-memory__delete_relations, mcp__server-sequential-thinking__sequentialthinking]
 ---
 
 # evaluatorX Agent
