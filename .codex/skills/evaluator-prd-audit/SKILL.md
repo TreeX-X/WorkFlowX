@@ -62,7 +62,7 @@ Per `orchestrator-playbook/SKILL.md` Hybrid Tree Section Map. evaluatorX-specifi
 |------|-----------|---------|----------|
 | **Full** | `full` | First evaluation / prior Needs Fix / no history 9.* / Payload lacks AC list | Evaluate all ACs in Child Section 7 |
 | **Partial** | `partial` | Prior PASS and Payload contains non-empty AC list | Evaluate only declared ACs, inherit rest |
-| **Prompt-Based** | `prompt-based` | No PRD/hybrid document | Evaluate original user prompt intent |
+| **Prompt-Based** | `prompt-based` | No PRD/hybrid document [DEPRECATED for xlocal — always has Hybrid Tree] | Evaluate original user prompt intent |
 
 **Decision rules**:
 1. No hybrid document -> `prompt-based`

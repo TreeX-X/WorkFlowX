@@ -238,9 +238,12 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 - Scope: Requirements relatively clear, limited to a local part of the project.
 - **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> Core Iteration Loop.
 - **PRD detection (priority order)**:
-  1. `.hybrid/[feature]/` directory exists with Hybrid Tree → use directly
-  2. $ARGUMENTS contains valid file path → read PRD, wrap into Hybrid Tree
-  3. No PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
+  1. Explicit Hybrid Tree path in `$ARGUMENTS` → validate Parent + Child, use directly
+  2. No explicit path → scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent §7 Child scopes, Child §7 AC, and §8.1 file indexes
+  3. If exactly one related Hybrid Tree matches → reuse and maintain that tree; route to the matching Child, or create a new Child through Requirement Change Handling when no Child scope matches
+  4. If multiple plausible Hybrid Trees match → present candidates with match reasons and ask the user to choose; do not auto-generate a duplicate tree
+  5. If `$ARGUMENTS` contains a valid non-Hybrid PRD file path → read PRD, wrap into Hybrid Tree
+  6. No related Hybrid Tree or PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
 - **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
 - **Status transitions (use templates above)**:
   1. env_init → write `env_init → core_loop (xlocal)` template (skip phase1/phase2)
@@ -579,9 +582,9 @@ child_iterations = {
 **Dispatch Format**:
 - Pass `Parent: [path]` + `Child: [path]` (all modes use Hybrid Tree)
 
-## Minimal Hybrid Tree Auto-Generation (Mode B, No PRD)
+## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 
-> When Mode B has no existing PRD or Hybrid Tree, orchestratorX auto-generates a minimal Hybrid Tree before entering the Core Iteration Loop. This replaces the former Simple Iteration Loop path.
+> When Mode B has no explicit PRD and no related existing Hybrid Tree in `.hybrid/`, orchestratorX auto-generates a minimal Hybrid Tree before entering the Core Iteration Loop. This replaces the former Simple Iteration Loop path.
 
 **orchestratorX executes** (sole document writer):
 
@@ -614,6 +617,18 @@ child_iterations = {
 Hybrid Tree exists when:
 - `.hybrid/[feature]/` directory contains multiple `*-hybrid.md` files
 - File marked `Document Type: Parent` contains Section 7 routing table
+
+For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
+1. Enumerate `.hybrid/*/` directories, ignoring `.hybrid/status.json`, locks, and non-directory files
+2. Identify Parent candidates by `Document Type: Parent` plus a Section 7 routing table
+3. Score relevance against the current requirement using:
+   - directory name and Parent title
+   - Parent §1 overview, §3 boundaries/scope, and §6 scope
+   - Parent §7 Child scope rows
+   - Child §7 acceptance criteria
+   - Parent/Child §8.1 file indexes
+4. Treat a candidate as reusable only when the requirement clearly overlaps an existing Parent scope or file index
+5. If one candidate matches, reuse and maintain it; if several match, ask the user to choose; if none match, continue to PRD file detection or minimal auto-generation
 
 ### Routing Logic
 

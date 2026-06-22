@@ -16,8 +16,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
 | 7 | Status Report | `xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
-| 8 | Requirements Discovery & Proactive Challenge | Before Planning Phase dialogue (xwhole) or before PRD detection (xlocal) | `modules/08-requirements-discovery.md` |
-| 10 | Memory Hygiene | End of planning, before each evaluation, before PASS/FAIL | `modules/10-memory-hygiene.md` |
+| 8 | Requirements Discovery & Proactive Challenge | xwhole planning only | `modules/08-requirements-discovery.md` |
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -47,7 +46,9 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 const PARAM_PATTERNS = {
   mode: /^\/?(xwhole|xlocal|xunit|xstatus|xprompt)\b/,
   N: /-N\s+(\d+)/,
-  box: /-box\s+(\S+)/
+  box: /-box\s+(\S+)/,
+  team: /-team\s+(\S+)/,
+  parallel: /-parallel\b/
 };
 ```
 
@@ -75,6 +76,8 @@ const sessionParams = {
   mode: 'xwhole',           // xwhole | xlocal | xunit
   iteration_limit: 2,       // from -N, default 2
   sandbox_branch: null,     // from -box, null if not provided
+  team_name: null,          // from -team, null if not provided
+  is_parallel: false,       // -parallel flag
   requirement: '',          // remaining text after param extraction
   parsed_at: ISO_TIMESTAMP  // for cache invalidation
 };
@@ -121,8 +124,15 @@ const sessionParams = {
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **Requirements Discovery** (module 08: clarity assessment + Proactive Challenge, Socratic only if clarity < 5.0) -> PRD detection -> promptMasterX optimization (module 04) -> Core Iteration Loop.
-- **evaluatorX evaluation criteria**: With hybrid docs, evaluate per PRD. Without hybrid docs, fall back to prompt-based evaluation. After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
+- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> promptMasterX optimization (module 04) -> Core Iteration Loop.
+- **PRD detection (priority order)**:
+  1. Explicit Hybrid Tree path in `sessionParams.requirement` -> validate Parent + Child, use directly
+  2. No explicit path -> scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent Section 7 Child scopes, Child Section 7 AC, and Section 8.1 file indexes
+  3. If exactly one related Hybrid Tree matches -> reuse and maintain that tree; route to the matching Child, or create a new Child through Requirement Change Handling when no Child scope matches
+  4. If multiple plausible Hybrid Trees match -> present candidates with match reasons and ask the user to choose; do not auto-generate a duplicate tree
+  5. If the requirement contains a valid non-Hybrid PRD file path -> read PRD, wrap into Hybrid Tree
+  6. No related Hybrid Tree or PRD -> auto-generate minimal Hybrid Tree (scan code -> build index -> decompose AC -> write Parent + Child)
+- **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
@@ -219,8 +229,6 @@ coderX and evaluatorX receive (Parent, Child) paths, then read according to the 
 | Child | 8.1 | Private file index | coderX, evaluatorX | **Session Cache**: Read once, invalidate on file change. |
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
-
-> **Context hand-off rule (Optimized)**: In the **first round**, pass full Parent + Child documents to coderX/evaluatorX. In subsequent rounds, prefer a lightweight trunk: pass only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions). Tell the subagent to call `mcp__server-memory__open_nodes` with the exact entity names from §8.2 to pull node details on demand; only fall back to `mcp__server-memory__search_nodes` when an exact name is missing. This mirrors the savings measured in TEST-MEMORY-001 (~13,506 chars / ~3,377 tokens for full context vs ~1,369 chars / ~342 tokens for trunk + on-demand retrieval).
 
 ### Cache Implementation
 
@@ -344,24 +352,31 @@ child_iterations = {
 ```
 
 **Dispatch Format**:
-- Hybrid Tree mode: pass `Parent: [path]` + `Child: [path]`
-- No Hybrid Tree mode: pass optimized prompt as primary context
+- Pass `Parent: [path]` + `Child: [path]` (xwhole/xlocal always use Hybrid Tree)
 
-## Simple Iteration Loop
+## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 
-> Used by Mode B without Hybrid Tree. No hybrid documents, skip document write steps.
+> When Mode B has no explicit PRD and no related existing Hybrid Tree in `.hybrid/`, orchestratorX auto-generates a minimal Hybrid Tree before entering the Core Iteration Loop. This replaces the former Simple Iteration Loop path.
 
-```
-1. Dispatch coderX: optimized prompt
-2. coderX implements, outputs Change Summary Payload
-3. Validate Payload (module 02), forward to evaluatorX
-4. evaluatorX evaluates (prompt-based mode), outputs Evaluation Result Payload
-5. orchestratorX extracts Fix Instructions from Evaluation Result (see 03-post-evaluation.md assembly template)
-6. If Needs Fix + iteration limit not reached: dispatch coderX fix -> go to 2
-7. If PASS: done
-```
+**orchestratorX executes** (sole document writer):
 
-**Requirement Change**: Simple Loop has no documents to update. When user raises new requirements, terminate current loop and guide user to restart workflow with `xlocal` or `xwhole`.
+1. **Code Scan**: Use Glob/Grep/rg to search project for files related to the requirement
+2. **Generate Parent** (`hybrid-template.md`):
+   - Section 0: MCP status from Module 01
+   - Sections 1-6: concise global context inferred from requirement + code scan
+   - Section 7: one Child row by default, more only when local scope naturally splits
+   - Section 8.1: shared file index
+   - Section 8.2/8.3: knowledge/dependencies if discovered; otherwise mark N/A
+3. **Generate Child**:
+   - Section 7: Acceptance criteria decomposed from requirement
+   - Section 8.1: Private file index for relevant files
+   - Section 9: Empty evaluation report
+4. **Write** both documents to `.hybrid/[feature-name]/`
+5. **Enter Core Iteration Loop** with generated Parent + Child
+
+**PRD file path input**: When user passes a file path (e.g. `xlocal ./docs/prd.md`), read the PRD file and use its content to populate Sections 1-6 and derive AC for Section 7, instead of inferring from the raw requirement.
+
+**Requirement Change**: Follow the standard Requirement Change Handling (shared by Mode A and Mode B with Hybrid Tree).
 
 ---
 
@@ -372,6 +387,18 @@ child_iterations = {
 Hybrid Tree exists when:
 - `.hybrid/[feature]/` directory contains multiple `*-hybrid.md` files
 - File marked `Document Type: Parent` contains Section 7 routing table
+
+For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
+1. Enumerate `.hybrid/*/` directories, ignoring `.hybrid/status.json`, locks, and non-directory files
+2. Identify Parent candidates by `Document Type: Parent` plus a Section 7 routing table
+3. Score relevance against the current requirement using:
+   - directory name and Parent title
+   - Parent Section 1 overview, Section 3 boundaries/scope, and Section 6 scope
+   - Parent Section 7 Child scope rows
+   - Child Section 7 acceptance criteria
+   - Parent/Child Section 8.1 file indexes
+4. Treat a candidate as reusable only when the requirement clearly overlaps an existing Parent scope or file index
+5. If one candidate matches, reuse and maintain it; if several match, ask the user to choose; if none match, continue to PRD file detection or minimal auto-generation
 
 ### Routing Logic
 
@@ -395,7 +422,7 @@ When Requirement Change Handling determines Change Type = new_branch:
 
 ## Requirement Change Handling
 
-> Shared by Mode A and Mode B (with Hybrid Tree). In Simple Loop, terminate and restart when user raises new requirements.
+> Shared by Mode A and Mode B (all paths use Hybrid Tree).
 
 ### Step 1: Change Detection
 

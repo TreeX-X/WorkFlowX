@@ -150,7 +150,7 @@ Write status.json: { status: "wait", task: { type: null, subject: null } }
 |-----------|-------|-------|------|
 | **Scope** | 3+ modules/directories (全局, 整个, entire, whole) | 1-2 modules (模块, 部分, module, part) | Single file (单个, 一个, single, file) |
 | **Complexity** | High: needs design (设计, 架构, 不确定, design, uncertain) | Medium | Low: known/simple (简单, 已知, simple, known) |
-| **PRD exists** | `.hybrid/[related]/` directory exists | — | — |
+| **PRD exists** | Related Hybrid Tree found in `.hybrid/` by Parent/Child scope, AC, or file-index match | — | — |
 | **Change type** | New feature / refactor (if multi-module) | Refactor (local) / optimize | Bug fix (single file) |
 | **Uncertainty** | High (帮我想想, 不确定, how should) | — | Low (按照, 参考, according to) |
 
@@ -166,10 +166,11 @@ Write status.json: { status: "wait", task: { type: null, subject: null } }
 - Low: 简单, 已知, 明确, simple, known, clear
 - Medium: everything else
 
-**PRD existence** — file system check:
+**PRD existence** — related Hybrid Tree check:
 ```bash
-# Check if Hybrid Tree exists
-ls .hybrid/*[related-to-request]*/ 2>/dev/null && PRD_EXISTS=true || PRD_EXISTS=false
+# Scan .hybrid/*/ for Parent hybrid docs, then match request terms
+# against Parent title/scope, Section 7 Child scopes, Child AC, and Section 8.1 file indexes.
+# Set PRD_EXISTS=true only when a related Hybrid Tree is found.
 ```
 
 **Change type** — keyword mapping:
@@ -388,7 +389,7 @@ THEN execute Mode Execution
 ### Mode B (xlocal) — Persistent
 
 1. Env init → **status: xlocal, phase: env_init**
-2. PRD detection → auto-generate minimal Hybrid Tree
+2. PRD detection → reuse related Hybrid Tree from `.hybrid/`, wrap PRD file, or auto-generate minimal Hybrid Tree
 3. Dispatch coderX/evaluatorX, iterate → **phase: core_loop**
    - All Children processed → **phase: waiting** (session persists)
    - New requirement → Route 0 → load new Child, reset iteration → **phase: core_loop**
