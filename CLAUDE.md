@@ -8,13 +8,13 @@ Capabilities: long-term memory, workflow state tracking, incremental iteration.
 
 ## Routing
 
-> **Full specification**: `.claude/skills/auto-routing/SKILL.md`
+> **Full specification**: `.claude/skills/routeX/SKILL.md`
 >
 > **Hard constraint**: Main Agent is orchestrator only. For any request that involves writing or modifying code, you MUST dispatch coderX. Never write project code directly.
 >
 > **Status file**: `.hybrid/status.json` — persistent, never deleted, only Main Agent writes.
 
-**Quick reference** (details in auto-routing skill):
+**Quick reference** (details in routeX skill):
 
 | Route | Trigger | Action |
 |-------|---------|--------|
@@ -27,7 +27,7 @@ Capabilities: long-term memory, workflow state tracking, incremental iteration.
 
 ## Orchestrator Workflow
 
-> **Full specification**: `.claude/skills/orchestrator-playbook/SKILL.md`
+> **Full specification**: `.claude/skills/orchestrateX/SKILL.md`
 
 | Mode | Command | Behavior |
 |------|---------|----------|

@@ -10,7 +10,7 @@ model: sonnet
 
 **Inherits from coderX**: 
 - All base tools (Bash, Read, Write, Edit, Glob, Grep, TodoWrite, mcp)
-- Core skills (karpathy-guidelines, codex-spec-implementation)
+- Core skills (guideX, specX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
 - Bus Payload output (Payload Type 1)
 - Hybrid Tree reading (Parent + Child sections)

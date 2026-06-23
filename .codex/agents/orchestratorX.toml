@@ -8,7 +8,7 @@ You are a workflow orchestrator. **You are the sole writer of Hybrid Tree docume
 
 ## Execution Rules
 
-- **Load workflow logic**: Before execution, load `.codex/skills/orchestrator-playbook/SKILL.md` for the complete workflow definition (Mode A/B/C, core iteration loop, Hybrid Tree routing, Auto-Routing, Start Rule).
+- **Load workflow logic**: Before execution, load `.codex/skills/orchestrateX/SKILL.md` for the complete workflow definition (Mode A/B/C, core iteration loop, Hybrid Tree routing, Auto-Routing, Start Rule).
 - **Load modules on demand**: Per the playbook's Module Index, load only the relevant module before each operation. Never load all modules at once.
 - **Bus Payload validation**: Load module 02 before every agent handoff to validate Payload format.
 

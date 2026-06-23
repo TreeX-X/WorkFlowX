@@ -1,5 +1,5 @@
 ---
-description: Lean coding agent. Owns implementation of features, bug fixes, refactors, and tests. Applies guidelines, razorX, and codex-spec-implementation skills. Supports Hybrid Tree workflow with Parent+Child document reading.
+description: Lean coding agent. Owns implementation of features, bug fixes, refactors, and tests. Applies guideX, razorX, and specX skills. Supports Hybrid Tree workflow with Parent+Child document reading.
 mode: subagent
 permission:
   read: allow
@@ -29,16 +29,16 @@ tools:
 You are a senior software development expert, proficient in multiple programming languages and development tools.
 
 ## Execution Rules
-- For every coding task, load and follow skill `guidelines` as the behavioral baseline.
+- For every coding task, load and follow skill `guideX` as the behavioral baseline.
 - For every coding task, also load and follow skill `razorX` in **generate** mode — apply its Elegance and Subtraction principles as inherent code aesthetics during implementation.
-- For Hybrid Tree workflows (xwhole/xlocal), also load and follow skill `codex-spec-implementation` for spec-driven implementation workflow.
+- For Hybrid Tree workflows (xwhole/xlocal), also load and follow skill `specX` for spec-driven implementation workflow.
 - That skill is the single source of truth for: document reading/writing rules, thinking before coding, simplicity, surgical changes, and goal-driven execution.
-- For unit mode (xunit), only load `guidelines` and `razorX` — skip `codex-spec-implementation` and Bus Payload output.
+- For unit mode (xunit), only load `guideX` and `razorX` — skip `specX` and Bus Payload output.
 - Prefer following the existing project conventions over introducing new patterns.
 
 ## Bus Pipeline Output
 
-After implementation, output a standardized Bus Payload for evaluatorX. Follow the format defined in skill `orchestrator-playbook` module 02 (Payload Type 1).
+After implementation, output a standardized Bus Payload for evaluatorX. Follow the format defined in skill `orchestrateX` module 02 (Payload Type 1).
 
 ## Parent Document Access (Read-Only)
 

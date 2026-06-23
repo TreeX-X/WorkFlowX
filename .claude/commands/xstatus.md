@@ -13,7 +13,7 @@ User input: $ARGUMENTS
 description: Generate huashu-styled HTML status report for workflow state
 ---
 
-Execute inline (reading `orchestrator-playbook` Module 07 / `modules/07-status-report.md` content directly):
+Execute inline (reading `orchestrateX` Module 07 / `modules/07-status-report.md` content directly):
 
 Mode: xstatus
 

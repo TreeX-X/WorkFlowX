@@ -9,9 +9,9 @@ Invoke the orchestratorX agent in whole mode (Mode A: whole) to execute the foll
 User input: $ARGUMENTS
 
 **Execution flow:**
-1. Parse parameters from $ARGUMENTS (see orchestrator-playbook Parameter Parsing section)
+1. Parse parameters from $ARGUMENTS (see orchestrateX Parameter Parsing section)
 2. Load runtime environment (Module 01)
-3. Conduct PRD planning dialogue in the current session (orchestratorX follows orchestrator-playbook Planning Phase), outputting a Hybrid Tree (Parent + Children)
+3. Conduct PRD planning dialogue in the current session (orchestratorX follows orchestrateX Planning Phase), outputting a Hybrid Tree (Parent + Children)
 4. Wait for user to confirm the PRD (triggered by user entering Summary)
 5. Invoke promptMasterX to optimize the execution instruction (Module 04)
 6. Invoke coderX to implement based on the instruction

@@ -18,14 +18,14 @@ User input: $ARGUMENTS
 ## Execution Flow
 
 1. **Parse arguments**: Detect `--output <path>` if present, default to `./status-report.html`
-2. **Load module**: Read `.claude/skills/orchestrator-playbook/modules/07-status-report.md` for the full procedure
+2. **Load module**: Read `.claude/skills/orchestrateX/modules/07-status-report.md` for the full procedure
 3. **Collect data**:
    - Scan `.hybrid/` for Parent + Child hybrid documents
    - Classify each feature by Mode (A / B / A-parallel)
    - Run `git log --since="24 hours ago"` for Mode C (xunit) inference
    - Get current branch / user / repo via git
 4. **Aggregate stats**: Active workflows, total children, completion rate, failed count
-5. **Render HTML**: Read template at `.claude/skills/orchestrator-playbook/templates/status-report.html`, perform string substitution
+5. **Render HTML**: Read template at `.claude/skills/orchestrateX/templates/status-report.html`, perform string substitution
 6. **Write file**: Save to output path (creates parent dirs if needed)
 7. **Open browser**: Cross-platform launch (`start ""` on Windows, `open` on macOS, `xdg-open` on Linux)
 

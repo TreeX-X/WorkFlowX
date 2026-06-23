@@ -7,7 +7,7 @@
 ### Rules
 
 1. When receiving any code development, feature implementation, refactoring, or bug fix request, the Main Agent **must** dispatch `coderX` (`Agent({ subagent_type: "coderX", ... })`) for code changes, and `evaluatorX` for audits.
-2. The Main Agent routes to the appropriate workflow mode (whole/local/unit) via `.claude/skills/auto-routing/SKILL.md`. Planning is performed inline by the Main Agent through Module 08 (requirements discovery) — there is no separate planner agent.
+2. The Main Agent routes to the appropriate workflow mode (whole/local/unit) via `.claude/skills/routeX/SKILL.md`. Planning is performed inline by the Main Agent through Module 08 (requirements discovery) — there is no separate planner agent.
 3. **Exceptions** — the following scenarios do NOT need a workflow dispatch:
    - Pure file reading / searching / browsing (exploratory)
    - Project configuration changes (settings.json, CLAUDE.md, AGENTS.md, etc.)
@@ -83,4 +83,4 @@ Mode A-parallel 使用 Claude 的 Agent Teams 特性，实现多任务并行执�
 
 - Agent definitions: `.claude/agents/`
 - Skill definitions: `.claude/skills/`
-- Runtime playbook: `.claude/skills/orchestrator-playbook/SKILL.md`
+- Runtime playbook: `.claude/skills/orchestrateX/SKILL.md`

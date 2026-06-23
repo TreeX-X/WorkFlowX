@@ -10,7 +10,7 @@ model: sonnet
 
 **Inherits from evaluatorX**:
 - All base tools (Bash, Read, Glob, Grep, Edit, TodoWrite, mcp)
-- Core skill (evaluator-prd-audit)
+- Core skill (auditX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
 - Bus Payload output (Payload Type 2)
 - Hybrid Tree reading (Parent + Child sections, especially §7 AC and §9 prior results)
