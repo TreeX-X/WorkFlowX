@@ -1,6 +1,6 @@
 ---
 name: auto-routing
-description: "Intelligent request classification and routing. Status gate, 4 routes (active workflow, direct handling, workflow selection, explicit command), 5-dimension analysis, mode recommendation, status management. Used by main Claude agent before dispatching orchestratorX."
+description: "Intelligent request classification and routing. Status gate, 4 routes (active workflow, direct handling, workflow selection, explicit command), 5-dimension analysis, mode recommendation, status management. Used by Main Agent before executing workflow."
 ---
 
 # Auto-Routing — Intelligent Request Classification

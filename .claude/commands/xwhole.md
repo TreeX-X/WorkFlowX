@@ -27,21 +27,15 @@ When user inputs `/xwhole [requirement]`:
 ### Stage 2: Phase 1 - Discovery & Solution Design (Mandatory)
 **Cannot skip, even if user wrote detailed requirements!**
 
-Execute Module 08:
-1. **Confirm understanding**: Restate user requirement (1-2 sentences)
-2. **Autonomous exploration**:
-   - Search codebase via Glob/Grep/rg
+Execute Module 08 §8.2 — Phase 1 clarification is driven by invoking the `socratesX` skill:
+1. **Invoke socratesX (`question` mode)**: Drive multi-turn Socratic clarification — one core question per turn, each with 2-4 options + a recommendation. Surface hidden assumptions, contradictions, missing boundaries, technical risks, cross-module conflicts, and non-functional ambiguity.
+2. **Autonomous exploration (in parallel with socratesX)**:
+   - Search codebase via Glob/Grep/rg to ground every question in code evidence
    - Identify existing patterns, constraints, integration points
    - Build file index (accumulate to session memory)
-3. **Identify critical gaps**:
-   - Analyze across 6 dimensions (target scenario, functional scope, technical constraints, boundary conditions, acceptance criteria, NFR)
-   - Raise questions based on code evidence
-4. **Present findings & challenge**:
-   - Show exploration results: "Found in codebase..."
-   - Challenge assumptions based on actual code
-5. **Propose solutions**:
-   - 2-3 viable approaches (with trade-offs)
-   - Recommend based on codebase context
+3. **Accumulate confirmed facts** from socratesX output (`当前理解` / `已确认关键事实` / `待澄清问题`) across turns.
+4. **Produce solutions/options** through the socratic dialogue — 2-3 viable approaches with trade-offs, recommended from codebase context.
+5. **Phase 1 exit**: When user signals confirmation, invoke socratesX `summary` mode to produce the design consensus (see Module 08 §8.5). Do NOT generate Hybrid Tree in Phase 1.
 
 ### Stage 3: Wait User Confirmation (Mandatory Wait)
 **After outputting design consensus, must wait for explicit confirmation:**

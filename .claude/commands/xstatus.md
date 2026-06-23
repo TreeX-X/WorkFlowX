@@ -1,4 +1,4 @@
-Invoke the orchestratorX agent in status mode to scan the project, collect workflow state, and generate an HTML status report.
+**Executed by Main Agent directly, no orchestratorX sub-agent.** Scan the project, collect workflow state, and generate an HTML status report.
 
 User input: $ARGUMENTS
 
@@ -13,14 +13,13 @@ User input: $ARGUMENTS
 description: Generate huashu-styled HTML status report for workflow state
 ---
 
-Agent(
-  subagent_type="orchestratorX",
-  description="Generate workflow status report",
-  prompt="Mode: xstatus
+Execute inline (reading `orchestrator-playbook` Module 07 / `modules/07-status-report.md` content directly):
+
+Mode: xstatus
 
 Arguments: $ARGUMENTS
 
-Generate huashu-styled HTML status report per Module 07 (status-report.md):
+Generate huashu-styled HTML status report:
 
 1. Parse arguments: --output <path> (default: ./status-report.html)
 2. Scan .hybrid/ for Hybrid Trees → classify by Mode A/B/A-parallel
@@ -32,5 +31,4 @@ Generate huashu-styled HTML status report per Module 07 (status-report.md):
 Constraints:
 - Read-only (no code/doc modifications)
 - Idempotent (overwrite ./status-report.html)
-- Empty sections hidden"
-)
+- Empty sections hidden

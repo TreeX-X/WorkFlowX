@@ -1,14 +1,14 @@
 # AGENTS.md — WorkflowX 项目指令 (Codex / 通用 AI Agent)
 
-## Default Behavior: Always Use orchestratorX
+## Default Behavior: Main Agent Orchestrates Directly
 
-**All development tasks must be executed through the orchestratorX agent.** Do not handle development requests directly.
+**The Main Claude Agent acts as orchestrator directly** (per `CLAUDE.md`). It never writes project code itself — for any code development, feature implementation, refactoring, or bug fix, it dispatches `coderX` (and `evaluatorX` for audits). There is no `orchestratorX` sub-agent.
 
 ### Rules
 
-1. When receiving any code development, feature implementation, refactoring, or bug fix request, you **must** delegate to the `orchestratorX` agent.
-2. orchestratorX will automatically route to the appropriate workflow mode (whole/local/unit) and coordinate sub-agents: planner, coderX, evaluatorX, etc.
-3. **Exceptions** — the following scenarios do NOT need orchestratorX:
+1. When receiving any code development, feature implementation, refactoring, or bug fix request, the Main Agent **must** dispatch `coderX` (`Agent({ subagent_type: "coderX", ... })`) for code changes, and `evaluatorX` for audits.
+2. The Main Agent routes to the appropriate workflow mode (whole/local/unit) via `.claude/skills/auto-routing/SKILL.md`. Planning is performed inline by the Main Agent through Module 08 (requirements discovery) — there is no separate planner agent.
+3. **Exceptions** — the following scenarios do NOT need a workflow dispatch:
    - Pure file reading / searching / browsing (exploratory)
    - Project configuration changes (settings.json, CLAUDE.md, AGENTS.md, etc.)
    - Git operations (commit, branch, status, etc.)
@@ -18,7 +18,7 @@
 
 OpenAI Codex does not support project-defined slash commands. Use these as natural-language prefixes in the user message:
 
-- `xwhole [task description]` — Full-repo workflow (planner -> coder -> evaluator)
+- `xwhole [task description]` — Full-repo workflow (discovery -> coder -> evaluator)
 - `xlocal [task description]` — Single-module local development workflow
 - `xunit [task description]` — Minimal unit task, direct modification
 - `xstatus [--output <path>]` — Generate styled HTML status report (huashu-design) and open in browser
@@ -59,7 +59,7 @@ OpenAI Codex does not support project-defined slash commands. Use these as natur
 
 ## Project Overview
 
-WorkflowX is a multi-agent collaborative development framework. orchestratorX coordinates planner, coderX, evaluatorX, abstracterX and other sub-agents to achieve a complete loop from requirement clarification → code implementation → quality evaluation.
+WorkflowX is a multi-agent collaborative development framework. The Main Claude Agent acts as orchestrator: it performs requirement discovery/planning inline (Module 08), then dispatches coderX, evaluatorX, abstracterX and other sub-agents to achieve a complete loop from requirement clarification → code implementation → quality evaluation. The Main Agent is the sole document writer; there is no `orchestratorX` sub-agent and no separate planner agent.
 
 ### Workflow Modes
 

@@ -26,7 +26,7 @@
 > The following configuration rarely changes after initial establishment. Placing it at the top of the file maximizes the utilization of the LLM underlying Prompt Caching (Token caching) mechanism, saving substantial re-read costs.
 
 ## 0. Runtime Environment Status (System)
-> Auto-managed by orchestratorX. Do not manually edit.
+> Auto-managed by Main Agent. Do not manually edit.
 
 - **MCP Status**: [Active | Degraded | Unknown]
 - **MCP Servers**: [server-memory, server-sequential-thinking]
@@ -84,7 +84,7 @@
 | 2 | [feature]-[subB]-hybrid.md | [Sub-module B scope summary] | [n] | [Draft/In Progress/PASS/Needs Fix/Needs Re-evaluation] | [ISO timestamp or N/A] |
 
 > **Maintenance Rules**:
-> - When orchestratorX creates a new Child during planning, add a row here.
+> - When Main Agent creates a new Child during planning, add a row here.
 > - When evaluatorX completes evaluation of a Child, update Status and Last Eval.
 
 ### 7.1 Feature Map History (Archived Children)

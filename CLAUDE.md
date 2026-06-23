@@ -47,7 +47,7 @@ Agent({ subagent_type: "evaluatorX", isolation: "worktree", prompt: "..." })
 
 - **Orchestrator-only**: Main Agent never writes project code. All code changes go through coderX dispatch.
 - No `EnterPlanMode` during active workflow
-- Deprecated: `.claude/commands/*.md` Agent(orchestratorX) patterns — you execute workflows directly
+- Removed: the legacy `orchestratorX` sub-agent path is gone — Main Agent directly executes `/x*` workflows (no `Agent(orchestratorX)` dispatch)
 - WorkflowX components: agents (`.claude/agents/`), skills (`.claude/skills/`)
 
 ---

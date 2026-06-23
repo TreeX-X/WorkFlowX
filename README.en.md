@@ -227,7 +227,7 @@ Only when all ACs pass does it ship; otherwise fix instructions flow back to cod
 
 xwhole's Phase 1 doesn't rush to code — it pins down the requirement first:
 
-- **Weighted clarity assessment**: scored across 6 dimensions (Functional Scope 25% / Technical Constraints 20% / Target User 15% / Boundary Conditions 15% / AC 15% / NFR 10%).
+- **Requirement clarification (via socratesX)**: Phase 1 drives Socratic questioning through the socratesX skill — one core question per turn with options + a recommendation, exploring the codebase before asking and assessing clarity qualitatively before proceeding.
 - **One question per turn, explore before asking**: each question builds on the last answer, and it always searches the codebase first — advancing with "here's what I found X" rather than "can you tell me X".
 - **Proactive challenge**: even when the requirement looks clear, it's forced to analyze 6 risk categories — contradictions, edge cases, technical risks, hidden assumptions, cross-module conflicts, missing NFRs.
 
