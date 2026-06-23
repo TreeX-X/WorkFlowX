@@ -43,159 +43,23 @@
 
 **Mode C (unit)**: NOT activated (overhead not justified for minimal tasks).
 
-## 8.2 Discovery Turn Structure
+## 8.2 Requirement Clarification (via socratesX)
 
-Each turn follows this unified flow:
+Phase 1 clarification is delegated to the `socratesX` skill — the Socratic requirement-clarification unit. The Main Agent must invoke `socratesX` to drive the multi-turn clarification of the requirement.
 
-### Step 1: Confirm Understanding (if applicable)
-Restate the user's latest input in 1-2 sentences, confirming shared context.
+**Entry directive**: When entering Phase 1, invoke `socratesX` in `question` mode. Its role is to surface hidden assumptions, contradictions, missing boundaries, technical risks, cross-module conflicts, and non-functional ambiguity — through one core question per turn, each with 2-4 options plus a recommendation. Explore the codebase first (Glob/Grep/rg) so every question is grounded in code evidence, and accumulate confirmed facts as the dialogue progresses.
 
-### Step 2: Identify Critical Gaps
-Analyze requirement across 6 dimensions to identify what's most unclear or risky:
+**socratesX output structure** — `当前理解` / `已确认关键事实` / `待澄清问题 (选项+推荐)` — is the natural input to the design-consensus output in §8.5.
 
-| Dimension | What to Assess |
-|-----------|----------------|
-| **Target User/Scenario** | Who uses this? What problem does it solve? Context? |
-| **Functional Scope** | What features? In/out of scope? Key behaviors? |
-| **Technical Constraints** | Tech stack? Performance? Compatibility? |
-| **Boundary Conditions** | Edge cases? Error handling? Failure modes? |
-| **Acceptance Criteria** | How do we know it's done? What does "working" look like? |
-| **Non-Functional Requirements** | Security? Maintainability? Scalability? |
+**summary mode = Phase 1 exit**: `socratesX summary` aligns with the Phase 1 Exit Output in §8.5. When the user signals confirmation, produce the design consensus. Do NOT generate the Hybrid Tree in Phase 1.
 
-**Priority**: Address gaps that would most impact design decisions.
-
-### Step 3: Autonomous Exploration
-**Don't wait for user to answer — explore first:**
-
-1. **Search codebase** (Glob, Grep, rg):
-   - Find related files, existing patterns, similar features
-   - Check constraints: tech stack files, config, dependencies
-   - Identify integration points, shared utilities, edge case handling
-
-2. **Build File Index** (session memory):
-   - Path, purpose, association reason
-   - Accumulates across turns → written to Hybrid Tree Section 8.1
-
-3. **Extract insights**:
-   - Existing patterns we should follow
-   - Constraints we must respect (APIs, data models, conventions)
-   - Edge cases already handled elsewhere
-   - Potential conflicts or integration points
-
-### Step 4: Present Findings & Challenge
-Surface what you discovered and challenge the requirement:
-
-**Format**:
-```
-我在代码库中发现了以下相关信息：
-
-**现有模式**:
-- [file path]: [what it does, how it's relevant]
-- [file path]: [existing approach we could follow/avoid]
-
-**约束条件**:
-- [constraint from exploration]: [implication for our design]
-
-**需要确认的点**:
-1. [Question based on findings] — 我看到 [code evidence]，这意味着 [implication]
-   建议方向: [proposal based on exploration]
-
-2. [Potential conflict/risk] — [why it matters based on code]
-   方案选项:
-   A) [approach 1] — [pros/cons from codebase context]
-   B) [approach 2] — [pros/cons from codebase context]
-```
-
-### Step 5: Propose Solutions (when appropriate)
-When enough context is gathered, propose 2-3 concrete approaches with trade-offs:
-
-**Format**:
-```
-基于当前需求和代码库现状，我整理出几个可行方案：
-
-**方案 A: [name]**
-- 核心思路: [brief description]
-- 优势: [based on codebase patterns]
-- 劣势: [based on technical constraints]
-- 适合场景: [when to choose this]
-
-**方案 B: [name]**
-- 核心思路: [brief description]
-- 优势: [based on codebase patterns]
-- 劣势: [based on technical constraints]
-- 适合场景: [when to choose this]
-
-**推荐**: [Which and why, referencing code evidence]
-```
-
-## 8.3 Challenge Categories
-
-Analyze requirement for issues across 6 categories (reference code evidence):
-
-
-#### 1. Contradictions & Inconsistencies
-- Requirements that conflict with each other (cite user's words)
-- Stated constraints that contradict desired behaviors
-- Conflicts with **actual codebase patterns** (reference files)
-
-#### 2. Overlooked Edge Cases & Boundary Conditions
-- Empty/null/undefined inputs (check existing validation patterns)
-- Concurrent access scenarios (check existing locking/sync patterns)
-- Resource exhaustion (disk full, memory limit, API rate limit)
-- Partial failure states (check existing error recovery)
-- Large scale inputs (check existing limits in code)
-- Time-related edge cases (timezone, DST — reference existing time handling)
-
-#### 3. Technical Feasibility & Risks
-- Dependencies on unavailable/unstable services (check package.json, imports)
-- Performance bottlenecks (reference similar patterns' perf issues)
-- **Compatibility issues with existing code** (cite actual file conflicts)
-- Known limitations of chosen technology (reference existing workarounds)
-
-#### 4. Hidden Assumptions
-- Assumptions about user behavior (challenge with actual usage data if available)
-- Assumptions about data format/quality (check actual data models)
-- Assumptions about system environment (check deployment configs)
-- Assumptions about external service availability (check existing retry logic)
-
-#### 5. Cross-Module Conflicts
-- **Conflicts with existing features** (cite actual file/function conflicts)
-- **Shared resources** causing contention (reference actual shared state)
-- **API contracts that might break** (cite actual API signatures)
-- **Data model changes** affecting other modules (reference actual schema dependencies)
-
-#### 6. Missing Non-Functional Requirements
-- Security: authentication, authorization, input validation (check existing patterns)
-- Performance: response time, throughput (reference existing benchmarks if any)
-- Maintainability: code complexity, documentation (check project standards)
-- Reliability: error recovery, retry logic (reference existing patterns)
-- Accessibility: if UI-related (check existing a11y patterns)
-
-## 8.4 Dialogue Rules
-
-1. **One topic per turn.** Address the most critical gap/risk/question first.
-2. **Explore before asking.** Always search code before presenting a question. Frame as "I found X, which suggests Y — confirm?"
-3. **Build on previous turns.** Reference earlier findings and user responses. Accumulate context.
-4. **Progressive depth.** Start high-level (scope, user), drill into details (edge cases, implementation).
-5. **Evidence over speculation.** When making claims, cite file paths, line ranges, or specific patterns.
-6. **Propose solutions, not just problems.** Every challenge should include a suggested approach or trade-off.
-7. **Respect user decisions.** If user acknowledges a risk and proceeds, record it and move on.
-8. **No redundant questions.** If the user already answered implicitly or explicitly, don't re-ask.
+Autonomous codebase exploration (Glob/Grep/rg, building the File Index that accumulates to session memory for later Hybrid Tree §8.1) still happens alongside `socratesX` questioning — exploration grounds the questions in real code.
 
 ## 8.5 Phase 1 Exit Protocol
 
-### Confirmation Trigger
+### Design Consensus Output
 
-**Stop designing when user signals confirmation:**
-- "确认" / "开始实现" / "生成文档" / "开始开发"
-- "start implementation" / "generate document"
-- Explicit approval of proposed solution
-
-**Do NOT generate Hybrid Tree in Phase 1** — only output design consensus and wait.
-
-### Phase 1 Exit Output
-
-Before waiting for user confirmation, output design consensus:
+When Phase 1 questioning has accumulated sufficient confirmed facts, output design consensus:
 
 ```
 方案设计完成。以下是推荐方案：
@@ -215,13 +79,56 @@ Before waiting for user confirmation, output design consensus:
 - [file 1]: [role]
 - [file 2]: [role]
 ...
-
-等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。
 ```
+
+### Hard Gate: Mandatory Confirmation (NO BYPASS)
+
+**HARD CONSTRAINT**: When user signals intent to end Phase 1, the Main Agent MUST invoke `AskUserQuestion` before proceeding. Direct generation of Hybrid Tree/PRD without user clicking an option is **FORBIDDEN**.
+
+**Trigger words** (when user message contains any of these):
+- 中文: 确认, 开始, 开工, 生成文档, 就这样, 可以了, 没问题, 好的, 行, 确定
+- English: confirm, start, generate, proceed, go ahead, done, ok, yes, sure
+
+**Gate behavior**:
+
+```
+User message contains trigger word
+    │
+    ▼
+Main Agent MUST call AskUserQuestion:
+    │
+    ▼
+┌─────────────────────────────────────────────────────────────┐
+│ AskUserQuestion({                                           │
+│   questions: [{                                             │
+│     question: "需求澄清已完成，已确认 [N] 项事实。请确认：",   │
+│     header: "Phase 1 确认",                                 │
+│     multiSelect: false,                                     │
+│     options: [                                              │
+│       { label: "确认生成 PRD（推荐）",                       │
+│         description: "生成 Hybrid Tree 并启动开发迭代" },     │
+│       { label: "查看已确认内容",                              │
+│         description: "输出 socratesX summary 格式摘要" },    │
+│       { label: "继续澄清",                                   │
+│         description: "返回 socratesX question 模式" },       │
+│       { label: "修改范围",                                   │
+│         description: "重新界定需求目标和边界" }               │
+│     ]                                                       │
+│   }]                                                        │
+│ })                                                          │
+└─────────────────────────────────────────────────────────────┘
+    │
+    ├─ 用户选择 "确认生成 PRD" → 进入 Phase 2
+    ├─ 用户选择 "查看已确认内容" → 输出 socratesX summary，再次触发门控
+    ├─ 用户选择 "继续澄清" → 返回 socratesX question 模式
+    └─ 用户选择 "修改范围" → 重新界定目标，更新已确认事实
+```
+
+**Only option A ("确认生成 PRD") proceeds to Phase 2.** All other options loop back within Phase 1.
 
 ### Phase 2 Entry (Main Agent main flow)
 
-**After user confirms**, Main Agent executes Phase 2:
+**Only after user clicks "确认生成 PRD" in the gate**, Main Agent executes Phase 2:
 
 1. **Create Hybrid Tree** (Parent + Children) with findings mapped to sections
 2. **Write to `.hybrid/[feature]/`**
@@ -260,15 +167,17 @@ Before waiting for user confirmation, output design consensus:
 Environment init (module 01)
   → Phase 1: Discovery & Solution Design (module 08):
     → Turn 1-N:
-      → Confirm understanding
-      → Identify gaps in 6 dimensions
-      → Autonomous exploration (Glob, Grep, rg)
-      → Present findings + challenge
-      → Propose solutions (when ready)
+      → Invoke socratesX (question mode) — one core question/turn, 2-4 options + recommendation
+      → Autonomous codebase exploration in parallel (Glob, Grep, rg → build File Index)
+      → Accumulate confirmed facts from socratesX output
       → User responds/refines
-    → Design consensus reached
-    → Output Phase 1 exit signal (wait for confirmation)
-  → User confirms ("确认" / "开始实现" / etc.)
+    → Output design consensus (socratesX summary structure)
+  → HARD GATE: User signals intent → AskUserQuestion (4 options)
+    ├─ "确认生成 PRD" → Phase 2
+    ├─ "查看已确认内容" → output summary → re-trigger gate
+    ├─ "继续澄清" → back to socratesX question
+    └─ "修改范围" → re-define scope → update facts
+  → User clicks "确认生成 PRD"
   → Phase 2: Document Generation (Main Agent):
     → Create Hybrid Tree with all findings
     → Write to .hybrid/
@@ -276,6 +185,8 @@ Environment init (module 01)
 ```
 
 **Intensity**: Deep exploration. Spend 3-6 turns accumulating context before proposing solutions.
+
+**Hard rule**: No Hybrid Tree/PRD generation without user clicking through the gate.
 
 ### Mode B (Local) Integration
 

@@ -1,11 +1,11 @@
 ---
 name: orchestrator-playbook
-description: "orchestratorX complete workflow handbook. Contains planning dialogue, Mode A/B/C workflows, core iteration loop, Hybrid Tree routing, requirement change handling, Auto-Routing, Start Rule."
+description: "Main Agent complete workflow handbook. Contains planning dialogue, Mode A/B/C workflows, core iteration loop, Hybrid Tree routing, requirement change handling, Auto-Routing, Start Rule."
 ---
 
 # orchestrator Playbook
 
-> **Positioning**: orchestratorX's complete workflow handbook. Contains main workflow logic and on-demand trigger modules.
+> **Positioning**: Main Agent's complete workflow handbook. Contains main workflow logic and on-demand trigger modules.
 
 ## Module Index
 
@@ -20,7 +20,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 | 9 | Workflow State Tracking | All checkpoints during workflow execution | `modules/09-workflow-state.md` |
 | 10 | Memory Hygiene | End of planning, before each evaluation, before PASS/FAIL | `modules/10-memory-hygiene.md` |
 
-**Note**: Module 00 (Auto-Routing) has been superseded by `.claude/skills/auto-routing/SKILL.md` — the consolidated routing specification for the main Claude agent. orchestratorX always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
+**Note**: Module 00 (Auto-Routing) has been superseded by `.claude/skills/auto-routing/SKILL.md` — the consolidated routing specification for the Main Agent. Main Agent always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -32,7 +32,7 @@ description: "orchestratorX complete workflow handbook. Contains planning dialog
 
 ## Parameter Parsing
 
-> **orchestratorX responsibility**: Parse parameters from `$ARGUMENTS` before workflow execution.
+> **Main Agent responsibility**: Parse parameters from `$ARGUMENTS` before workflow execution.
 
 ### Supported Parameters
 
@@ -244,7 +244,7 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
   4. If multiple plausible Hybrid Trees match → present candidates with match reasons and ask the user to choose; do not auto-generate a duplicate tree
   5. If `$ARGUMENTS` contains a valid non-Hybrid PRD file path → read PRD, wrap into Hybrid Tree
   6. No related Hybrid Tree or PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
-- **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
+- **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, Main Agent assembles Fix Instructions into a fix prompt for coderX.
 - **Status transitions (use templates above)**:
   1. env_init → write `env_init → core_loop (xlocal)` template (skip phase1/phase2)
   2. Each dispatch → use Dispatch Self-Check Protocol (pre/post)
@@ -275,60 +275,64 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 - **Output**: Design consensus (no Hybrid Tree yet)
 - **Exit signal**: "等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。"
 
-**Phase 2: Document Generation** — triggered by user confirmation:
-- **Trigger keywords**: "确认" / "开始实现" / "生成文档" / "开始开发" / "start implementation"
+**Phase 2: Document Generation** — triggered ONLY by user clicking gate option:
+- **Hard Gate**: User signals intent → MUST invoke AskUserQuestion (see §8.5)
+- Only "确认生成 PRD" option proceeds to Phase 2
 - Generate Hybrid Tree (Parent + Children) based on Phase 1 consensus
 - Write to `.hybrid/[feature]/` directory
 - Enter Core Iteration Loop
 
 **Core behaviors (Phase 1)**:
-- Ask pointed questions, then **autonomously search** the codebase for answers
+- Invoke the `socratesX` skill to drive Socratic clarification — one core question per turn, each with 2-4 options + a recommendation (see module 08 §8.2)
+- Meanwhile **autonomously search** the codebase (Glob/Grep/rg) so questions are grounded in code evidence
 - Present findings as "here's what I found" rather than "can you tell me"
 - Challenge assumptions based on **actual code evidence**
 - Propose 2-3 solutions with trade-offs derived from exploration
 - Iterate with user to refine approach
 
-### Discovery Turn Structure
+### Phase 1 Clarification (via socratesX)
 
-Each turn follows this flow:
+Phase 1 requirement clarification is driven by the `socratesX` skill — the Main Agent invokes `socratesX` in `question` mode to surface hidden assumptions, contradictions, missing boundaries, technical risks, cross-module conflicts, and non-functional ambiguity. Explore the codebase first (Glob/Grep/rg) so each question is grounded in code evidence. The socratesX output structure (`当前理解` / `已确认关键事实` / `待澄清问题`) accumulates into the design consensus, and `socratesX summary` aligns with the Phase 1 Exit Output below. Do NOT generate the Hybrid Tree in Phase 1.
 
-1. **Confirm Understanding**: Restate user's latest input (1-2 sentences)
-2. **Identify Critical Gaps**: Analyze across 6 dimensions (Target User, Functional Scope, Technical Constraints, Boundary Conditions, Acceptance Criteria, NFRs) — prioritize gaps that impact design decisions
-3. **Autonomous Exploration**: 
-   - Search codebase (Glob, Grep, rg) for related files, patterns, constraints
-   - Build File Index in session memory (accumulates → written to Hybrid Tree §8.1)
-   - Extract insights: existing patterns, constraints, edge cases, conflicts
-4. **Present Findings & Challenge**: Surface discoveries and challenge the requirement across 6 categories (Contradictions, Edge Cases, Technical Risks, Hidden Assumptions, Cross-Module Conflicts, Missing NFRs)
-5. **Propose Solutions**: When ready, present 2-3 concrete approaches with trade-offs based on codebase context
+Full specification: `modules/08-requirements-discovery.md` §8.2
 
-### Dialogue Rules
+### Phase Transition (Hard Gate)
 
-- **One topic per turn** — address the most critical gap/risk first
-- **Explore before asking** — always search code before presenting questions
-- **Build on previous turns** — reference earlier findings, accumulate context
-- **Evidence over speculation** — cite file paths, line ranges, specific patterns
-- **Propose solutions, not just problems** — every challenge includes suggested approach
-- **Respect user decisions** — record acknowledged risks and move on
+**Phase 1 → Phase 2 transition requires HARD GATE — no bypass allowed.**
 
-Full specification: `modules/08-requirements-discovery.md`
+**Trigger detection** — when user message contains:
+- 中文: 确认, 开始, 开工, 生成文档, 就这样, 可以了, 没问题, 好的, 行, 确定
+- English: confirm, start, generate, proceed, go ahead, done, ok, yes, sure
 
-### Phase Transition
+**Gate mechanism** — Main Agent MUST call AskUserQuestion:
+```javascript
+AskUserQuestion({
+  questions: [{
+    question: "需求澄清已完成，已确认 [N] 项事实。请确认：",
+    header: "Phase 1 确认",
+    multiSelect: false,
+    options: [
+      { label: "确认生成 PRD（推荐）", description: "生成 Hybrid Tree 并启动开发迭代" },
+      { label: "查看已确认内容", description: "输出 socratesX summary 格式摘要" },
+      { label: "继续澄清", description: "返回 socratesX question 模式" },
+      { label: "修改范围", description: "重新界定需求目标和边界" }
+    ]
+  }]
+})
+```
 
-**Phase 1 exit criteria:**
-- User signals confirmation with keywords: "确认" / "开始实现" / "生成文档" / "开始开发" / "start implementation"
-- Output design consensus summary, then **wait for explicit confirmation before Phase 2**
+**Only "确认生成 PRD" proceeds to Phase 2.** Other options loop back within Phase 1.
 
-**Phase 1 exit signal template:**
+**Phase 1 exit signal template** (shown before gate):
 ```
 方案设计完成。以下是推荐方案：
 
 [Brief design consensus summary]
-
-等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。
 ```
 
 **Phase 2 entry:**
-- After user confirms, generate Hybrid Tree with all discoveries written to appropriate sections
+- ONLY after user clicks "确认生成 PRD" in AskUserQuestion
+- Generate Hybrid Tree with all discoveries written to appropriate sections
 - Proceed to Core Iteration Loop
 
 ### Knowledge Graph Writeback
@@ -371,7 +375,7 @@ Write confirmed findings into appropriate sections during Hybrid Tree creation:
 1. Create directory `.hybrid/[feature-name]/`
 2. Create Parent hybrid: fill Sections 0-6, Section 7 routing table, 8.1 shared files, 8.2 knowledge graph, 8.3 cross-branch dependencies
 3. Create Child hybrids: one per sub-module, fill Section 7 AC, 8.1 private files
-4. Pass Parent path to orchestratorX, orchestratorX routes to each Child for development
+4. Pass Parent path to Main Agent, Main Agent routes to each Child for development
 
 **Template**: Strictly follow `hybrid-template.md`. Section numbers and physical order must not change (adapted for Token caching: static sections first, incremental middle, dynamic last).
 
@@ -584,9 +588,9 @@ child_iterations = {
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 
-> When Mode B has no explicit PRD and no related existing Hybrid Tree in `.hybrid/`, orchestratorX auto-generates a minimal Hybrid Tree before entering the Core Iteration Loop. This replaces the former Simple Iteration Loop path.
+> When Mode B has no explicit PRD and no related existing Hybrid Tree in `.hybrid/`, Main Agent auto-generates a minimal Hybrid Tree before entering the Core Iteration Loop. This replaces the former Simple Iteration Loop path.
 
-**orchestratorX executes** (sole document writer):
+**Main Agent executes** (sole document writer):
 
 1. **Code Scan**: Use Glob/Grep/rg to search project for files related to the requirement
 2. **Generate Parent** (`hybrid-template.md`):
@@ -641,7 +645,7 @@ For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
 
 When Requirement Change Handling determines Change Type = new_branch:
 1. Analysis results contain: feature description, suggested AC list, suggested file scope
-2. orchestratorX executes:
+2. Main Agent executes:
    - Create new Child document using Child template, fill feature description -> Section 7 Description, suggested ACs -> Section 7 AC
    - Add new row to Parent Section 7 (append end; dependency order is resolved at runtime by the Core Loop's deferred queue)
    - Update Parent Section 8.3 (if new dependencies)
@@ -656,7 +660,7 @@ When Requirement Change Handling determines Change Type = new_branch:
 
 ### Step 1: Change Detection
 
-orchestratorX determines whether user input changed the current Child's requirement scope. Analyze user input, determine change type:
+Main Agent determines whether user input changed the current Child's requirement scope. Analyze user input, determine change type:
 
 | Change Type | Detection Criteria | Action |
 |-------------|-------------------|--------|
@@ -703,7 +707,7 @@ Read change analysis results, execute:
 
 ## Auto-Routing
 
-> **Delegated**: Full routing logic is in `.claude/skills/auto-routing/SKILL.md`. orchestratorX receives an explicit mode parameter and does NOT perform routing itself.
+> **Delegated**: Full routing logic is in `.claude/skills/auto-routing/SKILL.md`. Main Agent receives an explicit mode parameter and does NOT perform routing itself.
 
 ---
 
