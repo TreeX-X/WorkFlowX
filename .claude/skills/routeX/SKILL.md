@@ -379,7 +379,7 @@ THEN execute Mode Execution
 
 1. Env init → **status: xwhole, phase: env_init**
 2. Explore codebase → propose 2-3 solutions → wait user confirmation (phase: phase1)
-3. Generate Hybrid Tree → phase: phase2
+3. noiseX summary (denoise Phase 1 context) → Generate Hybrid Tree → phase: phase2
 4. Enter iteration → **phase: core_loop**
    - Dispatch coderX/evaluatorX per Child, iterate (max `-N`, default 2)
    - All Children PASS or limit reached → **phase: waiting** (session persists)
@@ -413,5 +413,6 @@ THEN execute Mode Execution
 | `/xunit` | Mode C | Minimal single-file change |
 | `/xstatus [--output]` | — | Generate HTML status report |
 | `/xprompt` | — | Intent extraction (promptX skill) |
+| `/noiseX [focus\|summary]` | — | Context denoising (focus: re-anchor attention, summary: purified handoff) |
 
 **Parameters**: `-N [1-10]` (iteration limit), `-box [name]` (sandbox branch), `-parallel` (Agent Teams, xwhole only), `-team [name]` (team name)

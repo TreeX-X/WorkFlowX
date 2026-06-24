@@ -17,6 +17,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
 | 8 | Discovery & Solution Design | xwhole only: Phase 1 (exploration and design consensus) | `modules/08-requirements-discovery.md` |
+| — | noiseX (Context Denoising) | xwhole only: auto-invoked at Phase 1→2 transition | `skills/noiseX/skill.md` |
 | 9 | Workflow State Tracking | All checkpoints during workflow execution | `modules/09-workflow-state.md` |
 | 10 | Memory Hygiene | End of planning, before each evaluation, before PASS/FAIL | `modules/10-memory-hygiene.md` |
 
@@ -205,7 +206,7 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: merge worktree branches into sandbox, switch back, `--no-commit --no-ff` merge sandbox into original, restore stash.
-- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> **Hard Gate (AskUserQuestion)** -> user clicks "确认生成 PRD" -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> **Hard Gate (AskUserQuestion)** -> user clicks "确认生成 PRD" -> **noiseX summary** (denoise Phase 1 context) -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
 - **Status transitions (use templates above)**:
@@ -336,7 +337,8 @@ AskUserQuestion({
 
 **Phase 2 entry:**
 - ONLY after user clicks "确认生成 PRD" in AskUserQuestion
-- Generate Hybrid Tree with all discoveries written to appropriate sections
+- Invoke `noiseX summary` to denoise Phase 1 context (internal, not shown to user)
+- Generate Hybrid Tree with all discoveries written to appropriate sections, using noiseX purified summary as clean signal source
 - Proceed to Core Iteration Loop
 
 ### Knowledge Graph Writeback

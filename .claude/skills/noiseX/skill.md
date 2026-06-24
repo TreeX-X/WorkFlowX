@@ -87,3 +87,25 @@ author: TreeX
 - 如果消息包含 `/noiseX` 且不包含 `summary`，按 **focus** 模式输出。
 - 如果消息包含 `/noiseX summary` 或 `/noiseX s`，按 **summary** 模式输出。
 - 如果消息包含上下文内容（例如被 hook 传入片段），则对该片段执行相同的降噪逻辑。
+
+## 工作流集成
+
+### xwhole Phase 1→2 自动调用
+
+在 xwhole（Mode A）工作流中，noiseX summary 被自动调用于 Phase 1 和 Phase 2 之间：
+
+```
+Phase 1 (socratesX 多轮对话) → Hard Gate 用户确认 → [noiseX summary] → Phase 2 (Hybrid Tree 生成)
+```
+
+**触发条件**：用户在 Hard Gate 中点击"确认生成 PRD"后，Main Agent 自动调用。
+
+**作用**：将 Phase 1 积累的 3-6 轮 Socratic 对话（探索性读取、废弃假设、已确认事实）提炼为纯净摘要，作为 Phase 2 Hybrid Tree 生成的干净信号源。
+
+**输出处理**：作为内部上下文使用，不展示给用户，不写入文件。
+
+**规范详见**：`orchestrateX/modules/08-requirements-discovery.md` §8.5
+
+### 手动调用
+
+用户在任何工作流阶段均可通过 `/noiseX` 或 `/noiseX summary` 手动调用（Route 3 显式命令）。
