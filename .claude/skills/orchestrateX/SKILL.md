@@ -253,12 +253,14 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
-- **Entry**: coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
-- **coderX lightweight mode**: Only loads `guideX`, does not load `specX`, no Bus Payload needed.
+- **Entry**: Main Agent invokes `promptX` to extract intent → outputs structured prompt → dispatches coderX with structured prompt -> report to user. evaluatorX only invoked when explicitly requested.
+- **promptX integration**: Before dispatching coderX, Main Agent invokes `promptX` skill to extract 9 dimensions from user requirement, run diagnostic checklist, and output structured prompt. This reduces coderX exploration time.
+- **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives structured prompt from promptX.
 - **Status transitions (use templates above)**:
   1. env_init → write `env_init → core_loop (xunit)` template
-  2. Dispatch coderX → use Dispatch Self-Check Protocol (pre/post)
-  3. Auto-complete → write `exit signal → wait` template
+  2. Invoke promptX → extract intent → output structured prompt
+  3. Dispatch coderX with structured prompt → use Dispatch Self-Check Protocol (pre/post)
+  4. Auto-complete → write `exit signal → wait` template
 
 ---
 

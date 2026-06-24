@@ -1,5 +1,5 @@
 ---
-description: Minimal unit task: promptMasterX -> coderX, no evaluation
+description: Minimal unit task: promptX -> coderX, no evaluation
 agent: orchestratorX
 subtask: true
 ---
@@ -10,6 +10,6 @@ User input: $ARGUMENTS
 
 **Execution flow:**
 1. Load runtime environment (Module 01)
-2. Invoke promptMasterX to optimize the execution instruction (Module 04)
-3. Invoke coderX to perform a minimal change (lightweight mode: only loads guideX, does not load specX)
+2. Invoke promptX to extract intent and output structured prompt (Module 04)
+3. Invoke coderX to perform a minimal change (lightweight mode: only loads guideX + razorX, does not load specX)
 4. Report completion to user; evaluatorX is only invoked if the user explicitly requests it

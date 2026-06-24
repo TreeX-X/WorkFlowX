@@ -1,5 +1,5 @@
 ---
-description: Local module workflow: skip PRD -> promptMasterX -> coderX -> evaluatorX loop
+description: Local module workflow: PRD detection -> promptX -> coderX -> evaluatorX loop
 agent: orchestratorX
 subtask: true
 ---
@@ -19,7 +19,7 @@ User input: $ARGUMENTS
       - Generate Parent: fill Sections 0-6 (minimal from requirement), Section 7 routing table (single Child), 8.1 file index, 8.2 knowledge graph outline, 8.3 empty
       - Generate Child: fill Section 7 AC (decomposed from requirement), 8.1 private file index
       - Write to `.hybrid/[feature-name]/`
-4. Invoke promptMasterX to optimize the execution instruction (Module 04)
+4. Invoke promptX to extract intent and output structured prompt (Module 04)
 5. Enter Core Iteration Loop: dispatch coderX → bus payload validation (Module 02) → evaluatorX → post-evaluation update (Module 03)
 6. If fixes needed, loop steps 5-6 (max iterations determined by -N parameter, default 2). **Early exit**: if evaluatorX returns `Evaluation Result: PASS`, terminate iteration immediately
 

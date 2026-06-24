@@ -136,8 +136,9 @@ const sessionParams = {
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
-- **Entry**: promptMasterX optimization (module 04) -> coderX executes minimal change -> report to user. evaluatorX only invoked when explicitly requested.
-- **coderX lightweight mode**: Only loads `guideX`, does not load `specX`, no Bus Payload needed.
+- **Entry**: Main Agent invokes `promptX` to extract intent → outputs structured prompt → dispatches coderX with structured prompt -> report to user. evaluatorX only invoked when explicitly requested.
+- **promptX integration**: Before dispatching coderX, Main Agent invokes `promptX` skill to extract 9 dimensions from user requirement, run diagnostic checklist, and output structured prompt. This reduces coderX exploration time.
+- **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives structured prompt from promptX.
 
 ---
 

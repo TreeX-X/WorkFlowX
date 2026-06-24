@@ -398,8 +398,9 @@ THEN execute Mode Execution
 ### Mode C (xunit) — Ephemeral
 
 1. Env init → **status: xunit, phase: env_init**
-2. Dispatch coderX (no Hybrid Tree, no worktree isolation) → **phase: core_loop**
-3. Auto-complete → **status: wait, workflow cleared**
+2. Invoke promptX → extract intent → output structured prompt
+3. Dispatch coderX with structured prompt (no Hybrid Tree, no worktree isolation) → **phase: core_loop**
+4. Auto-complete → **status: wait, workflow cleared**
 
 ---
 
@@ -411,6 +412,6 @@ THEN execute Mode Execution
 | `/xlocal [-N] [-box]` | Mode B | Fast implementation via PRD detection |
 | `/xunit` | Mode C | Minimal single-file change |
 | `/xstatus [--output]` | — | Generate HTML status report |
-| `/xprompt` | — | Prompt optimization (Agent promptMasterX) |
+| `/xprompt` | — | Intent extraction (promptX skill) |
 
 **Parameters**: `-N [1-10]` (iteration limit), `-box [name]` (sandbox branch), `-parallel` (Agent Teams, xwhole only), `-team [name]` (team name)
