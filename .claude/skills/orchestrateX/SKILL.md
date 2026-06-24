@@ -205,13 +205,13 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: merge worktree branches into sandbox, switch back, `--no-commit --no-ff` merge sandbox into original, restore stash.
-- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> user confirms -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> **Hard Gate (AskUserQuestion)** -> user clicks "确认生成 PRD" -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
 - **Status transitions (use templates above)**:
   1. env_init → write `env_init → phase1` template
   2. Phase 1 starts → write `phase1` template (phase already set above)
-  3. User confirms design → write `phase1 → phase2` template
+  3. User clicks "确认生成 PRD" in Hard Gate → write `phase1 → phase2` template
   4. Hybrid Tree created → write `phase2 → core_loop` template
   5. Each dispatch → use Dispatch Self-Check Protocol (pre/post)
   6. All Children done → write `core_loop → waiting` template
@@ -299,6 +299,8 @@ Full specification: `modules/08-requirements-discovery.md` §8.2
 ### Phase Transition (Hard Gate)
 
 **Phase 1 → Phase 2 transition requires HARD GATE — no bypass allowed.**
+
+**HARD CONSTRAINT**: User language/text input does NOT directly trigger Phase 2. It only triggers the Hard Gate (AskUserQuestion). Only after user clicks "确认生成 PRD" option does Phase 2 proceed.
 
 **Trigger detection** — when user message contains:
 - 中文: 确认, 开始, 开工, 生成文档, 就这样, 可以了, 没问题, 好的, 行, 确定

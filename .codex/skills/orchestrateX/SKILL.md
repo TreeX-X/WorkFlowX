@@ -143,7 +143,7 @@ const sessionParams = {
 
 ## Planning Phase (Mode A)
 
-> Mode A entry: Environment init (module 01) -> **Requirements Discovery** (module 08) -> following planning dialogue -> user confirms PRD -> Core Iteration Loop
+> Mode A entry: Environment init (module 01) -> **Requirements Discovery** (module 08) -> following planning dialogue -> **Hard Gate (AskUserQuestion)** -> user clicks "确认生成 PRD" -> Core Iteration Loop
 
 ### Requirements Discovery (Module 08)
 

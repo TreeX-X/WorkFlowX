@@ -28,7 +28,7 @@
 
 ### Phase 2: Document Generation (Main Agent main flow)
 
-**Trigger**: User confirmation keywords: "确认" / "开始实现" / "生成文档" / "开始开发" / "start implementation"
+**Trigger**: ONLY after user clicks "确认生成 PRD" in the Hard Gate (AskUserQuestion). Direct text input does NOT trigger Phase 2.
 
 **Actions**:
 1. Generate Hybrid Tree (Parent + Children) based on Phase 1 consensus
