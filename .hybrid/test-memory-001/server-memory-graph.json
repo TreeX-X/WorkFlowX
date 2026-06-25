@@ -1,0 +1,5 @@
+{"type":"entity","name":"WorkflowX_Architecture","entityType":"project","observations":["WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).","Routes via .hybrid/status.json.","Supports /xwhole, /xlocal, /xunit.","Current .hybrid/status.json status is wait (code truth verified at runtime)."]}
+{"type":"entity","name":"TestMemory001_Feature","entityType":"feature","observations":["Diagnostic feature verifying mcp/server-memory integration.","Tests availability, round-trip write, search, open, conflict handling."]}
+{"type":"entity","name":"TestMemory001_Lesson","entityType":"lesson","observations":["Captures findings from TEST-MEMORY-001.","Primary rule: when code truth conflicts with memory, code truth wins."]}
+{"type":"relation","from":"WorkflowX_Architecture","to":"TestMemory001_Feature","relationType":"uses_memory_for"}
+{"type":"relation","from":"TestMemory001_Feature","to":"TestMemory001_Lesson","relationType":"validates"}
