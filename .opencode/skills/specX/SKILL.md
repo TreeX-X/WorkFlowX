@@ -19,9 +19,9 @@ Prioritize reading documents explicitly handed off by upstream agents or activel
 
 ### Hybrid Tree: Reading Parent+Child Documents
 
-coderX receives (Parent, Child) paths, reads corresponding Sections per `.claude/skills/orchestrateX/SKILL.md` Hybrid Tree Section Map.
+coderX receives (Parent, Child) paths, reads corresponding Sections per `.opencode/skills/orchestrateX/SKILL.md` Hybrid Tree Section Map.
 
-**Document permissions**: coderX is a pure reader + implementer. **Does not write to any document.** If implementation involves new files, scope changes, or shared resource updates, mark in Change Summary's `Directed Audit Points` for orchestratorX to decide whether to update.
+**Document permissions**: coderX is a pure reader + implementer. **Does not write to any document.** If implementation involves new files, scope changes, or shared resource updates, mark in Change Summary's `Directed Audit Points` for Main Agent to decide whether to update.
 
 ### Knowledge Graph
 
@@ -65,9 +65,9 @@ If a memory observation contradicts the current file content, `git diff`, or act
 
 ### Step 5: Output Change Summary Payload
 
-After implementation, **proactively output a standardized Change Summary Payload**. Do not write to any document; only output Payload for orchestratorX to validate and forward to evaluatorX.
+After implementation, **proactively output a standardized Change Summary Payload**. Do not write to any document; only output Payload for Main Agent to validate and forward to evaluatorX.
 
-Format follows `.claude/skills/orchestrateX/modules/02-bus-payload.md` (Payload Type 1). Core fields:
+Format follows `.opencode/skills/orchestrateX/modules/02-bus-payload.md` (Payload Type 1). Core fields:
 - `Changed Files`: list of modified files this round with summaries
 - `Affected ACs (claimed)`: ACs claimed affected (evaluatorX will cross-validate via diff)
 - `Directed Audit Points`: highlight complex logic or shared resources for evaluatorX to focus on
@@ -79,4 +79,4 @@ Format follows `.claude/skills/orchestrateX/modules/02-bus-payload.md` (Payload 
 3. Processing of `9` must be conditional: if content exists, prioritize fixes; if empty, skip.
 4. Must not fabricate test results or requirement completion status.
 5. Keep changes traceable: every change can be traced back to specification items or evaluation issues.
-6. **Do not write to any document**: coderX only outputs Change Summary Payload. All document writes are handled by orchestratorX.
+6. **Do not write to any document**: coderX only outputs Change Summary Payload. All document writes are handled by Main Agent.

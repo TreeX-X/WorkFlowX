@@ -12,16 +12,16 @@ permission:
   skill: allow
   todowrite: allow
 tools:
-  - mcp__server-memory__create_entities
-  - mcp__server-memory__create_relations
-  - mcp__server-memory__read_graph
-  - mcp__server-memory__open_nodes
-  - mcp__server-memory__search_nodes
-  - mcp__server-memory__add_observations
-  - mcp__server-memory__delete_observations
-  - mcp__server-memory__delete_entities
-  - mcp__server-memory__delete_relations
-  - mcp__server-sequential-thinking__sequentialthinking
+  mcp__server-memory__create_entities: true
+  mcp__server-memory__create_relations: true
+  mcp__server-memory__read_graph: true
+  mcp__server-memory__open_nodes: true
+  mcp__server-memory__search_nodes: true
+  mcp__server-memory__add_observations: true
+  mcp__server-memory__delete_observations: true
+  mcp__server-memory__delete_entities: true
+  mcp__server-memory__delete_relations: true
+  mcp__server-sequential-thinking__sequentialthinking: true
 ---
 
 # evaluatorX Agent

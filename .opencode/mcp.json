@@ -1,13 +1,15 @@
 {
-  "$schema": "https://json.schemastore.org/claude-code-mcp.json",
-  "mcpServers": {
-    "server-memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "memory": {
+      "type": "local",
+      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-memory"],
+      "enabled": true
     },
-    "server-sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    "sequential-thinking": {
+      "type": "local",
+      "command": ["npx.cmd", "-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "enabled": true
     }
   }
 }

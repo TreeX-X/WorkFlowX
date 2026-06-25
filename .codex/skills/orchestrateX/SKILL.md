@@ -28,7 +28,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 
 ## Parameter Parsing
 
-> **orchestratorX responsibility**: Parse parameters from `$ARGUMENTS` before workflow execution.
+> **Main Agent responsibility**: Parse parameters from `$ARGUMENTS` before workflow execution.
 
 ### Supported Parameters
 
@@ -132,7 +132,7 @@ const sessionParams = {
   4. If multiple plausible Hybrid Trees match -> present candidates with match reasons and ask the user to choose; do not auto-generate a duplicate tree
   5. If the requirement contains a valid non-Hybrid PRD file path -> read PRD, wrap into Hybrid Tree
   6. No related Hybrid Tree or PRD -> auto-generate minimal Hybrid Tree (scan code -> build index -> decompose AC -> write Parent + Child)
-- **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, orchestratorX assembles Fix Instructions into a fix prompt for coderX.
+- **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, Main Agent assembles Fix Instructions into a fix prompt for coderX.
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
@@ -202,7 +202,7 @@ After trigger: execute knowledge graph writeback first -> output complete Hybrid
 1. Create directory `.hybrid/[feature-name]/`
 2. Create Parent hybrid: fill Sections 0-6, Section 7 routing table, 8.1 shared files, 8.2 knowledge graph, 8.3 cross-branch dependencies
 3. Create Child hybrids: one per sub-module, fill Section 7 AC, 8.1 private files
-4. Pass Parent path to orchestratorX, orchestratorX routes to each Child for development
+4. Pass Parent path to Main Agent, Main Agent routes to each Child for development
 
 **Template**: Strictly follow `hybrid-template.md`. Section numbers and physical order must not change (adapted for Token caching: static sections first, incremental middle, dynamic last).
 
@@ -357,9 +357,9 @@ child_iterations = {
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 
-> When Mode B has no explicit PRD and no related existing Hybrid Tree in `.hybrid/`, orchestratorX auto-generates a minimal Hybrid Tree before entering the Core Iteration Loop. This replaces the former Simple Iteration Loop path.
+> When Mode B has no explicit PRD and no related existing Hybrid Tree in `.hybrid/`, Main Agent auto-generates a minimal Hybrid Tree before entering the Core Iteration Loop. This replaces the former Simple Iteration Loop path.
 
-**orchestratorX executes** (sole document writer):
+**Main Agent executes** (sole document writer):
 
 1. **Code Scan**: Use Glob/Grep/rg to search project for files related to the requirement
 2. **Generate Parent** (`hybrid-template.md`):
@@ -412,7 +412,7 @@ For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
 
 When Requirement Change Handling determines Change Type = new_branch:
 1. Analysis results contain: feature description, suggested AC list, suggested file scope
-2. orchestratorX executes:
+2. Main Agent executes:
    - Create new Child document using Child template, fill feature description -> Section 7 Description, suggested ACs -> Section 7 AC
    - Add new row to Parent Section 7 (no dependency: append end; has dependency: insert before dependent)
    - Update Parent Section 8.3 (if new dependencies)
@@ -427,7 +427,7 @@ When Requirement Change Handling determines Change Type = new_branch:
 
 ### Step 1: Change Detection
 
-orchestratorX determines whether user input changed the current Child's requirement scope. Analyze user input, determine change type:
+Main Agent determines whether user input changed the current Child's requirement scope. Analyze user input, determine change type:
 
 | Change Type | Detection Criteria | Action |
 |-------------|-------------------|--------|

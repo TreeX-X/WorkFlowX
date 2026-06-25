@@ -1,10 +1,10 @@
 ---
 description: Minimal unit task: promptX -> coderX, no evaluation
-agent: orchestratorX
+agent: build
 subtask: true
 ---
 
-Invoke the orchestratorX agent in unit mode (Mode C: unit) to execute the following requirement.
+Execute WorkflowX unit mode (Mode C: unit) in the current OpenCode main agent session. The main agent dispatches coderX only for implementation; evaluatorX is skipped unless explicitly requested.
 
 User input: $ARGUMENTS
 

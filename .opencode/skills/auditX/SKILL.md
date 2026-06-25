@@ -15,11 +15,11 @@ In iterative development, an independent audit step is needed after the coding a
 - Whether code quality meets standards
 - Optimization direction for the next iteration
 
-**evaluatorX is a pure analyzer**: reads documents and code, outputs structured Evaluation Result Payload. Does not write to any document. Document updates are handled by orchestratorX.
+**evaluatorX is a pure analyzer**: reads documents and code, outputs structured Evaluation Result Payload. Does not write to any document. Document updates are handled by Main Agent.
 
 ## Trigger Conditions
 
-Loaded when the user or upstream agent requests "audit code", "evaluate implementation", "run evaluator", "review". orchestratorX also invokes this in prompt-based mode.
+Loaded when the user or upstream agent requests "audit code", "evaluate implementation", "run evaluator", "review". Main Agent also invokes this in prompt-based mode.
 
 ---
 
@@ -27,7 +27,7 @@ Loaded when the user or upstream agent requests "audit code", "evaluate implemen
 
 ### Step 1: Load Specification Documents
 
-1. Read documents passed by orchestratorX (Parent + Child hybrid paths)
+1. Read documents passed by Main Agent (Parent + Child hybrid paths)
 2. If no hybrid document, switch to **Prompt-Based mode** (see Step 2B)
 3. If specification documents exist, extract:
    - **Requirements list**: functional requirements, non-functional requirements, business rules
@@ -91,7 +91,7 @@ When no hybrid document exists, evaluation criteria is the **original user promp
 | Conclusion | Based on AC | Based on prompt completion |
 
 **Prompt mode flow**:
-1. Read the original prompt passed by orchestratorX
+1. Read the original prompt passed by Main Agent
 2. Decompose into **verifiable intent points**
 3. For each intent point, check whether code changes satisfy: met / partially met / not met / irrelevant change
 4. Execute the same code quality review as PRD mode (Step 4)
@@ -152,7 +152,7 @@ Beyond requirement alignment, review general code quality:
 
 ### Step 5: Output Evaluation Result Payload
 
-**Do not write to any document.** Output structured Payload for orchestratorX to read and process. Format follows `orchestrateX/modules/02-bus-payload.md` (Payload Type 2).
+**Do not write to any document.** Output structured Payload for Main Agent to read and process. Format follows `orchestrateX/modules/02-bus-payload.md` (Payload Type 2).
 
 ### Step 6: Supplementary Search
 

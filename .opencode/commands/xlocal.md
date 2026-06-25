@@ -1,10 +1,10 @@
 ---
 description: Local module workflow: PRD detection -> promptX -> coderX -> evaluatorX loop
-agent: orchestratorX
+agent: build
 subtask: true
 ---
 
-Invoke the orchestratorX agent in local mode (Mode B: local) to execute the following requirement.
+Execute WorkflowX local mode (Mode B: local) in the current OpenCode main agent session. The main agent is the orchestrator and sole Hybrid Tree document writer; do not delegate orchestration to another agent.
 
 User input: $ARGUMENTS
 

@@ -26,7 +26,7 @@
 > The following configuration rarely changes after initial establishment. Placing it at the top of the file maximizes the utilization of the LLM underlying Prompt Caching (Token caching) mechanism, saving substantial re-read costs.
 
 ## 0. Runtime Environment Status (System)
-> Auto-managed by orchestratorX. Do not manually edit.
+> Auto-managed by Main Agent. Do not manually edit.
 
 - **MCP Status**: [Active | Degraded | Unknown]
 - **MCP Servers**: [server-memory, server-sequential-thinking]

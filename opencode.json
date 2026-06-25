@@ -1,6 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["workflowx@git+https://github.com/TreeX/workflowx.git"],
   "mcp": {
     "memory": {
       "type": "local",
@@ -17,29 +16,6 @@
     }
   },
   "agent": {
-    "orchestratorX": {
-      "mode": "primary",
-      "permission": {
-        "read": "allow",
-        "edit": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "list": "allow",
-        "bash": "allow",
-        "task": {
-          "*": "deny",
-          "coderX": "allow",
-          "evaluatorX": "allow",
-          "promptMasterX": "allow",
-          "abstracterX": "allow",
-          "general": "allow",
-          "explore": "allow"
-        },
-        "skill": "allow",
-        "todowrite": "allow",
-        "webfetch": "allow"
-      }
-    },
     "coderX": {
       "mode": "subagent",
       "permission": {
@@ -98,19 +74,19 @@
   "command": {
     "xwhole": {
       "description": "Full-repo workflow: PRD planning -> coderX -> evaluatorX loop",
-      "agent": "orchestratorX",
+      "agent": "build",
       "subtask": true,
       "template": ".opencode/commands/xwhole.md"
     },
     "xlocal": {
       "description": "Local module workflow: skip PRD -> promptMasterX -> coderX -> evaluatorX loop",
-      "agent": "orchestratorX",
+      "agent": "build",
       "subtask": true,
       "template": ".opencode/commands/xlocal.md"
     },
     "xunit": {
       "description": "Minimal unit task: promptMasterX -> coderX, no evaluation",
-      "agent": "orchestratorX",
+      "agent": "build",
       "subtask": true,
       "template": ".opencode/commands/xunit.md"
     },
@@ -122,7 +98,7 @@
     },
     "xstatus": {
       "description": "Generate huashu-styled HTML workflow status report and open in browser",
-      "agent": "orchestratorX",
+      "agent": "build",
       "subtask": true,
       "template": ".opencode/commands/xstatus.md"
     }

@@ -71,7 +71,7 @@ ls -la .hybrid/
 ```
 
 **Mode A-parallel 额外提取**（团队上下文）：
-若 `~/.claude/teams/{team-name}/config.json` 存在，为每个 teammate 提取：
+Codex does not expose an external agent-teams config. Infer teammate state from `.hybrid/` team records when available:
 - 当前任务 Child ID + 描述（从 task list 推断）
 - 工作时长（从 task created_at 计算）
 - 最后更新时间
@@ -121,7 +121,7 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 
 ## 模板替换规则
 
-读取模板文件：`.claude/skills/orchestrateX/templates/status-report.html`
+读取模板文件：`.codex/skills/orchestrateX/templates/status-report.html`
 
 | 占位符 | 替换内容 |
 |---|---|
@@ -242,7 +242,7 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 </article>
 ```
 
-**Team 数据来源**：若 `~/.claude/teams/{team-name}/config.json` 存在则读取，否则从 `.hybrid/` 中的 team 记录推断，若都没有则显示 "Team status unavailable (config not found)"。
+**Team 数据来源**：从 `.hybrid/` 中的 team 记录推断；若没有 team 记录则显示 "Team status unavailable (config not found)"。
 
 ### Mode C · xunit
 
@@ -316,7 +316,7 @@ git log --since="24 hours ago" --name-only --pretty=format:"%h|%ai|%s" -- ':!*.m
 
 ## 实现提示
 
-- **单次工具调用完成**：orchestratorX 一次性收集所有数据并写入 HTML，避免多轮 token 消耗
+- **单次工具调用完成**：Main Agent 一次性收集所有数据并写入 HTML，避免多轮 token 消耗
 - **字符串模板替换**：用 `Read` + `Write` 工具完成，避免在模板中嵌入复杂逻辑
 - **Browser 启动**：用 `Bash` 工具执行 `start ""` (Windows) / `open` (macOS) / `xdg-open` (Linux)
 - **样式验证**：若有时间，用 `npx playwright screenshot` 验证渲染效果（参考 huashu-design 的验证流程）

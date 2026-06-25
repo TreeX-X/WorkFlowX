@@ -1,10 +1,10 @@
 ---
 description: View current workflow status and hybrid document progress. Generates a styled HTML report and opens in default browser.
-agent: orchestratorX
+agent: build
 subtask: true
 ---
 
-Invoke the orchestratorX agent in status mode to scan the project, collect workflow state, and generate an HTML status report.
+Execute WorkflowX status mode in the current OpenCode main agent session. Scan the project, collect workflow state, and generate an HTML status report.
 
 User input: $ARGUMENTS
 
@@ -18,14 +18,14 @@ User input: $ARGUMENTS
 ## Execution Flow
 
 1. **Parse arguments**: Detect `--output <path>` if present, default to `./status-report.html`
-2. **Load module**: Read `.claude/skills/orchestrateX/modules/07-status-report.md` for the full procedure
+2. **Load module**: Read `.opencode/skills/orchestrateX/modules/07-status-report.md` for the full procedure
 3. **Collect data**:
    - Scan `.hybrid/` for Parent + Child hybrid documents
    - Classify each feature by Mode (A / B / A-parallel)
    - Run `git log --since="24 hours ago"` for Mode C (xunit) inference
    - Get current branch / user / repo via git
 4. **Aggregate stats**: Active workflows, total children, completion rate, failed count
-5. **Render HTML**: Read template at `.claude/skills/orchestrateX/templates/status-report.html`, perform string substitution
+5. **Render HTML**: Read template at `.opencode/skills/orchestrateX/templates/status-report.html`, perform string substitution
 6. **Write file**: Save to output path (creates parent dirs if needed)
 7. **Open browser**: Cross-platform launch (`start ""` on Windows, `open` on macOS, `xdg-open` on Linux)
 
