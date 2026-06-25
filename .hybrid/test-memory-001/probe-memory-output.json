@@ -1,0 +1,1033 @@
+[
+  {
+    "t": "2026-06-22T02:41:25.066Z",
+    "kind": "INFO",
+    "data": {
+      "memoryFile": "C:\\Users\\Tree\\Desktop\\git\\WorkFlowX\\.claude\\worktrees\\agent-a90fbd99c4fd29f9c\\.hybrid\\test-memory-001\\server-memory-graph.json",
+      "memoryFileExists": false
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:25.069Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "TEST-MEMORY-001-probe",
+          "version": "1.0"
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.112Z",
+    "kind": "SERVER-STDERR",
+    "data": "Knowledge Graph MCP Server running on stdio"
+  },
+  {
+    "t": "2026-06-22T02:41:27.116Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "protocolVersion": "2024-11-05",
+        "capabilities": {
+          "tools": {
+            "listChanged": true
+          }
+        },
+        "serverInfo": {
+          "name": "memory-server",
+          "version": "0.6.3"
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 1
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.116Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "notifications/initialized",
+      "params": {}
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.116Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "read_graph",
+        "arguments": {}
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.117Z",
+    "kind": "RECV",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "error": {
+        "code": -32601,
+        "message": "Method not found"
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.119Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"entities\": [],\n  \"relations\": []\n}"
+          }
+        ],
+        "structuredContent": {
+          "entities": [],
+          "relations": []
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.119Z",
+    "kind": "RESULT-A",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"entities\": [],\n  \"relations\": []\n}"
+        }
+      ],
+      "structuredContent": {
+        "entities": [],
+        "relations": []
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.119Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "tools/call",
+      "params": {
+        "name": "create_entities",
+        "arguments": {
+          "entities": [
+            {
+              "name": "WorkflowX_Architecture",
+              "entityType": "project",
+              "observations": [
+                "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+                "Routes via .hybrid/status.json.",
+                "Supports /xwhole, /xlocal, /xunit."
+              ]
+            },
+            {
+              "name": "TestMemory001_Feature",
+              "entityType": "feature",
+              "observations": [
+                "Diagnostic feature verifying mcp/server-memory integration.",
+                "Tests availability, round-trip write, search, open, conflict handling."
+              ]
+            },
+            {
+              "name": "TestMemory001_Lesson",
+              "entityType": "lesson",
+              "observations": [
+                "Captures findings from TEST-MEMORY-001.",
+                "Primary rule: when code truth conflicts with memory, code truth wins."
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.121Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[\n  {\n    \"name\": \"WorkflowX_Architecture\",\n    \"entityType\": \"project\",\n    \"observations\": [\n      \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n      \"Routes via .hybrid/status.json.\",\n      \"Supports /xwhole, /xlocal, /xunit.\"\n    ]\n  },\n  {\n    \"name\": \"TestMemory001_Feature\",\n    \"entityType\": \"feature\",\n    \"observations\": [\n      \"Diagnostic feature verifying mcp/server-memory integration.\",\n      \"Tests availability, round-trip write, search, open, conflict handling.\"\n    ]\n  },\n  {\n    \"name\": \"TestMemory001_Lesson\",\n    \"entityType\": \"lesson\",\n    \"observations\": [\n      \"Captures findings from TEST-MEMORY-001.\",\n      \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n    ]\n  }\n]"
+          }
+        ],
+        "structuredContent": {
+          "entities": [
+            {
+              "name": "WorkflowX_Architecture",
+              "entityType": "project",
+              "observations": [
+                "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+                "Routes via .hybrid/status.json.",
+                "Supports /xwhole, /xlocal, /xunit."
+              ]
+            },
+            {
+              "name": "TestMemory001_Feature",
+              "entityType": "feature",
+              "observations": [
+                "Diagnostic feature verifying mcp/server-memory integration.",
+                "Tests availability, round-trip write, search, open, conflict handling."
+              ]
+            },
+            {
+              "name": "TestMemory001_Lesson",
+              "entityType": "lesson",
+              "observations": [
+                "Captures findings from TEST-MEMORY-001.",
+                "Primary rule: when code truth conflicts with memory, code truth wins."
+              ]
+            }
+          ]
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 4
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.122Z",
+    "kind": "RESULT-B-entities",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[\n  {\n    \"name\": \"WorkflowX_Architecture\",\n    \"entityType\": \"project\",\n    \"observations\": [\n      \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n      \"Routes via .hybrid/status.json.\",\n      \"Supports /xwhole, /xlocal, /xunit.\"\n    ]\n  },\n  {\n    \"name\": \"TestMemory001_Feature\",\n    \"entityType\": \"feature\",\n    \"observations\": [\n      \"Diagnostic feature verifying mcp/server-memory integration.\",\n      \"Tests availability, round-trip write, search, open, conflict handling.\"\n    ]\n  },\n  {\n    \"name\": \"TestMemory001_Lesson\",\n    \"entityType\": \"lesson\",\n    \"observations\": [\n      \"Captures findings from TEST-MEMORY-001.\",\n      \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n    ]\n  }\n]"
+        }
+      ],
+      "structuredContent": {
+        "entities": [
+          {
+            "name": "WorkflowX_Architecture",
+            "entityType": "project",
+            "observations": [
+              "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+              "Routes via .hybrid/status.json.",
+              "Supports /xwhole, /xlocal, /xunit."
+            ]
+          },
+          {
+            "name": "TestMemory001_Feature",
+            "entityType": "feature",
+            "observations": [
+              "Diagnostic feature verifying mcp/server-memory integration.",
+              "Tests availability, round-trip write, search, open, conflict handling."
+            ]
+          },
+          {
+            "name": "TestMemory001_Lesson",
+            "entityType": "lesson",
+            "observations": [
+              "Captures findings from TEST-MEMORY-001.",
+              "Primary rule: when code truth conflicts with memory, code truth wins."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.122Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "tools/call",
+      "params": {
+        "name": "create_relations",
+        "arguments": {
+          "relations": [
+            {
+              "from": "WorkflowX_Architecture",
+              "to": "TestMemory001_Feature",
+              "relationType": "uses_memory_for"
+            },
+            {
+              "from": "TestMemory001_Feature",
+              "to": "TestMemory001_Lesson",
+              "relationType": "validates"
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.124Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[\n  {\n    \"from\": \"WorkflowX_Architecture\",\n    \"to\": \"TestMemory001_Feature\",\n    \"relationType\": \"uses_memory_for\"\n  },\n  {\n    \"from\": \"TestMemory001_Feature\",\n    \"to\": \"TestMemory001_Lesson\",\n    \"relationType\": \"validates\"\n  }\n]"
+          }
+        ],
+        "structuredContent": {
+          "relations": [
+            {
+              "from": "WorkflowX_Architecture",
+              "to": "TestMemory001_Feature",
+              "relationType": "uses_memory_for"
+            },
+            {
+              "from": "TestMemory001_Feature",
+              "to": "TestMemory001_Lesson",
+              "relationType": "validates"
+            }
+          ]
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 5
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.124Z",
+    "kind": "RESULT-B-relations",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[\n  {\n    \"from\": \"WorkflowX_Architecture\",\n    \"to\": \"TestMemory001_Feature\",\n    \"relationType\": \"uses_memory_for\"\n  },\n  {\n    \"from\": \"TestMemory001_Feature\",\n    \"to\": \"TestMemory001_Lesson\",\n    \"relationType\": \"validates\"\n  }\n]"
+        }
+      ],
+      "structuredContent": {
+        "relations": [
+          {
+            "from": "WorkflowX_Architecture",
+            "to": "TestMemory001_Feature",
+            "relationType": "uses_memory_for"
+          },
+          {
+            "from": "TestMemory001_Feature",
+            "to": "TestMemory001_Lesson",
+            "relationType": "validates"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.124Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "tools/call",
+      "params": {
+        "name": "read_graph",
+        "arguments": {}
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.125Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Feature\",\n      \"entityType\": \"feature\",\n      \"observations\": [\n        \"Diagnostic feature verifying mcp/server-memory integration.\",\n        \"Tests availability, round-trip write, search, open, conflict handling.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Lesson\",\n      \"entityType\": \"lesson\",\n      \"observations\": [\n        \"Captures findings from TEST-MEMORY-001.\",\n        \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n      ]\n    }\n  ],\n  \"relations\": [\n    {\n      \"from\": \"WorkflowX_Architecture\",\n      \"to\": \"TestMemory001_Feature\",\n      \"relationType\": \"uses_memory_for\"\n    },\n    {\n      \"from\": \"TestMemory001_Feature\",\n      \"to\": \"TestMemory001_Lesson\",\n      \"relationType\": \"validates\"\n    }\n  ]\n}"
+          }
+        ],
+        "structuredContent": {
+          "entities": [
+            {
+              "name": "WorkflowX_Architecture",
+              "entityType": "project",
+              "observations": [
+                "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+                "Routes via .hybrid/status.json.",
+                "Supports /xwhole, /xlocal, /xunit."
+              ]
+            },
+            {
+              "name": "TestMemory001_Feature",
+              "entityType": "feature",
+              "observations": [
+                "Diagnostic feature verifying mcp/server-memory integration.",
+                "Tests availability, round-trip write, search, open, conflict handling."
+              ]
+            },
+            {
+              "name": "TestMemory001_Lesson",
+              "entityType": "lesson",
+              "observations": [
+                "Captures findings from TEST-MEMORY-001.",
+                "Primary rule: when code truth conflicts with memory, code truth wins."
+              ]
+            }
+          ],
+          "relations": [
+            {
+              "from": "WorkflowX_Architecture",
+              "to": "TestMemory001_Feature",
+              "relationType": "uses_memory_for"
+            },
+            {
+              "from": "TestMemory001_Feature",
+              "to": "TestMemory001_Lesson",
+              "relationType": "validates"
+            }
+          ]
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 6
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.125Z",
+    "kind": "RESULT-B-readback",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Feature\",\n      \"entityType\": \"feature\",\n      \"observations\": [\n        \"Diagnostic feature verifying mcp/server-memory integration.\",\n        \"Tests availability, round-trip write, search, open, conflict handling.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Lesson\",\n      \"entityType\": \"lesson\",\n      \"observations\": [\n        \"Captures findings from TEST-MEMORY-001.\",\n        \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n      ]\n    }\n  ],\n  \"relations\": [\n    {\n      \"from\": \"WorkflowX_Architecture\",\n      \"to\": \"TestMemory001_Feature\",\n      \"relationType\": \"uses_memory_for\"\n    },\n    {\n      \"from\": \"TestMemory001_Feature\",\n      \"to\": \"TestMemory001_Lesson\",\n      \"relationType\": \"validates\"\n    }\n  ]\n}"
+        }
+      ],
+      "structuredContent": {
+        "entities": [
+          {
+            "name": "WorkflowX_Architecture",
+            "entityType": "project",
+            "observations": [
+              "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+              "Routes via .hybrid/status.json.",
+              "Supports /xwhole, /xlocal, /xunit."
+            ]
+          },
+          {
+            "name": "TestMemory001_Feature",
+            "entityType": "feature",
+            "observations": [
+              "Diagnostic feature verifying mcp/server-memory integration.",
+              "Tests availability, round-trip write, search, open, conflict handling."
+            ]
+          },
+          {
+            "name": "TestMemory001_Lesson",
+            "entityType": "lesson",
+            "observations": [
+              "Captures findings from TEST-MEMORY-001.",
+              "Primary rule: when code truth conflicts with memory, code truth wins."
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "from": "WorkflowX_Architecture",
+            "to": "TestMemory001_Feature",
+            "relationType": "uses_memory_for"
+          },
+          {
+            "from": "TestMemory001_Feature",
+            "to": "TestMemory001_Lesson",
+            "relationType": "validates"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.125Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "tools/call",
+      "params": {
+        "name": "search_nodes",
+        "arguments": {
+          "query": "WorkflowX_Architecture OR TestMemory001_Feature"
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.126Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"entities\": [],\n  \"relations\": []\n}"
+          }
+        ],
+        "structuredContent": {
+          "entities": [],
+          "relations": []
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 7
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.126Z",
+    "kind": "RESULT-C-search",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"entities\": [],\n  \"relations\": []\n}"
+        }
+      ],
+      "structuredContent": {
+        "entities": [],
+        "relations": []
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.126Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "tools/call",
+      "params": {
+        "name": "open_nodes",
+        "arguments": {
+          "names": [
+            "WorkflowX_Architecture",
+            "TestMemory001_Feature",
+            "TestMemory001_Lesson"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.128Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Feature\",\n      \"entityType\": \"feature\",\n      \"observations\": [\n        \"Diagnostic feature verifying mcp/server-memory integration.\",\n        \"Tests availability, round-trip write, search, open, conflict handling.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Lesson\",\n      \"entityType\": \"lesson\",\n      \"observations\": [\n        \"Captures findings from TEST-MEMORY-001.\",\n        \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n      ]\n    }\n  ],\n  \"relations\": [\n    {\n      \"from\": \"WorkflowX_Architecture\",\n      \"to\": \"TestMemory001_Feature\",\n      \"relationType\": \"uses_memory_for\"\n    },\n    {\n      \"from\": \"TestMemory001_Feature\",\n      \"to\": \"TestMemory001_Lesson\",\n      \"relationType\": \"validates\"\n    }\n  ]\n}"
+          }
+        ],
+        "structuredContent": {
+          "entities": [
+            {
+              "name": "WorkflowX_Architecture",
+              "entityType": "project",
+              "observations": [
+                "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+                "Routes via .hybrid/status.json.",
+                "Supports /xwhole, /xlocal, /xunit."
+              ]
+            },
+            {
+              "name": "TestMemory001_Feature",
+              "entityType": "feature",
+              "observations": [
+                "Diagnostic feature verifying mcp/server-memory integration.",
+                "Tests availability, round-trip write, search, open, conflict handling."
+              ]
+            },
+            {
+              "name": "TestMemory001_Lesson",
+              "entityType": "lesson",
+              "observations": [
+                "Captures findings from TEST-MEMORY-001.",
+                "Primary rule: when code truth conflicts with memory, code truth wins."
+              ]
+            }
+          ],
+          "relations": [
+            {
+              "from": "WorkflowX_Architecture",
+              "to": "TestMemory001_Feature",
+              "relationType": "uses_memory_for"
+            },
+            {
+              "from": "TestMemory001_Feature",
+              "to": "TestMemory001_Lesson",
+              "relationType": "validates"
+            }
+          ]
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 8
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.128Z",
+    "kind": "RESULT-C-open",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Feature\",\n      \"entityType\": \"feature\",\n      \"observations\": [\n        \"Diagnostic feature verifying mcp/server-memory integration.\",\n        \"Tests availability, round-trip write, search, open, conflict handling.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Lesson\",\n      \"entityType\": \"lesson\",\n      \"observations\": [\n        \"Captures findings from TEST-MEMORY-001.\",\n        \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n      ]\n    }\n  ],\n  \"relations\": [\n    {\n      \"from\": \"WorkflowX_Architecture\",\n      \"to\": \"TestMemory001_Feature\",\n      \"relationType\": \"uses_memory_for\"\n    },\n    {\n      \"from\": \"TestMemory001_Feature\",\n      \"to\": \"TestMemory001_Lesson\",\n      \"relationType\": \"validates\"\n    }\n  ]\n}"
+        }
+      ],
+      "structuredContent": {
+        "entities": [
+          {
+            "name": "WorkflowX_Architecture",
+            "entityType": "project",
+            "observations": [
+              "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+              "Routes via .hybrid/status.json.",
+              "Supports /xwhole, /xlocal, /xunit."
+            ]
+          },
+          {
+            "name": "TestMemory001_Feature",
+            "entityType": "feature",
+            "observations": [
+              "Diagnostic feature verifying mcp/server-memory integration.",
+              "Tests availability, round-trip write, search, open, conflict handling."
+            ]
+          },
+          {
+            "name": "TestMemory001_Lesson",
+            "entityType": "lesson",
+            "observations": [
+              "Captures findings from TEST-MEMORY-001.",
+              "Primary rule: when code truth conflicts with memory, code truth wins."
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "from": "WorkflowX_Architecture",
+            "to": "TestMemory001_Feature",
+            "relationType": "uses_memory_for"
+          },
+          {
+            "from": "TestMemory001_Feature",
+            "to": "TestMemory001_Lesson",
+            "relationType": "validates"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.128Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "tools/call",
+      "params": {
+        "name": "add_observations",
+        "arguments": {
+          "observations": [
+            {
+              "entityName": "WorkflowX_Architecture",
+              "contents": [
+                "Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing)."
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.130Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[\n  {\n    \"entityName\": \"WorkflowX_Architecture\",\n    \"addedObservations\": [\n      \"Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing).\"\n    ]\n  }\n]"
+          }
+        ],
+        "structuredContent": {
+          "results": [
+            {
+              "entityName": "WorkflowX_Architecture",
+              "addedObservations": [
+                "Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing)."
+              ]
+            }
+          ]
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 9
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.130Z",
+    "kind": "RESULT-E-false",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[\n  {\n    \"entityName\": \"WorkflowX_Architecture\",\n    \"addedObservations\": [\n      \"Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing).\"\n    ]\n  }\n]"
+        }
+      ],
+      "structuredContent": {
+        "results": [
+          {
+            "entityName": "WorkflowX_Architecture",
+            "addedObservations": [
+              "Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.130Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "tools/call",
+      "params": {
+        "name": "open_nodes",
+        "arguments": {
+          "names": [
+            "WorkflowX_Architecture"
+          ]
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.131Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\",\n        \"Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing).\"\n      ]\n    }\n  ],\n  \"relations\": []\n}"
+          }
+        ],
+        "structuredContent": {
+          "entities": [
+            {
+              "name": "WorkflowX_Architecture",
+              "entityType": "project",
+              "observations": [
+                "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+                "Routes via .hybrid/status.json.",
+                "Supports /xwhole, /xlocal, /xunit.",
+                "Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing)."
+              ]
+            }
+          ],
+          "relations": []
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 10
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.131Z",
+    "kind": "RESULT-E-open-false",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\",\n        \"Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing).\"\n      ]\n    }\n  ],\n  \"relations\": []\n}"
+        }
+      ],
+      "structuredContent": {
+        "entities": [
+          {
+            "name": "WorkflowX_Architecture",
+            "entityType": "project",
+            "observations": [
+              "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+              "Routes via .hybrid/status.json.",
+              "Supports /xwhole, /xlocal, /xunit.",
+              "Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing)."
+            ]
+          }
+        ],
+        "relations": []
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.131Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "tools/call",
+      "params": {
+        "name": "delete_observations",
+        "arguments": {
+          "deletions": [
+            {
+              "entityName": "WorkflowX_Architecture",
+              "observations": [
+                "Current .hybrid/status.json status is xwhole (this is intentionally wrong for testing)."
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.133Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "Observations deleted successfully"
+          }
+        ],
+        "structuredContent": {
+          "success": true,
+          "message": "Observations deleted successfully"
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 11
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.133Z",
+    "kind": "RESULT-E-remove",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "Observations deleted successfully"
+        }
+      ],
+      "structuredContent": {
+        "success": true,
+        "message": "Observations deleted successfully"
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.133Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "tools/call",
+      "params": {
+        "name": "add_observations",
+        "arguments": {
+          "observations": [
+            {
+              "entityName": "WorkflowX_Architecture",
+              "contents": [
+                "Current .hybrid/status.json status is wait (code truth verified at runtime)."
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.135Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "[\n  {\n    \"entityName\": \"WorkflowX_Architecture\",\n    \"addedObservations\": [\n      \"Current .hybrid/status.json status is wait (code truth verified at runtime).\"\n    ]\n  }\n]"
+          }
+        ],
+        "structuredContent": {
+          "results": [
+            {
+              "entityName": "WorkflowX_Architecture",
+              "addedObservations": [
+                "Current .hybrid/status.json status is wait (code truth verified at runtime)."
+              ]
+            }
+          ]
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 12
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.135Z",
+    "kind": "RESULT-E-correct",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "[\n  {\n    \"entityName\": \"WorkflowX_Architecture\",\n    \"addedObservations\": [\n      \"Current .hybrid/status.json status is wait (code truth verified at runtime).\"\n    ]\n  }\n]"
+        }
+      ],
+      "structuredContent": {
+        "results": [
+          {
+            "entityName": "WorkflowX_Architecture",
+            "addedObservations": [
+              "Current .hybrid/status.json status is wait (code truth verified at runtime)."
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.135Z",
+    "kind": "SEND",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "tools/call",
+      "params": {
+        "name": "read_graph",
+        "arguments": {}
+      }
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.136Z",
+    "kind": "RECV",
+    "data": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\",\n        \"Current .hybrid/status.json status is wait (code truth verified at runtime).\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Feature\",\n      \"entityType\": \"feature\",\n      \"observations\": [\n        \"Diagnostic feature verifying mcp/server-memory integration.\",\n        \"Tests availability, round-trip write, search, open, conflict handling.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Lesson\",\n      \"entityType\": \"lesson\",\n      \"observations\": [\n        \"Captures findings from TEST-MEMORY-001.\",\n        \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n      ]\n    }\n  ],\n  \"relations\": [\n    {\n      \"from\": \"WorkflowX_Architecture\",\n      \"to\": \"TestMemory001_Feature\",\n      \"relationType\": \"uses_memory_for\"\n    },\n    {\n      \"from\": \"TestMemory001_Feature\",\n      \"to\": \"TestMemory001_Lesson\",\n      \"relationType\": \"validates\"\n    }\n  ]\n}"
+          }
+        ],
+        "structuredContent": {
+          "entities": [
+            {
+              "name": "WorkflowX_Architecture",
+              "entityType": "project",
+              "observations": [
+                "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+                "Routes via .hybrid/status.json.",
+                "Supports /xwhole, /xlocal, /xunit.",
+                "Current .hybrid/status.json status is wait (code truth verified at runtime)."
+              ]
+            },
+            {
+              "name": "TestMemory001_Feature",
+              "entityType": "feature",
+              "observations": [
+                "Diagnostic feature verifying mcp/server-memory integration.",
+                "Tests availability, round-trip write, search, open, conflict handling."
+              ]
+            },
+            {
+              "name": "TestMemory001_Lesson",
+              "entityType": "lesson",
+              "observations": [
+                "Captures findings from TEST-MEMORY-001.",
+                "Primary rule: when code truth conflicts with memory, code truth wins."
+              ]
+            }
+          ],
+          "relations": [
+            {
+              "from": "WorkflowX_Architecture",
+              "to": "TestMemory001_Feature",
+              "relationType": "uses_memory_for"
+            },
+            {
+              "from": "TestMemory001_Feature",
+              "to": "TestMemory001_Lesson",
+              "relationType": "validates"
+            }
+          ]
+        }
+      },
+      "jsonrpc": "2.0",
+      "id": 13
+    }
+  },
+  {
+    "t": "2026-06-22T02:41:27.136Z",
+    "kind": "RESULT-FINAL",
+    "data": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"entities\": [\n    {\n      \"name\": \"WorkflowX_Architecture\",\n      \"entityType\": \"project\",\n      \"observations\": [\n        \"WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).\",\n        \"Routes via .hybrid/status.json.\",\n        \"Supports /xwhole, /xlocal, /xunit.\",\n        \"Current .hybrid/status.json status is wait (code truth verified at runtime).\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Feature\",\n      \"entityType\": \"feature\",\n      \"observations\": [\n        \"Diagnostic feature verifying mcp/server-memory integration.\",\n        \"Tests availability, round-trip write, search, open, conflict handling.\"\n      ]\n    },\n    {\n      \"name\": \"TestMemory001_Lesson\",\n      \"entityType\": \"lesson\",\n      \"observations\": [\n        \"Captures findings from TEST-MEMORY-001.\",\n        \"Primary rule: when code truth conflicts with memory, code truth wins.\"\n      ]\n    }\n  ],\n  \"relations\": [\n    {\n      \"from\": \"WorkflowX_Architecture\",\n      \"to\": \"TestMemory001_Feature\",\n      \"relationType\": \"uses_memory_for\"\n    },\n    {\n      \"from\": \"TestMemory001_Feature\",\n      \"to\": \"TestMemory001_Lesson\",\n      \"relationType\": \"validates\"\n    }\n  ]\n}"
+        }
+      ],
+      "structuredContent": {
+        "entities": [
+          {
+            "name": "WorkflowX_Architecture",
+            "entityType": "project",
+            "observations": [
+              "WorkFlowX orchestrator uses Hybrid Trees (Parent + Child).",
+              "Routes via .hybrid/status.json.",
+              "Supports /xwhole, /xlocal, /xunit.",
+              "Current .hybrid/status.json status is wait (code truth verified at runtime)."
+            ]
+          },
+          {
+            "name": "TestMemory001_Feature",
+            "entityType": "feature",
+            "observations": [
+              "Diagnostic feature verifying mcp/server-memory integration.",
+              "Tests availability, round-trip write, search, open, conflict handling."
+            ]
+          },
+          {
+            "name": "TestMemory001_Lesson",
+            "entityType": "lesson",
+            "observations": [
+              "Captures findings from TEST-MEMORY-001.",
+              "Primary rule: when code truth conflicts with memory, code truth wins."
+            ]
+          }
+        ],
+        "relations": [
+          {
+            "from": "WorkflowX_Architecture",
+            "to": "TestMemory001_Feature",
+            "relationType": "uses_memory_for"
+          },
+          {
+            "from": "TestMemory001_Feature",
+            "to": "TestMemory001_Lesson",
+            "relationType": "validates"
+          }
+        ]
+      }
+    }
+  }
+]
