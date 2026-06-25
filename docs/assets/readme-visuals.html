@@ -1,0 +1,2752 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WorkflowX README Visuals</title>
+  <style>
+    :root {
+      --ink: #f6f2ec;
+      --muted: #9d968f;
+      --paper: #030303;
+      --panel: #0a0908;
+      --panel-2: #12100e;
+      --line: #2a211b;
+      --orange: #ff5a1f;
+      --orange-2: #ff8a24;
+      --orange-soft: rgba(255, 90, 31, 0.16);
+      --charcoal: #181512;
+      --green: #ff5a1f;
+      --teal: #ff8a24;
+      --blue: #4a4038;
+      --rust: #ff5a1f;
+      --gold: #ff9d3d;
+      --red: #ff5a1f;
+      --gray: #24211e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: #111;
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", Arial, sans-serif;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    #stage {
+      width: 1200px;
+      height: 675px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255, 90, 31, 0.055), transparent 34%),
+        linear-gradient(90deg, rgba(255, 90, 31, 0.055), transparent 32%, transparent 68%, rgba(255, 90, 31, 0.035)),
+        var(--paper);
+    }
+
+    .frame {
+      position: absolute;
+      inset: 0;
+      padding: 34px 48px 32px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 28px;
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      color: var(--ink);
+      font-weight: 780;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .brand img {
+      width: 36px;
+      height: 14px;
+      object-fit: contain;
+    }
+
+    .kicker {
+      font-size: 12px;
+      color: rgba(255, 138, 36, 0.82);
+      text-transform: uppercase;
+      font-weight: 760;
+      letter-spacing: 0.08em;
+      margin-bottom: 9px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 32px;
+      line-height: 1.08;
+      letter-spacing: 0;
+      max-width: 760px;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+      max-width: 570px;
+      margin-top: 10px;
+    }
+
+      .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+      max-width: 300px;
+    }
+
+    .pill {
+      border: 1px solid rgba(255, 90, 31, 0.22);
+      background: rgba(255, 90, 31, 0.055);
+      border-radius: 6px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 760;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .panel {
+      background: rgba(12, 11, 10, 0.86);
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      border-radius: 8px;
+      box-shadow: none;
+    }
+
+    .node {
+      position: relative;
+      min-height: 96px;
+      padding: 14px;
+    }
+
+    .node strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.1;
+      margin-bottom: 9px;
+    }
+
+    .node p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      border-radius: 999px;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 10px;
+      background: var(--green);
+    }
+
+    .tag.blue { background: #40362f; }
+    .tag.teal { background: var(--orange-2); }
+    .tag.rust { background: var(--rust); }
+    .tag.gold { background: var(--gold); }
+    .tag.red { background: var(--red); }
+
+    .architecture {
+      display: grid;
+      grid-template-columns: 245px 1fr 292px;
+      gap: 18px;
+      align-items: stretch;
+      height: 396px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+      align-content: stretch;
+    }
+
+    .main-agent {
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+      border: 1px solid rgba(255, 90, 31, 0.44);
+      background: rgba(14, 12, 10, 0.92);
+    }
+
+    .agent-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .agent-title strong {
+      font-size: 26px;
+      line-height: 1.05;
+    }
+
+    .mini-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .mini {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 10px;
+      min-height: 82px;
+    }
+
+    .mini b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .mini span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+      display: block;
+    }
+
+    .data-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .data-cell {
+      border-left: 3px solid var(--orange);
+      background: rgba(255, 90, 31, 0.055);
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.35;
+      min-height: 54px;
+    }
+
+    .data-cell b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .connector {
+      position: absolute;
+      height: 2px;
+      background: var(--line);
+      transform-origin: left center;
+    }
+
+    .token-layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 20px;
+      height: 396px;
+    }
+
+    .saving {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      background: rgba(14, 13, 12, 0.86);
+      border: 1px solid rgba(255, 90, 31, 0.38);
+    }
+
+    .saving .big {
+      font-size: 68px;
+      line-height: 0.92;
+      font-weight: 850;
+      color: var(--rust);
+      margin-bottom: 16px;
+    }
+
+    .saving p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.42;
+      font-size: 15px;
+    }
+
+    .layers {
+      display: grid;
+      grid-template-rows: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 88px 1fr 150px;
+      gap: 14px;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .layer-code {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 24px;
+      font-weight: 850;
+      background: var(--green);
+    }
+
+    .layer:nth-child(2) .layer-code { background: var(--teal); }
+    .layer:nth-child(3) .layer-code { background: #55463c; }
+
+    .layer h2 {
+      margin: 0 0 7px;
+      font-size: 20px;
+      line-height: 1.1;
+    }
+
+    .layer p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .metric {
+      border-left: 1px solid var(--line);
+      padding-left: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .metric b {
+      display: block;
+      color: var(--ink);
+      font-size: 21px;
+      margin-bottom: 5px;
+    }
+
+    .cap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      height: 396px;
+    }
+
+    .mode-table {
+      padding: 18px;
+    }
+
+    .mode-row {
+      display: grid;
+      grid-template-columns: 124px 1fr 72px;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+
+    .mode-row:last-child { border-bottom: 0; }
+
+    .mode-badge {
+      height: 36px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 850;
+      background: var(--green);
+      font-size: 12px;
+    }
+
+    .mode-row:nth-child(2) .mode-badge { background: var(--teal); }
+    .mode-row:nth-child(3) .mode-badge { background: #55463c; }
+    .mode-row:nth-child(4) .mode-badge { background: var(--rust); }
+
+    .mode-copy b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .mode-copy span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .mode-mark {
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+      line-height: 1.25;
+    }
+
+    .cap-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .cap {
+      padding: 14px;
+      min-height: 116px;
+      border-left: 3px solid var(--orange);
+    }
+
+    .cap:nth-child(2),
+    .cap:nth-child(4),
+    .cap:nth-child(6) { border-left-color: rgba(255, 138, 36, 0.75); }
+    .cap:nth-child(3),
+    .cap:nth-child(5) { border-left-color: rgba(255, 90, 31, 0.42); }
+
+    .cap b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 8px;
+      line-height: 1.14;
+    }
+
+    .cap span {
+      color: var(--muted);
+      display: block;
+      font-size: 12px;
+      line-height: 1.32;
+    }
+
+    .workflow {
+      height: 400px;
+      position: relative;
+    }
+
+    .workflow-line {
+      position: absolute;
+      left: 33px;
+      right: 33px;
+      top: 172px;
+      height: 6px;
+      background: #28221e;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .workflow-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--green), var(--teal), var(--blue), var(--rust));
+      border-radius: 999px;
+      transition: width 0.1s linear;
+    }
+
+    .steps {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 106px;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 4px;
+    }
+
+    .step {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      min-width: 0;
+    }
+
+    .dot {
+      width: 34px;
+      height: 34px;
+      margin: 44px auto 10px;
+      border-radius: 50%;
+      border: 2px solid #cfc5b6;
+      background: #11100f;
+      color: var(--muted);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 840;
+    }
+
+    .step.done .dot {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    .step.active .dot {
+      background: var(--rust);
+      border-color: var(--rust);
+      color: white;
+      box-shadow: 0 0 0 8px rgba(180, 90, 49, 0.12);
+    }
+
+    .step b {
+      display: block;
+      font-size: 11px;
+      color: var(--ink);
+      margin-bottom: 4px;
+      white-space: normal;
+    }
+
+    .active-card {
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      transform: translateX(-50%);
+      width: 720px;
+      min-height: 116px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: 190px 1fr;
+      gap: 18px;
+      align-items: center;
+      background: #11100f;
+      border: 2px solid rgba(180, 90, 49, 0.4);
+    }
+
+    .active-card .stage-no {
+      color: var(--rust);
+      font-size: 13px;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+
+    .active-card h2 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.08;
+    }
+
+    .active-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .workflow-side {
+      position: absolute;
+      top: 10px;
+      width: 248px;
+      min-height: 108px;
+      padding: 14px;
+    }
+
+    .workflow-side.left { left: 18px; }
+    .workflow-side.right { right: 18px; }
+
+    .workflow-side b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .workflow-side span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+      display: block;
+    }
+
+    .loop-arrow {
+      position: absolute;
+      width: 142px;
+      height: 58px;
+      right: 247px;
+      top: 226px;
+      border: 2px solid var(--red);
+      border-left: 0;
+      border-radius: 0 36px 36px 0;
+      opacity: 0;
+    }
+
+    .loop-arrow::after {
+      content: "";
+      position: absolute;
+      left: -8px;
+      bottom: -7px;
+      width: 0;
+      height: 0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 10px solid var(--red);
+    }
+
+    .console {
+      position: relative;
+      height: 400px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(17, 16, 15, 0.96), rgba(5, 5, 5, 0.98));
+      box-shadow: inset 0 0 0 1px rgba(255, 90, 31, 0.04);
+      overflow: hidden;
+    }
+
+    .console::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 90, 31, 0.045), transparent);
+      pointer-events: none;
+    }
+
+    .lane {
+      position: absolute;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255, 90, 31, 0.86), transparent);
+      transform-origin: left center;
+      opacity: 0.75;
+    }
+
+    .lane.dim {
+      background: linear-gradient(90deg, transparent, rgba(215, 210, 202, 0.28), transparent);
+      opacity: 0.55;
+    }
+
+    .console-card {
+      position: absolute;
+      border: 1px solid rgba(255, 90, 31, 0.28);
+      background: rgba(13, 12, 11, 0.88);
+      border-radius: 8px;
+      padding: 13px 14px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.34);
+    }
+
+    .console-card.active {
+      border-color: rgba(255, 90, 31, 0.9);
+      box-shadow: 0 0 0 1px rgba(255, 90, 31, 0.32), 0 0 34px rgba(255, 90, 31, 0.18);
+    }
+
+    .console-card b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 7px;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .console-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    .core-orbit {
+      position: absolute;
+      left: 423px;
+      top: 88px;
+      width: 246px;
+      height: 246px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 90, 31, 0.35);
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(255, 90, 31, 0.18), rgba(14, 13, 12, 0.88) 54%, rgba(0, 0, 0, 0.3));
+    }
+
+    .core-ring {
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255, 177, 86, 0.45);
+    }
+
+    .core-label {
+      position: relative;
+      width: 142px;
+      height: 142px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: #050505;
+      border: 2px solid rgba(255, 90, 31, 0.78);
+      box-shadow: 0 0 42px rgba(255, 90, 31, 0.22);
+      padding: 18px;
+    }
+
+    .core-label b {
+      display: block;
+      font-size: 24px;
+      line-height: 1.02;
+    }
+
+    .core-label span {
+      display: block;
+      margin-top: 8px;
+      font-size: 11px;
+      line-height: 1.25;
+      color: var(--muted);
+    }
+
+    .module-chip {
+      position: absolute;
+      height: 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 90, 31, 0.34);
+      background: rgba(8, 8, 8, 0.86);
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 11px;
+      font-size: 11px;
+      font-weight: 840;
+    }
+
+    .module-chip.active {
+      background: var(--rust);
+      border-color: var(--rust);
+      color: #090909;
+      box-shadow: 0 0 24px rgba(255, 90, 31, 0.38);
+    }
+
+    .packet {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--rust);
+      box-shadow: 0 0 0 7px rgba(255, 90, 31, 0.16), 0 0 32px rgba(255, 90, 31, 0.62);
+      z-index: 12;
+    }
+
+    .packet.secondary {
+      width: 12px;
+      height: 12px;
+      background: var(--gold);
+      opacity: 0.72;
+      z-index: 11;
+    }
+
+    .doc-panel {
+      position: absolute;
+      left: 378px;
+      bottom: 24px;
+      width: 340px;
+      height: 92px;
+      border: 1px solid rgba(255, 90, 31, 0.32);
+      background: rgba(12, 11, 10, 0.92);
+      border-radius: 8px;
+      padding: 13px 14px;
+    }
+
+    .doc-panel b {
+      font-size: 14px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .doc-line {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 90, 31, 0.22);
+      margin: 8px 0;
+      overflow: hidden;
+    }
+
+    .doc-line i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--rust), var(--gold));
+      border-radius: 999px;
+    }
+
+    .status-strip {
+      position: absolute;
+      left: 34px;
+      right: 34px;
+      top: 20px;
+      height: 34px;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+    }
+
+    .status-step {
+      border: 1px solid rgba(255, 90, 31, 0.18);
+      background: rgba(255, 90, 31, 0.05);
+      color: rgba(245, 240, 232, 0.52);
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 820;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .status-step.done {
+      border-color: rgba(255, 90, 31, 0.7);
+      color: var(--ink);
+      background: rgba(255, 90, 31, 0.22);
+    }
+
+    .status-step.active {
+      background: var(--rust);
+      border-color: var(--rust);
+      color: #050505;
+    }
+
+    .verdict {
+      position: absolute;
+      right: 34px;
+      bottom: 28px;
+      width: 184px;
+      height: 88px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 90, 31, 0.38);
+      background: rgba(13, 12, 11, 0.9);
+      padding: 13px;
+    }
+
+    .verdict .label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 820;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .verdict .value {
+      color: var(--rust);
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .scene-caption {
+      position: absolute;
+      left: 34px;
+      bottom: 28px;
+      width: 280px;
+      min-height: 88px;
+      border-left: 4px solid var(--rust);
+      padding: 4px 0 0 14px;
+    }
+
+    .scene-caption .stage-no {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 880;
+      margin-bottom: 7px;
+    }
+
+    .scene-caption h2 {
+      margin: 0 0 8px;
+      font-size: 23px;
+      line-height: 1.05;
+    }
+
+    .scene-caption p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .flow-stage {
+      position: relative;
+      height: 400px;
+      border: 1px solid rgba(255, 90, 31, 0.22);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 90, 31, 0.055), transparent 38%),
+        #020202;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    }
+
+    .flow-stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 22%, rgba(0, 0, 0, 0.24));
+      pointer-events: none;
+    }
+
+    .process-rail {
+      position: absolute;
+      left: 48px;
+      right: 48px;
+      top: 26px;
+      height: 86px;
+    }
+
+    .rail-track {
+      position: absolute;
+      left: 44px;
+      right: 44px;
+      top: 38px;
+      height: 3px;
+      background: rgba(255, 90, 31, 0.2);
+      overflow: hidden;
+    }
+
+    .rail-fill {
+      height: 100%;
+      width: var(--rail, 0%);
+      background: linear-gradient(90deg, #ff5a1f, #ff8a24);
+      box-shadow: 0 0 18px rgba(255, 90, 31, 0.48);
+    }
+
+    .rail-nodes {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 8px;
+    }
+
+    .rail-node {
+      position: relative;
+      text-align: center;
+      color: rgba(245, 240, 232, 0.54);
+      font-size: 10px;
+      font-weight: 820;
+      line-height: 1.15;
+      padding-top: 55px;
+      white-space: nowrap;
+    }
+
+    .rail-node::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 25px;
+      width: 24px;
+      height: 24px;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 90, 31, 0.55);
+      background: #060606;
+      box-shadow: inset 0 0 0 4px #060606;
+    }
+
+    .rail-node.done::before {
+      background: #ff5a1f;
+      box-shadow: 0 0 18px rgba(255, 90, 31, 0.55);
+    }
+
+    .rail-node.active {
+      color: var(--ink);
+    }
+
+    .rail-node.active::before {
+      background: #ff8a24;
+      border-color: #ff8a24;
+      box-shadow: 0 0 0 6px rgba(255, 90, 31, 0.16), 0 0 24px rgba(255, 138, 36, 0.58);
+    }
+
+    .rail-packet {
+      position: absolute;
+      top: 30px;
+      left: var(--packet-x, 0%);
+      width: 16px;
+      height: 16px;
+      margin-left: -8px;
+      border-radius: 50%;
+      background: #ff5a1f;
+      box-shadow: 0 0 0 7px rgba(255, 90, 31, 0.14), 0 0 30px rgba(255, 90, 31, 0.78);
+      z-index: 3;
+    }
+
+    .loop-rail {
+      position: absolute;
+      right: 142px;
+      top: 62px;
+      width: 258px;
+      height: 72px;
+      border: 2px solid rgba(255, 90, 31, 0.42);
+      border-top: 0;
+      border-radius: 0 0 48px 48px;
+      opacity: var(--loop-opacity, 0.3);
+    }
+
+    .loop-rail::after {
+      content: "";
+      position: absolute;
+      left: -9px;
+      top: -7px;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 12px solid rgba(255, 90, 31, 0.8);
+    }
+
+    .demo-shell {
+      position: absolute;
+      left: 42px;
+      right: 42px;
+      bottom: 28px;
+      height: 242px;
+      display: grid;
+      grid-template-columns: 250px 1fr 154px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .demo-caption {
+      border-left: 4px solid #ff5a1f;
+      padding: 8px 0 0 15px;
+      align-self: end;
+      min-height: 132px;
+    }
+
+    .demo-caption .stage-no {
+      color: #ffb156;
+      font-size: 12px;
+      font-weight: 880;
+      margin-bottom: 8px;
+    }
+
+    .demo-caption h2 {
+      margin: 0 0 10px;
+      font-size: 25px;
+      line-height: 1.05;
+    }
+
+    .demo-caption p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.36;
+    }
+
+    .demo-theater {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 90, 31, 0.20);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(14, 12, 10, 0.96), rgba(3, 3, 3, 0.98));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+      perspective: 1200px;
+    }
+
+    .demo-theater::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 90, 31, 0.07), transparent 34%);
+      pointer-events: none;
+    }
+
+    .theater-sweep {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(var(--scan) - 18%);
+      width: 80px;
+      background: linear-gradient(90deg, transparent, rgba(255, 138, 36, 0.10), transparent);
+      opacity: 0.52;
+      transform: skewX(-10deg);
+      pointer-events: none;
+    }
+
+    .scene-ui {
+      position: absolute;
+      inset: 0;
+      transform: translate3d(var(--shift-x), var(--shift-y), 0) scale(var(--scene-scale));
+      opacity: var(--scene-opacity);
+    }
+
+    .ui-surface {
+      position: absolute;
+      border: 1px solid rgba(255, 90, 31, 0.18);
+      border-radius: 8px;
+      background: rgba(10, 9, 8, 0.96);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+      overflow: hidden;
+    }
+
+    .ui-surface::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.035), transparent 28%);
+      pointer-events: none;
+    }
+
+    .ui-main {
+      left: 26px;
+      top: 20px;
+      width: 62%;
+      height: 182px;
+      transform: translate3d(0, var(--main-y), 42px) rotateX(0.01deg);
+    }
+
+    .ui-side {
+      right: 24px;
+      top: 38px;
+      width: 28%;
+      height: 136px;
+      opacity: 0.86;
+      transform: translate3d(var(--side-x), 0, -20px) rotateY(-5deg);
+      filter: saturate(0.88) brightness(0.86);
+    }
+
+    .ui-low {
+      right: 70px;
+      bottom: 18px;
+      width: 40%;
+      height: 56px;
+      opacity: 0.74;
+      transform: translate3d(var(--low-x), 0, 12px);
+    }
+
+    .ui-pad {
+      padding: 17px 18px;
+    }
+
+    .ui-title {
+      color: #ffb156;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    .ui-kicker {
+      color: rgba(245, 240, 232, 0.72);
+      font-size: 11px;
+      font-weight: 820;
+      margin-bottom: 8px;
+    }
+
+    .route-map {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .route-tile {
+      min-height: 62px;
+      border: 1px solid rgba(255, 90, 31, 0.14);
+      background: rgba(0, 0, 0, 0.42);
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    .route-tile b,
+    .doc-node b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .route-tile span,
+    .doc-node span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.28;
+    }
+
+    .json-card {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: rgba(245, 240, 232, 0.72);
+      font-size: 12px;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .doc-canvas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .doc-node {
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      border-radius: 7px;
+      padding: 12px;
+      background: rgba(255, 90, 31, 0.035);
+      min-height: 112px;
+    }
+
+    .scan-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .scan-row {
+      height: 12px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(255, 90, 31, 0.62), rgba(255, 145, 31, 0.18));
+      width: var(--w);
+      transform-origin: left;
+      transform: scaleX(var(--row-scale));
+    }
+
+    .cursor-dot {
+      position: absolute;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #ff5a1f;
+      box-shadow: 0 0 0 6px rgba(255, 90, 31, 0.16), 0 0 30px rgba(255, 90, 31, 0.66);
+      left: var(--cursor-x);
+      top: var(--cursor-y);
+    }
+
+    .verify-mini {
+      display: grid;
+      gap: 6px;
+    }
+
+    .verify-mini .verify-row {
+      background: rgba(0, 0, 0, 0.38);
+      min-height: 28px;
+      padding: 8px 10px;
+    }
+
+    .demo-window {
+      position: relative;
+      border: 1px solid rgba(255, 90, 31, 0.32);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(28, 24, 21, 0.98), rgba(7, 7, 7, 0.98));
+      overflow: hidden;
+      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.38);
+    }
+
+    .demo-window::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 30px;
+      background: rgba(255, 90, 31, 0.08);
+      border-bottom: 1px solid rgba(255, 90, 31, 0.2);
+    }
+
+    .chrome-dots {
+      position: absolute;
+      left: 14px;
+      top: 11px;
+      display: flex;
+      gap: 6px;
+      z-index: 3;
+    }
+
+    .chrome-dots i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #ff5a1f;
+      opacity: 0.85;
+    }
+
+    .demo-view {
+      position: absolute;
+      inset: 31px 0 0;
+      padding: 18px 20px;
+      animation: viewIn 0.42s ease both;
+    }
+
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .view-title {
+      font-size: 13px;
+      color: #ffb156;
+      font-weight: 880;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .terminal-line {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #f7f0e8;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 90, 31, 0.14);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .terminal-line::before {
+      content: ">";
+      color: #ff5a1f;
+      font-weight: 900;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .matrix-card,
+    .mini-doc,
+    .code-pane,
+    .verify-row,
+    .report-card {
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      background: rgba(6, 6, 6, 0.72);
+      border-radius: 7px;
+      padding: 11px;
+    }
+
+    .matrix-card b,
+    .mini-doc b,
+    .code-pane b,
+    .report-card b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .matrix-card span,
+    .mini-doc span,
+    .report-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .status-json {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 11px;
+      color: #d9d2ca;
+      line-height: 1.65;
+      white-space: pre;
+    }
+
+    .question-box {
+      border-left: 3px solid #ff5a1f;
+      padding: 10px 12px;
+      background: rgba(255, 90, 31, 0.08);
+      margin-top: 8px;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .gate-card {
+      width: 74%;
+      margin: 10px auto 0;
+      border: 1px solid rgba(255, 177, 86, 0.45);
+      background: rgba(255, 90, 31, 0.1);
+      border-radius: 8px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .gate-card b {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .gate-button {
+      display: inline-block;
+      margin-top: 10px;
+      background: #ff5a1f;
+      color: #050505;
+      border-radius: 6px;
+      padding: 7px 13px;
+      font-weight: 900;
+      font-size: 12px;
+    }
+
+    .noise-field {
+      position: relative;
+      height: 140px;
+      border: 1px solid rgba(255, 90, 31, 0.18);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .noise-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 90, 31, 0.55);
+    }
+
+    .filter-bar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--scan, 0%);
+      width: 3px;
+      background: #ffb156;
+      box-shadow: 0 0 34px #ff5a1f;
+    }
+
+    .doc-stack {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      gap: 12px;
+      height: 150px;
+    }
+
+    .doc-lines i,
+    .code-lines i {
+      display: block;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 90, 31, 0.32);
+      margin: 8px 0;
+    }
+
+    .code-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .code-line {
+      height: 8px;
+      margin: 9px 0;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .code-line.add { background: rgba(255, 90, 31, 0.45); }
+    .code-line.dim { width: 62%; opacity: 0.55; }
+
+    .verify-table {
+      display: grid;
+      gap: 8px;
+    }
+
+    .verify-row {
+      display: grid;
+      grid-template-columns: 70px 1fr 74px;
+      gap: 10px;
+      align-items: center;
+      min-height: 34px;
+      font-size: 12px;
+    }
+
+    .verify-row .pass { color: #ffb156; font-weight: 900; }
+    .verify-row .fail { color: #ff5a1f; font-weight: 900; }
+
+    .ui-side .verify-row {
+      grid-template-columns: 42px 1fr 34px;
+      gap: 6px;
+      padding: 7px 8px;
+      font-size: 10px;
+      min-height: 30px;
+    }
+
+    .side-metrics {
+      display: grid;
+      gap: 9px;
+    }
+
+    .metric-card {
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      background: rgba(8, 7, 6, 0.88);
+      border-radius: 8px;
+      padding: 10px 11px;
+      min-height: 58px;
+      box-shadow: inset 2px 0 0 rgba(255, 90, 31, 0.34);
+    }
+
+    .iteration-map {
+      display: grid;
+      grid-template-columns: 1fr 38px 1fr 38px 1fr;
+      gap: 12px;
+      align-items: center;
+      height: 106px;
+      margin-top: 8px;
+    }
+
+    .iteration-full {
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 18px;
+      height: 208px;
+    }
+
+    .iteration-node {
+      min-height: 94px;
+      border: 1px solid rgba(255, 90, 31, 0.18);
+      background: rgba(255, 90, 31, 0.035);
+      border-radius: 7px;
+      padding: 12px;
+    }
+
+    .iteration-node b {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    .iteration-node span {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.28;
+    }
+
+    .iteration-arrow {
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 90, 31, 0.18), #ff5a1f);
+      position: relative;
+    }
+
+    .iteration-arrow::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -5px;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 9px solid #ff5a1f;
+    }
+
+    .iteration-note {
+      margin-top: 12px;
+      border-left: 3px solid #ff5a1f;
+      padding: 8px 0 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.36;
+    }
+
+    .metric-card .label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 820;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .metric-card .value {
+      color: #ff5a1f;
+      font-size: 20px;
+      font-weight: 920;
+      line-height: 1;
+    }
+
+    .watermark {
+      position: absolute;
+      right: 28px;
+      bottom: 18px;
+      color: rgba(245, 240, 232, 0.42);
+      font-size: 10px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      letter-spacing: 0.12em;
+    }
+
+    .small-note {
+      position: absolute;
+      left: 54px;
+      bottom: 20px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .workflow-v4 {
+      height: 428px;
+      display: grid;
+      grid-template-columns: 226px 1fr 196px;
+      gap: 16px;
+      padding: 18px;
+      border: 1px solid rgba(255, 90, 31, 0.20);
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 90, 31, 0.055), transparent 42%),
+        #030303;
+      overflow: hidden;
+    }
+
+    .phase-index,
+    .motion-board,
+    .state-ledger {
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      border-radius: 8px;
+      background: rgba(10, 9, 8, 0.86);
+    }
+
+    .phase-index {
+      padding: 12px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 10px;
+    }
+
+    .index-title,
+    .ledger-title,
+    .board-kicker {
+      color: #ff8a24;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .index-list {
+      display: grid;
+      gap: 3px;
+      align-content: start;
+    }
+
+    .index-row {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 8px;
+      align-items: center;
+      min-height: 23px;
+      padding: 3px 6px;
+      border-radius: 6px;
+      color: rgba(245, 240, 232, 0.55);
+    }
+
+    .index-row.done,
+    .index-row.active {
+      color: var(--ink);
+    }
+
+    .index-row.active {
+      background: rgba(255, 90, 31, 0.12);
+      box-shadow: inset 2px 0 0 #ff5a1f;
+    }
+
+    .index-num {
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(255, 90, 31, 0.28);
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 900;
+      color: rgba(245, 240, 232, 0.55);
+    }
+
+    .index-row.done .index-num {
+      background: rgba(255, 90, 31, 0.72);
+      border-color: rgba(255, 90, 31, 0.72);
+      color: #070605;
+    }
+
+    .index-row.active .index-num {
+      background: #ff5a1f;
+      border-color: #ff5a1f;
+      color: #070605;
+      box-shadow: 0 0 22px rgba(255, 90, 31, 0.46);
+    }
+
+    .index-copy b {
+      display: block;
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    .index-copy span {
+      display: block;
+      margin-top: 1px;
+      font-size: 9px;
+      line-height: 1.1;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .motion-board {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .motion-board::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 90, 31, 0.08), transparent 36%);
+      pointer-events: none;
+    }
+
+    .board-head {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .board-head h2 {
+      margin: 6px 0 0;
+      font-size: 25px;
+      line-height: 1.05;
+    }
+
+    .board-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+      max-width: 420px;
+    }
+
+    .board-badge {
+      border: 1px solid rgba(255, 90, 31, 0.28);
+      border-radius: 6px;
+      padding: 8px 10px;
+      min-width: 90px;
+      text-align: center;
+      color: #ff5a1f;
+      font-size: 22px;
+      font-weight: 920;
+      line-height: 1;
+      background: rgba(255, 90, 31, 0.06);
+    }
+
+    .scene-panel {
+      position: relative;
+      min-height: 238px;
+      border: 1px solid rgba(255, 90, 31, 0.14);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.32);
+      padding: 18px;
+      overflow: hidden;
+      transform: translate3d(var(--scene-x), var(--scene-y), 0) scale(var(--scene-scale));
+      opacity: var(--scene-opacity);
+    }
+
+    .scene-grid-3,
+    .scene-grid-2 {
+      display: grid;
+      gap: 12px;
+      height: 100%;
+      align-items: stretch;
+    }
+
+    .scene-grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .scene-grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+    .work-card {
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      border-radius: 7px;
+      padding: 14px;
+      background: rgba(255, 90, 31, 0.035);
+      min-height: 82px;
+    }
+
+    .work-card strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.12;
+      margin-bottom: 8px;
+    }
+
+    .work-card span,
+    .work-card p {
+      display: block;
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.34;
+    }
+
+    .command-line {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255, 90, 31, 0.16);
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    .command-line::before {
+      content: ">";
+      color: #ff5a1f;
+      font-weight: 900;
+    }
+
+    .signal-field {
+      position: relative;
+      height: 142px;
+      border: 1px solid rgba(255, 90, 31, 0.14);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.24);
+    }
+
+    .signal-dot {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 90, 31, 0.55);
+    }
+
+    .signal-beam {
+      position: absolute;
+      left: var(--scan);
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #ff8a24;
+      box-shadow: 0 0 30px rgba(255, 90, 31, 0.58);
+    }
+
+    .tree-map {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .tree-doc {
+      min-height: 152px;
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      border-radius: 7px;
+      padding: 14px;
+      background: rgba(255, 90, 31, 0.035);
+    }
+
+    .doc-bars i {
+      display: block;
+      height: 7px;
+      margin: 9px 0;
+      border-radius: 999px;
+      background: rgba(255, 90, 31, 0.30);
+      width: var(--w);
+      transform: scaleX(var(--row-scale));
+      transform-origin: left;
+    }
+
+    .fix-loop {
+      position: relative;
+      height: 184px;
+    }
+
+    .loop-card {
+      position: absolute;
+      z-index: 2;
+      width: 184px;
+      min-height: 82px;
+      border: 1px solid rgba(255, 90, 31, 0.20);
+      border-radius: 8px;
+      padding: 13px;
+      background: rgba(10, 9, 8, 0.98);
+    }
+
+    .loop-card b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .loop-card span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.32;
+    }
+
+    .loop-eval { left: 12px; top: 8px; }
+    .loop-main { left: 50%; top: 92px; transform: translateX(-50%); border-color: rgba(255, 90, 31, 0.44); }
+    .loop-code { right: 12px; top: 8px; }
+
+    .loop-line {
+      position: absolute;
+      z-index: 1;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 90, 31, 0.20), #ff5a1f);
+      transform-origin: left center;
+    }
+
+    .loop-line::after {
+      content: "";
+      position: absolute;
+      right: -1px;
+      top: -5px;
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 9px solid #ff5a1f;
+    }
+
+    .state-ledger {
+      padding: 12px;
+      display: grid;
+      grid-template-rows: auto repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .ledger-card {
+      border: 1px solid rgba(255, 90, 31, 0.16);
+      border-radius: 7px;
+      background: rgba(255, 90, 31, 0.035);
+      padding: 11px;
+    }
+
+    .ledger-card .label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 820;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .ledger-card .value {
+      color: #ff5a1f;
+      font-size: 20px;
+      font-weight: 920;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body>
+  <main id="stage"></main>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const scene = params.get("scene") || "workflow";
+    const lang = params.get("lang") || "zh";
+    const fixedT = params.has("t") ? Number(params.get("t")) : null;
+    const root = document.getElementById("stage");
+
+    const copy = {
+      zh: {
+        archTitle: "Main Agent 直接编排的多智能体工作流",
+        archSub: "没有 orchestratorX 子代理。主代理负责路由、规划、文档写入和状态机；coderX 与 evaluatorX 只通过结构化 Payload 协作。",
+        tokenTitle: "多轮迭代的上下文预算控制",
+        tokenSub: "把“长对话越写越贵”拆成可缓存、可压缩、可外置记忆的三层机制，并用 noiseX / promptX 降低下游输入噪声。",
+        capTitle: "四种入口，覆盖从最小修改到并行团队",
+        capSub: "按影响范围选择 xunit / xlocal / xwhole / xwhole -parallel；同一套 Hybrid Tree 与 AC 验收模型贯穿全流程。",
+        workflowTitle: "一次完整 xwhole 流程",
+        workflowSub: "从需求进入、方案确认、文档生成，到 coderX 实现、evaluatorX 验收、失败回流与 PASS 收口。",
+        pills: ["RouteX", "Module 08", "Hybrid Tree", "Bus Payload", "MCP Memory", "Worktree"],
+        command: "用户 / 指令",
+        commandBody: "xwhole / xlocal / xunit / xstatus / xprompt",
+        main: "Main Agent",
+        mainBody: "唯一编排者与唯一 Hybrid Tree 文档写入者",
+        agents: "执行代理",
+        data: "事实层",
+        steps: [
+          ["入口", "识别命令和当前状态"],
+          ["初始化", "MCP / worktree / 参数"],
+          ["发现", "代码探索 + 苏格拉底式追问"],
+          ["确认", "Hard Gate 后才生成 PRD"],
+          ["净化", "noiseX 提炼干净信号"],
+          ["文档", "生成 Parent + Child"],
+          ["优化", "promptX / promptMasterX"],
+          ["编码", "coderX 在隔离上下文实现"],
+          ["验收", "evaluatorX 独立核对 AC"],
+          ["收口", "PASS / xstatus / 记忆回写"]
+        ],
+        cards: [
+          ["用户发起需求", "Main Agent 先读工作流状态，再由 routeX 判断是继续当前流程、只读探索，还是启动 xwhole / xlocal / xunit。"],
+          ["环境与参数初始化", "解析 -N、-box、-parallel 等参数，探测 MCP 可用性，并准备 worktree 隔离策略。"],
+          ["Phase 1 需求发现", "先探索代码，再通过 Module 08 和 socratesX 暴露边界、风险、遗漏的非功能要求。"],
+          ["用户确认方案", "不直接生成 Hybrid Tree。必须经过确认门，避免在错误方案上进入开发。"],
+          ["noiseX 上下文降噪", "把多轮探索和废弃假设压成干净摘要，作为文档生成的可靠输入。"],
+          ["Phase 2 生成 Hybrid Tree", "Main Agent 写 Parent / Child：范围、AC、文件索引、依赖、知识图谱概要。"],
+          ["指令预处理", "xunit 和修复轮自动用 promptX；复杂提示用 promptMasterX 输出更精确的执行上下文。"],
+          ["coderX 实现", "coderX 只读 Hybrid Tree，按 Child AC 写代码，返回 Change Summary Payload。"],
+          ["evaluatorX 独立验收", "评估员不信任自我声明，读取 diff 与代码逐条核对 AC；失败则给出修复指令。"],
+          ["PASS 收口", "Main Agent 更新文档状态，必要时生成 xstatus 报告，并把稳定事实写入 MCP Memory。"]
+        ],
+        layers: [
+          ["L1", "分区缓存", "稳定区置顶，动态评估区置底覆写，提升 Prompt Cache 命中率。", "40-60%", "首轮后节省"],
+          ["L2", "干叶分离", "Markdown 只留需求树干，实体关系交给 MCP 知识图谱按需读取。", "更薄", "文档上下文"],
+          ["L3", "记忆快照", "Hybrid Tree 存指针和摘要，完整节点持久化到 server-memory。", "跨会话", "复用项目事实"]
+        ],
+        modes: [
+          ["xunit", "单元任务", "单文件、小改动；promptX → coderX，默认不评估。", "最快"],
+          ["xlocal", "局部任务", "复用或生成最小 Hybrid Tree，再进入编码 / 验收循环。", "局部"],
+          ["xwhole", "全局任务", "Phase 1 需求发现 → Phase 2 文档生成 → 核心迭代。", "完整"],
+          ["xwhole -parallel", "并行团队", "Claude Code Agent Teams：多个 coder / evaluator 并行推进。", "并行"]
+        ],
+        caps: [
+          ["Hybrid Tree", "Parent + Child 文档树承载范围、AC、依赖、文件索引和状态。"],
+          ["AC 交叉验证", "evaluatorX 独立读代码和 diff，不采信 coderX 的完成声明。"],
+          ["上下文降噪", "noiseX 在 Phase 1→2 提取纯净信号，减少文档污染。"],
+          ["提示预处理", "promptX / promptMasterX 把粗需求转成 coderX 可执行输入。"],
+          ["Worktree 隔离", "执行代理在独立目录工作，降低并行覆盖和跨分支污染。"],
+          ["xstatus 可视化", "从 Hybrid Tree 与 git 活动生成高保真工作流状态报告。"]
+        ]
+      },
+      en: {
+        archTitle: "Main Agent orchestrates the multi-agent workflow directly",
+        archSub: "There is no orchestratorX sub-agent. The Main Agent owns routing, planning, document writes, and state; coderX and evaluatorX collaborate only through structured Payloads.",
+        tokenTitle: "Context-budget control for multi-round iteration",
+        tokenSub: "Long conversations are split into cacheable sections, compressed trunks, and external memory. noiseX and promptX reduce downstream input noise.",
+        capTitle: "Four entry points, from minimal edits to parallel teams",
+        capSub: "Choose xunit / xlocal / xwhole / xwhole -parallel by blast radius. Hybrid Tree and AC validation stay consistent across the workflow.",
+        workflowTitle: "A complete xwhole workflow",
+        workflowSub: "From request intake and plan confirmation to document generation, coderX implementation, evaluatorX verification, fix loop, and PASS close.",
+        pills: ["RouteX", "Module 08", "Hybrid Tree", "Bus Payload", "MCP Memory", "Worktree"],
+        command: "User / Command",
+        commandBody: "xwhole / xlocal / xunit / xstatus / xprompt",
+        main: "Main Agent",
+        mainBody: "The only orchestrator and the only Hybrid Tree document writer",
+        agents: "Execution agents",
+        data: "Fact layer",
+        steps: [
+          ["Entry", "Command + state gate"],
+          ["Init", "MCP / worktree / params"],
+          ["Discover", "Code scan + Socratic questions"],
+          ["Confirm", "Hard Gate before PRD"],
+          ["Denoise", "noiseX extracts clean signal"],
+          ["Docs", "Parent + Child generated"],
+          ["Prompt", "promptX / promptMasterX"],
+          ["Code", "coderX implements in isolation"],
+          ["Verify", "evaluatorX checks AC"],
+          ["Close", "PASS / xstatus / memory"]
+        ],
+        cards: [
+          ["Request enters", "The Main Agent reads workflow state first. routeX decides whether to continue, explore read-only, or start xwhole / xlocal / xunit."],
+          ["Environment initialized", "Parse -N, -box, -parallel, probe MCP availability, and prepare worktree isolation."],
+          ["Phase 1 discovery", "Explore code before asking; Module 08 and socratesX expose boundaries, risks, and missing NFRs."],
+          ["User confirms plan", "Hybrid Tree is not generated until the confirmation gate is passed."],
+          ["noiseX denoises context", "Exploration history and discarded hypotheses are compressed into a clean signal for document generation."],
+          ["Phase 2 Hybrid Tree", "The Main Agent writes Parent / Child docs: scope, AC, file index, dependencies, memory outline."],
+          ["Prompt preprocessing", "xunit and fix rounds use promptX; complex prompts can go through promptMasterX."],
+          ["coderX implements", "coderX reads Hybrid Tree, implements against Child AC, and returns a Change Summary Payload."],
+          ["evaluatorX verifies", "The evaluator distrusts self-report, reads diff and code, checks each AC, and returns fix instructions on failure."],
+          ["PASS close", "The Main Agent updates document state, can generate xstatus, and writes stable facts back to MCP Memory."]
+        ],
+        layers: [
+          ["L1", "Section caching", "Stable sections stay at the top; dynamic evaluation sections are overwritten at the bottom.", "40-60%", "saved after round 1"],
+          ["L2", "Trunk / leaf split", "Markdown keeps the requirement trunk; entity relations live in MCP memory.", "leaner", "document context"],
+          ["L3", "Memory snapshot", "Hybrid Tree stores pointers and summaries; full nodes persist in server-memory.", "cross-session", "project facts"]
+        ],
+        modes: [
+          ["xunit", "Unit task", "Single-file or small change; promptX → coderX, evaluator off by default.", "fastest"],
+          ["xlocal", "Local task", "Reuse or create a minimal Hybrid Tree, then enter code / verify loop.", "scoped"],
+          ["xwhole", "Global task", "Phase 1 discovery → Phase 2 docs → core iteration loop.", "complete"],
+          ["xwhole -parallel", "Parallel team", "Claude Code Agent Teams: multiple coder / evaluator teammates in parallel.", "parallel"]
+        ],
+        caps: [
+          ["Hybrid Tree", "Parent + Child docs carry scope, AC, dependencies, file index, and state."],
+          ["AC cross-validation", "evaluatorX independently reads code and diff instead of trusting coderX."],
+          ["Context denoising", "noiseX extracts clean signal before Phase 2 document generation."],
+          ["Prompt preprocessing", "promptX / promptMasterX turn rough intent into executable context for coderX."],
+          ["Worktree isolation", "Agents work in isolated dirs to reduce overwrite and branch contamination."],
+          ["xstatus visualization", "Generate a high-fidelity workflow status report from Hybrid Tree and git activity."]
+        ]
+      }
+    };
+
+    const C = copy[lang];
+
+    function header(title, sub) {
+      return `
+        <div class="topbar">
+          <div>
+            <div class="brand"><img src="WorkFlowX-Logo.png" alt="" />WorkflowX</div>
+            <div style="height:18px"></div>
+            <div class="kicker">${sceneLabel()}</div>
+            <h1>${title}</h1>
+            <div class="sub">${sub}</div>
+          </div>
+          <div class="pill-row">${C.pills.slice(0, 3).map((p) => `<span class="pill">${p}</span>`).join("")}</div>
+        </div>
+      `;
+    }
+
+    function sceneLabel() {
+      if (scene === "architecture") return lang === "zh" ? "架构更新" : "Architecture Update";
+      if (scene === "token") return lang === "zh" ? "Token 优化" : "Token Optimization";
+      if (scene === "capabilities") return lang === "zh" ? "能力矩阵" : "Capability Matrix";
+      return lang === "zh" ? "工作流演示" : "Workflow Demo";
+    }
+
+    function arch() {
+      root.innerHTML = `
+        <section class="frame">
+          ${header(C.archTitle, C.archSub)}
+          <div class="architecture">
+            <div class="stack">
+              <div class="panel node"><span class="tag teal">${C.command}</span><strong>RouteX</strong><p>${C.commandBody}</p></div>
+              <div class="panel node"><span class="tag blue">Status Gate</span><strong>.hybrid/status.json</strong><p>${lang === "zh" ? "wait / normal / xwhole / xlocal / xunit 持久化状态。" : "Persistent wait / normal / xwhole / xlocal / xunit state."}</p></div>
+              <div class="panel node"><span class="tag gold">Install</span><strong>3 Configs</strong><p>Claude Code · Codex · OpenCode</p></div>
+            </div>
+            <div class="panel main-agent">
+              <div class="agent-title">
+                <div><span class="tag">${C.main}</span><strong>${C.main}</strong><p class="sub" style="margin-top:8px">${C.mainBody}</p></div>
+                <div class="pill">No orchestratorX sub-agent</div>
+              </div>
+              <div class="mini-flow">
+                <div class="mini"><b>01 Env</b><span>${lang === "zh" ? "MCP 探测、参数解析、降级策略" : "MCP probe, params, degradation"}</span></div>
+                <div class="mini"><b>08 Discover</b><span>${lang === "zh" ? "代码探索、追问、主动质疑" : "Code scan, questions, challenge"}</span></div>
+                <div class="mini"><b>Phase 2</b><span>${lang === "zh" ? "生成 Hybrid Tree，写入事实" : "Generate Hybrid Tree, write facts"}</span></div>
+                <div class="mini"><b>Core Loop</b><span>${lang === "zh" ? "转发 Payload，更新文档状态" : "Forward Payloads, update docs"}</span></div>
+              </div>
+              <div class="data-strip">
+                <div class="data-cell"><b>Hybrid Tree</b>${lang === "zh" ? "Parent + Child，AC 是验收目标" : "Parent + Child, AC is target"}</div>
+                <div class="data-cell" style="border-left-color:var(--teal)"><b>MCP Memory</b>${lang === "zh" ? "知识图谱与跨会话事实" : "Graph memory and facts"}</div>
+                <div class="data-cell" style="border-left-color:var(--rust)"><b>Worktree</b>${lang === "zh" ? "执行隔离与并行防污染" : "Execution isolation"}</div>
+              </div>
+            </div>
+            <div class="stack">
+              <div class="panel node"><span class="tag rust">coderX</span><strong>${lang === "zh" ? "实现代理" : "Implementation agent"}</strong><p>${lang === "zh" ? "只读文档，写代码，输出 Change Summary。" : "Reads docs, writes code, emits Change Summary."}</p></div>
+              <div class="panel node"><span class="tag red">evaluatorX</span><strong>${lang === "zh" ? "独立验收" : "Independent evaluator"}</strong><p>${lang === "zh" ? "读 diff 与代码，对照 Child AC 输出评估 Payload。" : "Reads diff and code, validates against Child AC."}</p></div>
+              <div class="panel node"><span class="tag blue">promptX / noiseX</span><strong>${lang === "zh" ? "降噪与指令预处理" : "Denoise + prompt prep"}</strong><p>${lang === "zh" ? "在生成文档和修复轮降低输入噪声。" : "Reduces input noise before docs and fix rounds."}</p></div>
+            </div>
+          </div>
+        </section>`;
+    }
+
+    function token() {
+      root.innerHTML = `
+        <section class="frame">
+          ${header(C.tokenTitle, C.tokenSub)}
+          <div class="token-layout">
+            <div class="panel saving">
+              <div>
+                <div class="big">40–60%</div>
+                <p>${lang === "zh" ? "多轮工作流从“重复塞满上下文”变成“稳定区缓存 + 动态区刷新 + 记忆按需取回”。" : "Multi-round workflows move from repeated full context to cached stable sections, refreshed dynamic sections, and on-demand memory."}</p>
+              </div>
+            </div>
+            <div class="layers">
+              ${C.layers.map((l) => `
+                <div class="panel layer">
+                  <div class="layer-code">${l[0]}</div>
+                  <div><h2>${l[1]}</h2><p>${l[2]}</p></div>
+                  <div class="metric"><b>${l[3]}</b>${l[4]}</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+        </section>`;
+    }
+
+    function capabilities() {
+      root.innerHTML = `
+        <section class="frame">
+          ${header(C.capTitle, C.capSub)}
+          <div class="cap-grid">
+            <div class="panel mode-table">
+              ${C.modes.map((m, i) => `
+                <div class="mode-row">
+                  <div class="mode-badge">${m[0]}</div>
+                  <div class="mode-copy"><b>${m[1]}</b><span>${m[2]}</span></div>
+                  <div class="mode-mark">${m[3]}</div>
+                </div>
+              `).join("")}
+            </div>
+            <div class="cap-list">
+              ${C.caps.map((c) => `<div class="panel cap"><b>${c[0]}</b><span>${c[1]}</span></div>`).join("")}
+            </div>
+          </div>
+        </section>`;
+    }
+
+    function workflow(t) {
+      const total = C.steps.length;
+      const raw = Math.min(Math.max(t, 0), 0.999);
+      const idx = Math.min(total - 1, Math.floor(raw * total));
+      const fill = Math.max(4, raw * 100);
+      const card = C.cards[idx];
+      root.innerHTML = `
+        <section class="frame">
+          ${header(C.workflowTitle, C.workflowSub)}
+          <div class="workflow">
+            <div class="panel workflow-side left"><b>${lang === "zh" ? "用户只处理关键确认" : "User handles key checkpoints"}</b><span>${lang === "zh" ? "回答澄清问题、确认方案；其余派发、验收、记账由 Main Agent 推进。" : "Answer clarifying questions and confirm plans; Main Agent handles dispatch, verification, and bookkeeping."}</span></div>
+            <div class="panel workflow-side right"><b>${lang === "zh" ? "失败自动回流" : "Failure flows back"}</b><span>${lang === "zh" ? "evaluatorX 产出修复指令，Main Agent 传给 coderX，直到 PASS 或达到 -N 上限。" : "evaluatorX returns fix instructions; Main Agent passes them to coderX until PASS or -N limit."}</span></div>
+            <div class="workflow-line"><div class="workflow-fill" style="width:${fill}%"></div></div>
+            <div class="steps">
+              ${C.steps.map((s, i) => {
+                const cls = i < idx ? "done" : i === idx ? "active" : "";
+                return `<div class="step ${cls}"><div class="dot">${i + 1}</div><b>${s[0]}</b><span>${s[1]}</span></div>`;
+              }).join("")}
+            </div>
+            <div class="loop-arrow" style="opacity:${idx === 8 ? 1 : 0}"></div>
+            <div class="panel active-card">
+              <div>
+                <div class="stage-no">${lang === "zh" ? "当前阶段" : "Current stage"} ${idx + 1}/10</div>
+                <h2>${card[0]}</h2>
+              </div>
+              <p>${card[1]}</p>
+            </div>
+          </div>
+          <div class="watermark">Created by Huashu-Design</div>
+        </section>`;
+    }
+
+    function workflowV2(t) {
+      const total = C.steps.length;
+      const raw = Math.min(Math.max(t, 0), 0.999);
+      const idx = Math.min(total - 1, Math.floor(raw * total));
+      const card = C.cards[idx];
+      const local = raw * total - idx;
+      const ease = local < 0.5 ? 2 * local * local : 1 - Math.pow(-2 * local + 2, 2) / 2;
+      const points = [
+        [118, 204], [232, 204], [420, 204], [545, 116], [545, 330],
+        [676, 330], [828, 165], [970, 250], [828, 305], [1030, 330], [1030, 330],
+      ];
+      const p0 = points[idx];
+      const p1 = points[idx + 1] || points[idx];
+      const x = p0[0] + (p1[0] - p0[0]) * ease;
+      const y = p0[1] + (p1[1] - p0[1]) * ease;
+      const ghostIndex = Math.max(0, idx - 1);
+      const g0 = points[ghostIndex];
+      const g1 = points[ghostIndex + 1] || g0;
+      const gx = g0[0] + (g1[0] - g0[0]) * ease;
+      const gy = g0[1] + (g1[1] - g0[1]) * ease;
+      const docA = Math.min(100, Math.max(0, (raw - 0.36) * 220));
+      const docB = Math.min(100, Math.max(0, (raw - 0.48) * 220));
+      const docC = Math.min(100, Math.max(0, (raw - 0.58) * 220));
+      const verdict = idx < 7 ? "WAIT" : idx === 8 ? "FIX" : "PASS";
+      const labels = C.steps.map((s) => s[0]);
+      const lane = (x1, y1, x2, y2, cls = "") => {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        return `<div class="lane ${cls}" style="left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg)"></div>`;
+      };
+      const active = (...ids) => ids.includes(idx) ? "active" : "";
+      root.innerHTML = `
+        <section class="frame">
+          ${header(C.workflowTitle, C.workflowSub)}
+          <div class="console">
+            <div class="status-strip">
+              ${labels.map((label, i) => `<div class="status-step ${i < idx ? "done" : i === idx ? "active" : ""}">${label}</div>`).join("")}
+            </div>
+            ${lane(126, 214, 232, 214, idx < 1 ? "dim" : "")}
+            ${lane(246, 214, 420, 214, idx < 2 ? "dim" : "")}
+            ${lane(450, 196, 545, 128, idx < 3 ? "dim" : "")}
+            ${lane(545, 150, 545, 320, idx < 4 ? "dim" : "")}
+            ${lane(585, 330, 680, 330, idx < 5 ? "dim" : "")}
+            ${lane(682, 318, 828, 175, idx < 6 ? "dim" : "")}
+            ${lane(862, 176, 970, 250, idx < 7 ? "dim" : "")}
+            ${lane(970, 272, 838, 305, idx < 8 ? "dim" : "")}
+            ${lane(850, 318, 1030, 330, idx < 9 ? "dim" : "")}
+
+            <div class="console-card ${active(0)}" style="left:34px;top:142px;width:176px">
+              <b>${lang === "zh" ? "用户需求" : "User request"}</b>
+              <span>xwhole / xlocal / xunit</span>
+            </div>
+            <div class="console-card ${active(1)}" style="left:226px;top:142px;width:150px">
+              <b>RouteX</b>
+              <span>${lang === "zh" ? "状态门控与模式选择" : "State gate and mode selection"}</span>
+            </div>
+            <div class="core-orbit">
+              <div class="core-ring" style="transform:rotate(${Math.round(raw * 720)}deg)"></div>
+              <div class="core-label">
+                <div><b>Main Agent</b><span>${lang === "zh" ? "直接编排 / 写文档" : "Direct orchestration / doc writes"}</span></div>
+              </div>
+            </div>
+            <div class="module-chip ${active(2,3)}" style="left:458px;top:72px">Module 08</div>
+            <div class="module-chip ${active(4)}" style="left:594px;top:104px">noiseX</div>
+            <div class="module-chip ${active(5)}" style="left:392px;top:314px">Hybrid Tree</div>
+            <div class="module-chip ${active(6)}" style="left:602px;top:314px">promptX</div>
+
+            <div class="console-card ${active(7,8)}" style="left:742px;top:106px;width:168px">
+              <b>coderX</b>
+              <span>${lang === "zh" ? "隔离 worktree 实现并输出 Change Summary" : "Implements in isolated worktree and emits Change Summary"}</span>
+            </div>
+            <div class="console-card ${active(8)}" style="left:936px;top:196px;width:168px">
+              <b>evaluatorX</b>
+              <span>${lang === "zh" ? "独立读取 diff / code，对照 AC 验收" : "Reads diff / code independently and checks AC"}</span>
+            </div>
+            <div class="console-card ${active(9)}" style="left:728px;top:300px;width:150px;display:${idx === 9 ? "block" : "none"}">
+              <b>${lang === "zh" ? "收口" : "Close"}</b>
+              <span>${lang === "zh" ? "PASS 后更新状态、记忆和报告" : "On PASS, update state, memory, and report"}</span>
+            </div>
+
+            <div class="doc-panel">
+              <b>Parent + Child</b>
+              <div class="doc-line"><i style="width:${docA}%"></i></div>
+              <div class="doc-line"><i style="width:${docB}%"></i></div>
+              <div class="doc-line"><i style="width:${docC}%"></i></div>
+            </div>
+            <div class="verdict">
+              <div class="label">${lang === "zh" ? "验收状态" : "Evaluation"}</div>
+              <div class="value">${verdict}</div>
+            </div>
+            <div class="scene-caption">
+              <div class="stage-no">${lang === "zh" ? "阶段" : "Stage"} ${idx + 1}/10</div>
+              <h2>${card[0]}</h2>
+              <p>${card[1]}</p>
+            </div>
+            <div class="packet secondary" style="left:${gx - 6}px;top:${gy - 6}px"></div>
+            <div class="packet" style="left:${x - 10}px;top:${y - 10}px;transform:scale(${1 + Math.sin(raw * Math.PI * 20) * 0.08})"></div>
+          </div>
+          <div class="watermark">Created by Huashu-Design</div>
+        </section>`;
+    }
+
+    function workflowV3(t) {
+      const total = C.steps.length;
+      const raw = Math.min(Math.max(t, 0), 0.999);
+      const weights = [1, 0.9, 1.2, 1, 0.9, 1.15, 0.85, 1.1, 2.15, 1.2];
+      const weightTotal = weights.reduce((sum, value) => sum + value, 0);
+      let cursor = raw * weightTotal;
+      let idx = 0;
+      while (idx < weights.length - 1 && cursor >= weights[idx]) {
+        cursor -= weights[idx];
+        idx += 1;
+      }
+      const local = Math.min(0.999, cursor / weights[idx]);
+      const railPosition = idx < 8 ? idx + local : idx === 8 ? 8 : 8 + local;
+      const progress = (railPosition / (total - 1)) * 100;
+      const card = C.cards[idx];
+      const labels = C.steps.map((s) => s[0]);
+      const loopOpacity = idx === 8 ? 1 : idx === 9 ? 0.55 : 0.28;
+      const clamp = (v) => Math.min(1, Math.max(0, v));
+      const expo = (v) => v >= 1 ? 1 : 1 - Math.pow(2, -8 * v);
+      const enter = expo(clamp(local * 1.7));
+      const scan = Math.round(clamp(local * 1.12) * 100);
+      const drift = Math.sin((raw * Math.PI * 2) * 1.6) * 6;
+      const viewTitle = lang === "zh" ? "阶段界面" : "Stage interface";
+      const theaterStyle = [
+        `--enter:${enter.toFixed(3)}`,
+        `--scan:${scan}%`,
+        `--shift-x:${((1 - enter) * 42).toFixed(1)}px`,
+        `--shift-y:${((1 - enter) * 12 + drift * 0.18).toFixed(1)}px`,
+        `--scene-scale:${(0.982 + enter * 0.018).toFixed(3)}`,
+        `--scene-opacity:${(0.42 + enter * 0.58).toFixed(3)}`,
+        `--main-y:${((1 - enter) * 16).toFixed(1)}px`,
+        `--side-x:${((1 - enter) * -18).toFixed(1)}px`,
+        `--low-x:${((1 - enter) * 28).toFixed(1)}px`,
+        `--row-scale:${(0.42 + enter * 0.58).toFixed(3)}`,
+        `--cursor-x:${Math.round(18 + enter * 50)}%`,
+        `--cursor-y:${Math.round(30 + Math.sin(local * Math.PI * 2) * 5)}%`,
+      ].join(";");
+
+      const noiseDots = Array.from({ length: 26 }, (_, i) => {
+        const x = (i * 37) % 96;
+        const y = (i * 53) % 86;
+        const o = i % 3 === 0 ? 0.28 : 0.72;
+        return `<i class="noise-dot" style="left:${x}%;top:${y}%;opacity:${o}"></i>`;
+      }).join("");
+      const scanRows = [92, 72, 84, 58].map((w) => `<div class="scan-row" style="--w:${w}%"></div>`).join("");
+      const smallRows = [86, 64, 78].map((w) => `<i style="width:${w}%"></i>`).join("");
+
+      const view = (() => {
+        if (idx === 0) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / Request Intake</div>
+              <div class="terminal-line">xwhole ${lang === "zh" ? "实现登录、订单与状态报告" : "implement auth, orders, and status reports"}</div>
+              <div class="route-map" style="margin-top:14px">
+                <div class="route-tile"><b>xwhole</b><span>${lang === "zh" ? "全局流程" : "Global workflow"}</span></div>
+                <div class="route-tile"><b>-N 3</b><span>${lang === "zh" ? "限制修复轮次" : "Iteration cap"}</span></div>
+                <div class="route-tile"><b>-box</b><span>${lang === "zh" ? "隔离执行" : "Isolated run"}</span></div>
+              </div>
+            </div>
+            <div class="ui-surface ui-side ui-pad">
+              <div class="ui-kicker">RouteX</div>
+              <div class="scan-list">${scanRows}</div>
+            </div>
+          </div>`;
+        if (idx === 1) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / RouteX Gate</div>
+              <div class="json-card">{
+  "status": "wait",
+  "mode": "xwhole",
+  "phase": "env_init",
+  "agent": "Main Agent"
+}</div>
+            </div>
+            <div class="ui-surface ui-side ui-pad">
+              <div class="ui-kicker">Routes</div>
+              <div class="route-map" style="grid-template-columns:1fr">
+                <div class="route-tile"><b>Route 0</b><span>${lang === "zh" ? "接入活跃流程" : "Attach active flow"}</span></div>
+                <div class="route-tile"><b>Route 2</b><span>${lang === "zh" ? "推荐模式" : "Recommend mode"}</span></div>
+              </div>
+            </div>
+          </div>`;
+        if (idx === 2) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / Module 08</div>
+              <div class="code-layout">
+                <div class="code-pane"><b>${lang === "zh" ? "代码探索" : "Code exploration"}</b>
+                  <div class="code-line add"></div><div class="code-line"></div><div class="code-line dim"></div><div class="code-line add" style="width:72%"></div>
+                </div>
+                <div class="code-pane"><b>socratesX</b>
+                  <div class="question-box">${lang === "zh" ? "OAuth token 如何刷新？是否允许多端并发？" : "How is the OAuth token refreshed? Are concurrent sessions allowed?"}</div>
+                </div>
+              </div>
+            </div>
+            <div class="ui-surface ui-low ui-pad"><div class="scan-list">
+              <div class="scan-row" style="--w:68%"></div><div class="scan-row" style="--w:46%"></div>
+            </div></div>
+          </div>`;
+        if (idx === 3) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / Hard Gate</div>
+              <div class="gate-card" style="margin:0;min-height:106px">
+                <b>${lang === "zh" ? "确认生成 PRD" : "Confirm PRD generation"}</b>
+                <span>${lang === "zh" ? "Main Agent 只在确认后写入 Hybrid Tree。" : "The Main Agent writes Hybrid Tree only after confirmation."}</span>
+                <div class="gate-button">${lang === "zh" ? "确认并启动" : "Confirm and start"}</div>
+              </div>
+            </div>
+            <div class="ui-surface ui-side ui-pad">
+              <div class="ui-kicker">${lang === "zh" ? "阻断点" : "Checkpoint"}</div>
+              <div class="terminal-line">${lang === "zh" ? "用户确认后继续" : "Proceed after user confirmation"}</div>
+            </div>
+          </div>`;
+        if (idx === 4) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / noiseX Denoise</div>
+              <div class="noise-field">
+                ${noiseDots}
+                <div class="filter-bar" style="--scan:${scan}%"></div>
+              </div>
+            </div>
+            <div class="ui-surface ui-side ui-pad">
+              <div class="ui-kicker">${lang === "zh" ? "噪声压缩" : "Noise compression"}</div>
+              <div class="scan-list">${scanRows}</div>
+            </div>
+          </div>`;
+        if (idx === 5) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / Hybrid Tree</div>
+              <div class="doc-canvas">
+                <div class="doc-node"><b>Parent</b><span>${lang === "zh" ? "范围 / NFR / DoD / 路由表" : "Scope / NFR / DoD / routing"}</span><div class="doc-lines">${smallRows}</div></div>
+                <div class="doc-node"><b>Child</b><span>${lang === "zh" ? "AC / 文件索引 / 迭代记录" : "AC / file index / iteration log"}</span><div class="doc-lines">${smallRows}</div></div>
+              </div>
+            </div>
+            <div class="ui-surface ui-side ui-pad">
+              <div class="ui-kicker">MCP Memory</div>
+              <div class="json-card">facts: stable
+edges: updated
+status: normal</div>
+            </div>
+          </div>`;
+        if (idx === 6) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / promptX</div>
+              <div class="route-map">
+                <div class="route-tile"><b>promptX</b><span>${lang === "zh" ? "9 维意图提取" : "9-dim intent extraction"}</span></div>
+                <div class="route-tile"><b>AC Focus</b><span>${lang === "zh" ? "只携带必要上下文" : "Carry only needed context"}</span></div>
+                <div class="route-tile"><b>Fix Prompt</b><span>${lang === "zh" ? "修复指令直达 coderX" : "Fix instructions to coderX"}</span></div>
+              </div>
+            </div>
+            <div class="ui-surface ui-low ui-pad"><div class="terminal-line">${lang === "zh" ? "粗需求 -> 可执行提示" : "rough intent -> executable prompt"}</div></div>
+          </div>`;
+        if (idx === 7) return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / coderX Worktree</div>
+              <div class="code-layout">
+                <div class="code-pane"><b>implementation.ts</b>
+                  <div class="code-line"></div><div class="code-line add"></div><div class="code-line add" style="width:78%"></div><div class="code-line dim"></div>
+                </div>
+                <div class="code-pane"><b>Change Summary</b>
+                  <div class="doc-lines">${smallRows}</div>
+                </div>
+              </div>
+            </div>
+            <div class="cursor-dot"></div>
+          </div>`;
+        if (idx === 8) return `
+          <div class="scene-ui">
+            <div class="ui-surface iteration-full ui-pad">
+              <div class="ui-title">${viewTitle} / evaluatorX</div>
+              <div class="iteration-map">
+                <div class="iteration-node">
+                  <b>evaluatorX</b>
+                  <span>${lang === "zh" ? "读 diff / code，对照 Child AC。" : "Read diff / code against Child AC."}</span>
+                </div>
+                <div class="iteration-arrow"></div>
+                <div class="iteration-node">
+                  <b>Fix Payload</b>
+                  <span>AC-02: <span class="fail">FIX</span><br>${lang === "zh" ? "最小修复指令" : "Minimal fix instruction"}</span>
+                </div>
+                <div class="iteration-arrow"></div>
+                <div class="iteration-node">
+                  <b>coderX</b>
+                  <span>${lang === "zh" ? "只接失败 AC，进入第 2 轮。" : "Failed AC only; start round 2."}</span>
+                </div>
+              </div>
+              <div class="iteration-note">${lang === "zh" ? "失败不会直接 PASS，也不会重开规划；Main Agent 只转发修复 Payload，直到 PASS 或达到 -N 上限。" : "Failure does not pass or restart planning; Main Agent only forwards the fix Payload until PASS or the -N cap."}</div>
+            </div>
+          </div>`;
+        return `
+          <div class="scene-ui">
+            <div class="ui-surface ui-main ui-pad">
+              <div class="ui-title">${viewTitle} / PASS Close</div>
+              <div class="route-map">
+                <div class="route-tile"><b>xstatus</b><span>${lang === "zh" ? "生成状态报告" : "Generate status report"}</span></div>
+                <div class="route-tile"><b>MCP Memory</b><span>${lang === "zh" ? "回写稳定事实" : "Write stable facts"}</span></div>
+                <div class="route-tile"><b>Hybrid Tree</b><span>${lang === "zh" ? "关闭迭代" : "Close iteration"}</span></div>
+              </div>
+              <div class="terminal-line" style="margin-top:14px">Evaluation Result: PASS</div>
+            </div>
+            <div class="ui-surface ui-side ui-pad">
+              <div class="ui-kicker">${lang === "zh" ? "最终状态" : "Final state"}</div>
+              <div class="json-card">status: pass
+memory: saved
+report: ready</div>
+            </div>
+          </div>`;
+      })();
+
+      root.innerHTML = `
+        <section class="frame">
+          ${header(C.workflowTitle, C.workflowSub)}
+          <div class="flow-stage" style="--rail:${Math.min(progress, 100)}%;--packet-x:${Math.min(44 + progress * 9.64, 1010)}px;--loop-opacity:${loopOpacity}">
+            <div class="process-rail">
+              <div class="rail-track"><div class="rail-fill"></div></div>
+              <div class="loop-rail"></div>
+              <div class="rail-packet"></div>
+              <div class="rail-nodes">
+                ${labels.map((label, i) => `<div class="rail-node ${i < idx ? "done" : i === idx ? "active" : ""}">${label}</div>`).join("")}
+              </div>
+            </div>
+            <div class="demo-shell">
+              <div class="demo-caption">
+                <div class="stage-no">${lang === "zh" ? "阶段" : "Stage"} ${idx + 1}/10</div>
+                <h2>${card[0]}</h2>
+                <p>${card[1]}</p>
+              </div>
+              <div class="demo-theater" style="${theaterStyle}">
+                <div class="theater-sweep"></div>
+                ${view}
+              </div>
+              <div class="side-metrics">
+                <div class="metric-card"><div class="label">${lang === "zh" ? "当前状态" : "State"}</div><div class="value">${idx === 8 ? "FIX" : idx === 9 ? "PASS" : "RUN"}</div></div>
+                <div class="metric-card"><div class="label">${lang === "zh" ? "迭代轮次" : "Iteration"}</div><div class="value">${idx === 8 ? "2/3" : idx === 9 ? "DONE" : "1/3"}</div></div>
+                <div class="metric-card"><div class="label">${lang === "zh" ? "事实源" : "Source"}</div><div class="value">TREE</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="watermark">Created by Huashu-Design</div>
+        </section>`;
+    }
+
+    function workflowV4(t) {
+      const weights = [1, 0.9, 1.2, 1, 0.9, 1.15, 0.85, 1.1, 2.15, 1.2];
+      const weightTotal = weights.reduce((sum, value) => sum + value, 0);
+      const raw = Math.min(Math.max(t, 0), 0.999);
+      let cursor = raw * weightTotal;
+      let idx = 0;
+      while (idx < weights.length - 1 && cursor >= weights[idx]) {
+        cursor -= weights[idx];
+        idx += 1;
+      }
+      const local = Math.min(0.999, cursor / weights[idx]);
+      const clamp = (v) => Math.min(1, Math.max(0, v));
+      const expo = (v) => v >= 1 ? 1 : 1 - Math.pow(2, -8 * v);
+      const enter = expo(clamp(local * 1.6));
+      const scan = Math.round(clamp(local * 1.1) * 100) + "%";
+      const card = C.cards[idx];
+      const boardTitle = idx === 8
+        ? (lang === "zh" ? "失败回流迭代" : "Fix-loop iteration")
+        : card[0];
+      const boardDesc = idx === 8
+        ? (lang === "zh" ? "evaluatorX 只标记失败 AC；Main Agent 转成修复 Payload；coderX 进入下一轮，只修失败项。" : "evaluatorX marks failed AC only; Main Agent forwards a fix Payload; coderX enters the next round for the failed item.")
+        : card[1];
+      const status = idx === 8 ? "FIX" : idx === 9 ? "PASS" : idx < 5 ? "PLAN" : "RUN";
+      const round = idx < 8 ? "1/3" : idx === 8 ? "2/3" : "DONE";
+      const source = idx < 4 ? "STATE" : idx < 6 ? "SIGNAL" : "TREE";
+      const sourceValue = idx === 8 ? "AC" : source;
+      const boardStyle = [
+        `--scene-x:${((1 - enter) * 18).toFixed(1)}px`,
+        `--scene-y:${((1 - enter) * 8).toFixed(1)}px`,
+        `--scene-scale:${(0.985 + enter * 0.015).toFixed(3)}`,
+        `--scene-opacity:${(0.52 + enter * 0.48).toFixed(3)}`,
+        `--row-scale:${(0.46 + enter * 0.54).toFixed(3)}`,
+        `--scan:${scan}`,
+      ].join(";");
+
+      const smallBars = [88, 68, 76, 54].map((w) => `<i style="--w:${w}%"></i>`).join("");
+      const signalDots = Array.from({ length: 18 }, (_, i) => {
+        const x = (i * 31) % 94;
+        const y = (i * 47) % 84;
+        const opacity = i % 4 === 0 ? 0.24 : 0.64;
+        return `<i class="signal-dot" style="left:${x}%;top:${y}%;opacity:${opacity}"></i>`;
+      }).join("");
+      const loopLine = (x1, y1, x2, y2) => {
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+        return `<div class="loop-line" style="left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg)"></div>`;
+      };
+
+      const activeView = (() => {
+        if (idx === 0) return `
+          <div class="command-line">xwhole ${lang === "zh" ? "实现登录、订单与状态报告" : "implement auth, orders, and status reports"}</div>
+          <div class="scene-grid-3">
+            <div class="work-card"><strong>xwhole</strong><span>${lang === "zh" ? "全局流程入口" : "Global workflow entry"}</span></div>
+            <div class="work-card"><strong>-N 3</strong><span>${lang === "zh" ? "每个 Child 最多 3 轮验收" : "Three verification rounds per Child"}</span></div>
+            <div class="work-card"><strong>-box</strong><span>${lang === "zh" ? "隔离执行目录" : "Isolated execution directory"}</span></div>
+          </div>`;
+        if (idx === 1) return `
+          <div class="scene-grid-2">
+            <div class="work-card"><strong>RouteX</strong><span>${lang === "zh" ? "读取 .hybrid/status.json，判断接入、探索或启动。" : "Reads .hybrid/status.json and chooses attach, explore, or start."}</span></div>
+            <div class="work-card"><strong>Env</strong><span>${lang === "zh" ? "解析参数、探测 MCP、准备 worktree 策略。" : "Parses flags, probes MCP, prepares worktree strategy."}</span></div>
+          </div>
+          <div class="command-line" style="margin-top:16px">status: wait -> xwhole</div>`;
+        if (idx === 2) return `
+          <div class="scene-grid-2">
+            <div class="work-card"><strong>${lang === "zh" ? "代码探索" : "Code scan"}</strong><div class="doc-bars">${smallBars}</div></div>
+            <div class="work-card"><strong>Module 08</strong><span>${lang === "zh" ? "先读代码，再追问边界、风险和非功能要求。" : "Read code first, then ask about boundaries, risk, and NFRs."}</span></div>
+          </div>
+          <div class="command-line" style="margin-top:16px">${lang === "zh" ? "问题：OAuth token 如何刷新？" : "Question: how should OAuth tokens refresh?"}</div>`;
+        if (idx === 3) return `
+          <div class="work-card" style="min-height:168px;text-align:center;display:grid;place-items:center">
+            <div>
+              <strong style="font-size:24px">${lang === "zh" ? "用户确认门" : "User confirmation gate"}</strong>
+              <span>${lang === "zh" ? "确认前不生成 Hybrid Tree，避免在错误方案上进入开发。" : "No Hybrid Tree before confirmation; avoid building on the wrong plan."}</span>
+              <div class="gate-button">${lang === "zh" ? "确认并启动" : "Confirm and start"}</div>
+            </div>
+          </div>`;
+        if (idx === 4) return `
+          <div class="signal-field">
+            ${signalDots}
+            <div class="signal-beam"></div>
+          </div>
+          <div class="scene-grid-2" style="margin-top:12px">
+            <div class="work-card"><strong>noiseX</strong><span>${lang === "zh" ? "丢弃废弃假设和聊天噪声。" : "Drops discarded hypotheses and chat noise."}</span></div>
+            <div class="work-card"><strong>${lang === "zh" ? "干净信号" : "Clean signal"}</strong><span>${lang === "zh" ? "只留下可写入文档的事实。" : "Keeps only facts fit for documents."}</span></div>
+          </div>`;
+        if (idx === 5) return `
+          <div class="tree-map">
+            <div class="tree-doc"><strong>Parent</strong><span>${lang === "zh" ? "范围 / NFR / DoD / 路由表" : "Scope / NFR / DoD / routing"}</span><div class="doc-bars">${smallBars}</div></div>
+            <div class="tree-doc"><strong>Child</strong><span>${lang === "zh" ? "AC / 文件索引 / 依赖 / 迭代记录" : "AC / file index / dependencies / iteration log"}</span><div class="doc-bars">${smallBars}</div></div>
+          </div>`;
+        if (idx === 6) return `
+          <div class="scene-grid-3">
+            <div class="work-card"><strong>promptX</strong><span>${lang === "zh" ? "9 维意图提取" : "9-dim intent extraction"}</span></div>
+            <div class="work-card"><strong>AC Focus</strong><span>${lang === "zh" ? "只携带必要上下文" : "Carry only needed context"}</span></div>
+            <div class="work-card"><strong>Fix-ready</strong><span>${lang === "zh" ? "修复轮可直接派发" : "Ready for fix-round dispatch"}</span></div>
+          </div>
+          <div class="command-line" style="margin-top:16px">${lang === "zh" ? "粗需求 -> 可执行 Payload" : "rough intent -> executable Payload"}</div>`;
+        if (idx === 7) return `
+          <div class="scene-grid-2">
+            <div class="work-card"><strong>coderX</strong><span>${lang === "zh" ? "在隔离上下文实现 Child AC。" : "Implements Child AC in isolated context."}</span><div class="doc-bars">${smallBars}</div></div>
+            <div class="work-card"><strong>Change Summary</strong><span>${lang === "zh" ? "返回改动摘要，不自称验收通过。" : "Returns change summary without self-validating."}</span><div class="doc-bars">${smallBars}</div></div>
+          </div>`;
+        if (idx === 8) return `
+          <div class="fix-loop">
+            <div class="loop-card loop-eval"><b>evaluatorX</b><span>${lang === "zh" ? "读 diff / code，对照 AC。AC-02 = FIX。" : "Reads diff / code. AC-02 = FIX."}</span></div>
+            <div class="loop-card loop-main"><b>Main Agent</b><span>${lang === "zh" ? "只转发 Fix Payload，不重开规划。" : "Forwards Fix Payload only; no replanning."}</span></div>
+            <div class="loop-card loop-code"><b>coderX</b><span>${lang === "zh" ? "只修失败 AC，进入第 2 轮。" : "Fixes failed AC only; starts round 2."}</span></div>
+            ${loopLine(184, 54, 270, 122)}
+            ${loopLine(370, 122, 458, 54)}
+          </div>`;
+        return `
+          <div class="scene-grid-3">
+            <div class="work-card"><strong>xstatus</strong><span>${lang === "zh" ? "生成状态报告" : "Generate status report"}</span></div>
+            <div class="work-card"><strong>MCP Memory</strong><span>${lang === "zh" ? "回写稳定事实" : "Write stable facts"}</span></div>
+            <div class="work-card"><strong>Hybrid Tree</strong><span>${lang === "zh" ? "关闭迭代" : "Close iteration"}</span></div>
+          </div>
+          <div class="command-line" style="margin-top:16px">Evaluation Result: PASS</div>`;
+      })();
+
+      root.innerHTML = `
+        <section class="frame">
+          ${header(C.workflowTitle, C.workflowSub)}
+          <div class="workflow-v4" style="${boardStyle}">
+            <aside class="phase-index">
+              <div class="index-title">${lang === "zh" ? "阶段索引" : "Phase Index"}</div>
+              <div class="index-list">
+                ${C.steps.map((step, i) => `
+                  <div class="index-row ${i < idx ? "done" : i === idx ? "active" : ""}">
+                    <div class="index-num">${String(i + 1).padStart(2, "0")}</div>
+                    <div class="index-copy"><b>${step[0]}</b><span>${step[1]}</span></div>
+                  </div>
+                `).join("")}
+              </div>
+            </aside>
+            <main class="motion-board">
+              <div class="board-head">
+                <div>
+                  <div class="board-kicker">${lang === "zh" ? "当前演示" : "Current Demo"} / ${String(idx + 1).padStart(2, "0")}</div>
+                  <h2>${boardTitle}</h2>
+                  <p>${boardDesc}</p>
+                </div>
+                <div class="board-badge">${status}</div>
+              </div>
+              <div class="scene-panel">
+                ${activeView}
+              </div>
+            </main>
+            <aside class="state-ledger">
+              <div class="ledger-title">${lang === "zh" ? "状态账本" : "State Ledger"}</div>
+              <div class="ledger-card"><div class="label">${lang === "zh" ? "状态" : "State"}</div><div class="value">${status}</div></div>
+              <div class="ledger-card"><div class="label">${lang === "zh" ? "迭代" : "Iteration"}</div><div class="value">${round}</div></div>
+              <div class="ledger-card"><div class="label">${lang === "zh" ? "事实源 / 上限" : "Source / Cap"}</div><div class="value">${sourceValue}</div><div style="margin-top:8px;color:var(--muted);font-size:11px;font-weight:800">-N 3</div></div>
+            </aside>
+          </div>
+          <div class="watermark">Created by Huashu-Design</div>
+        </section>`;
+    }
+
+    function render(t) {
+      if (scene === "architecture") arch();
+      else if (scene === "token") token();
+      else if (scene === "capabilities") capabilities();
+      else workflowV4(t);
+      window.__ready = true;
+    }
+
+    if (fixedT !== null && Number.isFinite(fixedT)) {
+      render(fixedT);
+    } else {
+      const start = performance.now();
+      function tick(now) {
+        const t = ((now - start) % 15000) / 15000;
+        render(t);
+        requestAnimationFrame(tick);
+      }
+      tick(start);
+    }
+  </script>
+</body>
+</html>

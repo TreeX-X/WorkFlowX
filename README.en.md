@@ -25,244 +25,210 @@
 
 ---
 
-## What is it?
+## What Is It?
 
-**WorkflowX is a workflow framework that lives inside your AI coding tool.** It turns a single AI's freestyle "chat-and-code" into a role-based pipeline: **an orchestrator plans, dispatches, and keeps records; a coder agent writes the code; an evaluator agent independently verifies it** — failing work gets sent back to redo, only passing work ships.
+WorkflowX is an **engineering workflow** that lives inside your AI coding tool. You still talk to one main agent, but it no longer freestyle-codes inside a long chat:
 
-No servers, no runtime to set up. Copy the config files into your project and it runs directly inside **Claude Code / OpenAI Codex / OpenCode**.
+- **The Main Agent orchestrates directly**: routing, discovery, plan confirmation, Hybrid Tree document writes, state, and dispatch.
+- **coderX implements only**: reads the spec and execution prompt, writes code, and returns a structured Change Summary.
+- **evaluatorX verifies independently**: reads real code and diff, checks every acceptance criterion, and emits fix instructions on failure.
+- **Hybrid Tree keeps the ledger**: Parent + Child documents store scope, AC, file index, dependencies, evaluation results, and state.
+
+> In the current architecture there is no `orchestratorX` sub-agent. The Main Agent owns orchestration directly; execution agents hand off through structured Payloads only.
 
 <p align="center">
   <img src="docs/assets/06-workflow-animation-en.gif" alt="WorkflowX xwhole Workflow Demo" width="880" />
   <br/>
-  <sub>A full xwhole workflow: contain the request → Hybrid Tree → optimized prompt → code → independent verification → fix loop → PASS close</sub>
+  <sub>A complete xwhole workflow: RouteX state gate → discovery → user confirmation → noiseX denoise → Hybrid Tree → coderX → evaluatorX → fix loop → PASS close</sub>
 </p>
 
 ---
 
-## Why do you need it?
+## Why Use It?
 
-Chatting with a single AI to write code, you've probably hit these traps. WorkflowX gives each one a built-in answer:
+The real problem with single-agent AI coding is not just model quality. It is the lack of process constraints. WorkflowX turns common failure modes into explicit mechanisms:
 
-| Pain point of AI coding | How WorkflowX solves it |
+| Failure mode | WorkflowX mechanism |
 |---|---|
-| **Long chats lose control of context**, becoming noisy and expensive | Each agent works in an **isolated context**, communicating only through structured Payloads |
-| **AI claims "done" but did not actually meet the requirement** | The evaluator verifies independently and checks every acceptance criterion before passing |
-| **Requirements are scattered across chat history** | Requirements become a structured **Hybrid Tree**: traceable, incrementally editable, and change-aware |
-| **Misread requirements are discovered after coding** | Socratic questioning and proactive challenge surface assumptions, boundaries, and risks during planning |
-| **Multi-round iteration burns tokens quickly** | Three-layer token optimization saves 40–60% in multi-round workflows |
-| **Parallel tasks overwrite each other or conflict** | Each agent works in an isolated git worktree, with cross-branch violation detection |
+| **Context gets noisy and expensive** | Main Agent maintains state; execution agents work in isolated context and exchange only structured Payloads |
+| **Requirements disappear into chat history** | Requirements become a Hybrid Tree; changes update only the relevant Section and affected Children re-enter the loop |
+| **AI says "done" but misses the requirement** | evaluatorX distrusts coderX self-report and independently checks code, diff, and AC |
+| **Misread requirements surface after coding** | xwhole Phase 1 explores the codebase, asks Socratic questions, and proactively challenges assumptions |
+| **Multi-round iteration burns tokens** | Section caching, trunk/leaf split, MCP memory snapshots, and noiseX denoising control context budget |
+| **Parallel work overwrites itself** | Worktree isolation, Child ownership boundaries, and cross-branch violation detection |
 
 ---
 
-## Understand it in 30 seconds
+## Understand It In 30 Seconds
 
-The whole framework is one core loop. You talk to a single role; it coordinates the rest for you:
-
+```text
+you
+│
+├─ xwhole / xlocal / xunit / xstatus / xprompt
+│
+▼
+Main Agent
+├─ RouteX: read .hybrid/status.json and decide continue / explore / start workflow
+├─ Module 08: xwhole discovery, solution design, and Hard Gate confirmation
+├─ Phase 2: generate or maintain Hybrid Tree (Main Agent is the sole document writer)
+└─ Core Loop: forward Payloads and drive coderX ↔ evaluatorX iteration
+        │
+        ├─ coderX: implement and emit Change Summary
+        └─ evaluatorX: verify independently and emit Evaluation Result
 ```
-       you ──request──▶  orchestratorX (the sole document writer)
-                              │
-                  ① writes the requirement into a Hybrid Tree (structured spec)
-                              │
-                  ②  ┌───────────────────────────────┐
-                     ▼                               │ failed — send back with fix instructions
-              coderX codes  ──Change Summary──▶  evaluatorX verifies independently
-                                                     │
-                  ③  passed ───────────────────────┘ → close as final version
-```
-
-- **orchestratorX — the orchestrator**: the only role you talk to. It plans requirements, decomposes tasks, dispatches agents, and tracks state. It is the only writer of the requirement docs, so state stays consistent.
-- **coderX — the coder**: reads the spec, writes code, then outputs a structured Change Summary.
-- **evaluatorX — the evaluator**: independently reads the code and checks it against the acceptance criteria (AC). Fails emit fix instructions and go back to coderX; passes close.
-- **Hybrid Tree — the requirement doc tree**: a `Parent` (overview/routing) plus multiple `Child` docs (subtasks with their own AC). This is the single source of truth; requirement changes only touch it.
-
-> In one line: **orchestrator plans, coder implements, evaluator gatekeeps, the doc tree keeps the books.** Each code→verify round auto-repeats on failure (default max 2), and closes on pass.
 
 <p align="center">
-  <img src="docs/assets/01-architecture.png" alt="WorkflowX System Architecture" width="880" />
+  <img src="docs/assets/01-architecture.png" alt="WorkflowX Main Agent orchestration architecture" width="880" />
   <br/>
-  <sub>Orchestration + Data Layer: orchestratorX dispatches sub-agents, collaborating via Hybrid Tree + MCP Memory Graph</sub>
+  <sub>Main Agent centralizes orchestration and document writes; coderX / evaluatorX / promptX / noiseX enter as execution or helper units</sub>
 </p>
+
+In one line: **Main Agent owns flow and facts, coderX writes code, evaluatorX gates quality, Hybrid Tree keeps everything traceable.**
 
 ---
 
 ## Quick Start
 
-**Requirements**: Node.js v18+
+**Requirement**: Node.js v18+
 
-**① Install MCP dependencies** (for cross-session memory)
+**1. Install MCP dependencies** for cross-session memory:
 
 ```bash
 npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
 ```
 
-**② Install WorkflowX**
+**2. Install WorkflowX**
 
 | Platform | How to install |
-|----------|----------------|
+|---|---|
 | **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → search `workflowx` → Install Plugin |
 | **OpenCode** | Add `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` to `opencode.json` |
-| **Manual** | Copy the `.claude/` (or `.codex/` / `.opencode/`) dir into your project root, then mount MCP config per `mcp.json.template` |
+| **Manual** | Copy `.claude/`, `.codex/`, or `.opencode/` into the project root, then mount MCP per `mcp.json.template` |
 
-**③ Run your first command**
+**3. Run your first requirement**
 
 ```bash
-xwhole implement user login with email+password and OAuth support
+xwhole implement user login with email/password and OAuth
 ```
 
-> The orchestrator will ask you a few key questions, propose options, and — once you confirm — automatically enter the "code → verify → iterate" loop. See the full [walkthrough](#a-complete-workflow) below.
+> Claude Code / OpenCode can use slash commands. OpenAI Codex uses natural-language prefixes, for example starting the message with `xwhole`.
 
 ---
 
-## Four modes: which one?
+## Four Modes
 
-Pick by scope of change, largest to smallest. **Not sure? Just state the requirement** — the framework analyzes it and recommends a mode for you to confirm.
+Choose by blast radius. If unsure, describe the requirement and RouteX can recommend a mode based on current state.
 
-| Mode | One-line use case | Planning | Verify loop | Trigger example |
-|------|-------------------|----------|-------------|-----------------|
-| **`xwhole`** Global | New features, cross-module refactors | Multi-turn → Hybrid Tree | Auto, up to N rounds | `xwhole build the order center` |
-| **`xwhole -parallel`** Parallel | Multiple independent subtasks at once<br/>*(Claude Code only)* | Same as xwhole, auto-split | Parallel evaluators | `/xwhole -parallel build user, order, product modules` |
-| **`xlocal`** Scoped | Changes/bug fixes within 1–2 modules | Skipped (auto-detect/generate PRD) | Auto, up to N rounds | `xlocal fix order list pagination bug` |
-| **`xunit`** Minimal | Single file, small change | Skipped | Off by default | `xunit add timeout config to Config` |
+| Mode | Use case | Planning | Verify loop | Example |
+|---|---|---|---|---|
+| **`xunit`** | Single-file, small, clear change | promptX extracts intent | evaluatorX off by default | `xunit add timeout config to Config` |
+| **`xlocal`** | Bug fix or local feature within 1-2 modules | Reuse/create minimal Hybrid Tree | Auto, up to N rounds | `xlocal fix order list pagination bug` |
+| **`xwhole`** | New feature, cross-module refactor, high-impact work | Phase 1 discovery → Phase 2 docs | Auto, up to N rounds | `xwhole build the order center` |
+| **`xwhole -parallel`** | Multiple independent subtasks in parallel | Generate Hybrid Tree, then dispatch by Child | Parallel coder/evaluator teammates | `/xwhole -parallel build user, order, product modules` |
 
-**Common flags**: `-N 3` cap iterations at 3 (default 2) ｜ `-box demo` isolate in a sandbox branch (xwhole only)
+Common flags: `-N 3` caps verification rounds per Child; `-box demo` isolates work in a sandbox branch; `-parallel` requires Claude Code Agent Teams.
 
-**Other commands**:
-
-| Command | Purpose |
-|---------|---------|
-| `xstatus` | Generate a high-fidelity HTML workflow status report |
-| `xprompt [text]` | Optimize a prompt only, no dev workflow triggered |
-
-> **Trigger syntax differs**: Claude Code & OpenCode use slash commands (`/xwhole`); **OpenAI Codex uses a natural-language prefix** (start your message with `xwhole`, no slash). The `-parallel` mode is **Claude Code only**.
+<p align="center">
+  <img src="docs/assets/05-capabilities.png" alt="WorkflowX modes and capability matrix" width="880" />
+</p>
 
 ---
 
-## A complete workflow
+## What Happens In xwhole?
 
-Take `xwhole implement user login`. You'll go through these 6 steps:
+For `xwhole implement user login`, the full workflow is:
 
-```
-①  You initiate the request
-    xwhole implement user login with email+password and OAuth support
-
-②  Orchestrator plans (Phase 1: Discovery)
-    → Socratic questions: how is the OAuth token refreshed? limit concurrent logins?
-    → Autonomously explores the codebase, proposes 2-3 options with trade-offs
-    → You review and reply "confirmed" → Hybrid Tree generated
-
-③  Instruction optimization (promptMasterX)
-    → Detects anti-patterns, produces a precise, unambiguous execution instruction
-
-④  coderX implements
-    → Builds the feature, outputs a Change Summary
-
-⑤  evaluatorX verifies independently
-    → Checks every acceptance criterion, outputs AC status table + issue list
-    → Failed → sends back to ④ with fix instructions for another round
-
-⑥  Close
-    → Evaluator confirms PASS, Hybrid Tree finalized
-```
-
-Throughout, you only do two things: **answer the orchestrator's clarifying questions**, and **confirm the plan at key checkpoints**. All coordination, dispatch, verification, and bookkeeping happen automatically.
+1. **Entry routing**: Main Agent reads `.hybrid/status.json` and decides whether to start or attach to an existing workflow.
+2. **Environment init**: parse `-N` / `-box` / `-parallel`, probe MCP, and prepare degradation behavior.
+3. **Code exploration**: search project structure, related modules, and existing constraints to build a file index.
+4. **Requirement discovery**: socratesX asks one grounded question at a time and challenges contradictions, missing NFRs, and technical risks.
+5. **Hard Gate confirmation**: docs cannot be generated until the user confirms the plan.
+6. **noiseX denoising**: compress Phase 1 exploration, discarded hypotheses, and confirmed facts into a clean signal.
+7. **Hybrid Tree generation**: Main Agent writes Parent / Child docs with scope, AC, dependencies, and file index.
+8. **coderX implementation**: implements against Child AC and returns a Change Summary Payload.
+9. **evaluatorX verification**: independently reads diff and code, then outputs AC status, severity-ranked issues, and fix instructions.
+10. **Close or loop**: PASS updates docs and closes; failure sends fix instructions back to coderX until PASS or the N-round cap.
 
 ---
 
 ## Deep Dive
 
-> The above is enough to get started. If you want to know *why* it's cheaper, more accurate, and more controllable, expand below.
-
 <details>
-<summary><b>Hybrid Tree — the structured requirement doc tree</b></summary>
+<summary><b>Hybrid Tree: Structured Requirement Docs</b></summary>
 
-<br/>
+Hybrid Tree is WorkflowX's source of truth:
 
-All planning output becomes a Hybrid Tree instead of being scattered across chat:
+| Document | Purpose |
+|---|---|
+| **Parent** | Global scope, NFRs, DoD, routing table, shared file index, memory outline, Child status aggregation |
+| **Child** | Subtask scope, acceptance criteria, private file index, implementation summary, evaluation result, iteration log |
 
-- **Parent (overview layer)**: global spec, NFRs, DoD, routing table, global file index, knowledge-graph outline.
-- **Child (requirement layer)**: one per submodule, holding that branch's **acceptance criteria (AC)** and private file index.
-- **MECE division**: Children are mutually exclusive and collectively exhaustive — no gaps, no overlaps; every task has a clear owner and AC.
-- **Auto dependency queue**: cross-Child dependencies live in the Parent; the core loop's Ready Queue schedules by dependency order, deferring tasks whose deps aren't met.
-- **Traceable changes**: changing a requirement only edits the relevant Section; affected Children are auto-marked "needs re-evaluation" and re-enter the loop.
+The Main Agent is the only document writer. coderX and evaluatorX only read docs and output Payloads, avoiding multiple agents mutating the same fact source.
 
 </details>
 
 <details>
-<summary><b>AC cross-validation — the evaluator doesn't trust the coder</b></summary>
+<summary><b>AC Cross-Validation: Evaluator Distrusts Coder</b></summary>
 
-<br/>
+evaluatorX does not evaluate coderX's summary. It evaluates reality:
 
-evaluatorX is an **independent** quality gate. It never accepts coderX's self-report, instead it:
+1. Read the Child acceptance criteria;
+2. Read git diff and relevant source code;
+3. Mark every AC as `pass / partial / fail / unevaluable`;
+4. Emit P0/P1/P2 issues and executable fix instructions;
+5. Let the Main Agent update docs and decide whether to loop.
 
-1. independently reads the actual code;
-2. checks it line by line against the Child's acceptance criteria (AC);
-3. outputs a structured report: an **AC status table** (pass / partial / fail / unevaluable) + a **P0/P1/P2 issue list** + **fix instructions**.
-
-Only when all ACs pass does it ship; otherwise fix instructions flow back to coderX for the next round (default max 2, tunable via `-N`). Paired with **independent iteration counters + early-exit**, it avoids wasted spend.
+This turns "the AI says it is done" into "an independent quality gate confirms it is done."
 
 </details>
 
 <details>
-<summary><b>Three-layer token optimization — 40–60% savings on iterations</b></summary>
-
-<br/>
+<summary><b>Token Optimization For Multi-Round Work</b></summary>
 
 <p align="center">
-  <img src="docs/assets/03-token-optimization.png" alt="WorkflowX Three-Layer Token Optimization" width="880" />
+  <img src="docs/assets/03-token-optimization.png" alt="WorkflowX three-layer token optimization" width="880" />
 </p>
 
 | Layer | Strategy | Effect |
-|---|------|------|
-| **L1 Section Caching** | Strict zoning: rarely-changing static sections (requirements/scope/DoD) pinned at top to hit the LLM prompt cache; dynamic sections (eval reports) at the bottom, overwritten without invalidating the cache | 40–60% after round 1 |
-| **L2 Trunk-Leaf** | Markdown keeps only the business "trunk" outline; entity relations ("leaves") are maintained separately in the MCP knowledge graph and retrieved on demand | Lean docs |
-| **L3 Memory Snapshot** | The Hybrid Tree stores only skeleton pointers (entity names, relation summaries); full nodes persist in MCP server-memory | Cross-session · minimal context |
+|---|---|---|
+| **L1 Section caching** | Stable sections at top, dynamic sections overwritten at bottom | Better Prompt Cache hit rate |
+| **L2 Trunk/leaf split** | Markdown keeps the requirement trunk; entity relations live in MCP memory | Smaller docs |
+| **L3 Memory snapshot** | Hybrid Tree stores summaries and pointers; full nodes persist in server-memory | Cross-session fact reuse |
+
+noiseX and promptX handle the related problems: planning noise contaminating docs, and fix-round prompts becoming too scattered.
 
 </details>
 
 <details>
-<summary><b>Socratic requirements discovery — surface problems during planning</b></summary>
+<summary><b>RouteX And State Machine</b></summary>
 
-<br/>
-
-xwhole's Phase 1 doesn't rush to code — it pins down the requirement first:
-
-- **Requirement clarification (via socratesX)**: Phase 1 drives Socratic questioning through the socratesX skill — one core question per turn with options + a recommendation, exploring the codebase before asking and assessing clarity qualitatively before proceeding.
-- **One question per turn, explore before asking**: each question builds on the last answer, and it always searches the codebase first — advancing with "here's what I found X" rather than "can you tell me X".
-- **Proactive challenge**: even when the requirement looks clear, it's forced to analyze 6 risk categories — contradictions, edge cases, technical risks, hidden assumptions, cross-module conflicts, missing NFRs.
-
-</details>
-
-<details>
-<summary><b>Smart routing — every request passes a status gate</b></summary>
-
-<br/>
-
-WorkflowX has a four-layer router. Every input reads `.hybrid/status.json` first, then dispatches:
+Every input passes a state gate:
 
 | Route | Trigger | Handling |
-|------|----------|----------|
-| **Route 0** | Active workflow (status=xwhole/xlocal/xunit) | Input treated as part of the current workflow; supports incremental requirement changes |
-| **Route 1** | Exploratory/read-only (view/analyze/search/git/config) | Handle directly — no sub-agent dispatch, no code changes |
-| **Route 2** | Coding intent + status=wait | 5-dimension analysis → recommend mode → **must confirm via dialog** → start |
-| **Route 3** | Explicit command (`/x*` or `x*`) | Execute immediately, override existing workflow, no confirmation |
+|---|---|---|
+| **Route 0** | Active workflow exists | Treat user input as part of the current workflow; support incremental requirement changes |
+| **Route 1** | Read-only exploration, search, git, config | Handle directly without dispatching coderX |
+| **Route 2** | Coding intent while idle | Analyze scope, recommend xwhole / xlocal / xunit, ask for confirmation |
+| **Route 3** | Explicit `xwhole` / `xlocal` / `xunit` command | Enter the requested mode immediately |
 
-**State machine**: `wait` (idle) ｜ `normal` (Route 1 running) ｜ `xwhole`/`xlocal`/`xunit` (that workflow active). State is written solely by the Main Agent to `.hybrid/status.json`, so **a session auto-resumes after interruption**.
+State lives in `.hybrid/status.json`: `wait`, `normal`, `xwhole`, `xlocal`, `xunit`. Interrupted sessions can resume from this state.
 
 </details>
 
 <details>
-<summary><b>Other built-in capabilities</b></summary>
+<summary><b>Other Built-In Capabilities</b></summary>
 
-<br/>
+- **promptX / promptMasterX**: convert rough requirements or fix instructions into structured input for coderX.
+- **noiseX**: cleans Phase 1 context before Phase 2 so discarded assumptions do not enter the PRD.
+- **razorX**: uses "Can the path be shorter? Can cognitive load be lower?" to guide implementation and review.
+- **guideX**: keeps coderX away from overdesign, false completion, and unverified edits.
+- **xstatus**: generates a high-fidelity HTML workflow status report.
 
-- **promptMasterX (prompt optimization engine)**: the built-in `prompt-master` skill generates production-grade prompts for 20+ AI tools, including 9-dimension intent extraction, tool-specific routing, 6-category fault scanning, and copy-paste-ready output.
-- **razorX (code aesthetics framework)**: guided by "Can the path be shorter? Can cognitive load be lower?" Review mode scans line by line; Generation mode is declarative-first.
-- **xstatus (status visualization)**: one command generates a high-fidelity HTML workflow status report built on the `huashu-design` language.
-  ```bash
-  xstatus                                 # output to ./status-report.html and open
-  xstatus --output ./reports/today.html   # output to a custom path
-  ```
+```bash
+xstatus
+xstatus --output ./reports/today.html
+```
 
 </details>
 
@@ -270,89 +236,37 @@ WorkflowX has a four-layer router. Every input reads `.hybrid/status.json` first
 
 ## Platform Support
 
-All three configs share **identical** workflow logic — only trigger syntax and parallel capability differ. All modes auto-enable Worktree isolation (except xunit).
+| Platform | Config dir | Trigger style | Parallel mode |
+|---|---|---|---|
+| **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | Supports `/xwhole -parallel` |
+| **OpenAI Codex** | `.codex/` | Natural-language prefix: `xwhole` `xlocal` `xunit` `xstatus` `xprompt` | Not supported |
+| **OpenCode** | `.opencode/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | Not supported |
 
-| Platform | Config dir | Trigger style | Parallel |
-|------|----------|----------|----------|
-| **Claude Code** | `.claude/` | Slash commands `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | Supports `/xwhole -parallel` (Agent Teams) |
-| **OpenAI Codex** | `.codex/` | **Natural-language prefix** `xwhole` `xlocal` … (no slash) | Not supported |
-| **OpenCode** | `.opencode/` | Slash commands `/xwhole` `/xlocal` … | Not supported |
+All configs share the same workflow model, with trigger syntax, sub-agent dispatch, and parallelism adapted to the host tool.
 
 ---
 
 ## Framework Comparison
 
-> Full analysis (architecture, token consumption, AI pain points, detailed scoring) in [comparison-report.md](docs/comparison-report.md).
-
-<table>
-<tr>
-<td width="50%">
-
-**WorkflowX's 6 unique capabilities**
-- Hybrid Tree requirement tracking
-- AC cross-validation
-- Prompt optimization engine
-- Cross-branch violation detection
-- Weighted Socratic discovery
-- Code aesthetics framework
-
-</td>
-<td width="50%">
-
-**Weighted total (out of 100)**
-
-| Framework | Score |
-|------|:---:|
-| **WorkflowX** | **83** |
-| Superpowers | 80 |
-| OMC | 73 |
-
-</td>
-</tr>
-</table>
-
-<details>
-<summary>Expand detailed scoring & capability comparison</summary>
-
-<br/>
-
-| Category (Weight) | WorkflowX | Superpowers | OMC |
-|-------------------|:---------:|:-----------:|:---:|
-| Architecture & Design (25%) | **9.15** | 6.70 | 7.40 |
-| Workflow & Process (30%) | **9.20** | 7.60 | 7.50 |
-| Quality & Reliability (25%) | 7.85 | **8.55** | 7.70 |
-| Platform & Ecosystem (20%) | 6.40 | **9.60** | 6.60 |
-| **Weighted Total** | **83** | **80** | **73** |
+Full comparison: [comparison-report.md](docs/comparison-report.md).
 
 | Capability | WorkflowX | Superpowers | OMC |
-|------------|:---------:|:-----------:|:---:|
-| Hybrid Tree PRD tracking | Unique | Not supported | Not supported |
+|---|:---:|:---:|:---:|
+| Hybrid Tree requirement tracking | Unique | Not supported | Not supported |
 | AC cross-validation | Unique | Not supported | Not supported |
-| Prompt optimization engine | Unique | Not supported | Not supported |
-| Cross-branch violation detection | Unique | Not supported | Not supported |
-| Socratic requirements discovery | Weighted + proactive | Basic | Basic |
-| Code aesthetics framework | Unique | Not supported | Not supported |
-| Token incremental optimization | Systematic | Partial | Partial |
-| TDD iron rule | Not supported | Strictest | Partial |
-| Systematic debugging | Not supported | 4-phase | Partial |
-| Smart model routing | Not supported | Not supported | Supported |
-| Multi-AI cross-validation | Not supported | Not supported | Supported |
-| Security review (OWASP) | Partial | Not supported | Professional |
-| Multi-platform native | 4 platforms | 8 platforms | 2 platforms |
-
-<p align="center">
-  <img src="docs/assets/05-capabilities.png" alt="WorkflowX Unique Capabilities" width="880" />
-</p>
-
-</details>
+| Phase 1 discovery + proactive challenge | Strong | Basic | Basic |
+| Incremental token optimization | Systematic | Partial | Partial |
+| Worktree isolation + cross-branch checks | Supported | Partial | Partial |
+| Multi-platform configs | Claude / Codex / OpenCode | Multi-platform | Limited |
+| Status report visualization | Built-in xstatus | Different implementation | Different implementation |
 
 ---
 
 ## About
 
-An open-source experimental project deployed across real communities, exploring best practices and architecture for multi-agent collaborative development.
+WorkflowX is an open-source experimental project used in real communities. Its goal is to explore reliable process design, document structure, and quality gates for multi-agent collaborative development.
 
-Discussions, suggestions, and contributions of any kind are welcome! Fork the repo and open a Pull Request, or share ideas in Issues.
+Discussions, suggestions, and contributions are welcome. Fork the repo, open a Pull Request, or share your usage scenarios and issues.
 
 If this helps you, a star helps more people discover and test the workflow.
 
@@ -362,7 +276,7 @@ If this helps you, a star helps more people discover and test the workflow.
 
 <div align="center">
 
-[MIT License](./LICENSE) · Free to use / Modify / Redistribute　·　Made by [@TreeX-X](https://github.com/TreeX-X)
+[MIT License](./LICENSE) · Free to use / Modify / Redistribute · Made by [@TreeX-X](https://github.com/TreeX-X)
 
 </div>
 
