@@ -267,56 +267,67 @@
       margin: 12px 0;
       border: 1px solid var(--line-soft);
       background: #000;
+      display: grid;
+      grid-template-columns: 1fr 128px 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 10px 14px;
+      padding: 16px 38px;
+      align-items: stretch;
     }
 
     .orbit-ring {
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 260px;
-      height: 104px;
-      border: 1px solid var(--line);
+      width: 72%;
+      height: 1px;
+      border: 0;
+      background: rgba(255, 255, 255, 0.16);
       transform: translate(-50%, -50%) rotate(-8deg);
-      border-radius: 50%;
+      border-radius: 0;
+      z-index: 0;
     }
 
     .orbit-core {
-      position: absolute;
-      left: 50%;
-      top: 50%;
+      position: relative;
+      grid-column: 2;
+      grid-row: 1 / span 2;
       width: 116px;
       height: 116px;
+      align-self: center;
+      justify-self: center;
       display: grid;
       place-items: center;
-      transform: translate(-50%, -50%);
       border: 1px solid rgba(255, 100, 40, 0.52);
       background: #030303;
       font-size: 18px;
       font-weight: 860;
+      z-index: 2;
     }
 
     .orbit-item {
-      position: absolute;
-      width: 118px;
-      padding: 10px;
+      position: relative;
+      min-width: 0;
+      padding: 9px 10px;
       border: 1px solid var(--line);
       background: #040404;
       color: var(--soft);
-      font-size: 11px;
-      line-height: 1.25;
+      font-size: 10px;
+      line-height: 1.18;
+      z-index: 2;
     }
 
     .orbit-item b {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       color: var(--ink);
       font-size: 12px;
     }
 
-    .orbit-item.a { left: 38px; top: 22px; }
-    .orbit-item.b { right: 42px; top: 24px; }
-    .orbit-item.c { left: 70px; bottom: 18px; }
-    .orbit-item.d { right: 62px; bottom: 20px; }
+    .orbit-item.a { grid-column: 1; grid-row: 1; }
+    .orbit-item.b { grid-column: 3; grid-row: 1; }
+    .orbit-item.c { grid-column: 1; grid-row: 2; }
+    .orbit-item.d { grid-column: 3; grid-row: 2; }
 
     .data-strip {
       display: grid;
@@ -2030,10 +2041,10 @@
           title: "Main Agent",
           sub: "唯一编排者，唯一 Hybrid Tree 文档写入者",
           orbit: [
-            ["RouteX", "判断继续、探索或启动"],
-            ["Module 08", "先读代码，再澄清边界"],
+            ["RouteX", "状态门控 / 路由"],
+            ["Module 08", "读代码 / 澄清"],
             ["Phase 2", "写 Parent / Child"],
-            ["Core Loop", "转发 Payload 并记账"]
+            ["Core Loop", "派发 / 验收 / 记账"]
           ],
           data: [
             ["Hybrid Tree", "范围、AC、依赖、文件索引、迭代状态"],
@@ -2104,10 +2115,10 @@
           title: "Main Agent",
           sub: "The only orchestrator and Hybrid Tree document writer",
           orbit: [
-            ["RouteX", "Continue, explore, or start"],
-            ["Module 08", "Read code, then clarify"],
+            ["RouteX", "State gate / route"],
+            ["Module 08", "Read code / clarify"],
             ["Phase 2", "Write Parent / Child"],
-            ["Core Loop", "Forward Payloads and ledger state"]
+            ["Core Loop", "Dispatch / verify / ledger"]
           ],
           data: [
             ["Hybrid Tree", "Scope, AC, dependencies, file index, iteration state"],
