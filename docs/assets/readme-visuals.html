@@ -6,2328 +6,1992 @@
   <title>WorkflowX README Visuals</title>
   <style>
     :root {
-      --ink: #f6f2ec;
-      --muted: #9d968f;
-      --paper: #030303;
-      --panel: #0a0908;
-      --panel-2: #12100e;
-      --line: #2a211b;
-      --orange: #ff5a1f;
-      --orange-2: #ff8a24;
-      --orange-soft: rgba(255, 90, 31, 0.16);
-      --charcoal: #181512;
-      --green: #ff5a1f;
-      --teal: #ff8a24;
-      --blue: #4a4038;
-      --rust: #ff5a1f;
-      --gold: #ff9d3d;
-      --red: #ff5a1f;
-      --gray: #24211e;
+      --bg: #000000;
+      --ink: #f8f8f6;
+      --soft: #d6d0c8;
+      --muted: #88837c;
+      --faint: #4d4943;
+      --line: rgba(255, 255, 255, 0.13);
+      --line-soft: rgba(255, 255, 255, 0.07);
+      --panel: #050505;
+      --panel-2: #090909;
+      --panel-3: #0d0d0d;
+      --accent: #ff6428;
+      --accent-soft: rgba(255, 100, 40, 0.13);
+      --ok: #d7e6dc;
     }
 
     * { box-sizing: border-box; }
 
+    html,
     body {
+      width: 1200px;
+      height: 675px;
       margin: 0;
-      background: #111;
-      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-        "Microsoft YaHei", Arial, sans-serif;
+      overflow: hidden;
+      background: #000000;
       color: var(--ink);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
       letter-spacing: 0;
     }
 
     #stage {
+      position: relative;
       width: 1200px;
       height: 675px;
-      position: relative;
       overflow: hidden;
-      background:
-        linear-gradient(180deg, rgba(255, 90, 31, 0.055), transparent 34%),
-        linear-gradient(90deg, rgba(255, 90, 31, 0.055), transparent 32%, transparent 68%, rgba(255, 90, 31, 0.035)),
-        var(--paper);
+      background: #000000;
     }
 
     .frame {
       position: absolute;
       inset: 0;
-      padding: 34px 48px 32px;
+      padding: 34px 48px 28px;
+      background: #000000;
+    }
+
+    .grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.55;
+      background-image:
+        linear-gradient(var(--line-soft) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+      background-size: 80px 80px;
+      mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 78%, transparent 100%);
     }
 
     .topbar {
+      position: relative;
+      z-index: 2;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 28px;
-      margin-bottom: 20px;
+      gap: 32px;
+      min-height: 96px;
     }
 
-    .brand {
+    .brand-line {
       display: flex;
       align-items: center;
-      gap: 13px;
-      color: var(--ink);
+      gap: 12px;
+      margin-bottom: 16px;
+      font-size: 18px;
       font-weight: 780;
-      font-size: 20px;
-      line-height: 1;
+      color: var(--ink);
     }
 
-    .brand img {
-      width: 36px;
-      height: 14px;
-      object-fit: contain;
+    .brand-line img {
+      width: 30px;
+      height: auto;
+      display: block;
     }
 
-    .kicker {
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--accent);
       font-size: 12px;
-      color: rgba(255, 138, 36, 0.82);
+      font-weight: 840;
       text-transform: uppercase;
-      font-weight: 760;
-      letter-spacing: 0.08em;
-      margin-bottom: 9px;
     }
 
     h1 {
       margin: 0;
-      font-size: 32px;
-      line-height: 1.08;
-      letter-spacing: 0;
-      max-width: 760px;
+      max-width: 690px;
+      font-size: 34px;
+      line-height: 1.04;
+      font-weight: 860;
+      color: var(--ink);
     }
 
     .sub {
+      max-width: 620px;
+      margin-top: 13px;
       color: var(--muted);
       font-size: 15px;
-      line-height: 1.45;
-      max-width: 570px;
-      margin-top: 10px;
+      line-height: 1.48;
+      font-weight: 520;
     }
 
-      .pill-row {
+    .chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
       justify-content: flex-end;
-      max-width: 300px;
+      gap: 8px;
+      max-width: 360px;
+      padding-top: 4px;
     }
 
-    .pill {
-      border: 1px solid rgba(255, 90, 31, 0.22);
-      background: rgba(255, 90, 31, 0.055);
-      border-radius: 6px;
-      padding: 6px 9px;
+    .chip {
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 0 10px;
+      color: var(--soft);
+      background: rgba(255, 255, 255, 0.025);
       font-size: 11px;
       font-weight: 760;
-      color: var(--ink);
       white-space: nowrap;
     }
 
-    .grid-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 18px;
+    .chip.hot {
+      color: var(--ink);
+      border-color: rgba(255, 100, 40, 0.55);
+      background: var(--accent-soft);
     }
 
-    .grid-4 {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
+    .product {
+      position: relative;
+      z-index: 1;
+      height: 438px;
+      margin-top: 4px;
+      border: 1px solid var(--line);
+      background: #000000;
+      overflow: hidden;
+    }
+
+    .product::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255, 255, 255, 0.035);
+      pointer-events: none;
     }
 
     .panel {
-      background: rgba(8, 8, 7, 0.92);
-      border: 1px solid rgba(255, 90, 31, 0.11);
-      border-radius: 8px;
-      box-shadow: none;
+      border: 1px solid var(--line);
+      background: var(--panel);
     }
 
-    .node {
-      position: relative;
-      min-height: 96px;
-      padding: 14px;
-    }
-
-    .node strong {
-      display: block;
-      font-size: 18px;
-      line-height: 1.1;
-      margin-bottom: 9px;
-    }
-
-    .node p {
-      margin: 0;
+    .micro {
       color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
+      font-size: 10px;
+      font-weight: 820;
+      text-transform: uppercase;
     }
 
-    .tag {
-      display: inline-flex;
-      align-items: center;
-      height: 22px;
-      border-radius: 999px;
-      padding: 0 8px;
-      font-size: 11px;
-      font-weight: 800;
-      color: white;
-      margin-bottom: 10px;
-      background: var(--green);
+    .accent-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(255, 100, 40, 0.55);
     }
-
-    .tag.blue { background: #40362f; }
-    .tag.teal { background: var(--orange-2); }
-    .tag.rust { background: var(--rust); }
-    .tag.gold { background: var(--gold); }
-    .tag.red { background: var(--red); }
 
     .architecture {
       display: grid;
-      grid-template-columns: 245px 1fr 292px;
+      grid-template-columns: 250px 1fr 250px;
       gap: 18px;
-      align-items: stretch;
-      height: 396px;
+      padding: 20px;
     }
 
-    .stack {
+    .side-stack {
       display: grid;
       gap: 12px;
-      align-content: stretch;
     }
 
-    .main-agent {
-      padding: 16px;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 16px;
-      border: 1px solid rgba(255, 90, 31, 0.44);
-      background: rgba(14, 12, 10, 0.92);
+    .node {
+      min-height: 94px;
+      padding: 14px 16px;
     }
 
-    .agent-title {
-      display: flex;
-      justify-content: space-between;
-      gap: 18px;
-      align-items: flex-start;
+    .node .label,
+    .main-core .label,
+    .cap-card .label,
+    .mode .label,
+    .token-card .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
     }
 
-    .agent-title strong {
-      font-size: 26px;
-      line-height: 1.05;
-    }
-
-    .mini-flow {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-
-    .mini {
-      background: rgba(255, 255, 255, 0.025);
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      padding: 10px;
-      min-height: 82px;
-    }
-
-    .mini b {
+    .node strong,
+    .cap-card strong,
+    .mode strong,
+    .token-card strong {
       display: block;
-      font-size: 13px;
-      margin-bottom: 8px;
+      margin: 12px 0 7px;
+      color: var(--ink);
+      font-size: 20px;
+      line-height: 1.05;
+      font-weight: 850;
     }
 
-    .mini span {
+    .node p,
+    .cap-card p,
+    .mode p,
+    .token-card p {
+      margin: 0;
       color: var(--muted);
       font-size: 12px;
-      line-height: 1.28;
-      display: block;
+      line-height: 1.38;
     }
+
+    .main-core {
+      position: relative;
+      min-height: 396px;
+      padding: 22px 28px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035), transparent 42%),
+        #020202;
+    }
+
+    .main-core h2 {
+      margin: 14px 0 9px;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .main-core p {
+      margin: 0;
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.42;
+    }
+
+    .core-orbit {
+      position: relative;
+      height: 150px;
+      margin: 12px 0;
+      border: 1px solid var(--line-soft);
+      background: #000;
+    }
+
+    .orbit-ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 260px;
+      height: 104px;
+      border: 1px solid var(--line);
+      transform: translate(-50%, -50%) rotate(-8deg);
+      border-radius: 50%;
+    }
+
+    .orbit-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 116px;
+      height: 116px;
+      display: grid;
+      place-items: center;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(255, 100, 40, 0.52);
+      background: #030303;
+      font-size: 18px;
+      font-weight: 860;
+    }
+
+    .orbit-item {
+      position: absolute;
+      width: 118px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: #040404;
+      color: var(--soft);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .orbit-item b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .orbit-item.a { left: 38px; top: 22px; }
+    .orbit-item.b { right: 42px; top: 24px; }
+    .orbit-item.c { left: 70px; bottom: 18px; }
+    .orbit-item.d { right: 62px; bottom: 20px; }
 
     .data-strip {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
     }
 
-    .data-cell {
-      border-left: 3px solid var(--orange);
-      background: rgba(255, 90, 31, 0.055);
-      padding: 10px 12px;
-      font-size: 12px;
-      line-height: 1.35;
-      min-height: 54px;
+    .data-strip div {
+      min-height: 62px;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      background: #030303;
     }
 
-    .data-cell b {
+    .data-strip b {
       display: block;
-      font-size: 13px;
-      margin-bottom: 3px;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 14px;
     }
 
-    .connector {
-      position: absolute;
-      height: 2px;
-      background: var(--line);
-      transform-origin: left center;
-    }
-
-    .token-layout {
-      display: grid;
-      grid-template-columns: 340px 1fr;
-      gap: 20px;
-      height: 396px;
-    }
-
-    .saving {
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      text-align: center;
-      background: rgba(14, 13, 12, 0.86);
-      border: 1px solid rgba(255, 90, 31, 0.38);
-    }
-
-    .saving .big {
-      font-size: 68px;
-      line-height: 0.92;
-      font-weight: 850;
-      color: var(--rust);
-      margin-bottom: 16px;
-    }
-
-    .saving p {
-      margin: 0;
+    .data-strip span {
       color: var(--muted);
-      line-height: 1.42;
-      font-size: 15px;
+      font-size: 11px;
+      line-height: 1.3;
     }
 
-    .layers {
+    .token {
       display: grid;
-      grid-template-rows: repeat(3, 1fr);
-      gap: 13px;
+      grid-template-columns: 370px 1fr;
+      gap: 18px;
+      padding: 20px;
     }
 
-    .layer {
+    .token-hero {
+      position: relative;
+      padding: 32px;
+      min-height: 396px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      background: #020202;
+    }
+
+    .token-hero .big {
+      color: var(--ink);
+      font-size: 66px;
+      line-height: 0.88;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .token-hero .big span {
+      color: var(--accent);
+    }
+
+    .token-hero p {
+      margin: 18px 0 0;
+      max-width: 270px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .token-graph {
+      position: relative;
+      height: 132px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line-soft);
+      overflow: hidden;
+    }
+
+    .token-graph i {
+      position: absolute;
+      left: var(--x);
+      bottom: var(--y);
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.28);
+    }
+
+    .token-graph .hot {
+      background: var(--accent);
+    }
+
+    .token-stack {
       display: grid;
-      grid-template-columns: 88px 1fr 150px;
-      gap: 14px;
+      gap: 10px;
+    }
+
+    .token-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 86px 1fr 150px;
+      gap: 18px;
       align-items: center;
-      padding: 15px;
+      padding: 22px;
+      min-height: 118px;
+      background: #030303;
     }
 
-    .layer-code {
+    .token-card .code {
       width: 64px;
       height: 64px;
-      border-radius: 8px;
       display: grid;
       place-items: center;
-      color: #ff8a24;
-      font-size: 24px;
-      font-weight: 850;
-      background: #11100f;
-      border: 1px solid rgba(255, 90, 31, 0.30);
+      border: 1px solid var(--line);
+      color: var(--soft);
+      font-size: 22px;
+      font-weight: 900;
+      background: #000;
     }
 
-    .layer:nth-child(1) .layer-code { color: #070605; background: #ff5a1f; border-color: #ff5a1f; }
-    .layer:nth-child(2) .layer-code { color: #ffb156; }
-    .layer:nth-child(3) .layer-code { color: #d6c8ba; border-color: rgba(214, 200, 186, 0.22); }
-
-    .layer h2 {
-      margin: 0 0 7px;
-      font-size: 20px;
-      line-height: 1.1;
+    .token-card:first-child .code {
+      border-color: rgba(255, 100, 40, 0.55);
+      color: var(--accent);
     }
 
-    .layer p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    .metric {
+    .token-card .stat {
       border-left: 1px solid var(--line);
-      padding-left: 14px;
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.35;
+      padding-left: 18px;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.05;
+      font-weight: 880;
     }
 
-    .metric b {
+    .token-card .stat small {
       display: block;
-      color: var(--ink);
-      font-size: 21px;
-      margin-bottom: 5px;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 760;
+    }
+
+    .capabilities {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 18px;
+      padding: 20px;
+    }
+
+    .mode-stack {
+      padding: 18px;
+      background: #020202;
+    }
+
+    .mode-stack-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .mode {
+      display: grid;
+      grid-template-columns: 112px 1fr 58px;
+      gap: 14px;
+      align-items: center;
+      min-height: 84px;
+      border-top: 1px solid var(--line-soft);
+    }
+
+    .mode:first-of-type {
+      border-top: 0;
+    }
+
+    .mode .cmd {
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      background: #000;
+      color: var(--soft);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .mode.primary .cmd,
+    .mode.primary .mark {
+      border-color: rgba(255, 100, 40, 0.62);
+      color: var(--accent);
+    }
+
+    .mode strong {
+      margin: 0 0 5px;
+      font-size: 18px;
+    }
+
+    .mode .mark {
+      justify-self: end;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
     }
 
     .cap-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      height: 396px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
-    .mode-table {
+    .cap-card {
+      min-height: 124px;
       padding: 18px;
+      background: #030303;
     }
 
-    .mode-row {
-      display: grid;
-      grid-template-columns: 124px 1fr 72px;
-      gap: 12px;
-      padding: 9px 0;
-      border-bottom: 1px solid var(--line);
-      align-items: center;
+    .cap-card strong {
+      margin-top: 18px;
+      font-size: 18px;
     }
 
-    .mode-row:last-child { border-bottom: 0; }
-
-    .mode-badge {
-      height: 36px;
-      border-radius: 7px;
-      display: grid;
-      place-items: center;
-      color: #ff8a24;
-      font-weight: 850;
-      background: #11100f;
-      border: 1px solid rgba(255, 90, 31, 0.26);
-      font-size: 12px;
-    }
-
-    .mode-row:nth-child(1) .mode-badge {
-      color: #070605;
-      background: #ff5a1f;
-      border-color: #ff5a1f;
-    }
-    .mode-row:nth-child(2) .mode-badge { color: #ffb156; }
-    .mode-row:nth-child(3) .mode-badge {
-      color: #d6c8ba;
-      border-color: rgba(214, 200, 186, 0.22);
-    }
-    .mode-row:nth-child(4) .mode-badge {
-      color: #ff5a1f;
-      box-shadow: inset 3px 0 0 #ff5a1f;
-    }
-
-    .mode-copy b {
-      display: block;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-
-    .mode-copy span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.28;
-    }
-
-    .mode-mark {
-      color: var(--muted);
-      font-size: 12px;
-      text-align: right;
-      line-height: 1.25;
-    }
-
-    .cap-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .cap {
-      padding: 14px;
-      min-height: 116px;
-      border-left: 3px solid var(--orange);
-    }
-
-    .cap:nth-child(2),
-    .cap:nth-child(4),
-    .cap:nth-child(6) { border-left-color: rgba(255, 138, 36, 0.75); }
-    .cap:nth-child(3),
-    .cap:nth-child(5) { border-left-color: rgba(255, 90, 31, 0.42); }
-
-    .cap b {
-      display: block;
-      font-size: 15px;
-      margin-bottom: 8px;
-      line-height: 1.14;
-    }
-
-    .cap span {
-      color: var(--muted);
-      display: block;
-      font-size: 12px;
-      line-height: 1.32;
+    .cap-card.feature {
+      border-color: rgba(255, 100, 40, 0.54);
     }
 
     .workflow {
-      height: 400px;
       position: relative;
-    }
-
-    .workflow-line {
-      position: absolute;
-      left: 33px;
-      right: 33px;
-      top: 172px;
-      height: 6px;
-      background: #28221e;
-      border-radius: 999px;
+      height: 420px;
+      margin-top: 4px;
+      border: 1px solid var(--line);
+      background: #000000;
       overflow: hidden;
     }
 
-    .workflow-fill {
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, var(--green), var(--teal), var(--blue), var(--rust));
-      border-radius: 999px;
-      transition: width 0.1s linear;
-    }
-
-    .steps {
+    .workflow-shell {
       position: absolute;
-      left: 16px;
-      right: 16px;
-      top: 106px;
+      left: 34px;
+      right: 34px;
+      top: 20px;
+      bottom: 20px;
       display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 4px;
+      grid-template-columns: 214px 1fr 194px;
+      gap: 16px;
     }
 
-    .step {
-      text-align: center;
+    .phase-list,
+    .ledger {
+      padding: 16px;
+      background: #020202;
+      border: 1px solid var(--line);
+    }
+
+    .phase-title,
+    .ledger-title {
       color: var(--muted);
-      font-size: 11px;
-      line-height: 1.2;
-      min-width: 0;
-    }
-
-    .dot {
-      width: 34px;
-      height: 34px;
-      margin: 44px auto 10px;
-      border-radius: 50%;
-      border: 2px solid #cfc5b6;
-      background: #11100f;
-      color: var(--muted);
-      display: grid;
-      place-items: center;
-      font-size: 12px;
-      font-weight: 840;
-    }
-
-    .step.done .dot {
-      background: var(--green);
-      border-color: var(--green);
-      color: white;
-    }
-
-    .step.active .dot {
-      background: var(--rust);
-      border-color: var(--rust);
-      color: white;
-      box-shadow: 0 0 0 8px rgba(180, 90, 49, 0.12);
-    }
-
-    .step b {
-      display: block;
-      font-size: 11px;
-      color: var(--ink);
-      margin-bottom: 4px;
-      white-space: normal;
-    }
-
-    .active-card {
-      position: absolute;
-      left: 50%;
-      bottom: 4px;
-      transform: translateX(-50%);
-      width: 720px;
-      min-height: 116px;
-      padding: 16px 18px;
-      display: grid;
-      grid-template-columns: 190px 1fr;
-      gap: 18px;
-      align-items: center;
-      background: #11100f;
-      border: 2px solid rgba(180, 90, 49, 0.4);
-    }
-
-    .active-card .stage-no {
-      color: var(--rust);
-      font-size: 13px;
+      font-size: 10px;
       font-weight: 850;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 8px;
-    }
-
-    .active-card h2 {
-      margin: 0;
-      font-size: 24px;
-      line-height: 1.08;
-    }
-
-    .active-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .workflow-side {
-      position: absolute;
-      top: 10px;
-      width: 248px;
-      min-height: 108px;
-      padding: 14px;
-    }
-
-    .workflow-side.left { left: 18px; }
-    .workflow-side.right { right: 18px; }
-
-    .workflow-side b {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 8px;
-    }
-
-    .workflow-side span {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.3;
-      display: block;
-    }
-
-    .loop-arrow {
-      position: absolute;
-      width: 142px;
-      height: 58px;
-      right: 247px;
-      top: 226px;
-      border: 2px solid var(--red);
-      border-left: 0;
-      border-radius: 0 36px 36px 0;
-      opacity: 0;
-    }
-
-    .loop-arrow::after {
-      content: "";
-      position: absolute;
-      left: -8px;
-      bottom: -7px;
-      width: 0;
-      height: 0;
-      border-top: 7px solid transparent;
-      border-bottom: 7px solid transparent;
-      border-right: 10px solid var(--red);
-    }
-
-    .console {
-      position: relative;
-      height: 400px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(17, 16, 15, 0.96), rgba(5, 5, 5, 0.98));
-      box-shadow: inset 0 0 0 1px rgba(255, 90, 31, 0.04);
-      overflow: hidden;
-    }
-
-    .console::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 90, 31, 0.045), transparent);
-      pointer-events: none;
-    }
-
-    .lane {
-      position: absolute;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255, 90, 31, 0.86), transparent);
-      transform-origin: left center;
-      opacity: 0.75;
-    }
-
-    .lane.dim {
-      background: linear-gradient(90deg, transparent, rgba(215, 210, 202, 0.28), transparent);
-      opacity: 0.55;
-    }
-
-    .console-card {
-      position: absolute;
-      border: 1px solid rgba(255, 90, 31, 0.28);
-      background: rgba(13, 12, 11, 0.88);
-      border-radius: 8px;
-      padding: 13px 14px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.34);
-    }
-
-    .console-card.active {
-      border-color: rgba(255, 90, 31, 0.9);
-      box-shadow: 0 0 0 1px rgba(255, 90, 31, 0.32), 0 0 34px rgba(255, 90, 31, 0.18);
-    }
-
-    .console-card b {
-      display: block;
-      font-size: 15px;
-      margin-bottom: 7px;
-      color: var(--ink);
-      line-height: 1.1;
-    }
-
-    .console-card span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.3;
-    }
-
-    .core-orbit {
-      position: absolute;
-      left: 423px;
-      top: 88px;
-      width: 246px;
-      height: 246px;
-      border-radius: 50%;
-      border: 1px solid rgba(255, 90, 31, 0.35);
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle, rgba(255, 90, 31, 0.18), rgba(14, 13, 12, 0.88) 54%, rgba(0, 0, 0, 0.3));
-    }
-
-    .core-ring {
-      position: absolute;
-      inset: 20px;
-      border-radius: 50%;
-      border: 2px dashed rgba(255, 177, 86, 0.45);
-    }
-
-    .core-label {
-      position: relative;
-      width: 142px;
-      height: 142px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      text-align: center;
-      background: #050505;
-      border: 2px solid rgba(255, 90, 31, 0.78);
-      box-shadow: 0 0 42px rgba(255, 90, 31, 0.22);
-      padding: 18px;
-    }
-
-    .core-label b {
-      display: block;
-      font-size: 24px;
-      line-height: 1.02;
-    }
-
-    .core-label span {
-      display: block;
-      margin-top: 8px;
-      font-size: 11px;
-      line-height: 1.25;
-      color: var(--muted);
-    }
-
-    .module-chip {
-      position: absolute;
-      height: 28px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 90, 31, 0.34);
-      background: rgba(8, 8, 8, 0.86);
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 11px;
-      font-size: 11px;
-      font-weight: 840;
-    }
-
-    .module-chip.active {
-      background: var(--rust);
-      border-color: var(--rust);
-      color: #090909;
-      box-shadow: 0 0 24px rgba(255, 90, 31, 0.38);
-    }
-
-    .packet {
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: var(--rust);
-      box-shadow: 0 0 0 7px rgba(255, 90, 31, 0.16), 0 0 32px rgba(255, 90, 31, 0.62);
-      z-index: 12;
-    }
-
-    .packet.secondary {
-      width: 12px;
-      height: 12px;
-      background: var(--gold);
-      opacity: 0.72;
-      z-index: 11;
-    }
-
-    .doc-panel {
-      position: absolute;
-      left: 378px;
-      bottom: 24px;
-      width: 340px;
-      height: 92px;
-      border: 1px solid rgba(255, 90, 31, 0.32);
-      background: rgba(12, 11, 10, 0.92);
-      border-radius: 8px;
-      padding: 13px 14px;
-    }
-
-    .doc-panel b {
-      font-size: 14px;
-      display: block;
       margin-bottom: 10px;
     }
 
-    .doc-line {
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(255, 90, 31, 0.22);
-      margin: 8px 0;
-      overflow: hidden;
-    }
-
-    .doc-line i {
-      display: block;
-      height: 100%;
-      width: 0;
-      background: linear-gradient(90deg, var(--rust), var(--gold));
-      border-radius: 999px;
-    }
-
-    .status-strip {
-      position: absolute;
-      left: 34px;
-      right: 34px;
-      top: 20px;
-      height: 34px;
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 6px;
-    }
-
-    .status-step {
-      border: 1px solid rgba(255, 90, 31, 0.18);
-      background: rgba(255, 90, 31, 0.05);
-      color: rgba(245, 240, 232, 0.52);
-      border-radius: 5px;
-      display: grid;
-      place-items: center;
-      font-size: 10px;
-      font-weight: 820;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .status-step.done {
-      border-color: rgba(255, 90, 31, 0.7);
-      color: var(--ink);
-      background: rgba(255, 90, 31, 0.22);
-    }
-
-    .status-step.active {
-      background: var(--rust);
-      border-color: var(--rust);
-      color: #050505;
-    }
-
-    .verdict {
-      position: absolute;
-      right: 34px;
-      bottom: 28px;
-      width: 184px;
-      height: 88px;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 90, 31, 0.38);
-      background: rgba(13, 12, 11, 0.9);
-      padding: 13px;
-    }
-
-    .verdict .label {
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 820;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .verdict .value {
-      color: var(--rust);
-      font-size: 28px;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .scene-caption {
-      position: absolute;
-      left: 34px;
-      bottom: 28px;
-      width: 280px;
-      min-height: 88px;
-      border-left: 4px solid var(--rust);
-      padding: 4px 0 0 14px;
-    }
-
-    .scene-caption .stage-no {
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 880;
-      margin-bottom: 7px;
-    }
-
-    .scene-caption h2 {
-      margin: 0 0 8px;
-      font-size: 23px;
-      line-height: 1.05;
-    }
-
-    .scene-caption p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    .flow-stage {
-      position: relative;
-      height: 400px;
-      border: 1px solid rgba(255, 90, 31, 0.22);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(255, 90, 31, 0.055), transparent 38%),
-        #020202;
-      overflow: hidden;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
-    }
-
-    .flow-stage::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 22%, rgba(0, 0, 0, 0.24));
-      pointer-events: none;
-    }
-
-    .process-rail {
-      position: absolute;
-      left: 48px;
-      right: 48px;
-      top: 26px;
-      height: 86px;
-    }
-
-    .rail-track {
-      position: absolute;
-      left: 44px;
-      right: 44px;
-      top: 38px;
-      height: 3px;
-      background: rgba(255, 90, 31, 0.2);
-      overflow: hidden;
-    }
-
-    .rail-fill {
-      height: 100%;
-      width: var(--rail, 0%);
-      background: linear-gradient(90deg, #ff5a1f, #ff8a24);
-      box-shadow: 0 0 18px rgba(255, 90, 31, 0.48);
-    }
-
-    .rail-nodes {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 8px;
-    }
-
-    .rail-node {
-      position: relative;
-      text-align: center;
-      color: rgba(245, 240, 232, 0.54);
-      font-size: 10px;
-      font-weight: 820;
-      line-height: 1.15;
-      padding-top: 55px;
-      white-space: nowrap;
-    }
-
-    .rail-node::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 25px;
-      width: 24px;
-      height: 24px;
-      transform: translateX(-50%);
-      border-radius: 50%;
-      border: 1px solid rgba(255, 90, 31, 0.55);
-      background: #060606;
-      box-shadow: inset 0 0 0 4px #060606;
-    }
-
-    .rail-node.done::before {
-      background: #ff5a1f;
-      box-shadow: 0 0 18px rgba(255, 90, 31, 0.55);
-    }
-
-    .rail-node.active {
-      color: var(--ink);
-    }
-
-    .rail-node.active::before {
-      background: #ff8a24;
-      border-color: #ff8a24;
-      box-shadow: 0 0 0 6px rgba(255, 90, 31, 0.16), 0 0 24px rgba(255, 138, 36, 0.58);
-    }
-
-    .rail-packet {
-      position: absolute;
-      top: 30px;
-      left: var(--packet-x, 0%);
-      width: 16px;
-      height: 16px;
-      margin-left: -8px;
-      border-radius: 50%;
-      background: #ff5a1f;
-      box-shadow: 0 0 0 7px rgba(255, 90, 31, 0.14), 0 0 30px rgba(255, 90, 31, 0.78);
-      z-index: 3;
-    }
-
-    .loop-rail {
-      position: absolute;
-      right: 142px;
-      top: 62px;
-      width: 258px;
-      height: 72px;
-      border: 2px solid rgba(255, 90, 31, 0.42);
-      border-top: 0;
-      border-radius: 0 0 48px 48px;
-      opacity: var(--loop-opacity, 0.3);
-    }
-
-    .loop-rail::after {
-      content: "";
-      position: absolute;
-      left: -9px;
-      top: -7px;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      border-right: 12px solid rgba(255, 90, 31, 0.8);
-    }
-
-    .demo-shell {
-      position: absolute;
-      left: 42px;
-      right: 42px;
-      bottom: 28px;
-      height: 242px;
-      display: grid;
-      grid-template-columns: 250px 1fr 154px;
-      gap: 16px;
-      align-items: stretch;
-    }
-
-    .demo-caption {
-      border-left: 4px solid #ff5a1f;
-      padding: 8px 0 0 15px;
-      align-self: end;
-      min-height: 132px;
-    }
-
-    .demo-caption .stage-no {
-      color: #ffb156;
-      font-size: 12px;
-      font-weight: 880;
-      margin-bottom: 8px;
-    }
-
-    .demo-caption h2 {
-      margin: 0 0 10px;
-      font-size: 25px;
-      line-height: 1.05;
-    }
-
-    .demo-caption p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.36;
-    }
-
-    .demo-theater {
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255, 90, 31, 0.20);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(14, 12, 10, 0.96), rgba(3, 3, 3, 0.98));
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
-      perspective: 1200px;
-    }
-
-    .demo-theater::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 90, 31, 0.07), transparent 34%);
-      pointer-events: none;
-    }
-
-    .theater-sweep {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: calc(var(--scan) - 18%);
-      width: 80px;
-      background: linear-gradient(90deg, transparent, rgba(255, 138, 36, 0.10), transparent);
-      opacity: 0.52;
-      transform: skewX(-10deg);
-      pointer-events: none;
-    }
-
-    .scene-ui {
-      position: absolute;
-      inset: 0;
-      transform: translate3d(var(--shift-x), var(--shift-y), 0) scale(var(--scene-scale));
-      opacity: var(--scene-opacity);
-    }
-
-    .ui-surface {
-      position: absolute;
-      border: 1px solid rgba(255, 90, 31, 0.18);
-      border-radius: 8px;
-      background: rgba(10, 9, 8, 0.96);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
-      overflow: hidden;
-    }
-
-    .ui-surface::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.035), transparent 28%);
-      pointer-events: none;
-    }
-
-    .ui-main {
-      left: 26px;
-      top: 20px;
-      width: 62%;
-      height: 182px;
-      transform: translate3d(0, var(--main-y), 42px) rotateX(0.01deg);
-    }
-
-    .ui-side {
-      right: 24px;
-      top: 38px;
-      width: 28%;
-      height: 136px;
-      opacity: 0.86;
-      transform: translate3d(var(--side-x), 0, -20px) rotateY(-5deg);
-      filter: saturate(0.88) brightness(0.86);
-    }
-
-    .ui-low {
-      right: 70px;
-      bottom: 18px;
-      width: 40%;
-      height: 56px;
-      opacity: 0.74;
-      transform: translate3d(var(--low-x), 0, 12px);
-    }
-
-    .ui-pad {
-      padding: 17px 18px;
-    }
-
-    .ui-title {
-      color: #ffb156;
-      font-size: 11px;
-      font-weight: 900;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      letter-spacing: 0.02em;
-    }
-
-    .ui-kicker {
-      color: rgba(245, 240, 232, 0.72);
-      font-size: 11px;
-      font-weight: 820;
-      margin-bottom: 8px;
-    }
-
-    .route-map {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .route-tile {
-      min-height: 62px;
-      border: 1px solid rgba(255, 90, 31, 0.14);
-      background: rgba(0, 0, 0, 0.42);
-      border-radius: 6px;
-      padding: 10px;
-    }
-
-    .route-tile b,
-    .doc-node b {
-      display: block;
-      color: var(--ink);
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-
-    .route-tile span,
-    .doc-node span {
-      display: block;
-      color: var(--muted);
-      font-size: 10px;
-      line-height: 1.28;
-    }
-
-    .json-card {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-      color: rgba(245, 240, 232, 0.72);
-      font-size: 12px;
-      line-height: 1.55;
-      white-space: pre-wrap;
-    }
-
-    .doc-canvas {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .doc-node {
-      border: 1px solid rgba(255, 90, 31, 0.16);
-      border-radius: 7px;
-      padding: 12px;
-      background: rgba(255, 90, 31, 0.035);
-      min-height: 112px;
-    }
-
-    .scan-list {
-      display: grid;
-      gap: 7px;
-    }
-
-    .scan-row {
-      height: 12px;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255, 90, 31, 0.62), rgba(255, 145, 31, 0.18));
-      width: var(--w);
-      transform-origin: left;
-      transform: scaleX(var(--row-scale));
-    }
-
-    .cursor-dot {
-      position: absolute;
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: #ff5a1f;
-      box-shadow: 0 0 0 6px rgba(255, 90, 31, 0.16), 0 0 30px rgba(255, 90, 31, 0.66);
-      left: var(--cursor-x);
-      top: var(--cursor-y);
-    }
-
-    .verify-mini {
-      display: grid;
-      gap: 6px;
-    }
-
-    .verify-mini .verify-row {
-      background: rgba(0, 0, 0, 0.38);
-      min-height: 28px;
-      padding: 8px 10px;
-    }
-
-    .demo-window {
-      position: relative;
-      border: 1px solid rgba(255, 90, 31, 0.32);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(28, 24, 21, 0.98), rgba(7, 7, 7, 0.98));
-      overflow: hidden;
-      box-shadow: 0 22px 60px rgba(0, 0, 0, 0.38);
-    }
-
-    .demo-window::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 30px;
-      background: rgba(255, 90, 31, 0.08);
-      border-bottom: 1px solid rgba(255, 90, 31, 0.2);
-    }
-
-    .chrome-dots {
-      position: absolute;
-      left: 14px;
-      top: 11px;
-      display: flex;
-      gap: 6px;
-      z-index: 3;
-    }
-
-    .chrome-dots i {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #ff5a1f;
-      opacity: 0.85;
-    }
-
-    .demo-view {
-      position: absolute;
-      inset: 31px 0 0;
-      padding: 18px 20px;
-      animation: viewIn 0.42s ease both;
-    }
-
-    @keyframes viewIn {
-      from { opacity: 0; transform: translateY(12px) scale(0.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .view-title {
-      font-size: 13px;
-      color: #ffb156;
-      font-weight: 880;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    .terminal-line {
-      height: 30px;
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      color: #f7f0e8;
-      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-      font-size: 13px;
-      border-bottom: 1px solid rgba(255, 90, 31, 0.14);
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .terminal-line::before {
-      content: ">";
-      color: #ff5a1f;
-      font-weight: 900;
-    }
-
-    .matrix-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .matrix-card,
-    .mini-doc,
-    .code-pane,
-    .verify-row,
-    .report-card {
-      border: 1px solid rgba(255, 90, 31, 0.16);
-      background: rgba(6, 6, 6, 0.72);
-      border-radius: 7px;
-      padding: 11px;
-    }
-
-    .matrix-card b,
-    .mini-doc b,
-    .code-pane b,
-    .report-card b {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .matrix-card span,
-    .mini-doc span,
-    .report-card span {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.3;
-    }
-
-    .status-json {
-      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-      font-size: 11px;
-      color: #d9d2ca;
-      line-height: 1.65;
-      white-space: pre;
-    }
-
-    .question-box {
-      border-left: 3px solid #ff5a1f;
-      padding: 10px 12px;
-      background: rgba(255, 90, 31, 0.08);
-      margin-top: 8px;
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    .gate-card {
-      width: 74%;
-      margin: 10px auto 0;
-      border: 1px solid rgba(255, 177, 86, 0.45);
-      background: rgba(255, 90, 31, 0.1);
-      border-radius: 8px;
-      padding: 14px;
-      text-align: center;
-    }
-
-    .gate-card b {
-      display: block;
-      font-size: 18px;
-      margin-bottom: 8px;
-    }
-
-    .gate-button {
-      display: inline-block;
-      margin-top: 10px;
-      background: #ff5a1f;
-      color: #050505;
-      border-radius: 6px;
-      padding: 7px 13px;
-      font-weight: 900;
-      font-size: 12px;
-    }
-
-    .noise-field {
-      position: relative;
-      height: 140px;
-      border: 1px solid rgba(255, 90, 31, 0.18);
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .noise-dot {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255, 90, 31, 0.55);
-    }
-
-    .filter-bar {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: var(--scan, 0%);
-      width: 3px;
-      background: #ffb156;
-      box-shadow: 0 0 34px #ff5a1f;
-    }
-
-    .doc-stack {
-      display: grid;
-      grid-template-columns: 1.08fr 0.92fr;
-      gap: 12px;
-      height: 150px;
-    }
-
-    .doc-lines i,
-    .code-lines i {
-      display: block;
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(255, 90, 31, 0.32);
-      margin: 8px 0;
-    }
-
-    .code-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .code-line {
-      height: 8px;
-      margin: 9px 0;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .code-line.add { background: rgba(255, 90, 31, 0.45); }
-    .code-line.dim { width: 62%; opacity: 0.55; }
-
-    .verify-table {
-      display: grid;
-      gap: 8px;
-    }
-
-    .verify-row {
-      display: grid;
-      grid-template-columns: 70px 1fr 74px;
-      gap: 10px;
-      align-items: center;
-      min-height: 34px;
-      font-size: 12px;
-    }
-
-    .verify-row .pass { color: #ffb156; font-weight: 900; }
-    .verify-row .fail { color: #ff5a1f; font-weight: 900; }
-
-    .ui-side .verify-row {
-      grid-template-columns: 42px 1fr 34px;
-      gap: 6px;
-      padding: 7px 8px;
-      font-size: 10px;
-      min-height: 30px;
-    }
-
-    .side-metrics {
-      display: grid;
-      gap: 9px;
-    }
-
-    .metric-card {
-      border: 1px solid rgba(255, 90, 31, 0.16);
-      background: rgba(8, 7, 6, 0.88);
-      border-radius: 8px;
-      padding: 10px 11px;
-      min-height: 58px;
-      box-shadow: inset 2px 0 0 rgba(255, 90, 31, 0.34);
-    }
-
-    .iteration-map {
-      display: grid;
-      grid-template-columns: 1fr 38px 1fr 38px 1fr;
-      gap: 12px;
-      align-items: center;
-      height: 106px;
-      margin-top: 8px;
-    }
-
-    .iteration-full {
-      position: absolute;
-      left: 22px;
-      right: 22px;
-      top: 18px;
-      height: 208px;
-    }
-
-    .iteration-node {
-      min-height: 94px;
-      border: 1px solid rgba(255, 90, 31, 0.18);
-      background: rgba(255, 90, 31, 0.035);
-      border-radius: 7px;
-      padding: 12px;
-    }
-
-    .iteration-node b {
-      display: block;
-      font-size: 14px;
-      margin-bottom: 7px;
-    }
-
-    .iteration-node span {
-      display: block;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.28;
-    }
-
-    .iteration-arrow {
-      height: 2px;
-      background: linear-gradient(90deg, rgba(255, 90, 31, 0.18), #ff5a1f);
-      position: relative;
-    }
-
-    .iteration-arrow::after {
-      content: "";
-      position: absolute;
-      right: -1px;
-      top: -5px;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-      border-left: 9px solid #ff5a1f;
-    }
-
-    .iteration-note {
-      margin-top: 12px;
-      border-left: 3px solid #ff5a1f;
-      padding: 8px 0 0 12px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.36;
-    }
-
-    .metric-card .label {
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 820;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .metric-card .value {
-      color: #ff5a1f;
-      font-size: 20px;
-      font-weight: 920;
-      line-height: 1;
-    }
-
-    .watermark {
-      position: absolute;
-      right: 28px;
-      bottom: 18px;
-      color: rgba(245, 240, 232, 0.42);
-      font-size: 10px;
-      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-      letter-spacing: 0.12em;
-    }
-
-    .small-note {
-      position: absolute;
-      left: 54px;
-      bottom: 20px;
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .workflow-v4 {
-      height: 428px;
-      display: grid;
-      grid-template-columns: 214px 1fr 174px;
-      gap: 16px;
-      padding: 18px;
-      border: 1px solid rgba(255, 90, 31, 0.16);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(255, 90, 31, 0.035), transparent 42%),
-        #030303;
-      overflow: hidden;
-    }
-
-    .workflow-v4.loop-focus {
-      grid-template-columns: 174px 1fr 148px;
-    }
-
-    .phase-index,
-    .motion-board,
-    .state-ledger {
-      border: 1px solid rgba(255, 90, 31, 0.12);
-      border-radius: 8px;
-      background: rgba(8, 8, 7, 0.90);
-      transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .workflow-v4.loop-focus .phase-index {
-      opacity: 0.60;
-    }
-
-    .workflow-v4.loop-focus .motion-board {
-      border-color: rgba(255, 90, 31, 0.28);
-      background: rgba(8, 7, 6, 0.98);
-    }
-
-    .workflow-v4.loop-focus .state-ledger {
-      opacity: 0.78;
-    }
-
-    .phase-index {
-      padding: 12px;
-      display: grid;
-      grid-template-rows: auto 1fr;
-      gap: 10px;
-    }
-
-    .index-title,
-    .ledger-title,
-    .board-kicker {
-      color: #ff8a24;
-      font-size: 11px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .index-list {
-      display: grid;
-      gap: 3px;
-      align-content: start;
-    }
-
-    .index-row {
+    .phase-row {
       display: grid;
       grid-template-columns: 26px 1fr;
       gap: 8px;
-      align-items: center;
-      min-height: 23px;
-      padding: 3px 6px;
-      border-radius: 6px;
-      color: rgba(245, 240, 232, 0.55);
+      align-items: start;
+      min-height: 28px;
+      color: var(--muted);
+      opacity: 0.52;
     }
 
-    .index-row.done,
-    .index-row.active {
-      color: var(--ink);
-    }
+    .phase-row.done { opacity: 0.86; }
+    .phase-row.active { opacity: 1; }
 
-    .index-row.active {
-      background: rgba(255, 90, 31, 0.12);
-      box-shadow: inset 2px 0 0 #ff5a1f;
-    }
-
-    .index-num {
-      width: 20px;
+    .phase-num {
       height: 20px;
-      border: 1px solid rgba(255, 90, 31, 0.28);
-      border-radius: 5px;
       display: grid;
       place-items: center;
-      font-size: 10px;
-      font-weight: 900;
-      color: rgba(245, 240, 232, 0.55);
-    }
-
-    .index-row.done .index-num {
-      background: rgba(255, 90, 31, 0.18);
-      border-color: rgba(255, 90, 31, 0.34);
-      color: #ffb156;
-    }
-
-    .index-row.active .index-num {
-      background: #ff5a1f;
-      border-color: #ff5a1f;
-      color: #070605;
-      box-shadow: 0 0 22px rgba(255, 90, 31, 0.46);
-    }
-
-    .index-copy b {
-      display: block;
-      font-size: 12px;
-      line-height: 1.1;
-    }
-
-    .index-copy span {
-      display: block;
-      margin-top: 1px;
+      border: 1px solid var(--line);
       font-size: 9px;
-      line-height: 1.1;
+      font-weight: 850;
       color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      background: #000;
     }
 
-    .motion-board {
+    .phase-row.active .phase-num {
+      color: #000;
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .phase-row b {
+      display: block;
+      color: var(--ink);
+      font-size: 10px;
+      line-height: 1.12;
+      margin-bottom: 2px;
+    }
+
+    .phase-row span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.2;
+    }
+
+    .motion {
       position: relative;
+      background: #010101;
+      border: 1px solid var(--line);
       overflow: hidden;
-      padding: 20px;
     }
 
-    .motion-board::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 90, 31, 0.055), transparent 36%);
-      pointer-events: none;
-    }
-
-    .board-head {
-      position: relative;
+    .motion-head {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
       align-items: flex-start;
-      margin-bottom: 16px;
+      padding: 18px 20px 0;
     }
 
-    .board-head h2 {
-      margin: 6px 0 0;
-      font-size: 25px;
+    .motion-head .k {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .motion-head h2 {
+      margin: 8px 0 0;
+      font-size: 27px;
       line-height: 1.05;
     }
 
-    .board-head p {
-      margin: 6px 0 0;
-      color: var(--muted);
+    .state-pill {
+      min-width: 76px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 100, 40, 0.54);
+      color: var(--accent);
       font-size: 12px;
-      line-height: 1.35;
-      max-width: 420px;
+      font-weight: 900;
+      background: rgba(255, 100, 40, 0.08);
     }
 
-    .board-badge {
-      border: 1px solid rgba(255, 90, 31, 0.28);
-      border-radius: 6px;
-      padding: 8px 10px;
-      min-width: 90px;
-      text-align: center;
-      color: #ff5a1f;
-      font-size: 22px;
-      font-weight: 920;
-      line-height: 1;
-      background: rgba(255, 90, 31, 0.06);
-    }
-
-    .scene-panel {
-      position: relative;
-      min-height: 238px;
-      border: 1px solid rgba(255, 90, 31, 0.11);
-      border-radius: 8px;
-      background: rgba(0, 0, 0, 0.32);
-      padding: 18px;
+    .scene-area {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      top: 96px;
+      bottom: 24px;
+      border: 1px solid var(--line-soft);
+      background: #000;
       overflow: hidden;
       transform: translate3d(var(--scene-x), var(--scene-y), 0) scale(var(--scene-scale));
       opacity: var(--scene-opacity);
     }
 
-    .scene-grid-3,
-    .scene-grid-2 {
+    .scene-grid {
       display: grid;
-      gap: 12px;
-      height: 100%;
-      align-items: stretch;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 18px;
     }
-
-    .scene-grid-3 { grid-template-columns: repeat(3, 1fr); }
-    .scene-grid-2 { grid-template-columns: repeat(2, 1fr); }
 
     .work-card {
-      border: 1px solid rgba(255, 90, 31, 0.12);
-      border-radius: 7px;
+      min-height: 88px;
+      border: 1px solid var(--line);
+      background: #040404;
       padding: 14px;
-      background: rgba(14, 13, 12, 0.86);
-      min-height: 82px;
     }
 
-    .work-card strong {
+    .work-card b {
       display: block;
-      font-size: 15px;
-      line-height: 1.12;
       margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 15px;
     }
 
-    .work-card span,
-    .work-card p {
+    .work-card span {
       display: block;
-      margin: 0;
       color: var(--muted);
       font-size: 11px;
       line-height: 1.34;
     }
 
     .command-line {
-      height: 42px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid rgba(255, 90, 31, 0.16);
-      color: var(--ink);
+      margin: 18px;
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      color: var(--soft);
+      background: #020202;
       font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-      font-size: 15px;
-      margin-bottom: 14px;
+      font-size: 13px;
     }
 
     .command-line::before {
       content: ">";
-      color: #ff5a1f;
-      font-weight: 900;
+      color: var(--accent);
+      margin-right: 10px;
     }
 
-    .signal-field {
-      position: relative;
-      height: 202px;
+    .signal {
       display: grid;
-      grid-template-columns: 1fr 76px 1fr;
-      gap: 14px;
-      padding: 14px;
-      border: 1px solid rgba(255, 90, 31, 0.14);
-      border-radius: 8px;
-      overflow: hidden;
-      background:
-        linear-gradient(90deg, rgba(255, 90, 31, 0.045), transparent 34%, transparent 66%, rgba(255, 90, 31, 0.035)),
-        rgba(0, 0, 0, 0.30);
-    }
-
-    .signal-column {
-      position: relative;
-      z-index: 2;
-      min-width: 0;
-      padding: 11px;
-      border: 1px solid rgba(255, 90, 31, 0.12);
-      border-radius: 7px;
-      background: rgba(8, 7, 6, 0.84);
-      overflow: hidden;
-    }
-
-    .signal-label {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 8px;
-      color: #fff8ef;
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .signal-label small {
-      color: var(--muted);
-      font-size: 9px;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    .noise-stack,
-    .clean-stack {
-      display: grid;
-      gap: 6px;
-      margin-top: 10px;
-    }
-
-    .noise-row {
-      position: relative;
-      height: 22px;
-      display: flex;
+      grid-template-columns: 1fr 88px 1fr;
+      gap: 16px;
       align-items: center;
-      gap: 5px;
-      padding: 0 7px;
-      border: 1px solid rgba(255, 90, 31, 0.09);
-      border-radius: 6px;
-      background: rgba(245, 240, 232, 0.035);
-      overflow: hidden;
+      height: 100%;
+      padding: 22px;
     }
 
-    .noise-row::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, rgba(255, 90, 31, 0.18), transparent);
-      transform: scaleX(var(--row-clean));
-      transform-origin: left;
-      opacity: 0.40;
+    .signal-stack {
+      display: grid;
+      gap: 8px;
     }
 
-    .noise-chip {
-      position: relative;
-      z-index: 1;
+    .noise-row,
+    .clean-row {
+      height: 30px;
+      border: 1px solid var(--line-soft);
+      background: #030303;
+      transform: translateX(var(--dx, 0));
+      opacity: var(--o, 1);
+    }
+
+    .noise-row i,
+    .clean-row i {
+      display: block;
+      height: 100%;
       width: var(--w);
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(245, 240, 232, 0.18);
+      background: rgba(255, 255, 255, 0.14);
     }
 
-    .noise-chip.drop {
-      opacity: var(--drop-opacity);
-      transform: translateY(var(--drop-y)) scaleX(var(--drop-scale));
+    .clean-row i {
+      background: rgba(255, 255, 255, 0.32);
     }
 
-    .noise-chip.keep {
-      background: #ff5a1f;
-      opacity: var(--keep-opacity);
-      transform: translateX(var(--keep-x));
-      box-shadow: 0 0 14px rgba(255, 90, 31, 0.36);
-    }
-
-    .denoise-core {
-      position: relative;
-      z-index: 3;
+    .filter {
+      height: 88px;
       display: grid;
       place-items: center;
-      align-content: center;
-      gap: 8px;
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      background: #030303;
+      transform: rotate(var(--filter-angle));
     }
 
-    .filter-ring {
-      position: relative;
-      width: 56px;
-      height: 56px;
-      border: 1px solid rgba(255, 90, 31, 0.54);
-      border-radius: 50%;
-      background: rgba(255, 90, 31, 0.08);
-      box-shadow: 0 0 24px rgba(255, 90, 31, 0.22);
-    }
-
-    .filter-ring::before {
-      content: "";
-      position: absolute;
-      inset: 9px;
-      border: 1px solid rgba(255, 90, 31, 0.22);
-      border-radius: 50%;
-    }
-
-    .filter-ring::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: -8px;
-      bottom: -8px;
-      width: 2px;
-      background: #ff8a24;
-      box-shadow: 0 0 18px rgba(255, 90, 31, 0.64);
-      transform: translateX(-50%) rotate(var(--filter-angle));
-      transform-origin: center;
-    }
-
-    .filter-label {
-      color: #ff8a24;
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing: 0.04em;
-    }
-
-    .signal-beam {
-      position: absolute;
-      z-index: 1;
-      left: var(--beam-left);
-      top: 12px;
-      bottom: 12px;
-      width: 3px;
-      background: #ff8a24;
-      opacity: 0.72;
-      box-shadow: 0 0 30px rgba(255, 90, 31, 0.58);
-    }
-
-    .clean-fact {
-      display: grid;
-      gap: 3px;
-      min-height: 30px;
-      padding: 6px 8px;
-      border: 1px solid rgba(255, 90, 31, 0.13);
-      border-radius: 6px;
-      background: rgba(255, 90, 31, 0.045);
-      opacity: var(--reveal);
-      transform: translateX(var(--reveal-x));
-    }
-
-    .clean-fact b {
-      color: #fff8ef;
-      font-size: 11px;
-      line-height: 1;
-    }
-
-    .clean-fact span {
-      color: var(--muted);
-      font-size: 9px;
-      line-height: 1.18;
-    }
-
-    .reject-bits {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-
-    .reject-bits i {
-      position: absolute;
-      width: 18px;
-      height: 2px;
-      border-radius: 999px;
-      background: rgba(245, 240, 232, 0.18);
-      opacity: var(--reject-opacity);
-      transform: translateY(var(--reject-y)) scaleX(var(--reject-scale));
-    }
-
-    .tree-map {
+    .tree {
+      height: 100%;
+      padding: 20px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
     }
 
     .tree-doc {
-      min-height: 152px;
-      border: 1px solid rgba(255, 90, 31, 0.16);
-      border-radius: 7px;
-      padding: 14px;
-      background: rgba(255, 90, 31, 0.035);
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 18px;
     }
 
-    .doc-bars i {
+    .tree-doc h3 {
+      margin: 0 0 14px;
+      font-size: 22px;
+    }
+
+    .bar {
       display: block;
+      width: var(--w);
       height: 7px;
       margin: 9px 0;
-      border-radius: 999px;
-      background: rgba(255, 90, 31, 0.30);
-      width: var(--w);
-      transform: scaleX(var(--row-scale));
-      transform-origin: left;
+      background: rgba(255, 255, 255, 0.18);
     }
 
-    .fix-loop {
+    .bar.hot {
+      background: var(--accent);
+      width: calc(var(--w) * var(--grow));
+    }
+
+    .loop {
       position: relative;
-      height: 238px;
-      isolation: isolate;
-    }
-
-    .fix-loop::before {
-      content: attr(data-payload);
-      position: absolute;
-      left: 50%;
-      top: 0;
-      transform: translateX(-50%) scale(calc(0.92 + var(--payload-scale) * 0.08));
-      padding: 7px 14px;
-      border-radius: 999px;
-      background: #ff5a1f;
-      color: #070605;
-      font-size: 12px;
-      font-weight: 950;
-      letter-spacing: 0.04em;
-      z-index: 4;
-      box-shadow: 0 0 calc(20px * var(--payload-scale)) rgba(255, 90, 31, 0.42);
+      height: 100%;
+      padding: 26px 18px;
     }
 
     .loop-card {
       position: absolute;
-      z-index: 3;
-      width: 178px;
-      min-height: 70px;
-      border: 1px solid rgba(255, 90, 31, 0.24);
-      border-radius: 8px;
-      padding: 13px;
-      background: rgba(9, 8, 7, 0.98);
-    }
-
-    .loop-card::after {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      box-shadow: 0 0 calc(18px * var(--loop-pulse)) rgba(255, 90, 31, 0.25);
-      pointer-events: none;
+      width: 174px;
+      min-height: 92px;
+      border: 1px solid var(--line);
+      background: #040404;
+      padding: 14px;
     }
 
     .loop-card.active {
-      border-color: rgba(255, 90, 31, 0.72);
-      background: rgba(14, 11, 9, 0.99);
-      box-shadow: 0 0 24px rgba(255, 90, 31, 0.22);
-    }
-
-    .loop-card.active b {
-      color: #fff8ef;
+      border-color: rgba(255, 100, 40, 0.68);
     }
 
     .loop-card b {
       display: block;
-      font-size: 15px;
-      margin-bottom: 8px;
+      margin-bottom: 7px;
+      font-size: 16px;
     }
 
     .loop-card span {
       color: var(--muted);
       font-size: 11px;
-      line-height: 1.32;
+      line-height: 1.3;
     }
 
-    .loop-card .round-tag {
-      display: inline-block;
-      margin-bottom: 7px;
-      padding: 3px 7px;
-      border: 1px solid rgba(255, 90, 31, 0.24);
-      border-radius: 999px;
-      color: #ff8a24;
-      font-size: 9px;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .loop-eval { left: 8px; top: 42px; }
-    .loop-main {
-      left: 50%;
-      top: 82px;
-      transform: translateX(-50%);
-      border-color: rgba(255, 90, 31, 0.50);
-    }
-    .loop-code { right: 8px; top: 42px; }
+    .loop-card.eval { left: 20px; top: 62px; }
+    .loop-card.main { left: 224px; top: 36px; }
+    .loop-card.code { right: 20px; top: 62px; }
 
     .loop-line {
       position: absolute;
-      z-index: 1;
-      height: 3px;
-      background: linear-gradient(90deg, rgba(255, 90, 31, 0.12), #ff5a1f);
+      height: 1px;
+      background: rgba(255, 255, 255, 0.22);
       transform-origin: left center;
-      opacity: calc(0.64 + var(--loop-pulse) * 0.28);
-    }
-
-    .loop-line.return {
-      height: 2px;
-      background: linear-gradient(90deg, rgba(255, 90, 31, 0.35), rgba(255, 90, 31, 0.08));
-      opacity: calc(0.20 + var(--recheck-scale) * 0.60);
-    }
-
-    .loop-line::after {
-      content: "";
-      position: absolute;
-      right: -1px;
-      top: -5px;
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-      border-left: 9px solid #ff5a1f;
-    }
-
-    .loop-line.return::after {
-      border-left-color: rgba(255, 90, 31, 0.68);
     }
 
     .loop-packet {
       position: absolute;
-      z-index: 5;
       left: var(--packet-x);
       top: var(--packet-y);
-      width: 13px;
-      height: 13px;
+      width: 11px;
+      height: 11px;
       border-radius: 50%;
-      background: #ff5a1f;
-      box-shadow: 0 0 22px rgba(255, 90, 31, 0.62);
+      background: var(--accent);
+      box-shadow: 0 0 20px rgba(255, 100, 40, 0.62);
       transform: translate(-50%, -50%);
     }
 
-    .loop-packet::after {
-      content: "";
-      position: absolute;
-      inset: -6px;
-      border: 1px solid rgba(255, 90, 31, 0.36);
-      border-radius: 50%;
-    }
-
-    .ac-stack {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 9px;
-      font-size: 10px;
-      font-weight: 850;
-    }
-
-    .ac-stack i {
-      display: inline-flex;
-      padding: 3px 7px;
-      border-radius: 999px;
-      color: rgba(245, 240, 232, 0.66);
-      background: rgba(245, 240, 232, 0.055);
-      font-style: normal;
-    }
-
-    .ac-stack i.fix {
-      color: #070605;
-      background: #ff5a1f;
-    }
-
-    .ac-stack i.pass {
-      color: #ffb156;
-      background: rgba(255, 90, 31, 0.12);
-    }
-
-    .ac-stack i.wait {
-      color: rgba(245, 240, 232, 0.42);
-      background: rgba(245, 240, 232, 0.045);
-    }
-
-    .repair-bars {
-      margin-top: 10px;
-      display: grid;
-      gap: 5px;
-    }
-
-    .repair-bars i {
-      height: 5px;
-      width: var(--w);
-      border-radius: 999px;
-      background: rgba(255, 90, 31, 0.52);
-      transform: scaleX(var(--repair-scale));
-      transform-origin: left;
-    }
-
-    .loop-rounds {
-      position: absolute;
-      left: 10px;
-      top: 0;
-      width: 142px;
-      z-index: 3;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 5px;
-    }
-
-    .loop-rounds i {
+    .pass-panel {
+      height: 100%;
       display: grid;
       place-items: center;
-      height: 22px;
-      border: 1px solid rgba(255, 90, 31, 0.13);
-      border-radius: 6px;
-      color: rgba(245, 240, 232, 0.44);
-      background: rgba(245, 240, 232, 0.035);
-      font-size: 9px;
-      font-style: normal;
-      font-weight: 900;
-    }
-
-    .loop-rounds i.done {
-      color: #ffb156;
-      border-color: rgba(255, 90, 31, 0.26);
-      background: rgba(255, 90, 31, 0.08);
-    }
-
-    .loop-rounds i.active {
-      color: #070605;
-      border-color: #ff5a1f;
-      background: #ff5a1f;
-      box-shadow: 0 0 18px rgba(255, 90, 31, 0.34);
-    }
-
-    .loop-note {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
-      width: 88%;
-      border-top: 1px solid rgba(255, 90, 31, 0.26);
-      padding-top: 7px;
-      color: #d9d2ca;
-      font-size: 11px;
-      line-height: 1.35;
       text-align: center;
-      z-index: 2;
     }
 
-    .state-ledger {
-      padding: 12px;
+    .pass-mark {
+      width: 156px;
+      height: 156px;
       display: grid;
-      grid-template-rows: auto repeat(3, 1fr);
-      gap: 10px;
+      place-items: center;
+      border: 1px solid rgba(255, 100, 40, 0.64);
+      color: var(--accent);
+      font-size: 30px;
+      font-weight: 920;
+      background: #020202;
     }
 
     .ledger-card {
-      border: 1px solid rgba(255, 90, 31, 0.12);
-      border-radius: 7px;
-      background: rgba(14, 13, 12, 0.88);
-      padding: 11px;
+      min-height: 84px;
+      margin-bottom: 10px;
+      padding: 13px;
+      border: 1px solid var(--line-soft);
+      background: #030303;
     }
 
     .ledger-card .label {
       color: var(--muted);
       font-size: 10px;
-      font-weight: 820;
+      font-weight: 850;
       text-transform: uppercase;
-      margin-bottom: 8px;
     }
 
     .ledger-card .value {
-      color: #ff5a1f;
-      font-size: 20px;
-      font-weight: 920;
+      margin-top: 9px;
+      color: var(--ink);
+      font-size: 22px;
+      font-weight: 900;
       line-height: 1;
+    }
+
+    .ledger-card .value.hot {
+      color: var(--accent);
+    }
+
+    .tree-ledger {
+      display: grid;
+      gap: 8px;
+    }
+
+    .tree-row {
+      min-height: 45px;
+      padding: 9px 10px;
+      border: 1px solid var(--line-soft);
+      background: #030303;
+    }
+
+    .tree-row b {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.1;
+      margin-bottom: 5px;
+    }
+
+    .tree-row span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.2;
+    }
+
+    .tree-row em {
+      color: var(--muted);
+      font-style: normal;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .tree-row.pass {
+      border-color: rgba(255, 255, 255, 0.20);
+    }
+
+    .tree-row.pass em {
+      color: var(--ok);
+    }
+
+    .tree-row.fix {
+      border-color: rgba(255, 100, 40, 0.52);
+      background: rgba(255, 100, 40, 0.055);
+    }
+
+    .tree-row.fix em,
+    .tree-row.active em {
+      color: var(--accent);
+    }
+
+    .route-map {
+      position: relative;
+      height: 100%;
+      padding: 14px;
+    }
+
+    .route-topology {
+      position: relative;
+      height: calc(100% - 54px);
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: 134px 118px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .route-source,
+    .route-gate,
+    .route-branch {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 13px;
+    }
+
+    .route-source b,
+    .route-gate b,
+    .route-branch b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .route-source span,
+    .route-gate span,
+    .route-branch span {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.28;
+    }
+
+    .route-gate {
+      min-height: 116px;
+      display: grid;
+      align-content: center;
+      border-color: rgba(255, 100, 40, 0.44);
+      background: rgba(255, 100, 40, 0.035);
+    }
+
+    .route-lanes {
+      display: grid;
+      gap: 5px;
+    }
+
+    .route-branch {
+      min-height: 34px;
+      padding: 7px 10px;
+      transform: translateX(calc((1 - var(--pop)) * 14px));
+      opacity: calc(0.32 + var(--pop) * 0.68);
+    }
+
+    .route-branch b {
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .route-branch span {
+      font-size: 9px;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .route-branch.active {
+      border-color: rgba(255, 100, 40, 0.62);
+      background: rgba(255, 100, 40, 0.052);
+    }
+
+    .route-wire {
+      position: absolute;
+      left: 132px;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 100, 40, 0.48), rgba(255, 255, 255, 0.12));
+      transform: scaleX(var(--route-progress));
+      transform-origin: left;
+    }
+
+    .route-token {
+      position: absolute;
+      left: calc(104px + var(--route-progress) * 356px);
+      top: calc(50% - 5px);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 18px rgba(255, 100, 40, 0.64);
+    }
+
+    .route-command {
+      height: 44px;
+      border: 1px solid var(--line);
+      background: #020202;
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      color: var(--soft);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .route-command::before {
+      content: ">";
+      color: var(--accent);
+      margin-right: 10px;
+    }
+
+    .route-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .route-card {
+      min-height: 82px;
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 13px;
+      color: var(--muted);
+      transform: translateY(calc((1 - var(--pop)) * 12px));
+      opacity: calc(0.36 + var(--pop) * 0.64);
+    }
+
+    .route-card.active {
+      border-color: rgba(255, 100, 40, 0.62);
+    }
+
+    .route-card b,
+    .resource-card b,
+    .question-card b,
+    .payload-card b,
+    .diff-card b {
+      display: block;
+      color: var(--ink);
+      font-size: 15px;
+      margin-bottom: 7px;
+    }
+
+    .route-card span,
+    .resource-card span,
+    .question-card span,
+    .payload-card span,
+    .diff-card span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.32;
+    }
+
+    .route-decision {
+      margin-top: 12px;
+      width: 100%;
+      padding: 14px;
+      border: 1px solid rgba(255, 100, 40, 0.55);
+      background: rgba(255, 100, 40, 0.065);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .resource-load {
+      height: 100%;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .resource-card {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 14px;
+    }
+
+    .load-bar {
+      height: 7px;
+      margin-top: 13px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .load-bar i {
+      display: block;
+      height: 100%;
+      width: calc(var(--fill) * 100%);
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), var(--accent));
+    }
+
+    .code-scan {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 164px 1fr;
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .file-tree,
+    .code-pane {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .file-node {
+      height: 20px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-size: 9px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+
+    .file-node.active {
+      color: var(--accent);
+    }
+
+    .code-line {
+      display: block;
+      height: 7px;
+      width: var(--w);
+      margin: 8px 0;
+      background: rgba(255, 255, 255, 0.14);
+      transform: scaleX(var(--scan));
+      transform-origin: left;
+    }
+
+    .code-line.hot {
+      background: rgba(255, 100, 40, 0.62);
+    }
+
+    .scan-note {
+      margin-top: 8px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 100, 40, 0.42);
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.25;
+      background: rgba(255, 100, 40, 0.045);
+    }
+
+    .confirm-action {
+      height: 100%;
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .confirm-summary {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+      align-content: center;
+    }
+
+    .confirm-summary h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: 22px;
+      line-height: 1.08;
+    }
+
+    .confirm-item {
+      border: 1px solid var(--line-soft);
+      background: #000;
+      padding: 8px 10px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.25;
+    }
+
+    .confirm-item b {
+      display: block;
+      color: var(--soft);
+      font-size: 11px;
+      margin-bottom: 4px;
+    }
+
+    .confirm-button {
+      border: 1px solid rgba(255, 100, 40, 0.58);
+      background: rgba(255, 100, 40, 0.055);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--accent);
+      font-weight: 920;
+      transform: scale(calc(0.98 + var(--click) * 0.02));
+      box-shadow: 0 0 calc(var(--click) * 24px) rgba(255, 100, 40, 0.25);
+    }
+
+    .confirm-button span {
+      display: block;
+      margin-top: 8px;
+      color: var(--soft);
+      font-size: 11px;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .discovery-search {
+      height: 100%;
+      padding: 11px;
+      display: grid;
+      grid-template-columns: 1.04fr 0.96fr;
+      gap: 12px;
+    }
+
+    .dialogue-stream,
+    .live-search {
+      min-width: 0;
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .dialogue-stream {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+
+    .turn {
+      border: 1px solid var(--line-soft);
+      background: #000;
+      padding: 7px 9px;
+      transform: translateY(calc((1 - var(--reveal)) * 10px));
+      opacity: calc(0.14 + var(--reveal) * 0.86);
+    }
+
+    .turn b {
+      display: block;
+      color: var(--ink);
+      font-size: 10px;
+      margin-bottom: 4px;
+    }
+
+    .turn span {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.2;
+    }
+
+    .turn.answer {
+      margin-left: 28px;
+    }
+
+    .turn.challenge {
+      border-color: rgba(255, 100, 40, 0.5);
+      background: rgba(255, 100, 40, 0.045);
+    }
+
+    .search-query {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 11px;
+      border: 1px solid var(--line-soft);
+      color: var(--soft);
+      background: #000;
+      font-size: 10px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .search-query::before {
+      content: "$";
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .search-results {
+      display: grid;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .result-row {
+      display: grid;
+      grid-template-columns: 1fr 42px;
+      gap: 8px;
+      align-items: center;
+      min-height: 23px;
+      padding: 5px 7px;
+      border: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-size: 10px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      opacity: calc(0.2 + var(--hit) * 0.8);
+    }
+
+    .result-row.hot {
+      color: var(--soft);
+      border-color: rgba(255, 100, 40, 0.42);
+    }
+
+    .result-row em {
+      color: var(--accent);
+      font-style: normal;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .index-note {
+      margin-top: 8px;
+      padding: 7px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      color: var(--soft);
+      font-size: 10px;
+      line-height: 1.32;
+      background: #000;
+      opacity: var(--index-ready);
+    }
+
+    .socratic {
+      height: 100%;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .question-card {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 14px;
+      transform: translateY(calc((1 - var(--reveal)) * 12px));
+      opacity: calc(0.18 + var(--reveal) * 0.82);
+    }
+
+    .question-card.challenge {
+      border-color: rgba(255, 100, 40, 0.55);
+    }
+
+    .confirm-tree {
+      height: 100%;
+      padding: 11px;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 11px;
+    }
+
+    .confirm-card {
+      border: 1px solid rgba(255, 100, 40, 0.58);
+      background: rgba(255, 100, 40, 0.055);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+    }
+
+    .confirm-card b {
+      color: var(--accent);
+      display: block;
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .confirm-card span {
+      display: block;
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .tree-build {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .doc-tree-build {
+      position: relative;
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .tree-root,
+    .tree-child,
+    .tree-ac {
+      border: 1px solid var(--line-soft);
+      background: #000;
+      padding: 8px 10px;
+      opacity: calc(0.12 + var(--tree-pop) * 0.88);
+      transform: translateY(calc((1 - var(--tree-pop)) * 12px));
+    }
+
+    .tree-root {
+      width: 42%;
+      margin: 0 auto 9px;
+      border-color: rgba(255, 100, 40, 0.48);
+      text-align: center;
+    }
+
+    .tree-root b,
+    .tree-child b,
+    .tree-ac b {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .tree-root span,
+    .tree-child span,
+    .tree-ac span {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.25;
+    }
+
+    .tree-branches {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .tree-branches::before {
+      content: "";
+      position: absolute;
+      left: 25%;
+      right: 25%;
+      top: -9px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.24);
+      transform: scaleX(var(--tree-pop));
+    }
+
+    .tree-ac-list {
+      display: grid;
+      gap: 5px;
+      margin-top: 7px;
+    }
+
+    .doc-tree-build .tree-ac-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .tree-ac {
+      min-height: 28px;
+      padding: 6px 8px;
+    }
+
+    .tree-doclet {
+      border: 1px solid var(--line-soft);
+      background: #000;
+      padding: 13px;
+      transform: translateY(calc((1 - var(--tree-pop)) * 14px));
+      opacity: calc(0.16 + var(--tree-pop) * 0.84);
+    }
+
+    .tree-doclet b {
+      display: block;
+      color: var(--ink);
+      font-size: 17px;
+      margin-bottom: 10px;
+    }
+
+    .denoise-lab {
+      height: 100%;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr 110px 1fr;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .context-cloud,
+    .distilled-stack {
+      min-height: 226px;
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 8px;
+      overflow: hidden;
+    }
+
+    .context-chip {
+      height: 22px;
+      width: var(--w);
+      border: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.055);
+      opacity: var(--drop);
+      transform: scale(var(--scale)) translateY(var(--dy));
+    }
+
+    .distilled-fact {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      background: #000;
+      padding: 8px 10px;
+      opacity: var(--reveal);
+      transform: translateX(calc((1 - var(--reveal)) * 16px));
+    }
+
+    .distilled-fact b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .distilled-fact span {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.2;
+    }
+
+    .compressor {
+      height: 110px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 100, 40, 0.56);
+      color: var(--accent);
+      background: rgba(255, 100, 40, 0.055);
+      font-weight: 920;
+      transform: scale(calc(0.92 + var(--pulse) * 0.08));
+    }
+
+    .noise-chip {
+      min-height: 22px;
+      width: var(--w);
+      border: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, 0.052);
+      color: rgba(255, 255, 255, 0.52);
+      padding: 5px 7px;
+      font-size: 9px;
+      line-height: 1.05;
+      opacity: var(--drop);
+      transform: scale(var(--scale)) translateY(var(--dy));
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .noise-chip.keep {
+      color: var(--soft);
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.075);
+    }
+
+    .noise-chip.drop {
+      text-decoration: line-through;
+      filter: blur(calc((1 - var(--drop)) * 2px));
+    }
+
+    .signal-funnel {
+      height: 130px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 100, 40, 0.48);
+      color: var(--accent);
+      background: rgba(255, 100, 40, 0.052);
+      font-weight: 920;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.2;
+      transform: scale(calc(0.94 + var(--pulse) * 0.06));
+    }
+
+    .prompt-dispatch,
+    .coder-build {
+      height: 100%;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .payload-card,
+    .diff-card {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 14px;
+    }
+
+    .dim-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .dim-list i,
+    .ac-list i {
+      display: block;
+      border: 1px solid var(--line-soft);
+      color: var(--muted);
+      background: #000;
+      padding: 6px 8px;
+      font-size: 10px;
+      font-style: normal;
+    }
+
+    .dim-list i.hot,
+    .ac-list i.hot {
+      border-color: rgba(255, 100, 40, 0.48);
+      color: var(--accent);
+    }
+
+    .diff-line {
+      display: block;
+      height: 8px;
+      width: var(--w);
+      margin: 9px 0;
+      background: rgba(255, 255, 255, 0.13);
+    }
+
+    .diff-line.add {
+      background: rgba(255, 100, 40, 0.55);
+      transform: scaleX(calc(0.18 + var(--write) * 0.82));
+      transform-origin: left;
+    }
+
+    .razor {
+      margin-top: 12px;
+      padding: 11px;
+      border: 1px solid rgba(255, 100, 40, 0.45);
+      color: var(--soft);
+      background: rgba(255, 100, 40, 0.045);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .eval-board {
+      height: 100%;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .iteration-board {
+      height: 100%;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr 0.92fr;
+      gap: 12px;
+    }
+
+    .iteration-flow {
+      height: 100%;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      align-items: stretch;
+    }
+
+    .iter-step {
+      position: relative;
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 10px;
+      overflow: hidden;
+      opacity: calc(0.32 + var(--on) * 0.68);
+      transform: translateY(calc((1 - var(--on)) * 8px));
+    }
+
+    .iter-step.active {
+      border-color: rgba(255, 100, 40, 0.52);
+      background: rgba(255, 100, 40, 0.035);
+    }
+
+    .iter-step b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .iter-step span {
+      display: block;
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.2;
+      min-height: 32px;
+    }
+
+    .iter-step::after {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 8px;
+      height: 1px;
+      background: rgba(255, 100, 40, 0.52);
+      transform: scaleX(var(--flow));
+      transform-origin: left;
+    }
+
+    .iter-mini-list {
+      display: grid;
+      gap: 5px;
+      margin-top: 9px;
+    }
+
+    .iter-mini-list i {
+      padding: 5px 6px;
+      border: 1px solid var(--line-soft);
+      color: var(--muted);
+      background: #000;
+      font-size: 9px;
+      font-style: normal;
+      white-space: nowrap;
+    }
+
+    .iter-mini-list i.hot {
+      color: var(--accent);
+      border-color: rgba(255, 100, 40, 0.42);
+    }
+
+    .iter-mini-list i.pass {
+      color: var(--ok);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .iter-card {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 13px;
+      overflow: hidden;
+    }
+
+    .iter-card.active {
+      border-color: rgba(255, 100, 40, 0.48);
+      background: rgba(255, 100, 40, 0.034);
+    }
+
+    .iter-card b {
+      display: block;
+      color: var(--ink);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .iter-card span {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.28;
+    }
+
+    .skill-chip {
+      display: inline-flex;
+      margin: 8px 0 2px;
+      padding: 5px 7px;
+      border: 1px solid rgba(255, 100, 40, 0.42);
+      color: var(--accent);
+      background: rgba(255, 100, 40, 0.052);
+      font-size: 10px;
+      font-weight: 900;
+      font-style: normal;
+    }
+
+    .iter-arrow {
+      height: 1px;
+      margin: 13px 0;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), rgba(255, 100, 40, 0.58));
+      transform: scaleX(var(--flow));
+      transform-origin: left;
+    }
+
+    .iter-status {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .iter-status i {
+      padding: 6px 8px;
+      border: 1px solid var(--line-soft);
+      color: var(--muted);
+      background: #000;
+      font-size: 10px;
+      font-style: normal;
+    }
+
+    .iter-status i.hot {
+      color: var(--accent);
+      border-color: rgba(255, 100, 40, 0.42);
+    }
+
+    .iter-status i.pass {
+      color: var(--ok);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .eval-col {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 14px;
+    }
+
+    .eval-col.active {
+      border-color: rgba(255, 100, 40, 0.58);
+    }
+
+    .eval-col b {
+      display: block;
+      color: var(--ink);
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    .ac-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .final-board {
+      height: 100%;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .final-board.tree-close {
+      grid-template-columns: 1.12fr 0.88fr;
+    }
+
+    .final-tree .tree-ac-list {
+      margin-top: 12px;
+    }
+
+    .final-tree .tree-ac {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .final-tree .tree-ac.pass b {
+      color: var(--ok);
+    }
+
+    .final-pass-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+      margin-top: 6px;
+    }
+
+    .final-pass {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: #000;
+      padding: 5px 6px;
+      min-height: 29px;
+    }
+
+    .final-pass b {
+      display: block;
+      color: var(--ok);
+      font-size: 9px;
+      margin-bottom: 2px;
+    }
+
+    .final-pass span {
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.12;
+      white-space: nowrap;
+    }
+
+    .final-tree {
+      border: 1px solid rgba(255, 100, 40, 0.5);
+      background: rgba(255, 100, 40, 0.035);
+      padding: 10px;
+    }
+
+    .final-tree h3 {
+      margin: 0 0 6px;
+      color: var(--ink);
+      font-size: 18px;
+    }
+
+    .final-tree .tree-root {
+      width: 160px;
+      margin-bottom: 6px;
+      padding: 5px 7px;
+    }
+
+    .close-card {
+      border: 1px solid var(--line);
+      background: #030303;
+      padding: 12px;
+      display: grid;
+      align-content: center;
+      gap: 12px;
+    }
+
+    .close-card b {
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1.15;
+    }
+
+    .close-card span {
+      color: var(--soft);
+      font-size: 12px;
+      line-height: 1.38;
+    }
+
+    .watermark {
+      position: absolute;
+      right: 32px;
+      bottom: 18px;
+      color: rgba(255, 255, 255, 0.28);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -2340,885 +2004,551 @@
     const fixedT = params.has("t") ? Number(params.get("t")) : null;
     const root = document.getElementById("stage");
 
-    const copy = {
+    const i18n = {
       zh: {
-        archTitle: "Main Agent 直接编排的多智能体工作流",
-        archSub: "没有 orchestratorX 子代理。主代理负责路由、规划、文档写入和状态机；coderX 与 evaluatorX 只通过结构化 Payload 协作。",
-        tokenTitle: "多轮迭代的上下文预算控制",
-        tokenSub: "把“长对话越写越贵”拆成可缓存、可压缩、可外置记忆的三层机制，并用 noiseX / promptX 降低下游输入噪声。",
-        capTitle: "四种入口，覆盖从最小修改到并行团队",
-        capSub: "按影响范围选择 xunit / xlocal / xwhole / xwhole -parallel；同一套 Hybrid Tree 与 AC 验收模型贯穿全流程。",
-        workflowTitle: "一次完整 xwhole 流程",
-        workflowSub: "从需求进入、方案确认、文档生成，到 coderX 实现、evaluatorX 验收、失败回流与 PASS 收口。",
-        pills: ["RouteX", "Module 08", "Hybrid Tree", "Bus Payload", "MCP Memory", "Worktree"],
-        command: "用户 / 指令",
-        commandBody: "xwhole / xlocal / xunit / xstatus / xprompt",
-        main: "Main Agent",
-        mainBody: "唯一编排者与唯一 Hybrid Tree 文档写入者",
-        agents: "执行代理",
-        data: "事实层",
-        steps: [
-          ["入口", "识别命令和当前状态"],
-          ["初始化", "MCP / worktree / 参数"],
-          ["发现", "代码探索 + 苏格拉底式追问"],
-          ["确认", "确认方案后生成 PRD"],
-          ["净化", "noiseX 提炼干净信号"],
-          ["文档", "生成 Parent + Child"],
-          ["优化", "promptX / promptMasterX"],
-          ["编码", "coderX 在隔离上下文实现"],
-          ["验收", "evaluatorX 独立核对 AC"],
-          ["收口", "PASS / xstatus / 记忆回写"]
-        ],
-        cards: [
-          ["用户发起需求", "Main Agent 先读工作流状态，再由 routeX 判断是继续当前流程、只读探索，还是启动 xwhole / xlocal / xunit。"],
-          ["环境与参数初始化", "解析 -N、-box、-parallel 等参数，探测 MCP 可用性，并准备 worktree 隔离策略。"],
-          ["Phase 1 需求发现", "先探索代码，再通过 Module 08 和 socratesX 暴露边界、风险、遗漏的非功能要求。"],
-          ["方案确认", "不直接生成 Hybrid Tree。确认方案后再进入文档生成，避免在错误方向上开发。"],
-          ["noiseX 上下文降噪", "把多轮探索和废弃假设压成干净摘要，作为文档生成的可靠输入。"],
-          ["Phase 2 生成 Hybrid Tree", "Main Agent 写 Parent / Child：范围、AC、文件索引、依赖、知识图谱概要。"],
-          ["指令预处理", "xunit 和修复轮自动用 promptX；复杂提示用 promptMasterX 输出更精确的执行上下文。"],
-          ["coderX 实现", "coderX 只读 Hybrid Tree，按 Child AC 写代码，返回 Change Summary Payload。"],
-          ["evaluatorX 独立验收", "评估员不信任自我声明，读取 diff 与代码逐条核对 AC；失败则给出修复指令。"],
-          ["PASS 收口", "Main Agent 更新文档状态，必要时生成 xstatus 报告，并把稳定事实写入 MCP Memory。"]
-        ],
-        layers: [
-          ["L1", "分区缓存", "稳定区置顶，动态评估区置底覆写，提升 Prompt Cache 命中率。", "40-60%", "首轮后节省"],
-          ["L2", "干叶分离", "Markdown 只留需求树干，实体关系交给 MCP 知识图谱按需读取。", "更薄", "文档上下文"],
-          ["L3", "记忆快照", "Hybrid Tree 存指针和摘要，完整节点持久化到 server-memory。", "跨会话", "复用项目事实"]
-        ],
+        archTitle: "Main Agent 拥有流程与事实",
+        archSub: "WorkflowX 的核心不是多代理堆叠，而是单一编排者、单一文档写入者，以及通过 Payload 连接的实现与验收闭环。",
+        tokenTitle: "把长对话拆成可控预算",
+        tokenSub: "稳定区缓存、干叶分离、记忆快照与 noiseX 降噪，让多轮迭代不再把上下文反复塞满。",
+        capTitle: "按影响范围选择工作流入口",
+        capSub: "xunit、xlocal、xwhole、xwhole -parallel 共享同一套 Hybrid Tree 与 AC 验收模型，只改变规划深度和并行度。",
+        workflowTitle: "一次 xwhole 从路由到需求全通过",
+        workflowSub: "RouteX 状态门控、资源初始化、代码探索、苏格拉底式需求发现、Hybrid Tree、promptX、coderX、evaluatorX 与 razorX 修复闭环。",
+        labelArch: "架构",
+        labelToken: "Token 预算",
+        labelCap: "能力矩阵",
+        labelFlow: "工作流演示",
+        chips: ["RouteX", "Module 08", "Hybrid Tree", "coderX", "evaluatorX"],
+        nodes: {
+          command: ["用户 / 指令", "xwhole / xlocal / xunit", "进入状态门控，不直接写代码"],
+          status: ["状态机", ".hybrid/status.json", "wait / normal / xwhole / xlocal / xunit"],
+          coder: ["实现代理", "coderX", "读取 Child AC，写代码，返回 Change Summary"],
+          evaluator: ["验收代理", "evaluatorX", "不信任自述，读 diff 与代码逐条核对 AC"],
+          prompt: ["辅助技能", "promptX / noiseX", "把粗需求与规划噪声转成可执行信号"]
+        },
+        core: {
+          title: "Main Agent",
+          sub: "唯一编排者，唯一 Hybrid Tree 文档写入者",
+          orbit: [
+            ["RouteX", "判断继续、探索或启动"],
+            ["Module 08", "先读代码，再澄清边界"],
+            ["Phase 2", "写 Parent / Child"],
+            ["Core Loop", "转发 Payload 并记账"]
+          ],
+          data: [
+            ["Hybrid Tree", "范围、AC、依赖、文件索引、迭代状态"],
+            ["MCP Memory", "跨会话事实与知识图谱摘要"],
+            ["Worktree", "隔离执行，降低并行污染"]
+          ]
+        },
+        token: {
+          big: "40-60%",
+          body: "多轮工作流从重复塞满上下文，变成稳定区缓存、动态区刷新、记忆按需取回。",
+          layers: [
+            ["L1", "分区缓存", "稳定区置顶，动态区置底覆写，提高 Prompt Cache 命中率。", "首轮后节省"],
+            ["L2", "干叶分离", "Markdown 保留需求树干，实体关系交给 MCP 知识图谱。", "更薄文档"],
+            ["L3", "记忆快照", "Hybrid Tree 存摘要和指针，完整节点持久化到 server-memory。", "跨会话复用"]
+          ]
+        },
         modes: [
-          ["xunit", "单元任务", "单文件、小改动；promptX → coderX，默认不评估。", "最快"],
-          ["xlocal", "局部任务", "复用或生成最小 Hybrid Tree，再进入编码 / 验收循环。", "局部"],
-          ["xwhole", "全局任务", "Phase 1 需求发现 → Phase 2 文档生成 → 核心迭代。", "完整"],
-          ["xwhole -parallel", "并行团队", "Claude Code Agent Teams：多个 coder / evaluator 并行推进。", "并行"]
+          ["xunit", "单元任务", "单文件、小改动；promptX 到 coderX，默认不评估。", "最快"],
+          ["xlocal", "局部任务", "1-2 个模块，复用或生成最小 Hybrid Tree。", "局部"],
+          ["xwhole", "全局任务", "需求发现、方案确认、文档生成、编码验收循环。", "完整"],
+          ["xwhole -parallel", "并行团队", "按 Child 拆分，多 coder / evaluator 并行推进。", "并行"]
         ],
         caps: [
-          ["Hybrid Tree", "Parent + Child 文档树承载范围、AC、依赖、文件索引和状态。"],
+          ["Hybrid Tree", "Parent + Child 文档承载范围、AC、依赖、文件索引和状态。"],
           ["AC 交叉验证", "evaluatorX 独立读代码和 diff，不采信 coderX 的完成声明。"],
-          ["上下文降噪", "noiseX 在 Phase 1→2 提取纯净信号，减少文档污染。"],
+          ["上下文降噪", "noiseX 在 Phase 1 到 Phase 2 之间提取干净信号。"],
           ["提示预处理", "promptX / promptMasterX 把粗需求转成 coderX 可执行输入。"],
-          ["Worktree 隔离", "执行代理在独立目录工作，降低并行覆盖和跨分支污染。"],
-          ["xstatus 可视化", "从 Hybrid Tree 与 git 活动生成高保真工作流状态报告。"]
+          ["Worktree 隔离", "执行代理在独立目录工作，降低覆盖和跨分支污染。"],
+          ["xstatus 可视化", "从 Hybrid Tree 与 git 活动生成高保真状态报告。"]
+        ],
+        steps: [
+          ["RouteX 路由", "命令进入状态门，选择 xwhole 路径"],
+          ["环境初始化", "加载 MCP / worktree / 参数"],
+          ["工程索引", "扫描文件与约束"],
+          ["需求发现", "问答、质疑与代码搜索联动"],
+          ["方案确认", "Hard Gate 通过"],
+          ["生成 Hybrid Tree", "Parent / Child / AC 文档树"],
+          ["noiseX 去噪", "剔除噪声，只保留信号"],
+          ["promptX", "生成可派发执行指令"],
+          ["迭代闭环", "coderX 生成，evaluatorX 找缺口"],
+          ["迭代收敛", "同一闭环进入修复与复验"],
+          ["验收回写", "Main Agent 更新 Hybrid Tree"],
+          ["需求全通过", "文档树全部 PASS 后结束"]
         ]
       },
       en: {
-        archTitle: "Main Agent orchestrates the multi-agent workflow directly",
-        archSub: "There is no orchestratorX sub-agent. The Main Agent owns routing, planning, document writes, and state; coderX and evaluatorX collaborate only through structured Payloads.",
-        tokenTitle: "Context-budget control for multi-round iteration",
-        tokenSub: "Long conversations are split into cacheable sections, compressed trunks, and external memory. noiseX and promptX reduce downstream input noise.",
-        capTitle: "Four entry points, from minimal edits to parallel teams",
-        capSub: "Choose xunit / xlocal / xwhole / xwhole -parallel by blast radius. Hybrid Tree and AC validation stay consistent across the workflow.",
-        workflowTitle: "A complete xwhole workflow",
-        workflowSub: "From request intake and plan confirmation to document generation, coderX implementation, evaluatorX verification, fix loop, and PASS close.",
-        pills: ["RouteX", "Module 08", "Hybrid Tree", "Bus Payload", "MCP Memory", "Worktree"],
-        command: "User / Command",
-        commandBody: "xwhole / xlocal / xunit / xstatus / xprompt",
-        main: "Main Agent",
-        mainBody: "The only orchestrator and the only Hybrid Tree document writer",
-        agents: "Execution agents",
-        data: "Fact layer",
-        steps: [
-          ["Entry", "Command + state gate"],
-          ["Init", "MCP / worktree / params"],
-          ["Discover", "Code scan + Socratic questions"],
-          ["Confirm", "Plan confirmed before PRD"],
-          ["Denoise", "noiseX extracts clean signal"],
-          ["Docs", "Parent + Child generated"],
-          ["Prompt", "promptX / promptMasterX"],
-          ["Code", "coderX implements in isolation"],
-          ["Verify", "evaluatorX checks AC"],
-          ["Close", "PASS / xstatus / memory"]
-        ],
-        cards: [
-          ["Request enters", "The Main Agent reads workflow state first. routeX decides whether to continue, explore read-only, or start xwhole / xlocal / xunit."],
-          ["Environment initialized", "Parse -N, -box, -parallel, probe MCP availability, and prepare worktree isolation."],
-          ["Phase 1 discovery", "Explore code before asking; Module 08 and socratesX expose boundaries, risks, and missing NFRs."],
-          ["Plan confirmed", "Hybrid Tree is generated only after the plan is confirmed."],
-          ["noiseX denoises context", "Exploration history and discarded hypotheses are compressed into a clean signal for document generation."],
-          ["Phase 2 Hybrid Tree", "The Main Agent writes Parent / Child docs: scope, AC, file index, dependencies, memory outline."],
-          ["Prompt preprocessing", "xunit and fix rounds use promptX; complex prompts can go through promptMasterX."],
-          ["coderX implements", "coderX reads Hybrid Tree, implements against Child AC, and returns a Change Summary Payload."],
-          ["evaluatorX verifies", "The evaluator distrusts self-report, reads diff and code, checks each AC, and returns fix instructions on failure."],
-          ["PASS close", "The Main Agent updates document state, can generate xstatus, and writes stable facts back to MCP Memory."]
-        ],
-        layers: [
-          ["L1", "Section caching", "Stable sections stay at the top; dynamic evaluation sections are overwritten at the bottom.", "40-60%", "saved after round 1"],
-          ["L2", "Trunk / leaf split", "Markdown keeps the requirement trunk; entity relations live in MCP memory.", "leaner", "document context"],
-          ["L3", "Memory snapshot", "Hybrid Tree stores pointers and summaries; full nodes persist in server-memory.", "cross-session", "project facts"]
-        ],
+        archTitle: "The Main Agent owns flow and facts",
+        archSub: "WorkflowX is not a pile of agents. It is one orchestrator, one document writer, and an implementation-verification loop connected by Payloads.",
+        tokenTitle: "Make long iterations budgetable",
+        tokenSub: "Section caching, trunk-leaf split, memory snapshots, and noiseX denoising keep repeated rounds from flooding context.",
+        capTitle: "Choose the entry by blast radius",
+        capSub: "xunit, xlocal, xwhole, and xwhole -parallel share Hybrid Tree and AC validation. Only planning depth and parallelism change.",
+        workflowTitle: "One xwhole run from routing to all ACs passed",
+        workflowSub: "RouteX state gate, resource init, code scan, Socratic discovery, Hybrid Tree, promptX, coderX, evaluatorX, and razorX repair loop.",
+        labelArch: "Architecture",
+        labelToken: "Token Budget",
+        labelCap: "Capability Matrix",
+        labelFlow: "Workflow Demo",
+        chips: ["RouteX", "Module 08", "Hybrid Tree", "coderX", "evaluatorX"],
+        nodes: {
+          command: ["User / Command", "xwhole / xlocal / xunit", "Enters the state gate instead of writing code directly"],
+          status: ["State Machine", ".hybrid/status.json", "wait / normal / xwhole / xlocal / xunit"],
+          coder: ["Implementation Agent", "coderX", "Reads Child AC, writes code, returns Change Summary"],
+          evaluator: ["Verification Agent", "evaluatorX", "Distrusts self-report and checks diff plus code against AC"],
+          prompt: ["Helper Skills", "promptX / noiseX", "Turns rough intent and planning noise into executable signal"]
+        },
+        core: {
+          title: "Main Agent",
+          sub: "The only orchestrator and Hybrid Tree document writer",
+          orbit: [
+            ["RouteX", "Continue, explore, or start"],
+            ["Module 08", "Read code, then clarify"],
+            ["Phase 2", "Write Parent / Child"],
+            ["Core Loop", "Forward Payloads and ledger state"]
+          ],
+          data: [
+            ["Hybrid Tree", "Scope, AC, dependencies, file index, iteration state"],
+            ["MCP Memory", "Cross-session facts and graph summaries"],
+            ["Worktree", "Isolated execution to reduce parallel contamination"]
+          ]
+        },
+        token: {
+          big: "40-60%",
+          body: "Multi-round workflows move from repeated full context to cached stable sections, refreshed dynamic sections, and on-demand memory.",
+          layers: [
+            ["L1", "Section caching", "Stable sections stay high; dynamic sections overwrite at the bottom.", "after first round"],
+            ["L2", "Trunk-leaf split", "Markdown keeps the requirement trunk; entity relations live in MCP memory.", "thinner docs"],
+            ["L3", "Memory snapshot", "Hybrid Tree stores summaries and pointers; full nodes persist in server-memory.", "cross-session reuse"]
+          ]
+        },
         modes: [
-          ["xunit", "Unit task", "Single-file or small change; promptX → coderX, evaluator off by default.", "fastest"],
-          ["xlocal", "Local task", "Reuse or create a minimal Hybrid Tree, then enter code / verify loop.", "scoped"],
-          ["xwhole", "Global task", "Phase 1 discovery → Phase 2 docs → core iteration loop.", "complete"],
-          ["xwhole -parallel", "Parallel team", "Claude Code Agent Teams: multiple coder / evaluator teammates in parallel.", "parallel"]
+          ["xunit", "Unit task", "Single-file or small edit; promptX to coderX, evaluator off by default.", "fastest"],
+          ["xlocal", "Local task", "One or two modules; reuse or create a minimal Hybrid Tree.", "scoped"],
+          ["xwhole", "Global task", "Discovery, plan confirmation, docs, code and verify loop.", "complete"],
+          ["xwhole -parallel", "Parallel team", "Split by Child; multiple coder/evaluator teammates progress in parallel.", "parallel"]
         ],
         caps: [
           ["Hybrid Tree", "Parent + Child docs carry scope, AC, dependencies, file index, and state."],
-          ["AC cross-validation", "evaluatorX independently reads code and diff instead of trusting coderX."],
-          ["Context denoising", "noiseX extracts clean signal before Phase 2 document generation."],
-          ["Prompt preprocessing", "promptX / promptMasterX turn rough intent into executable context for coderX."],
-          ["Worktree isolation", "Agents work in isolated dirs to reduce overwrite and branch contamination."],
-          ["xstatus visualization", "Generate a high-fidelity workflow status report from Hybrid Tree and git activity."]
+          ["AC cross-validation", "evaluatorX reads code and diff instead of trusting coderX self-report."],
+          ["Context denoising", "noiseX extracts clean signal between Phase 1 and Phase 2."],
+          ["Prompt preprocessing", "promptX / promptMasterX turn rough intent into executable input."],
+          ["Worktree isolation", "Agents work in isolated directories to reduce overwrites and branch contamination."],
+          ["xstatus visualization", "Generate a high-fidelity status report from Hybrid Tree and git activity."]
+        ],
+        steps: [
+          ["RouteX routing", "Command enters the state gate and chooses xwhole"],
+          ["Environment init", "Load MCP / worktree / params"],
+          ["Project index", "Scan files and constraints"],
+          ["Discovery", "Q&A, challenge, and code search together"],
+          ["Plan confirmation", "Hard Gate passed"],
+          ["Hybrid Tree", "Parent / Child / AC document tree"],
+          ["noiseX denoise", "Remove noise and keep signals"],
+          ["promptX", "Create dispatchable prompt"],
+          ["Iteration loop", "coderX builds, evaluatorX finds gaps"],
+          ["Iteration convergence", "The same loop repairs and rechecks"],
+          ["Validation writeback", "Main Agent updates Hybrid Tree"],
+          ["All ACs passed", "End only after the document tree passes"]
         ]
       }
     };
 
-    const C = copy[lang];
+    const C = i18n[lang] || i18n.zh;
+
+    function sceneLabel() {
+      if (scene === "architecture") return C.labelArch;
+      if (scene === "token") return C.labelToken;
+      if (scene === "capabilities") return C.labelCap;
+      return C.labelFlow;
+    }
 
     function header(title, sub) {
       return `
         <div class="topbar">
           <div>
-            <div class="brand"><img src="WorkFlowX-Logo.png" alt="" />WorkflowX</div>
-            <div style="height:18px"></div>
-            <div class="kicker">${sceneLabel()}</div>
+            <div class="brand-line"><img src="WorkFlowX-Logo.png" alt="" />WorkflowX</div>
+            <div class="eyebrow">${sceneLabel()}</div>
             <h1>${title}</h1>
             <div class="sub">${sub}</div>
           </div>
-          <div class="pill-row">${C.pills.slice(0, 3).map((p) => `<span class="pill">${p}</span>`).join("")}</div>
-        </div>
-      `;
+          <div class="chips">${C.chips.map((chip, i) => `<span class="chip ${i === 2 ? "hot" : ""}">${chip}</span>`).join("")}</div>
+        </div>`;
     }
 
-    function sceneLabel() {
-      if (scene === "architecture") return lang === "zh" ? "架构更新" : "Architecture Update";
-      if (scene === "token") return lang === "zh" ? "Token 优化" : "Token Optimization";
-      if (scene === "capabilities") return lang === "zh" ? "能力矩阵" : "Capability Matrix";
-      return lang === "zh" ? "工作流演示" : "Workflow Demo";
-    }
-
-    function arch() {
+    function layout(body, title, sub) {
       root.innerHTML = `
         <section class="frame">
-          ${header(C.archTitle, C.archSub)}
-          <div class="architecture">
-            <div class="stack">
-              <div class="panel node"><span class="tag teal">${C.command}</span><strong>RouteX</strong><p>${C.commandBody}</p></div>
-              <div class="panel node"><span class="tag blue">Status Gate</span><strong>.hybrid/status.json</strong><p>${lang === "zh" ? "wait / normal / xwhole / xlocal / xunit 持久化状态。" : "Persistent wait / normal / xwhole / xlocal / xunit state."}</p></div>
-              <div class="panel node"><span class="tag gold">Install</span><strong>3 Configs</strong><p>Claude Code · Codex · OpenCode</p></div>
-            </div>
-            <div class="panel main-agent">
-              <div class="agent-title">
-                <div><span class="tag">${C.main}</span><strong>${C.main}</strong><p class="sub" style="margin-top:8px">${C.mainBody}</p></div>
-                <div class="pill">No orchestratorX sub-agent</div>
-              </div>
-              <div class="mini-flow">
-                <div class="mini"><b>01 Env</b><span>${lang === "zh" ? "MCP 探测、参数解析、降级策略" : "MCP probe, params, degradation"}</span></div>
-                <div class="mini"><b>08 Discover</b><span>${lang === "zh" ? "代码探索、追问、主动质疑" : "Code scan, questions, challenge"}</span></div>
-                <div class="mini"><b>Phase 2</b><span>${lang === "zh" ? "生成 Hybrid Tree，写入事实" : "Generate Hybrid Tree, write facts"}</span></div>
-                <div class="mini"><b>Core Loop</b><span>${lang === "zh" ? "转发 Payload，更新文档状态" : "Forward Payloads, update docs"}</span></div>
-              </div>
-              <div class="data-strip">
-                <div class="data-cell"><b>Hybrid Tree</b>${lang === "zh" ? "Parent + Child，AC 是验收目标" : "Parent + Child, AC is target"}</div>
-                <div class="data-cell" style="border-left-color:var(--teal)"><b>MCP Memory</b>${lang === "zh" ? "知识图谱与跨会话事实" : "Graph memory and facts"}</div>
-                <div class="data-cell" style="border-left-color:var(--rust)"><b>Worktree</b>${lang === "zh" ? "执行隔离与并行防污染" : "Execution isolation"}</div>
-              </div>
-            </div>
-            <div class="stack">
-              <div class="panel node"><span class="tag rust">coderX</span><strong>${lang === "zh" ? "实现代理" : "Implementation agent"}</strong><p>${lang === "zh" ? "只读文档，写代码，输出 Change Summary。" : "Reads docs, writes code, emits Change Summary."}</p></div>
-              <div class="panel node"><span class="tag red">evaluatorX</span><strong>${lang === "zh" ? "独立验收" : "Independent evaluator"}</strong><p>${lang === "zh" ? "读 diff 与代码，对照 Child AC 输出评估 Payload。" : "Reads diff and code, validates against Child AC."}</p></div>
-              <div class="panel node"><span class="tag blue">promptX / noiseX</span><strong>${lang === "zh" ? "降噪与指令预处理" : "Denoise + prompt prep"}</strong><p>${lang === "zh" ? "在生成文档和修复轮降低输入噪声。" : "Reduces input noise before docs and fix rounds."}</p></div>
-            </div>
-          </div>
+          <div class="grid"></div>
+          ${header(title, sub)}
+          ${body}
         </section>`;
-    }
-
-    function token() {
-      root.innerHTML = `
-        <section class="frame">
-          ${header(C.tokenTitle, C.tokenSub)}
-          <div class="token-layout">
-            <div class="panel saving">
-              <div>
-                <div class="big">40–60%</div>
-                <p>${lang === "zh" ? "多轮工作流从“重复塞满上下文”变成“稳定区缓存 + 动态区刷新 + 记忆按需取回”。" : "Multi-round workflows move from repeated full context to cached stable sections, refreshed dynamic sections, and on-demand memory."}</p>
-              </div>
-            </div>
-            <div class="layers">
-              ${C.layers.map((l) => `
-                <div class="panel layer">
-                  <div class="layer-code">${l[0]}</div>
-                  <div><h2>${l[1]}</h2><p>${l[2]}</p></div>
-                  <div class="metric"><b>${l[3]}</b>${l[4]}</div>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-        </section>`;
-    }
-
-    function capabilities() {
-      root.innerHTML = `
-        <section class="frame">
-          ${header(C.capTitle, C.capSub)}
-          <div class="cap-grid">
-            <div class="panel mode-table">
-              ${C.modes.map((m, i) => `
-                <div class="mode-row">
-                  <div class="mode-badge">${m[0]}</div>
-                  <div class="mode-copy"><b>${m[1]}</b><span>${m[2]}</span></div>
-                  <div class="mode-mark">${m[3]}</div>
-                </div>
-              `).join("")}
-            </div>
-            <div class="cap-list">
-              ${C.caps.map((c) => `<div class="panel cap"><b>${c[0]}</b><span>${c[1]}</span></div>`).join("")}
-            </div>
-          </div>
-        </section>`;
-    }
-
-    function workflow(t) {
-      const total = C.steps.length;
-      const raw = Math.min(Math.max(t, 0), 0.999);
-      const idx = Math.min(total - 1, Math.floor(raw * total));
-      const fill = Math.max(4, raw * 100);
-      const card = C.cards[idx];
-      root.innerHTML = `
-        <section class="frame">
-          ${header(C.workflowTitle, C.workflowSub)}
-          <div class="workflow">
-            <div class="panel workflow-side left"><b>${lang === "zh" ? "用户只处理关键确认" : "User handles key checkpoints"}</b><span>${lang === "zh" ? "回答澄清问题、确认方案；其余派发、验收、记账由 Main Agent 推进。" : "Answer clarifying questions and confirm plans; Main Agent handles dispatch, verification, and bookkeeping."}</span></div>
-            <div class="panel workflow-side right"><b>${lang === "zh" ? "失败自动回流" : "Failure flows back"}</b><span>${lang === "zh" ? "evaluatorX 产出修复指令，Main Agent 传给 coderX，直到 PASS 或达到 -N 上限。" : "evaluatorX returns fix instructions; Main Agent passes them to coderX until PASS or -N limit."}</span></div>
-            <div class="workflow-line"><div class="workflow-fill" style="width:${fill}%"></div></div>
-            <div class="steps">
-              ${C.steps.map((s, i) => {
-                const cls = i < idx ? "done" : i === idx ? "active" : "";
-                return `<div class="step ${cls}"><div class="dot">${i + 1}</div><b>${s[0]}</b><span>${s[1]}</span></div>`;
-              }).join("")}
-            </div>
-            <div class="loop-arrow" style="opacity:${idx === 8 ? 1 : 0}"></div>
-            <div class="panel active-card">
-              <div>
-                <div class="stage-no">${lang === "zh" ? "当前阶段" : "Current stage"} ${idx + 1}/10</div>
-                <h2>${card[0]}</h2>
-              </div>
-              <p>${card[1]}</p>
-            </div>
-          </div>
-          <div class="watermark">Created by Huashu-Design</div>
-        </section>`;
-    }
-
-    function workflowV2(t) {
-      const total = C.steps.length;
-      const raw = Math.min(Math.max(t, 0), 0.999);
-      const idx = Math.min(total - 1, Math.floor(raw * total));
-      const card = C.cards[idx];
-      const local = raw * total - idx;
-      const ease = local < 0.5 ? 2 * local * local : 1 - Math.pow(-2 * local + 2, 2) / 2;
-      const points = [
-        [118, 204], [232, 204], [420, 204], [545, 116], [545, 330],
-        [676, 330], [828, 165], [970, 250], [828, 305], [1030, 330], [1030, 330],
-      ];
-      const p0 = points[idx];
-      const p1 = points[idx + 1] || points[idx];
-      const x = p0[0] + (p1[0] - p0[0]) * ease;
-      const y = p0[1] + (p1[1] - p0[1]) * ease;
-      const ghostIndex = Math.max(0, idx - 1);
-      const g0 = points[ghostIndex];
-      const g1 = points[ghostIndex + 1] || g0;
-      const gx = g0[0] + (g1[0] - g0[0]) * ease;
-      const gy = g0[1] + (g1[1] - g0[1]) * ease;
-      const docA = Math.min(100, Math.max(0, (raw - 0.36) * 220));
-      const docB = Math.min(100, Math.max(0, (raw - 0.48) * 220));
-      const docC = Math.min(100, Math.max(0, (raw - 0.58) * 220));
-      const verdict = idx < 7 ? "WAIT" : idx === 8 ? "FIX" : "PASS";
-      const labels = C.steps.map((s) => s[0]);
-      const lane = (x1, y1, x2, y2, cls = "") => {
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        const len = Math.sqrt(dx * dx + dy * dy);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        return `<div class="lane ${cls}" style="left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg)"></div>`;
-      };
-      const active = (...ids) => ids.includes(idx) ? "active" : "";
-      root.innerHTML = `
-        <section class="frame">
-          ${header(C.workflowTitle, C.workflowSub)}
-          <div class="console">
-            <div class="status-strip">
-              ${labels.map((label, i) => `<div class="status-step ${i < idx ? "done" : i === idx ? "active" : ""}">${label}</div>`).join("")}
-            </div>
-            ${lane(126, 214, 232, 214, idx < 1 ? "dim" : "")}
-            ${lane(246, 214, 420, 214, idx < 2 ? "dim" : "")}
-            ${lane(450, 196, 545, 128, idx < 3 ? "dim" : "")}
-            ${lane(545, 150, 545, 320, idx < 4 ? "dim" : "")}
-            ${lane(585, 330, 680, 330, idx < 5 ? "dim" : "")}
-            ${lane(682, 318, 828, 175, idx < 6 ? "dim" : "")}
-            ${lane(862, 176, 970, 250, idx < 7 ? "dim" : "")}
-            ${lane(970, 272, 838, 305, idx < 8 ? "dim" : "")}
-            ${lane(850, 318, 1030, 330, idx < 9 ? "dim" : "")}
-
-            <div class="console-card ${active(0)}" style="left:34px;top:142px;width:176px">
-              <b>${lang === "zh" ? "用户需求" : "User request"}</b>
-              <span>xwhole / xlocal / xunit</span>
-            </div>
-            <div class="console-card ${active(1)}" style="left:226px;top:142px;width:150px">
-              <b>RouteX</b>
-              <span>${lang === "zh" ? "状态门控与模式选择" : "State gate and mode selection"}</span>
-            </div>
-            <div class="core-orbit">
-              <div class="core-ring" style="transform:rotate(${Math.round(raw * 720)}deg)"></div>
-              <div class="core-label">
-                <div><b>Main Agent</b><span>${lang === "zh" ? "直接编排 / 写文档" : "Direct orchestration / doc writes"}</span></div>
-              </div>
-            </div>
-            <div class="module-chip ${active(2,3)}" style="left:458px;top:72px">Module 08</div>
-            <div class="module-chip ${active(4)}" style="left:594px;top:104px">noiseX</div>
-            <div class="module-chip ${active(5)}" style="left:392px;top:314px">Hybrid Tree</div>
-            <div class="module-chip ${active(6)}" style="left:602px;top:314px">promptX</div>
-
-            <div class="console-card ${active(7,8)}" style="left:742px;top:106px;width:168px">
-              <b>coderX</b>
-              <span>${lang === "zh" ? "隔离 worktree 实现并输出 Change Summary" : "Implements in isolated worktree and emits Change Summary"}</span>
-            </div>
-            <div class="console-card ${active(8)}" style="left:936px;top:196px;width:168px">
-              <b>evaluatorX</b>
-              <span>${lang === "zh" ? "独立读取 diff / code，对照 AC 验收" : "Reads diff / code independently and checks AC"}</span>
-            </div>
-            <div class="console-card ${active(9)}" style="left:728px;top:300px;width:150px;display:${idx === 9 ? "block" : "none"}">
-              <b>${lang === "zh" ? "收口" : "Close"}</b>
-              <span>${lang === "zh" ? "PASS 后更新状态、记忆和报告" : "On PASS, update state, memory, and report"}</span>
-            </div>
-
-            <div class="doc-panel">
-              <b>Parent + Child</b>
-              <div class="doc-line"><i style="width:${docA}%"></i></div>
-              <div class="doc-line"><i style="width:${docB}%"></i></div>
-              <div class="doc-line"><i style="width:${docC}%"></i></div>
-            </div>
-            <div class="verdict">
-              <div class="label">${lang === "zh" ? "验收状态" : "Evaluation"}</div>
-              <div class="value">${verdict}</div>
-            </div>
-            <div class="scene-caption">
-              <div class="stage-no">${lang === "zh" ? "阶段" : "Stage"} ${idx + 1}/10</div>
-              <h2>${card[0]}</h2>
-              <p>${card[1]}</p>
-            </div>
-            <div class="packet secondary" style="left:${gx - 6}px;top:${gy - 6}px"></div>
-            <div class="packet" style="left:${x - 10}px;top:${y - 10}px;transform:scale(${1 + Math.sin(raw * Math.PI * 20) * 0.08})"></div>
-          </div>
-          <div class="watermark">Created by Huashu-Design</div>
-        </section>`;
-    }
-
-    function workflowV3(t) {
-      const total = C.steps.length;
-      const raw = Math.min(Math.max(t, 0), 0.999);
-      const weights = [1, 0.9, 1.2, 1, 0.9, 1.15, 0.85, 1.1, 2.15, 1.2];
-      const weightTotal = weights.reduce((sum, value) => sum + value, 0);
-      let cursor = raw * weightTotal;
-      let idx = 0;
-      while (idx < weights.length - 1 && cursor >= weights[idx]) {
-        cursor -= weights[idx];
-        idx += 1;
-      }
-      const local = Math.min(0.999, cursor / weights[idx]);
-      const railPosition = idx < 8 ? idx + local : idx === 8 ? 8 : 8 + local;
-      const progress = (railPosition / (total - 1)) * 100;
-      const card = C.cards[idx];
-      const labels = C.steps.map((s) => s[0]);
-      const loopOpacity = idx === 8 ? 1 : idx === 9 ? 0.55 : 0.28;
-      const clamp = (v) => Math.min(1, Math.max(0, v));
-      const expo = (v) => v >= 1 ? 1 : 1 - Math.pow(2, -8 * v);
-      const enter = expo(clamp(local * 1.7));
-      const scan = Math.round(clamp(local * 1.12) * 100);
-      const drift = Math.sin((raw * Math.PI * 2) * 1.6) * 6;
-      const viewTitle = lang === "zh" ? "阶段界面" : "Stage interface";
-      const theaterStyle = [
-        `--enter:${enter.toFixed(3)}`,
-        `--scan:${scan}%`,
-        `--shift-x:${((1 - enter) * 42).toFixed(1)}px`,
-        `--shift-y:${((1 - enter) * 12 + drift * 0.18).toFixed(1)}px`,
-        `--scene-scale:${(0.982 + enter * 0.018).toFixed(3)}`,
-        `--scene-opacity:${(0.42 + enter * 0.58).toFixed(3)}`,
-        `--main-y:${((1 - enter) * 16).toFixed(1)}px`,
-        `--side-x:${((1 - enter) * -18).toFixed(1)}px`,
-        `--low-x:${((1 - enter) * 28).toFixed(1)}px`,
-        `--row-scale:${(0.42 + enter * 0.58).toFixed(3)}`,
-        `--cursor-x:${Math.round(18 + enter * 50)}%`,
-        `--cursor-y:${Math.round(30 + Math.sin(local * Math.PI * 2) * 5)}%`,
-      ].join(";");
-
-      const noiseDots = Array.from({ length: 26 }, (_, i) => {
-        const x = (i * 37) % 96;
-        const y = (i * 53) % 86;
-        const o = i % 3 === 0 ? 0.28 : 0.72;
-        return `<i class="noise-dot" style="left:${x}%;top:${y}%;opacity:${o}"></i>`;
-      }).join("");
-      const scanRows = [92, 72, 84, 58].map((w) => `<div class="scan-row" style="--w:${w}%"></div>`).join("");
-      const smallRows = [86, 64, 78].map((w) => `<i style="width:${w}%"></i>`).join("");
-
-      const view = (() => {
-        if (idx === 0) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / Request Intake</div>
-              <div class="terminal-line">xwhole ${lang === "zh" ? "实现登录、订单与状态报告" : "implement auth, orders, and status reports"}</div>
-              <div class="route-map" style="margin-top:14px">
-                <div class="route-tile"><b>xwhole</b><span>${lang === "zh" ? "全局流程" : "Global workflow"}</span></div>
-                <div class="route-tile"><b>-N 3</b><span>${lang === "zh" ? "限制修复轮次" : "Iteration cap"}</span></div>
-                <div class="route-tile"><b>-box</b><span>${lang === "zh" ? "隔离执行" : "Isolated run"}</span></div>
-              </div>
-            </div>
-            <div class="ui-surface ui-side ui-pad">
-              <div class="ui-kicker">RouteX</div>
-              <div class="scan-list">${scanRows}</div>
-            </div>
-          </div>`;
-        if (idx === 1) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / RouteX Gate</div>
-              <div class="json-card">{
-  "status": "wait",
-  "mode": "xwhole",
-  "phase": "env_init",
-  "agent": "Main Agent"
-}</div>
-            </div>
-            <div class="ui-surface ui-side ui-pad">
-              <div class="ui-kicker">Routes</div>
-              <div class="route-map" style="grid-template-columns:1fr">
-                <div class="route-tile"><b>Route 0</b><span>${lang === "zh" ? "接入活跃流程" : "Attach active flow"}</span></div>
-                <div class="route-tile"><b>Route 2</b><span>${lang === "zh" ? "推荐模式" : "Recommend mode"}</span></div>
-              </div>
-            </div>
-          </div>`;
-        if (idx === 2) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / Module 08</div>
-              <div class="code-layout">
-                <div class="code-pane"><b>${lang === "zh" ? "代码探索" : "Code exploration"}</b>
-                  <div class="code-line add"></div><div class="code-line"></div><div class="code-line dim"></div><div class="code-line add" style="width:72%"></div>
-                </div>
-                <div class="code-pane"><b>socratesX</b>
-                  <div class="question-box">${lang === "zh" ? "OAuth token 如何刷新？是否允许多端并发？" : "How is the OAuth token refreshed? Are concurrent sessions allowed?"}</div>
-                </div>
-              </div>
-            </div>
-            <div class="ui-surface ui-low ui-pad"><div class="scan-list">
-              <div class="scan-row" style="--w:68%"></div><div class="scan-row" style="--w:46%"></div>
-            </div></div>
-          </div>`;
-        if (idx === 3) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / Plan Confirmed</div>
-              <div class="gate-card" style="margin:0;min-height:106px">
-                <b>${lang === "zh" ? "确认方案，生成 PRD" : "Confirm plan, generate PRD"}</b>
-                <span>${lang === "zh" ? "Main Agent 只在确认后写入 Hybrid Tree。" : "The Main Agent writes Hybrid Tree only after confirmation."}</span>
-                <div class="gate-button">${lang === "zh" ? "确认并启动" : "Confirm and start"}</div>
-              </div>
-            </div>
-            <div class="ui-surface ui-side ui-pad">
-              <div class="ui-kicker">${lang === "zh" ? "确认点" : "Checkpoint"}</div>
-              <div class="terminal-line">${lang === "zh" ? "用户确认后继续" : "Proceed after user confirmation"}</div>
-            </div>
-          </div>`;
-        if (idx === 4) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / noiseX Denoise</div>
-              <div class="noise-field">
-                ${noiseDots}
-                <div class="filter-bar" style="--scan:${scan}%"></div>
-              </div>
-            </div>
-            <div class="ui-surface ui-side ui-pad">
-              <div class="ui-kicker">${lang === "zh" ? "噪声压缩" : "Noise compression"}</div>
-              <div class="scan-list">${scanRows}</div>
-            </div>
-          </div>`;
-        if (idx === 5) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / Hybrid Tree</div>
-              <div class="doc-canvas">
-                <div class="doc-node"><b>Parent</b><span>${lang === "zh" ? "范围 / NFR / DoD / 路由表" : "Scope / NFR / DoD / routing"}</span><div class="doc-lines">${smallRows}</div></div>
-                <div class="doc-node"><b>Child</b><span>${lang === "zh" ? "AC / 文件索引 / 迭代记录" : "AC / file index / iteration log"}</span><div class="doc-lines">${smallRows}</div></div>
-              </div>
-            </div>
-            <div class="ui-surface ui-side ui-pad">
-              <div class="ui-kicker">MCP Memory</div>
-              <div class="json-card">facts: stable
-edges: updated
-status: normal</div>
-            </div>
-          </div>`;
-        if (idx === 6) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / promptX</div>
-              <div class="route-map">
-                <div class="route-tile"><b>promptX</b><span>${lang === "zh" ? "9 维意图提取" : "9-dim intent extraction"}</span></div>
-                <div class="route-tile"><b>AC Focus</b><span>${lang === "zh" ? "只携带必要上下文" : "Carry only needed context"}</span></div>
-                <div class="route-tile"><b>Fix Prompt</b><span>${lang === "zh" ? "修复指令直达 coderX" : "Fix instructions to coderX"}</span></div>
-              </div>
-            </div>
-            <div class="ui-surface ui-low ui-pad"><div class="terminal-line">${lang === "zh" ? "粗需求 -> 可执行提示" : "rough intent -> executable prompt"}</div></div>
-          </div>`;
-        if (idx === 7) return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / coderX Worktree</div>
-              <div class="code-layout">
-                <div class="code-pane"><b>implementation.ts</b>
-                  <div class="code-line"></div><div class="code-line add"></div><div class="code-line add" style="width:78%"></div><div class="code-line dim"></div>
-                </div>
-                <div class="code-pane"><b>Change Summary</b>
-                  <div class="doc-lines">${smallRows}</div>
-                </div>
-              </div>
-            </div>
-            <div class="cursor-dot"></div>
-          </div>`;
-        if (idx === 8) return `
-          <div class="scene-ui">
-            <div class="ui-surface iteration-full ui-pad">
-              <div class="ui-title">${viewTitle} / evaluatorX</div>
-              <div class="iteration-map">
-                <div class="iteration-node">
-                  <b>evaluatorX</b>
-                  <span>${lang === "zh" ? "读 diff / code，对照 Child AC。" : "Read diff / code against Child AC."}</span>
-                </div>
-                <div class="iteration-arrow"></div>
-                <div class="iteration-node">
-                  <b>Fix Payload</b>
-                  <span>AC-02: <span class="fail">FIX</span><br>${lang === "zh" ? "最小修复指令" : "Minimal fix instruction"}</span>
-                </div>
-                <div class="iteration-arrow"></div>
-                <div class="iteration-node">
-                  <b>coderX</b>
-                  <span>${lang === "zh" ? "只接失败 AC，进入第 2 轮。" : "Failed AC only; start round 2."}</span>
-                </div>
-              </div>
-              <div class="iteration-note">${lang === "zh" ? "失败不会直接 PASS，也不会重开规划；Main Agent 只转发修复 Payload，直到 PASS 或达到 -N 上限。" : "Failure does not pass or restart planning; Main Agent only forwards the fix Payload until PASS or the -N cap."}</div>
-            </div>
-          </div>`;
-        return `
-          <div class="scene-ui">
-            <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / PASS Close</div>
-              <div class="route-map">
-                <div class="route-tile"><b>xstatus</b><span>${lang === "zh" ? "生成状态报告" : "Generate status report"}</span></div>
-                <div class="route-tile"><b>MCP Memory</b><span>${lang === "zh" ? "回写稳定事实" : "Write stable facts"}</span></div>
-                <div class="route-tile"><b>Hybrid Tree</b><span>${lang === "zh" ? "关闭迭代" : "Close iteration"}</span></div>
-              </div>
-              <div class="terminal-line" style="margin-top:14px">Evaluation Result: PASS</div>
-            </div>
-            <div class="ui-surface ui-side ui-pad">
-              <div class="ui-kicker">${lang === "zh" ? "最终状态" : "Final state"}</div>
-              <div class="json-card">status: pass
-memory: saved
-report: ready</div>
-            </div>
-          </div>`;
-      })();
-
-      root.innerHTML = `
-        <section class="frame">
-          ${header(C.workflowTitle, C.workflowSub)}
-          <div class="flow-stage" style="--rail:${Math.min(progress, 100)}%;--packet-x:${Math.min(44 + progress * 9.64, 1010)}px;--loop-opacity:${loopOpacity}">
-            <div class="process-rail">
-              <div class="rail-track"><div class="rail-fill"></div></div>
-              <div class="loop-rail"></div>
-              <div class="rail-packet"></div>
-              <div class="rail-nodes">
-                ${labels.map((label, i) => `<div class="rail-node ${i < idx ? "done" : i === idx ? "active" : ""}">${label}</div>`).join("")}
-              </div>
-            </div>
-            <div class="demo-shell">
-              <div class="demo-caption">
-                <div class="stage-no">${lang === "zh" ? "阶段" : "Stage"} ${idx + 1}/10</div>
-                <h2>${card[0]}</h2>
-                <p>${card[1]}</p>
-              </div>
-              <div class="demo-theater" style="${theaterStyle}">
-                <div class="theater-sweep"></div>
-                ${view}
-              </div>
-              <div class="side-metrics">
-                <div class="metric-card"><div class="label">${lang === "zh" ? "当前状态" : "State"}</div><div class="value">${idx === 8 ? "FIX" : idx === 9 ? "PASS" : "RUN"}</div></div>
-                <div class="metric-card"><div class="label">${lang === "zh" ? "迭代轮次" : "Iteration"}</div><div class="value">${idx === 8 ? "2/3" : idx === 9 ? "DONE" : "1/3"}</div></div>
-                <div class="metric-card"><div class="label">${lang === "zh" ? "事实源" : "Source"}</div><div class="value">TREE</div></div>
-              </div>
-            </div>
-          </div>
-          <div class="watermark">Created by Huashu-Design</div>
-        </section>`;
-    }
-
-    function workflowV4(t) {
-      const weights = [1, 0.9, 1.2, 1, 1.6, 1.1, 0.8, 1, 4.5, 1.3];
-      const weightTotal = weights.reduce((sum, value) => sum + value, 0);
-      const raw = Math.min(Math.max(t, 0), 0.999);
-      let cursor = raw * weightTotal;
-      let idx = 0;
-      while (idx < weights.length - 1 && cursor >= weights[idx]) {
-        cursor -= weights[idx];
-        idx += 1;
-      }
-      const local = Math.min(0.999, cursor / weights[idx]);
-      const clamp = (v) => Math.min(1, Math.max(0, v));
-      const expo = (v) => v >= 1 ? 1 : 1 - Math.pow(2, -8 * v);
-      const enter = expo(clamp(local * 1.6));
-      const scan = Math.round(clamp(local * 1.1) * 100) + "%";
-      const card = C.cards[idx];
-      const loopPhase = idx === 8 ? Math.min(6, Math.floor(local * 7)) : -1;
-      const loopLocal = idx === 8 ? (local * 7 - loopPhase) : 0;
-      const loopEase = expo(clamp(loopLocal));
-      const loopSegments = [
-        [[68, 32], [186, 32]],
-        [[186, 32], [268, 32]],
-        [[348, 32], [486, 32]],
-        [[486, 32], [186, 32]],
-        [[186, 32], [268, 32]],
-        [[348, 32], [486, 32]],
-        [[486, 32], [186, 32]],
-      ];
-      const loopSegment = loopSegments[Math.max(0, loopPhase)] || loopSegments[0];
-      const packetX = loopSegment[0][0] + (loopSegment[1][0] - loopSegment[0][0]) * loopEase;
-      const packetY = loopSegment[0][1] + (loopSegment[1][1] - loopSegment[0][1]) * loopEase;
-      const loopCaptions = lang === "zh"
-        ? ["R1：evaluatorX 逐条核对 AC，定位 AC-02 失败。", "Main Agent 只把 AC-02 压成最小 Fix Payload。", "R2：coderX 只修 AC-02，不重开规划。", "R2 复验：AC-02 已过，AC-03 边界仍需修复。", "Main Agent 生成第二个最小 Payload，只携带 AC-03。", "R3：coderX 修边界用例并返回改动摘要。", "R3 验收：全部 AC 通过，进入 PASS 收口。"]
-        : ["R1: evaluatorX checks each AC and isolates AC-02.", "Main Agent compresses AC-02 into a minimal Fix Payload.", "R2: coderX fixes AC-02 only; no replanning.", "R2 recheck: AC-02 passes, but the AC-03 edge still needs a fix.", "Main Agent sends a second minimal Payload for AC-03 only.", "R3: coderX fixes the edge case and returns a change summary.", "R3 verification: every AC passes and the flow can close."];
-      const loopPayloadLabels = lang === "zh"
-        ? ["R1 CHECK", "AC-02 FIX", "R2 PATCH", "R2 RECHECK", "AC-03 FIX", "R3 PATCH", "PASS"]
-        : ["R1 CHECK", "AC-02 FIX", "R2 PATCH", "R2 RECHECK", "AC-03 FIX", "R3 PATCH", "PASS"];
-      const loopStatus = ["CHECK", "PAYLOAD", "PATCH", "RECHECK", "PAYLOAD", "PATCH", "PASS"][Math.max(0, loopPhase)] || "CHECK";
-      const loopRound = ["1/3", "1/3", "2/3", "2/3", "2/3", "3/3", "3/3"][Math.max(0, loopPhase)] || "1/3";
-      const loopSourceValue = ["DIFF", "AC-02", "PATCH", "RECHECK", "AC-03", "PATCH", "PASS"][Math.max(0, loopPhase)] || "DIFF";
-      const boardTitle = idx === 8
-        ? (lang === "zh" ? "多轮验收迭代" : "Multi-round verification")
-        : card[0];
-      const boardDesc = idx === 8
-        ? (lang === "zh" ? "R1 发现 AC-02，R2 复验再发现 AC-03 边界，R3 才 PASS；每轮只携带失败项。" : "R1 finds AC-02, R2 exposes the AC-03 edge, and R3 passes; each round carries only failed items.")
-        : card[1];
-      const status = idx === 8 ? loopStatus : idx === 9 ? "PASS" : idx < 5 ? "PLAN" : "RUN";
-      const round = idx < 8 ? "1/3" : idx === 8 ? loopRound : "DONE";
-      const source = idx < 4 ? "STATE" : idx < 6 ? "SIGNAL" : "TREE";
-      const sourceValue = idx === 8 ? loopSourceValue : source;
-      const loopPulse = idx === 8 ? (0.5 + Math.sin(local * Math.PI * 7) * 0.5) : 0;
-      const payloadScale = idx === 8 ? ((loopPhase === 1 || loopPhase === 4) ? expo(clamp(loopLocal * 1.35)) : (loopPhase > 1 ? 0.72 : 0.24)) : 0;
-      const repairScale = idx === 8 ? ((loopPhase === 2 || loopPhase === 5) ? expo(clamp(loopLocal * 1.45)) : (loopPhase > 2 ? 1 : 0)) : 0;
-      const recheckScale = idx === 8 ? (loopPhase >= 3 ? (loopPhase === 3 ? expo(clamp(loopLocal * 1.35)) : 1) : 0) : 0;
-      const denoiseSweep = idx === 4 ? expo(clamp(local * 1.18)) : 0;
-      const cleanReveal = idx === 4 ? expo(clamp((local - 0.38) * 2.2)) : 0;
-      const rejectScale = idx === 4 ? expo(clamp((local - 0.20) * 2.5)) : 0;
-      const boardStyle = [
-        `--scene-x:${((1 - enter) * 18).toFixed(1)}px`,
-        `--scene-y:${((1 - enter) * 8).toFixed(1)}px`,
-        `--scene-scale:${(0.985 + enter * 0.015).toFixed(3)}`,
-        `--scene-opacity:${(0.52 + enter * 0.48).toFixed(3)}`,
-        `--row-scale:${(0.46 + enter * 0.54).toFixed(3)}`,
-        `--scan:${scan}`,
-        `--loop-pulse:${loopPulse.toFixed(3)}`,
-        `--payload-scale:${payloadScale.toFixed(3)}`,
-        `--repair-scale:${repairScale.toFixed(3)}`,
-        `--recheck-scale:${recheckScale.toFixed(3)}`,
-        `--packet-x:${packetX.toFixed(1)}px`,
-        `--packet-y:${packetY.toFixed(1)}px`,
-        `--denoise-sweep:${denoiseSweep.toFixed(3)}`,
-        `--beam-left:${(8 + denoiseSweep * 84).toFixed(2)}%`,
-        `--filter-angle:${(-22 + denoiseSweep * 76).toFixed(1)}deg`,
-      ].join(";");
-
-      const smallBars = [88, 68, 76, 54].map((w) => `<i style="--w:${w}%"></i>`).join("");
-      const noiseRows = [[34, 18, 42, 24], [22, 48, 30, 18], [38, 26, 16, 44], [28, 46, 22, 34], [42, 20, 36, 16]].map((widths, i) => {
-        const rowClean = clamp((denoiseSweep - i * 0.10) * 1.35);
-        const dropOpacity = (0.72 - rowClean * 0.58).toFixed(3);
-        const dropY = `${(rowClean * 9).toFixed(1)}px`;
-        const dropScale = (1 - rowClean * 0.54).toFixed(3);
-        const keepOpacity = (0.24 + rowClean * 0.74).toFixed(3);
-        const keepX = `${(rowClean * 7).toFixed(1)}px`;
-        const chips = widths.map((w, j) => `<i class="noise-chip ${j === 1 ? "keep" : "drop"}" style="--w:${w}%"></i>`).join("");
-        return `<div class="noise-row" style="--row-clean:${rowClean.toFixed(3)};--drop-opacity:${dropOpacity};--drop-y:${dropY};--drop-scale:${dropScale};--keep-opacity:${keepOpacity};--keep-x:${keepX}">${chips}</div>`;
-      }).join("");
-      const cleanItems = lang === "zh"
-        ? [["Scope", "保留可执行范围"], ["AC", "提炼可验收事实"], ["Memory", "稳定事实进入文档"]]
-        : [["Scope", "Executable scope only"], ["AC", "Verifiable facts kept"], ["Memory", "Stable facts documented"]];
-      const cleanFacts = cleanItems.map(([label, body], i) => {
-        const reveal = expo(clamp((cleanReveal - i * 0.20) * 1.6));
-        return `<div class="clean-fact" style="--reveal:${reveal.toFixed(3)};--reveal-x:${((1 - reveal) * 14).toFixed(1)}px"><b>${label}</b><span>${body}</span></div>`;
-      }).join("");
-      const rejectBits = Array.from({ length: 7 }, (_, i) => {
-        const opacity = (rejectScale * (0.18 + (i % 3) * 0.06)).toFixed(3);
-        const y = `${(rejectScale * (12 + i * 1.4)).toFixed(1)}px`;
-        const scale = (0.22 + rejectScale * 0.78).toFixed(3);
-        return `<i style="left:${14 + (i * 11) % 58}%;top:${26 + (i * 17) % 54}%;--reject-opacity:${opacity};--reject-y:${y};--reject-scale:${scale}"></i>`;
-      }).join("");
-      const acItems = loopPhase >= 6
-        ? [["AC-01 PASS", "pass"], ["AC-02 PASS", "pass"], ["AC-03 PASS", "pass"]]
-        : loopPhase >= 3
-          ? [["AC-01 PASS", "pass"], ["AC-02 PASS", "pass"], ["AC-03 FIX", "fix"]]
-          : [["AC-01 PASS", "pass"], ["AC-02 FIX", "fix"], ["AC-03 WAIT", "wait"]];
-      const acStack = acItems.map(([label, cls]) => `<i class="${cls}">${label}</i>`).join("");
-      const evalText = lang === "zh"
-        ? (loopPhase >= 6 ? "R3：全部 AC PASS。" : loopPhase >= 3 ? "R2：AC-03 边界失败。" : "R1：AC-02 未满足。")
-        : (loopPhase >= 6 ? "R3: every AC passes." : loopPhase >= 3 ? "R2: AC-03 edge fails." : "R1: AC-02 fails.");
-      const mainText = lang === "zh"
-        ? (loopPhase >= 6 ? "写入迭代记录，准备收口。" : loopPhase >= 3 ? "压缩 AC-03 边界修复。" : "压缩 AC-02 Fix Payload。")
-        : (loopPhase >= 6 ? "Records the loop and prepares close." : loopPhase >= 3 ? "Compresses the AC-03 edge fix." : "Compresses the AC-02 Fix Payload.");
-      const codeText = lang === "zh"
-        ? (loopPhase >= 6 ? "返回摘要，不自验。" : loopPhase >= 3 ? "只修 AC-03 边界。" : "只修 AC-02，不重开规划。")
-        : (loopPhase >= 6 ? "Returns summary, no self-pass." : loopPhase >= 3 ? "Fixes AC-03 edge only." : "Fixes AC-02 only; no replanning.");
-      const roundClass = (roundIndex) => {
-        const activeRound = loopPhase < 2 ? 0 : loopPhase < 5 ? 1 : 2;
-        if (roundIndex < activeRound) return "done";
-        return roundIndex === activeRound ? "active" : "";
-      };
-      const loopLine = (x1, y1, x2, y2, cls = "") => {
-        const dx = x2 - x1;
-        const dy = y2 - y1;
-        const len = Math.sqrt(dx * dx + dy * dy);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        return `<div class="loop-line ${cls}" style="left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg)"></div>`;
-      };
-
-      const activeView = (() => {
-        if (idx === 0) return `
-          <div class="command-line">xwhole ${lang === "zh" ? "实现登录、订单与状态报告" : "implement auth, orders, and status reports"}</div>
-          <div class="scene-grid-3">
-            <div class="work-card"><strong>xwhole</strong><span>${lang === "zh" ? "全局流程入口" : "Global workflow entry"}</span></div>
-            <div class="work-card"><strong>-N 3</strong><span>${lang === "zh" ? "每个 Child 最多 3 轮验收" : "Three verification rounds per Child"}</span></div>
-            <div class="work-card"><strong>-box</strong><span>${lang === "zh" ? "隔离执行目录" : "Isolated execution directory"}</span></div>
-          </div>`;
-        if (idx === 1) return `
-          <div class="scene-grid-2">
-            <div class="work-card"><strong>RouteX</strong><span>${lang === "zh" ? "读取 .hybrid/status.json，判断接入、探索或启动。" : "Reads .hybrid/status.json and chooses attach, explore, or start."}</span></div>
-            <div class="work-card"><strong>Env</strong><span>${lang === "zh" ? "解析参数、探测 MCP、准备 worktree 策略。" : "Parses flags, probes MCP, prepares worktree strategy."}</span></div>
-          </div>
-          <div class="command-line" style="margin-top:16px">status: wait -> xwhole</div>`;
-        if (idx === 2) return `
-          <div class="scene-grid-2">
-            <div class="work-card"><strong>${lang === "zh" ? "代码探索" : "Code scan"}</strong><div class="doc-bars">${smallBars}</div></div>
-            <div class="work-card"><strong>Module 08</strong><span>${lang === "zh" ? "先读代码，再追问边界、风险和非功能要求。" : "Read code first, then ask about boundaries, risk, and NFRs."}</span></div>
-          </div>
-          <div class="command-line" style="margin-top:16px">${lang === "zh" ? "问题：OAuth token 如何刷新？" : "Question: how should OAuth tokens refresh?"}</div>`;
-        if (idx === 3) return `
-          <div class="work-card" style="min-height:168px;text-align:center;display:grid;place-items:center">
-            <div>
-              <strong style="font-size:24px">${lang === "zh" ? "方案确认" : "Plan confirmed"}</strong>
-              <span>${lang === "zh" ? "确认后才生成 Hybrid Tree，避免在错误方向上开发。" : "Generate Hybrid Tree only after the plan is confirmed."}</span>
-              <div class="gate-button">${lang === "zh" ? "确认并启动" : "Confirm and start"}</div>
-            </div>
-          </div>`;
-        if (idx === 4) return `
-          <div class="signal-field">
-            <div class="signal-column">
-              <div class="signal-label"><span>${lang === "zh" ? "混杂输入" : "Noisy input"}</span><small>${lang === "zh" ? "聊天 / 假设 / 草稿" : "chat / guesses / drafts"}</small></div>
-              <div class="noise-stack">${noiseRows}</div>
-            </div>
-            <div class="denoise-core">
-              <div class="filter-ring"></div>
-              <div class="filter-label">noiseX</div>
-            </div>
-            <div class="signal-column">
-              <div class="signal-label"><span>${lang === "zh" ? "干净信号" : "Clean signal"}</span><small>${lang === "zh" ? "可写入" : "documentable"}</small></div>
-              <div class="clean-stack">${cleanFacts}</div>
-            </div>
-            <div class="signal-beam"></div>
-            <div class="reject-bits">${rejectBits}</div>
-          </div>`;
-        if (idx === 5) return `
-          <div class="tree-map">
-            <div class="tree-doc"><strong>Parent</strong><span>${lang === "zh" ? "范围 / NFR / DoD / 路由表" : "Scope / NFR / DoD / routing"}</span><div class="doc-bars">${smallBars}</div></div>
-            <div class="tree-doc"><strong>Child</strong><span>${lang === "zh" ? "AC / 文件索引 / 依赖 / 迭代记录" : "AC / file index / dependencies / iteration log"}</span><div class="doc-bars">${smallBars}</div></div>
-          </div>`;
-        if (idx === 6) return `
-          <div class="scene-grid-3">
-            <div class="work-card"><strong>promptX</strong><span>${lang === "zh" ? "9 维意图提取" : "9-dim intent extraction"}</span></div>
-            <div class="work-card"><strong>AC Focus</strong><span>${lang === "zh" ? "只携带必要上下文" : "Carry only needed context"}</span></div>
-            <div class="work-card"><strong>Fix-ready</strong><span>${lang === "zh" ? "修复轮可直接派发" : "Ready for fix-round dispatch"}</span></div>
-          </div>
-          <div class="command-line" style="margin-top:16px">${lang === "zh" ? "粗需求 -> 可执行 Payload" : "rough intent -> executable Payload"}</div>`;
-        if (idx === 7) return `
-          <div class="scene-grid-2">
-            <div class="work-card"><strong>coderX</strong><span>${lang === "zh" ? "在隔离上下文实现 Child AC。" : "Implements Child AC in isolated context."}</span><div class="doc-bars">${smallBars}</div></div>
-            <div class="work-card"><strong>Change Summary</strong><span>${lang === "zh" ? "返回改动摘要，不自称验收通过。" : "Returns change summary without self-validating."}</span><div class="doc-bars">${smallBars}</div></div>
-          </div>`;
-        if (idx === 8) return `
-          <div class="fix-loop" data-payload="${loopPayloadLabels[Math.max(0, loopPhase)]}">
-            <div class="loop-card loop-eval${[0, 3, 6].includes(loopPhase) ? " active" : ""}"><em class="round-tag">${loopPhase >= 6 ? "Round 3" : loopPhase >= 3 ? "Round 2" : "Round 1"}</em><b>evaluatorX</b><span>${evalText}</span><div class="ac-stack">${acStack}</div></div>
-            <div class="loop-card loop-main${[1, 4].includes(loopPhase) ? " active" : ""}"><em class="round-tag">Payload</em><b>Main Agent</b><span>${mainText}</span></div>
-            <div class="loop-card loop-code${[2, 5].includes(loopPhase) ? " active" : ""}"><em class="round-tag">${loopPhase >= 5 ? "Round 3" : "Round 2"}</em><b>coderX</b><span>${codeText}</span><div class="repair-bars"><i style="--w:86%"></i><i style="--w:64%"></i><i style="--w:74%"></i></div></div>
-            ${loopLine(186, 32, 268, 32)}
-            ${loopLine(348, 32, 486, 32)}
-            ${loopLine(486, 32, 186, 32, "return")}
-            <div class="loop-packet"></div>
-            <div class="loop-rounds"><i class="${roundClass(0)}">R1</i><i class="${roundClass(1)}">R2</i><i class="${roundClass(2)}">R3</i></div>
-            <div class="loop-note">${loopCaptions[loopPhase]}</div>
-          </div>`;
-        return `
-          <div class="scene-grid-3">
-            <div class="work-card"><strong>xstatus</strong><span>${lang === "zh" ? "生成状态报告" : "Generate status report"}</span></div>
-            <div class="work-card"><strong>MCP Memory</strong><span>${lang === "zh" ? "回写稳定事实" : "Write stable facts"}</span></div>
-            <div class="work-card"><strong>Hybrid Tree</strong><span>${lang === "zh" ? "关闭迭代" : "Close iteration"}</span></div>
-          </div>
-          <div class="command-line" style="margin-top:16px">Evaluation Result: PASS</div>`;
-      })();
-
-      root.innerHTML = `
-        <section class="frame">
-          ${header(C.workflowTitle, C.workflowSub)}
-          <div class="workflow-v4${idx === 8 ? " loop-focus" : ""}" style="${boardStyle}">
-            <aside class="phase-index">
-              <div class="index-title">${lang === "zh" ? "阶段索引" : "Phase Index"}</div>
-              <div class="index-list">
-                ${C.steps.map((step, i) => `
-                  <div class="index-row ${i < idx ? "done" : i === idx ? "active" : ""}">
-                    <div class="index-num">${String(i + 1).padStart(2, "0")}</div>
-                    <div class="index-copy"><b>${step[0]}</b><span>${step[1]}</span></div>
-                  </div>
-                `).join("")}
-              </div>
-            </aside>
-            <main class="motion-board">
-              <div class="board-head">
-                <div>
-                  <div class="board-kicker">${lang === "zh" ? "当前演示" : "Current Demo"} / ${String(idx + 1).padStart(2, "0")}</div>
-                  <h2>${boardTitle}</h2>
-                  <p>${boardDesc}</p>
-                </div>
-                <div class="board-badge">${status}</div>
-              </div>
-              <div class="scene-panel">
-                ${activeView}
-              </div>
-            </main>
-            <aside class="state-ledger">
-              <div class="ledger-title">${lang === "zh" ? "状态账本" : "State Ledger"}</div>
-              <div class="ledger-card"><div class="label">${lang === "zh" ? "状态" : "State"}</div><div class="value">${status}</div></div>
-              <div class="ledger-card"><div class="label">${lang === "zh" ? "迭代" : "Iteration"}</div><div class="value">${round}</div></div>
-              <div class="ledger-card"><div class="label">${lang === "zh" ? "事实源 / 上限" : "Source / Cap"}</div><div class="value">${sourceValue}</div><div style="margin-top:8px;color:var(--muted);font-size:11px;font-weight:800">-N 3</div></div>
-            </aside>
-          </div>
-          <div class="watermark">Created by Huashu-Design</div>
-        </section>`;
-    }
-
-    function render(t) {
-      if (scene === "architecture") arch();
-      else if (scene === "token") token();
-      else if (scene === "capabilities") capabilities();
-      else workflowV4(t);
       window.__ready = true;
     }
 
+    function architecture() {
+      const n = C.nodes;
+      layout(`
+        <div class="product architecture">
+          <div class="side-stack">
+            ${node(n.command, true)}
+            ${node(n.status)}
+            ${node(n.prompt)}
+          </div>
+          <div class="main-core panel">
+            <div>
+              <div class="label"><span class="accent-dot"></span>${C.core.sub}</div>
+              <h2>${C.core.title}</h2>
+              <p>${lang === "zh" ? "路由、规划、文档写入、状态机和任务派发集中在一个编排核心里。" : "Routing, planning, document writes, state, and dispatch converge into one orchestration core."}</p>
+            </div>
+            <div class="core-orbit">
+              <div class="orbit-ring"></div>
+              <div class="orbit-core">Main<br/>Agent</div>
+              ${C.core.orbit.map((item, i) => `<div class="orbit-item ${["a","b","c","d"][i]}"><b>${item[0]}</b>${item[1]}</div>`).join("")}
+            </div>
+            <div class="data-strip">${C.core.data.map((d) => `<div><b>${d[0]}</b><span>${d[1]}</span></div>`).join("")}</div>
+          </div>
+          <div class="side-stack">
+            ${node(n.coder, true)}
+            ${node(n.evaluator, true)}
+            ${node(["Payload Bus", "Change Summary / Evaluation Result", lang === "zh" ? "代理不直接改事实源，只交结构化结果。" : "Agents hand off structured results instead of writing the fact source."])}
+          </div>
+        </div>`,
+        C.archTitle,
+        C.archSub
+      );
+    }
+
+    function node(item, hot = false) {
+      return `<div class="node panel">
+        <div class="label">${hot ? '<span class="accent-dot"></span>' : ""}${item[0]}</div>
+        <strong>${item[1]}</strong>
+        <p>${item[2]}</p>
+      </div>`;
+    }
+
+    function token() {
+      const dots = Array.from({ length: 28 }, (_, i) => {
+        const x = 5 + i * 3.35;
+        const y = 22 + Math.sin(i * 0.58) * 22 + i * 0.85;
+        return `<i class="${i > 19 ? "hot" : ""}" style="--x:${x.toFixed(1)}%;--y:${Math.max(8, Math.min(84, y)).toFixed(1)}%"></i>`;
+      }).join("");
+      layout(`
+        <div class="product token">
+          <div class="token-hero panel">
+            <div>
+              <div class="micro">${lang === "zh" ? "Context Budget Engine" : "Context Budget Engine"}</div>
+              <div class="big">${C.token.big.replace("-", "<span>-</span>")}</div>
+              <p>${C.token.body}</p>
+            </div>
+            <div class="token-graph">${dots}</div>
+          </div>
+          <div class="token-stack">
+            ${C.token.layers.map((layer, i) => `
+              <div class="token-card panel">
+                <div class="code">${layer[0]}</div>
+                <div>
+                  <div class="label">${i === 0 ? '<span class="accent-dot"></span>' : ""}${layer[3]}</div>
+                  <strong>${layer[1]}</strong>
+                  <p>${layer[2]}</p>
+                </div>
+                <div class="stat">${i === 0 ? C.token.big : i === 1 ? (lang === "zh" ? "更薄" : "Thinner") : (lang === "zh" ? "跨会话" : "Reusable")}<small>${layer[3]}</small></div>
+              </div>`).join("")}
+          </div>
+        </div>`,
+        C.tokenTitle,
+        C.tokenSub
+      );
+    }
+
+    function capabilities() {
+      layout(`
+        <div class="product capabilities">
+          <div class="mode-stack panel">
+            <div class="mode-stack-title"><span>${lang === "zh" ? "Blast Radius" : "Blast Radius"}</span><span>-N / -box / -parallel</span></div>
+            ${C.modes.map((mode, i) => `
+              <div class="mode ${i === 2 ? "primary" : ""}">
+                <div class="cmd">${mode[0]}</div>
+                <div><strong>${mode[1]}</strong><p>${mode[2]}</p></div>
+                <div class="mark">${mode[3]}</div>
+              </div>`).join("")}
+          </div>
+          <div class="cap-grid">
+            ${C.caps.map((cap, i) => `
+              <div class="cap-card panel ${i < 2 ? "feature" : ""}">
+                <div class="label">${i < 2 ? '<span class="accent-dot"></span>' : ""}${String(i + 1).padStart(2, "0")}</div>
+                <strong>${cap[0]}</strong>
+                <p>${cap[1]}</p>
+              </div>`).join("")}
+          </div>
+        </div>`,
+        C.capTitle,
+        C.capSub
+      );
+    }
+
+    function workflow(t) {
+      const clamp = (v) => Math.max(0, Math.min(1, v));
+      const expo = (v) => v >= 1 ? 1 : 1 - Math.pow(2, -8 * v);
+      const weights = [1.0, 1.0, 1.15, 1.35, 0.85, 1.15, 1.45, 1.1, 1.25, 1.45, 2.05, 1.45];
+      const total = weights.reduce((sum, v) => sum + v, 0);
+      const raw = clamp(t || 0) * total;
+      let cursor = raw;
+      let idx = 0;
+      while (idx < weights.length - 1 && cursor >= weights[idx]) cursor -= weights[idx++];
+      const local = clamp(cursor / weights[idx]);
+      const enter = expo(clamp(local * 1.6));
+      const card = C.steps[idx];
+      const status = idx < 4 ? "DISCOVER" : idx < 8 ? "SPEC" : idx < 9 ? "BUILD" : idx < 11 ? "VERIFY" : "CLOSED";
+      const view = activeView(idx, local, enter, expo, clamp);
+      const style = [
+        `--scene-x:${((1 - enter) * 14).toFixed(1)}px`,
+        `--scene-y:${((1 - enter) * 7).toFixed(1)}px`,
+        `--scene-scale:${(0.986 + enter * 0.014).toFixed(3)}`,
+        `--scene-opacity:${(0.48 + enter * 0.52).toFixed(3)}`
+      ].join(";");
+
+      root.innerHTML = `
+        <section class="frame">
+          <div class="grid"></div>
+          ${header(C.workflowTitle, C.workflowSub)}
+          <div class="workflow" style="${style}">
+            <div class="workflow-shell">
+              <aside class="phase-list">
+                <div class="phase-title">${lang === "zh" ? "阶段索引" : "Phase Index"}</div>
+                ${C.steps.map((step, i) => `
+                  <div class="phase-row ${i < idx ? "done" : i === idx ? "active" : ""}">
+                    <div class="phase-num">${String(i + 1).padStart(2, "0")}</div>
+                    <div><b>${step[0]}</b><span>${step[1]}</span></div>
+                  </div>`).join("")}
+              </aside>
+              <main class="motion">
+                <div class="motion-head">
+                  <div><div class="k">${lang === "zh" ? "当前演示" : "Current Demo"} / ${String(idx + 1).padStart(2, "0")}</div><h2>${card[0]}</h2></div>
+                  <div class="state-pill">${status}</div>
+                </div>
+                <div class="scene-area">${view}</div>
+              </main>
+              <aside class="ledger">
+                <div class="ledger-title">Hybrid Tree Ledger</div>
+                ${ledgerView(idx, local)}
+              </aside>
+            </div>
+          </div>
+          <div class="watermark">Created by Huashu-Design</div>
+        </section>`;
+      window.__ready = true;
+    }
+
+    function ledgerView(idx, local) {
+      const statusFor = (name, start, passAt, failAt = -1) => {
+        let cls = "";
+        let status = "WAIT";
+        if (idx >= start) { cls = "active"; status = "TRACK"; }
+        if (idx >= failAt && failAt >= 0 && idx < passAt) { cls = "fix"; status = "FIX"; }
+        if (idx >= passAt) { cls = "pass"; status = "PASS"; }
+        return [cls, status];
+      };
+      const rows = [
+        ["Scope", lang === "zh" ? "范围与非功能要求" : "Scope and NFRs", ...statusFor("scope", 4, 5)],
+        ["AC-01", lang === "zh" ? "路由与状态恢复" : "Routing and state recovery", ...statusFor("ac1", 5, 9)],
+        ["AC-02", lang === "zh" ? "实现符合 Child 需求" : "Implementation matches Child", ...statusFor("ac2", 5, 10, 8)],
+        ["AC-03", lang === "zh" ? "质量验收与回流" : "Verification and fix loop", ...statusFor("ac3", 5, 10, 8)],
+        ["Memory", lang === "zh" ? "稳定事实回写" : "Stable facts persisted", ...statusFor("mem", 10, 11)]
+      ];
+      return `<div class="tree-ledger">${rows.map(([name, body, cls, status]) => `
+        <div class="tree-row ${cls}">
+          <b>${name}</b>
+          <span>${body}<em>${status}</em></span>
+        </div>`).join("")}</div>`;
+    }
+
+    function activeView(idx, local, enter, expo, clamp) {
+      const bars = [88, 62, 74, 48].map((w, i) => `<i class="bar ${i === 0 ? "hot" : ""}" style="--w:${w}%;--grow:${enter.toFixed(2)}"></i>`).join("");
+      if (idx === 0) {
+        const routeProgress = expo(clamp(local * 1.28)).toFixed(3);
+        const pop = (n) => expo(clamp(local * 2.4 - n * 0.16)).toFixed(3);
+        return `<div class="route-map">
+          <div class="route-command">xwhole ${lang === "zh" ? "实现订单中心，支持并行验收" : "build order center with parallel verification"}</div>
+          <div class="route-topology" style="--route-progress:${routeProgress}">
+            <div class="route-wire"></div><div class="route-token"></div>
+            <div class="route-source"><b>${lang === "zh" ? "入口命令" : "Entry"}</b><span>xwhole / new workflow intent</span></div>
+            <div class="route-gate"><b>RouteX</b><span>${lang === "zh" ? "读取 status、命令前缀与工作区状态" : "Reads status, command prefix, and workspace state"}</span></div>
+            <div class="route-lanes">
+              <div class="route-branch" style="--pop:${pop(0)}"><b>Route 0</b><span>${lang === "zh" ? "已有工作流：接入" : "Active workflow: attach"}</span></div>
+              <div class="route-branch" style="--pop:${pop(1)}"><b>Route 1</b><span>${lang === "zh" ? "只读探索：不编码" : "Read-only exploration"}</span></div>
+              <div class="route-branch active" style="--pop:${pop(2)}"><b>Route 3 / xwhole</b><span>${lang === "zh" ? "完整流程：发现、文档、实现、验收" : "Full flow: discover, document, build, verify"}</span></div>
+              <div class="route-branch" style="--pop:${pop(3)}"><b>Route 2</b><span>${lang === "zh" ? "空闲编码意图：推荐模式" : "Idle coding intent"}</span></div>
+            </div>
+          </div>
+        </div>`;
+      }
+      if (idx === 1) {
+        const fill = (offset) => expo(clamp(local * 1.5 - offset)).toFixed(3);
+        const items = [
+          ["MCP Memory", lang === "zh" ? "连接知识图谱与跨会话事实" : "Connect graph memory and cross-session facts"],
+          ["Worktree", lang === "zh" ? "准备隔离执行目录" : "Prepare isolated execution dir"],
+          ["Flags", "-N 3 / -box demo / fallback"],
+          ["Tooling", lang === "zh" ? "探测可用工具与降级路径" : "Probe tools and degradation path"]
+        ];
+        return `<div class="resource-load">${items.map((item, i) => `
+          <div class="resource-card"><b>${item[0]}</b><span>${item[1]}</span><div class="load-bar"><i style="--fill:${fill(i * 0.16)}"></i></div></div>`).join("")}</div>`;
+      }
+      if (idx === 2) {
+        const scan = expo(clamp(local * 1.35)).toFixed(3);
+        const files = ["src/routes/order.ts", "src/services/auth.ts", "src/payments/callback.ts", "tests/order.spec.ts", ".hybrid/status.json"];
+        const lines = [92, 72, 64, 88, 56, 76, 68].map((w, i) => `<i class="code-line ${i === 2 || i === 5 ? "hot" : ""}" style="--w:${w}%;--scan:${scan}"></i>`).join("");
+        return `<div class="code-scan">
+          <div class="file-tree">${files.map((file, i) => `<div class="file-node ${i < local * files.length ? "active" : ""}">${file}</div>`).join("")}</div>
+          <div class="code-pane">${lines}<div class="scan-note">${lang === "zh" ? "工程缩影先建立文件索引：路由、auth、支付回调、测试入口。" : "Project snapshot builds the file index: routes, auth, callbacks, and tests."}</div></div>
+        </div>`;
+      }
+      if (idx === 3) {
+        const reveal = (n) => expo(clamp(local * 1.9 - n * 0.18)).toFixed(3);
+        const hit = (n) => expo(clamp(local * 1.7 - n * 0.16)).toFixed(3);
+        const turns = lang === "zh"
+          ? [["Main Agent / 问", "订单状态是否允许人工回滚？"], ["User / 答", "允许，但必须记录操作者和原因。"], ["Main Agent / 质疑", "你要求并行验收，但支付回调写共享状态，这里必须加锁或幂等。"]]
+          : [["Main Agent / Q", "Can order state be manually rolled back?"], ["User / A", "Yes, but operator and reason must be recorded."], ["Main Agent / Challenge", "You requested parallel verification, but payment callbacks write shared state; idempotency or locking is required."]];
+        const results = [
+          ["src/routes/order.ts", "route"],
+          ["src/services/auth.ts", "auth"],
+          ["src/payments/callback.ts", "risk"],
+          ["tests/order.spec.ts", "test"],
+          [".hybrid/status.json", "state"]
+        ];
+        return `<div class="discovery-search">
+          <div class="dialogue-stream">${turns.map((turn, i) => `<div class="turn ${i === 1 ? "answer" : ""} ${i === 2 ? "challenge" : ""}" style="--reveal:${reveal(i)}"><b>${turn[0]}</b><span>${turn[1]}</span></div>`).join("")}</div>
+          <div class="live-search">
+            <div class="search-query">rg -n "rollback|payment|auth|parallel" src tests .hybrid</div>
+            <div class="search-results">${results.map((r, i) => `<div class="result-row ${i === 2 ? "hot" : ""}" style="--hit:${hit(i)}"><span>${r[0]}</span><em>${r[1]}</em></div>`).join("")}</div>
+            <div class="index-note" style="--index-ready:${reveal(2)}">${lang === "zh" ? "搜索结果收束成 AC：回滚、权限、幂等与恢复路径。" : "Search results become ACs: rollback, permission, idempotency, and recovery."}</div>
+          </div>
+        </div>`;
+      }
+      if (idx === 4) {
+        const click = expo(clamp(local * 1.4 - 0.18)).toFixed(3);
+        const items = lang === "zh"
+          ? [["范围", "订单中心覆盖创建、支付回调与状态流转。"], ["风险", "并行验收必须处理共享状态与幂等。"], ["AC", "回滚、权限、恢复路径、测试入口已明确。"]]
+          : [["Scope", "Order center covers creation, callbacks, and state flow."], ["Risk", "Parallel verification must handle shared state and idempotency."], ["AC", "Rollback, permission, recovery path, and test entry are explicit."]];
+        return `<div class="confirm-action" style="--click:${click}">
+          <div class="confirm-summary"><h3>${lang === "zh" ? "先确认，再写树" : "Confirm before tree"}</h3>${items.map((item) => `<div class="confirm-item"><b>${item[0]}</b>${item[1]}</div>`).join("")}</div>
+          <div class="confirm-button">${lang === "zh" ? "点击确认" : "Confirm"}<span>${lang === "zh" ? "Hard Gate 通过后才允许生成 Hybrid Tree" : "Hybrid Tree is generated only after the Hard Gate passes"}</span></div>
+        </div>`;
+      }
+      if (idx === 5) {
+        const treePop = expo(clamp(local * 1.55)).toFixed(3);
+        const gateText = lang === "zh" ? "确认完成，开始生成 Parent / Child / AC 文档树。" : "Confirmed; generate the Parent / Child / AC document tree.";
+        return `<div class="confirm-tree">
+          <div class="confirm-card"><div><b>${lang === "zh" ? "已确认" : "Confirmed"}</b><span>${gateText}</span></div></div>
+          <div class="doc-tree-build" style="--tree-pop:${treePop}">
+            <div class="tree-root"><b>Parent.md</b><span>${lang === "zh" ? "范围 / NFR / DoD / 路由表" : "Scope / NFR / DoD / routes"}</span></div>
+            <div class="tree-branches">
+              <div class="tree-child"><b>Child-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-01</b><span>${lang === "zh" ? "路由恢复可验收" : "Route recovery is verifiable"}</span></div><div class="tree-ac"><b>AC-02</b><span>${lang === "zh" ? "回滚记录操作者" : "Rollback records operator"}</span></div></div></div>
+              <div class="tree-child"><b>Child-02.md</b><span>${lang === "zh" ? "支付回调与并行风险" : "Payment callback and parallel risk"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-03</b><span>${lang === "zh" ? "幂等和测试覆盖" : "Idempotency and test coverage"}</span></div><div class="tree-ac"><b>Memory</b><span>${lang === "zh" ? "稳定事实回写" : "Stable facts persisted"}</span></div></div></div>
+            </div>
+          </div>
+        </div>`;
+      }
+      if (idx === 6) {
+        const clean = expo(clamp(local * 1.35));
+        const noise = lang === "zh"
+          ? [["旧讨论", false, 34], ["回滚必须审计", true, 58], ["重复日志", false, 42], ["闲聊", false, 28], ["支付回调共享状态", true, 64], ["过期假设", false, 38], ["权限边界", true, 46], ["无关栈报错", false, 52], ["测试入口", true, 36], ["历史偏好", false, 44]]
+          : [["old thread", false, 34], ["rollback must audit", true, 58], ["duplicate logs", false, 42], ["small talk", false, 28], ["callback shared state", true, 64], ["stale assumption", false, 38], ["permission boundary", true, 46], ["unrelated stack", false, 52], ["test entry", true, 36], ["old preference", false, 44]];
+        const chips = noise.map(([label, keep, w], i) => {
+          const drop = keep ? 0.38 + clean * 0.58 : 0.82 - clean * 0.74;
+          const scale = keep ? 1 : 1 - clean * 0.38;
+          return `<i class="noise-chip ${keep ? "keep" : "drop"}" style="--w:${w}%;--drop:${drop.toFixed(2)};--scale:${scale.toFixed(2)};--dy:${(clean * (keep ? -3 : 18)).toFixed(1)}px">${label}</i>`;
+        }).join("");
+        const facts = lang === "zh"
+          ? [["Scope", "订单中心只覆盖创建、支付回调与状态流转"], ["AC", "权限、回滚、重试与状态恢复必须可验收"], ["Memory", "稳定事实写回 Hybrid Tree 与 MCP 摘要"]]
+          : [["Scope", "Order center covers creation, callback, and state flow"], ["AC", "Permission, rollback, retry, and recovery are verifiable"], ["Memory", "Stable facts go to Hybrid Tree and MCP summary"]];
+        return `<div class="denoise-lab" style="--pulse:${(0.5 + Math.sin(local * Math.PI * 4) * 0.5).toFixed(3)}">
+          <div class="context-cloud">${chips}</div>
+          <div class="signal-funnel">noiseX<br>${lang === "zh" ? "去噪" : "denoise"}</div>
+          <div class="distilled-stack">${facts.map((f, i) => `<div class="distilled-fact" style="--reveal:${Math.max(0.12, clean - i * 0.18).toFixed(2)}"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("")}</div>
+        </div>`;
+      }
+      if (idx === 7) {
+        const dims = ["Intent", "Files", "AC", "Risk", "Tests", "Limits", "Context", "Fix-ready"];
+        return `<div class="prompt-dispatch">
+          <div class="payload-card"><b>promptX</b><span>${lang === "zh" ? "把粗需求转成 coderX 可执行输入。" : "Turns rough intent into coderX-ready input."}</span><div class="dim-list">${dims.map((d, i) => `<i class="${i < local * dims.length ? "hot" : ""}">${d}</i>`).join("")}</div></div>
+          <div class="payload-card"><b>Bus Payload</b><span>${lang === "zh" ? "只携带 Child AC、文件索引、约束和验证重点。" : "Carries only Child AC, file index, constraints, and audit focus."}</span>${bars}</div>
+        </div>`;
+      }
+      if (idx === 8) {
+        return iterationLoop(local * 0.52, expo, clamp);
+      }
+      if (idx === 9) {
+        return iterationLoop(0.52 + local * 0.48, expo, clamp);
+      }
+      if (idx === 10) {
+        const treePop = expo(clamp(local * 1.35)).toFixed(3);
+        return `<div class="confirm-tree">
+          <div class="confirm-card"><div><b>${lang === "zh" ? "回写" : "Writeback"}</b><span>${lang === "zh" ? "主智能体把复验结果写回 Hybrid Tree，而不是只显示 PASS。" : "The Main Agent writes verification results back to Hybrid Tree, not just a PASS label."}</span></div></div>
+          <div class="doc-tree-build" style="--tree-pop:${treePop}">
+            <div class="tree-root"><b>Parent.md</b><span>${lang === "zh" ? "DoD / 需求状态 / 迭代记录" : "DoD / requirement state / iteration log"}</span></div>
+            <div class="tree-branches">
+              <div class="tree-child"><b>Child-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复已验收" : "Route recovery verified"}</span></div><div class="tree-ac pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "回滚审计已覆盖" : "Rollback audit covered"}</span></div></div></div>
+              <div class="tree-child"><b>Child-02.md</b><span>${lang === "zh" ? "支付回调与并行风险" : "Payment callback and parallel risk"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "幂等测试已通过" : "Idempotency tests passed"}</span></div><div class="tree-ac"><b>Memory</b><span>${lang === "zh" ? "等待稳定事实回写" : "Stable facts pending"}</span></div></div></div>
+            </div>
+          </div>
+        </div>`;
+      }
+      return `<div class="final-board tree-close">
+        <div class="final-tree"><h3>Hybrid Tree</h3><div class="tree-root"><b>Parent.md</b><span>${lang === "zh" ? "Scope / DoD / Memory 全部关闭" : "Scope / DoD / Memory all closed"}</span></div><div class="final-pass-grid"><div class="final-pass"><b>Scope PASS</b><span>${lang === "zh" ? "边界锁定" : "boundaries locked"}</span></div><div class="final-pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复" : "route recovery"}</span></div><div class="final-pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "Child 符合" : "child matched"}</span></div><div class="final-pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "测试覆盖" : "tests covered"}</span></div><div class="final-pass"><b>Memory updated</b><span>${lang === "zh" ? "事实回写" : "facts persisted"}</span></div><div class="final-pass"><b>Closed</b><span>${lang === "zh" ? "流程关闭" : "flow closed"}</span></div></div></div>
+        <div class="close-card"><b>${lang === "zh" ? "工作流结束条件" : "Workflow exit condition"}</b><span>${lang === "zh" ? "结束画面绑定文档树：只有 Hybrid Tree 中的 Scope、AC 与 Memory 全部通过，流程才关闭。" : "The ending is bound to the document tree: the workflow closes only after Scope, ACs, and Memory all pass in Hybrid Tree."}</span></div>
+      </div>`;
+    }
+
+    function iterationLoop(progress, expo, clamp) {
+      const p = clamp(progress);
+      const on = (start) => expo(clamp((p - start) * 3.2)).toFixed(3);
+      const flow = (start) => expo(clamp((p - start) * 4)).toFixed(3);
+      const steps = lang === "zh"
+        ? [
+            ["coderX R1", "按 Child AC 生成第一版实现。", ["AC-01 touched", "AC-02 touched"]],
+            ["evaluatorX", "独立验收，发现回滚测试和幂等缺口。", ["AC-01 PASS", "AC-02 FIX", "AC-03 FIX"]],
+            ["coderX R2", "融合 razorX skill：删重复分支，收敛 guard。", ["razorX skill", "AC-02 repaired"]],
+            ["evaluatorX R2", "复读 diff / code / tests，逐条核对 AC。", ["AC-01 PASS", "AC-02 PASS", "AC-03 PASS"]]
+          ]
+        : [
+            ["coderX R1", "Builds the first implementation against Child AC.", ["AC-01 touched", "AC-02 touched"]],
+            ["evaluatorX", "Finds rollback-test and idempotency gaps.", ["AC-01 PASS", "AC-02 FIX", "AC-03 FIX"]],
+            ["coderX R2", "Uses razorX skill: remove duplicate branches, converge guard.", ["razorX skill", "AC-02 repaired"]],
+            ["evaluatorX R2", "Re-reads diff, code, and tests against every AC.", ["AC-01 PASS", "AC-02 PASS", "AC-03 PASS"]]
+          ];
+      return `<div class="iteration-flow">
+        ${steps.map((step, i) => {
+          const active = p > i * 0.24 ? "active" : "";
+          return `<div class="iter-step ${active}" style="--on:${on(i * 0.2)};--flow:${flow(i * 0.22)}">
+            <b>${step[0]}</b><span>${step[1]}</span>
+            <div class="iter-mini-list">${step[2].map((item) => {
+              const cls = item.includes("PASS") ? "pass" : item.includes("FIX") || item.includes("razorX") || item.includes("repaired") ? "hot" : "";
+              return `<i class="${cls}">${item}</i>`;
+            }).join("")}</div>
+          </div>`;
+        }).join("")}
+      </div>`;
+    }
+
+    function render(t) {
+      if (scene === "architecture") architecture();
+      else if (scene === "token") token();
+      else if (scene === "capabilities") capabilities();
+      else workflow(t);
+    }
+
     if (fixedT !== null && Number.isFinite(fixedT)) {
-      render(fixedT);
+      render(Math.max(0, Math.min(0.999, fixedT)));
     } else {
-      const start = performance.now();
+      let start = null;
       function tick(now) {
-        const t = ((now - start) % 20000) / 20000;
-        render(t);
+        if (start === null) start = now;
+        render(((now - start) % 20000) / 20000);
         requestAnimationFrame(tick);
       }
-      tick(start);
+      requestAnimationFrame(tick);
     }
   </script>
 </body>
