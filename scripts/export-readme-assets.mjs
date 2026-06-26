@@ -55,7 +55,7 @@ await mkdir(framesDir, { recursive: true });
 async function renderGif(lang, output) {
   const langDir = path.join(framesDir, lang);
   await mkdir(langDir, { recursive: true });
-  const frames = 180;
+  const frames = 240;
   for (let i = 0; i < frames; i += 1) {
     const t = i / frames;
     await page.goto(`${url}?scene=workflow&lang=${lang}&t=${t.toFixed(5)}`);

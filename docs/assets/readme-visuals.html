@@ -134,8 +134,8 @@
     }
 
     .panel {
-      background: rgba(12, 11, 10, 0.86);
-      border: 1px solid rgba(255, 90, 31, 0.16);
+      background: rgba(8, 8, 7, 0.92);
+      border: 1px solid rgba(255, 90, 31, 0.11);
       border-radius: 8px;
       box-shadow: none;
     }
@@ -320,14 +320,16 @@
       border-radius: 8px;
       display: grid;
       place-items: center;
-      color: white;
+      color: #ff8a24;
       font-size: 24px;
       font-weight: 850;
-      background: var(--green);
+      background: #11100f;
+      border: 1px solid rgba(255, 90, 31, 0.30);
     }
 
-    .layer:nth-child(2) .layer-code { background: var(--teal); }
-    .layer:nth-child(3) .layer-code { background: #55463c; }
+    .layer:nth-child(1) .layer-code { color: #070605; background: #ff5a1f; border-color: #ff5a1f; }
+    .layer:nth-child(2) .layer-code { color: #ffb156; }
+    .layer:nth-child(3) .layer-code { color: #d6c8ba; border-color: rgba(214, 200, 186, 0.22); }
 
     .layer h2 {
       margin: 0 0 7px;
@@ -384,15 +386,27 @@
       border-radius: 7px;
       display: grid;
       place-items: center;
-      color: white;
+      color: #ff8a24;
       font-weight: 850;
-      background: var(--green);
+      background: #11100f;
+      border: 1px solid rgba(255, 90, 31, 0.26);
       font-size: 12px;
     }
 
-    .mode-row:nth-child(2) .mode-badge { background: var(--teal); }
-    .mode-row:nth-child(3) .mode-badge { background: #55463c; }
-    .mode-row:nth-child(4) .mode-badge { background: var(--rust); }
+    .mode-row:nth-child(1) .mode-badge {
+      color: #070605;
+      background: #ff5a1f;
+      border-color: #ff5a1f;
+    }
+    .mode-row:nth-child(2) .mode-badge { color: #ffb156; }
+    .mode-row:nth-child(3) .mode-badge {
+      color: #d6c8ba;
+      border-color: rgba(214, 200, 186, 0.22);
+    }
+    .mode-row:nth-child(4) .mode-badge {
+      color: #ff5a1f;
+      box-shadow: inset 3px 0 0 #ff5a1f;
+    }
 
     .mode-copy b {
       display: block;
@@ -1595,23 +1609,41 @@
     .workflow-v4 {
       height: 428px;
       display: grid;
-      grid-template-columns: 226px 1fr 196px;
+      grid-template-columns: 214px 1fr 174px;
       gap: 16px;
       padding: 18px;
-      border: 1px solid rgba(255, 90, 31, 0.20);
+      border: 1px solid rgba(255, 90, 31, 0.16);
       border-radius: 8px;
       background:
-        linear-gradient(180deg, rgba(255, 90, 31, 0.055), transparent 42%),
+        linear-gradient(180deg, rgba(255, 90, 31, 0.035), transparent 42%),
         #030303;
       overflow: hidden;
+    }
+
+    .workflow-v4.loop-focus {
+      grid-template-columns: 174px 1fr 148px;
     }
 
     .phase-index,
     .motion-board,
     .state-ledger {
-      border: 1px solid rgba(255, 90, 31, 0.16);
+      border: 1px solid rgba(255, 90, 31, 0.12);
       border-radius: 8px;
-      background: rgba(10, 9, 8, 0.86);
+      background: rgba(8, 8, 7, 0.90);
+      transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .workflow-v4.loop-focus .phase-index {
+      opacity: 0.60;
+    }
+
+    .workflow-v4.loop-focus .motion-board {
+      border-color: rgba(255, 90, 31, 0.28);
+      background: rgba(8, 7, 6, 0.98);
+    }
+
+    .workflow-v4.loop-focus .state-ledger {
+      opacity: 0.78;
     }
 
     .phase-index {
@@ -1671,9 +1703,9 @@
     }
 
     .index-row.done .index-num {
-      background: rgba(255, 90, 31, 0.72);
-      border-color: rgba(255, 90, 31, 0.72);
-      color: #070605;
+      background: rgba(255, 90, 31, 0.18);
+      border-color: rgba(255, 90, 31, 0.34);
+      color: #ffb156;
     }
 
     .index-row.active .index-num {
@@ -1710,7 +1742,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(255, 90, 31, 0.08), transparent 36%);
+      background: linear-gradient(135deg, rgba(255, 90, 31, 0.055), transparent 36%);
       pointer-events: none;
     }
 
@@ -1753,7 +1785,7 @@
     .scene-panel {
       position: relative;
       min-height: 238px;
-      border: 1px solid rgba(255, 90, 31, 0.14);
+      border: 1px solid rgba(255, 90, 31, 0.11);
       border-radius: 8px;
       background: rgba(0, 0, 0, 0.32);
       padding: 18px;
@@ -1774,10 +1806,10 @@
     .scene-grid-2 { grid-template-columns: repeat(2, 1fr); }
 
     .work-card {
-      border: 1px solid rgba(255, 90, 31, 0.16);
+      border: 1px solid rgba(255, 90, 31, 0.12);
       border-radius: 7px;
       padding: 14px;
-      background: rgba(255, 90, 31, 0.035);
+      background: rgba(14, 13, 12, 0.86);
       min-height: 82px;
     }
 
@@ -1817,29 +1849,195 @@
 
     .signal-field {
       position: relative;
-      height: 142px;
+      height: 202px;
+      display: grid;
+      grid-template-columns: 1fr 76px 1fr;
+      gap: 14px;
+      padding: 14px;
       border: 1px solid rgba(255, 90, 31, 0.14);
       border-radius: 8px;
       overflow: hidden;
-      background: rgba(0, 0, 0, 0.24);
+      background:
+        linear-gradient(90deg, rgba(255, 90, 31, 0.045), transparent 34%, transparent 66%, rgba(255, 90, 31, 0.035)),
+        rgba(0, 0, 0, 0.30);
     }
 
-    .signal-dot {
+    .signal-column {
+      position: relative;
+      z-index: 2;
+      min-width: 0;
+      padding: 11px;
+      border: 1px solid rgba(255, 90, 31, 0.12);
+      border-radius: 7px;
+      background: rgba(8, 7, 6, 0.84);
+      overflow: hidden;
+    }
+
+    .signal-label {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      color: #fff8ef;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .signal-label small {
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .noise-stack,
+    .clean-stack {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .noise-row {
+      position: relative;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 7px;
+      border: 1px solid rgba(255, 90, 31, 0.09);
+      border-radius: 6px;
+      background: rgba(245, 240, 232, 0.035);
+      overflow: hidden;
+    }
+
+    .noise-row::after {
+      content: "";
       position: absolute;
-      width: 7px;
-      height: 7px;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255, 90, 31, 0.18), transparent);
+      transform: scaleX(var(--row-clean));
+      transform-origin: left;
+      opacity: 0.40;
+    }
+
+    .noise-chip {
+      position: relative;
+      z-index: 1;
+      width: var(--w);
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(245, 240, 232, 0.18);
+    }
+
+    .noise-chip.drop {
+      opacity: var(--drop-opacity);
+      transform: translateY(var(--drop-y)) scaleX(var(--drop-scale));
+    }
+
+    .noise-chip.keep {
+      background: #ff5a1f;
+      opacity: var(--keep-opacity);
+      transform: translateX(var(--keep-x));
+      box-shadow: 0 0 14px rgba(255, 90, 31, 0.36);
+    }
+
+    .denoise-core {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 8px;
+    }
+
+    .filter-ring {
+      position: relative;
+      width: 56px;
+      height: 56px;
+      border: 1px solid rgba(255, 90, 31, 0.54);
       border-radius: 50%;
-      background: rgba(255, 90, 31, 0.55);
+      background: rgba(255, 90, 31, 0.08);
+      box-shadow: 0 0 24px rgba(255, 90, 31, 0.22);
+    }
+
+    .filter-ring::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border: 1px solid rgba(255, 90, 31, 0.22);
+      border-radius: 50%;
+    }
+
+    .filter-ring::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -8px;
+      bottom: -8px;
+      width: 2px;
+      background: #ff8a24;
+      box-shadow: 0 0 18px rgba(255, 90, 31, 0.64);
+      transform: translateX(-50%) rotate(var(--filter-angle));
+      transform-origin: center;
+    }
+
+    .filter-label {
+      color: #ff8a24;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.04em;
     }
 
     .signal-beam {
       position: absolute;
-      left: var(--scan);
-      top: 0;
-      bottom: 0;
-      width: 4px;
+      z-index: 1;
+      left: var(--beam-left);
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
       background: #ff8a24;
+      opacity: 0.72;
       box-shadow: 0 0 30px rgba(255, 90, 31, 0.58);
+    }
+
+    .clean-fact {
+      display: grid;
+      gap: 3px;
+      min-height: 30px;
+      padding: 6px 8px;
+      border: 1px solid rgba(255, 90, 31, 0.13);
+      border-radius: 6px;
+      background: rgba(255, 90, 31, 0.045);
+      opacity: var(--reveal);
+      transform: translateX(var(--reveal-x));
+    }
+
+    .clean-fact b {
+      color: #fff8ef;
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .clean-fact span {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.18;
+    }
+
+    .reject-bits {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .reject-bits i {
+      position: absolute;
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(245, 240, 232, 0.18);
+      opacity: var(--reject-opacity);
+      transform: translateY(var(--reject-y)) scaleX(var(--reject-scale));
     }
 
     .tree-map {
@@ -1869,18 +2067,55 @@
 
     .fix-loop {
       position: relative;
-      height: 184px;
+      height: 238px;
+      isolation: isolate;
+    }
+
+    .fix-loop::before {
+      content: attr(data-payload);
+      position: absolute;
+      left: 50%;
+      top: 0;
+      transform: translateX(-50%) scale(calc(0.92 + var(--payload-scale) * 0.08));
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: #ff5a1f;
+      color: #070605;
+      font-size: 12px;
+      font-weight: 950;
+      letter-spacing: 0.04em;
+      z-index: 4;
+      box-shadow: 0 0 calc(20px * var(--payload-scale)) rgba(255, 90, 31, 0.42);
     }
 
     .loop-card {
       position: absolute;
-      z-index: 2;
-      width: 184px;
-      min-height: 82px;
-      border: 1px solid rgba(255, 90, 31, 0.20);
+      z-index: 3;
+      width: 178px;
+      min-height: 70px;
+      border: 1px solid rgba(255, 90, 31, 0.24);
       border-radius: 8px;
       padding: 13px;
-      background: rgba(10, 9, 8, 0.98);
+      background: rgba(9, 8, 7, 0.98);
+    }
+
+    .loop-card::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      box-shadow: 0 0 calc(18px * var(--loop-pulse)) rgba(255, 90, 31, 0.25);
+      pointer-events: none;
+    }
+
+    .loop-card.active {
+      border-color: rgba(255, 90, 31, 0.72);
+      background: rgba(14, 11, 9, 0.99);
+      box-shadow: 0 0 24px rgba(255, 90, 31, 0.22);
+    }
+
+    .loop-card.active b {
+      color: #fff8ef;
     }
 
     .loop-card b {
@@ -1895,16 +2130,40 @@
       line-height: 1.32;
     }
 
-    .loop-eval { left: 12px; top: 8px; }
-    .loop-main { left: 50%; top: 92px; transform: translateX(-50%); border-color: rgba(255, 90, 31, 0.44); }
-    .loop-code { right: 12px; top: 8px; }
+    .loop-card .round-tag {
+      display: inline-block;
+      margin-bottom: 7px;
+      padding: 3px 7px;
+      border: 1px solid rgba(255, 90, 31, 0.24);
+      border-radius: 999px;
+      color: #ff8a24;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .loop-eval { left: 8px; top: 42px; }
+    .loop-main {
+      left: 50%;
+      top: 82px;
+      transform: translateX(-50%);
+      border-color: rgba(255, 90, 31, 0.50);
+    }
+    .loop-code { right: 8px; top: 42px; }
 
     .loop-line {
       position: absolute;
       z-index: 1;
-      height: 2px;
-      background: linear-gradient(90deg, rgba(255, 90, 31, 0.20), #ff5a1f);
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255, 90, 31, 0.12), #ff5a1f);
       transform-origin: left center;
+      opacity: calc(0.64 + var(--loop-pulse) * 0.28);
+    }
+
+    .loop-line.return {
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 90, 31, 0.35), rgba(255, 90, 31, 0.08));
+      opacity: calc(0.20 + var(--recheck-scale) * 0.60);
     }
 
     .loop-line::after {
@@ -1917,6 +2176,131 @@
       border-left: 9px solid #ff5a1f;
     }
 
+    .loop-line.return::after {
+      border-left-color: rgba(255, 90, 31, 0.68);
+    }
+
+    .loop-packet {
+      position: absolute;
+      z-index: 5;
+      left: var(--packet-x);
+      top: var(--packet-y);
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #ff5a1f;
+      box-shadow: 0 0 22px rgba(255, 90, 31, 0.62);
+      transform: translate(-50%, -50%);
+    }
+
+    .loop-packet::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border: 1px solid rgba(255, 90, 31, 0.36);
+      border-radius: 50%;
+    }
+
+    .ac-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 9px;
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    .ac-stack i {
+      display: inline-flex;
+      padding: 3px 7px;
+      border-radius: 999px;
+      color: rgba(245, 240, 232, 0.66);
+      background: rgba(245, 240, 232, 0.055);
+      font-style: normal;
+    }
+
+    .ac-stack i.fix {
+      color: #070605;
+      background: #ff5a1f;
+    }
+
+    .ac-stack i.pass {
+      color: #ffb156;
+      background: rgba(255, 90, 31, 0.12);
+    }
+
+    .ac-stack i.wait {
+      color: rgba(245, 240, 232, 0.42);
+      background: rgba(245, 240, 232, 0.045);
+    }
+
+    .repair-bars {
+      margin-top: 10px;
+      display: grid;
+      gap: 5px;
+    }
+
+    .repair-bars i {
+      height: 5px;
+      width: var(--w);
+      border-radius: 999px;
+      background: rgba(255, 90, 31, 0.52);
+      transform: scaleX(var(--repair-scale));
+      transform-origin: left;
+    }
+
+    .loop-rounds {
+      position: absolute;
+      left: 10px;
+      top: 0;
+      width: 142px;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 5px;
+    }
+
+    .loop-rounds i {
+      display: grid;
+      place-items: center;
+      height: 22px;
+      border: 1px solid rgba(255, 90, 31, 0.13);
+      border-radius: 6px;
+      color: rgba(245, 240, 232, 0.44);
+      background: rgba(245, 240, 232, 0.035);
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 900;
+    }
+
+    .loop-rounds i.done {
+      color: #ffb156;
+      border-color: rgba(255, 90, 31, 0.26);
+      background: rgba(255, 90, 31, 0.08);
+    }
+
+    .loop-rounds i.active {
+      color: #070605;
+      border-color: #ff5a1f;
+      background: #ff5a1f;
+      box-shadow: 0 0 18px rgba(255, 90, 31, 0.34);
+    }
+
+    .loop-note {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: 88%;
+      border-top: 1px solid rgba(255, 90, 31, 0.26);
+      padding-top: 7px;
+      color: #d9d2ca;
+      font-size: 11px;
+      line-height: 1.35;
+      text-align: center;
+      z-index: 2;
+    }
+
     .state-ledger {
       padding: 12px;
       display: grid;
@@ -1925,9 +2309,9 @@
     }
 
     .ledger-card {
-      border: 1px solid rgba(255, 90, 31, 0.16);
+      border: 1px solid rgba(255, 90, 31, 0.12);
       border-radius: 7px;
-      background: rgba(255, 90, 31, 0.035);
+      background: rgba(14, 13, 12, 0.88);
       padding: 11px;
     }
 
@@ -1977,7 +2361,7 @@
           ["入口", "识别命令和当前状态"],
           ["初始化", "MCP / worktree / 参数"],
           ["发现", "代码探索 + 苏格拉底式追问"],
-          ["确认", "Hard Gate 后才生成 PRD"],
+          ["确认", "确认方案后生成 PRD"],
           ["净化", "noiseX 提炼干净信号"],
           ["文档", "生成 Parent + Child"],
           ["优化", "promptX / promptMasterX"],
@@ -1989,7 +2373,7 @@
           ["用户发起需求", "Main Agent 先读工作流状态，再由 routeX 判断是继续当前流程、只读探索，还是启动 xwhole / xlocal / xunit。"],
           ["环境与参数初始化", "解析 -N、-box、-parallel 等参数，探测 MCP 可用性，并准备 worktree 隔离策略。"],
           ["Phase 1 需求发现", "先探索代码，再通过 Module 08 和 socratesX 暴露边界、风险、遗漏的非功能要求。"],
-          ["用户确认方案", "不直接生成 Hybrid Tree。必须经过确认门，避免在错误方案上进入开发。"],
+          ["方案确认", "不直接生成 Hybrid Tree。确认方案后再进入文档生成，避免在错误方向上开发。"],
           ["noiseX 上下文降噪", "把多轮探索和废弃假设压成干净摘要，作为文档生成的可靠输入。"],
           ["Phase 2 生成 Hybrid Tree", "Main Agent 写 Parent / Child：范围、AC、文件索引、依赖、知识图谱概要。"],
           ["指令预处理", "xunit 和修复轮自动用 promptX；复杂提示用 promptMasterX 输出更精确的执行上下文。"],
@@ -2037,7 +2421,7 @@
           ["Entry", "Command + state gate"],
           ["Init", "MCP / worktree / params"],
           ["Discover", "Code scan + Socratic questions"],
-          ["Confirm", "Hard Gate before PRD"],
+          ["Confirm", "Plan confirmed before PRD"],
           ["Denoise", "noiseX extracts clean signal"],
           ["Docs", "Parent + Child generated"],
           ["Prompt", "promptX / promptMasterX"],
@@ -2049,7 +2433,7 @@
           ["Request enters", "The Main Agent reads workflow state first. routeX decides whether to continue, explore read-only, or start xwhole / xlocal / xunit."],
           ["Environment initialized", "Parse -N, -box, -parallel, probe MCP availability, and prepare worktree isolation."],
           ["Phase 1 discovery", "Explore code before asking; Module 08 and socratesX expose boundaries, risks, and missing NFRs."],
-          ["User confirms plan", "Hybrid Tree is not generated until the confirmation gate is passed."],
+          ["Plan confirmed", "Hybrid Tree is generated only after the plan is confirmed."],
           ["noiseX denoises context", "Exploration history and discarded hypotheses are compressed into a clean signal for document generation."],
           ["Phase 2 Hybrid Tree", "The Main Agent writes Parent / Child docs: scope, AC, file index, dependencies, memory outline."],
           ["Prompt preprocessing", "xunit and fix rounds use promptX; complex prompts can go through promptMasterX."],
@@ -2423,15 +2807,15 @@
         if (idx === 3) return `
           <div class="scene-ui">
             <div class="ui-surface ui-main ui-pad">
-              <div class="ui-title">${viewTitle} / Hard Gate</div>
+              <div class="ui-title">${viewTitle} / Plan Confirmed</div>
               <div class="gate-card" style="margin:0;min-height:106px">
-                <b>${lang === "zh" ? "确认生成 PRD" : "Confirm PRD generation"}</b>
+                <b>${lang === "zh" ? "确认方案，生成 PRD" : "Confirm plan, generate PRD"}</b>
                 <span>${lang === "zh" ? "Main Agent 只在确认后写入 Hybrid Tree。" : "The Main Agent writes Hybrid Tree only after confirmation."}</span>
                 <div class="gate-button">${lang === "zh" ? "确认并启动" : "Confirm and start"}</div>
               </div>
             </div>
             <div class="ui-surface ui-side ui-pad">
-              <div class="ui-kicker">${lang === "zh" ? "阻断点" : "Checkpoint"}</div>
+              <div class="ui-kicker">${lang === "zh" ? "确认点" : "Checkpoint"}</div>
               <div class="terminal-line">${lang === "zh" ? "用户确认后继续" : "Proceed after user confirmation"}</div>
             </div>
           </div>`;
@@ -2569,7 +2953,7 @@ report: ready</div>
     }
 
     function workflowV4(t) {
-      const weights = [1, 0.9, 1.2, 1, 0.9, 1.15, 0.85, 1.1, 2.15, 1.2];
+      const weights = [1, 0.9, 1.2, 1, 1.6, 1.1, 0.8, 1, 4.5, 1.3];
       const weightTotal = weights.reduce((sum, value) => sum + value, 0);
       const raw = Math.min(Math.max(t, 0), 0.999);
       let cursor = raw * weightTotal;
@@ -2584,16 +2968,47 @@ report: ready</div>
       const enter = expo(clamp(local * 1.6));
       const scan = Math.round(clamp(local * 1.1) * 100) + "%";
       const card = C.cards[idx];
+      const loopPhase = idx === 8 ? Math.min(6, Math.floor(local * 7)) : -1;
+      const loopLocal = idx === 8 ? (local * 7 - loopPhase) : 0;
+      const loopEase = expo(clamp(loopLocal));
+      const loopSegments = [
+        [[68, 32], [186, 32]],
+        [[186, 32], [268, 32]],
+        [[348, 32], [486, 32]],
+        [[486, 32], [186, 32]],
+        [[186, 32], [268, 32]],
+        [[348, 32], [486, 32]],
+        [[486, 32], [186, 32]],
+      ];
+      const loopSegment = loopSegments[Math.max(0, loopPhase)] || loopSegments[0];
+      const packetX = loopSegment[0][0] + (loopSegment[1][0] - loopSegment[0][0]) * loopEase;
+      const packetY = loopSegment[0][1] + (loopSegment[1][1] - loopSegment[0][1]) * loopEase;
+      const loopCaptions = lang === "zh"
+        ? ["R1：evaluatorX 逐条核对 AC，定位 AC-02 失败。", "Main Agent 只把 AC-02 压成最小 Fix Payload。", "R2：coderX 只修 AC-02，不重开规划。", "R2 复验：AC-02 已过，AC-03 边界仍需修复。", "Main Agent 生成第二个最小 Payload，只携带 AC-03。", "R3：coderX 修边界用例并返回改动摘要。", "R3 验收：全部 AC 通过，进入 PASS 收口。"]
+        : ["R1: evaluatorX checks each AC and isolates AC-02.", "Main Agent compresses AC-02 into a minimal Fix Payload.", "R2: coderX fixes AC-02 only; no replanning.", "R2 recheck: AC-02 passes, but the AC-03 edge still needs a fix.", "Main Agent sends a second minimal Payload for AC-03 only.", "R3: coderX fixes the edge case and returns a change summary.", "R3 verification: every AC passes and the flow can close."];
+      const loopPayloadLabels = lang === "zh"
+        ? ["R1 CHECK", "AC-02 FIX", "R2 PATCH", "R2 RECHECK", "AC-03 FIX", "R3 PATCH", "PASS"]
+        : ["R1 CHECK", "AC-02 FIX", "R2 PATCH", "R2 RECHECK", "AC-03 FIX", "R3 PATCH", "PASS"];
+      const loopStatus = ["CHECK", "PAYLOAD", "PATCH", "RECHECK", "PAYLOAD", "PATCH", "PASS"][Math.max(0, loopPhase)] || "CHECK";
+      const loopRound = ["1/3", "1/3", "2/3", "2/3", "2/3", "3/3", "3/3"][Math.max(0, loopPhase)] || "1/3";
+      const loopSourceValue = ["DIFF", "AC-02", "PATCH", "RECHECK", "AC-03", "PATCH", "PASS"][Math.max(0, loopPhase)] || "DIFF";
       const boardTitle = idx === 8
-        ? (lang === "zh" ? "失败回流迭代" : "Fix-loop iteration")
+        ? (lang === "zh" ? "多轮验收迭代" : "Multi-round verification")
         : card[0];
       const boardDesc = idx === 8
-        ? (lang === "zh" ? "evaluatorX 只标记失败 AC；Main Agent 转成修复 Payload；coderX 进入下一轮，只修失败项。" : "evaluatorX marks failed AC only; Main Agent forwards a fix Payload; coderX enters the next round for the failed item.")
+        ? (lang === "zh" ? "R1 发现 AC-02，R2 复验再发现 AC-03 边界，R3 才 PASS；每轮只携带失败项。" : "R1 finds AC-02, R2 exposes the AC-03 edge, and R3 passes; each round carries only failed items.")
         : card[1];
-      const status = idx === 8 ? "FIX" : idx === 9 ? "PASS" : idx < 5 ? "PLAN" : "RUN";
-      const round = idx < 8 ? "1/3" : idx === 8 ? "2/3" : "DONE";
+      const status = idx === 8 ? loopStatus : idx === 9 ? "PASS" : idx < 5 ? "PLAN" : "RUN";
+      const round = idx < 8 ? "1/3" : idx === 8 ? loopRound : "DONE";
       const source = idx < 4 ? "STATE" : idx < 6 ? "SIGNAL" : "TREE";
-      const sourceValue = idx === 8 ? "AC" : source;
+      const sourceValue = idx === 8 ? loopSourceValue : source;
+      const loopPulse = idx === 8 ? (0.5 + Math.sin(local * Math.PI * 7) * 0.5) : 0;
+      const payloadScale = idx === 8 ? ((loopPhase === 1 || loopPhase === 4) ? expo(clamp(loopLocal * 1.35)) : (loopPhase > 1 ? 0.72 : 0.24)) : 0;
+      const repairScale = idx === 8 ? ((loopPhase === 2 || loopPhase === 5) ? expo(clamp(loopLocal * 1.45)) : (loopPhase > 2 ? 1 : 0)) : 0;
+      const recheckScale = idx === 8 ? (loopPhase >= 3 ? (loopPhase === 3 ? expo(clamp(loopLocal * 1.35)) : 1) : 0) : 0;
+      const denoiseSweep = idx === 4 ? expo(clamp(local * 1.18)) : 0;
+      const cleanReveal = idx === 4 ? expo(clamp((local - 0.38) * 2.2)) : 0;
+      const rejectScale = idx === 4 ? expo(clamp((local - 0.20) * 2.5)) : 0;
       const boardStyle = [
         `--scene-x:${((1 - enter) * 18).toFixed(1)}px`,
         `--scene-y:${((1 - enter) * 8).toFixed(1)}px`,
@@ -2601,21 +3016,67 @@ report: ready</div>
         `--scene-opacity:${(0.52 + enter * 0.48).toFixed(3)}`,
         `--row-scale:${(0.46 + enter * 0.54).toFixed(3)}`,
         `--scan:${scan}`,
+        `--loop-pulse:${loopPulse.toFixed(3)}`,
+        `--payload-scale:${payloadScale.toFixed(3)}`,
+        `--repair-scale:${repairScale.toFixed(3)}`,
+        `--recheck-scale:${recheckScale.toFixed(3)}`,
+        `--packet-x:${packetX.toFixed(1)}px`,
+        `--packet-y:${packetY.toFixed(1)}px`,
+        `--denoise-sweep:${denoiseSweep.toFixed(3)}`,
+        `--beam-left:${(8 + denoiseSweep * 84).toFixed(2)}%`,
+        `--filter-angle:${(-22 + denoiseSweep * 76).toFixed(1)}deg`,
       ].join(";");
 
       const smallBars = [88, 68, 76, 54].map((w) => `<i style="--w:${w}%"></i>`).join("");
-      const signalDots = Array.from({ length: 18 }, (_, i) => {
-        const x = (i * 31) % 94;
-        const y = (i * 47) % 84;
-        const opacity = i % 4 === 0 ? 0.24 : 0.64;
-        return `<i class="signal-dot" style="left:${x}%;top:${y}%;opacity:${opacity}"></i>`;
+      const noiseRows = [[34, 18, 42, 24], [22, 48, 30, 18], [38, 26, 16, 44], [28, 46, 22, 34], [42, 20, 36, 16]].map((widths, i) => {
+        const rowClean = clamp((denoiseSweep - i * 0.10) * 1.35);
+        const dropOpacity = (0.72 - rowClean * 0.58).toFixed(3);
+        const dropY = `${(rowClean * 9).toFixed(1)}px`;
+        const dropScale = (1 - rowClean * 0.54).toFixed(3);
+        const keepOpacity = (0.24 + rowClean * 0.74).toFixed(3);
+        const keepX = `${(rowClean * 7).toFixed(1)}px`;
+        const chips = widths.map((w, j) => `<i class="noise-chip ${j === 1 ? "keep" : "drop"}" style="--w:${w}%"></i>`).join("");
+        return `<div class="noise-row" style="--row-clean:${rowClean.toFixed(3)};--drop-opacity:${dropOpacity};--drop-y:${dropY};--drop-scale:${dropScale};--keep-opacity:${keepOpacity};--keep-x:${keepX}">${chips}</div>`;
       }).join("");
-      const loopLine = (x1, y1, x2, y2) => {
+      const cleanItems = lang === "zh"
+        ? [["Scope", "保留可执行范围"], ["AC", "提炼可验收事实"], ["Memory", "稳定事实进入文档"]]
+        : [["Scope", "Executable scope only"], ["AC", "Verifiable facts kept"], ["Memory", "Stable facts documented"]];
+      const cleanFacts = cleanItems.map(([label, body], i) => {
+        const reveal = expo(clamp((cleanReveal - i * 0.20) * 1.6));
+        return `<div class="clean-fact" style="--reveal:${reveal.toFixed(3)};--reveal-x:${((1 - reveal) * 14).toFixed(1)}px"><b>${label}</b><span>${body}</span></div>`;
+      }).join("");
+      const rejectBits = Array.from({ length: 7 }, (_, i) => {
+        const opacity = (rejectScale * (0.18 + (i % 3) * 0.06)).toFixed(3);
+        const y = `${(rejectScale * (12 + i * 1.4)).toFixed(1)}px`;
+        const scale = (0.22 + rejectScale * 0.78).toFixed(3);
+        return `<i style="left:${14 + (i * 11) % 58}%;top:${26 + (i * 17) % 54}%;--reject-opacity:${opacity};--reject-y:${y};--reject-scale:${scale}"></i>`;
+      }).join("");
+      const acItems = loopPhase >= 6
+        ? [["AC-01 PASS", "pass"], ["AC-02 PASS", "pass"], ["AC-03 PASS", "pass"]]
+        : loopPhase >= 3
+          ? [["AC-01 PASS", "pass"], ["AC-02 PASS", "pass"], ["AC-03 FIX", "fix"]]
+          : [["AC-01 PASS", "pass"], ["AC-02 FIX", "fix"], ["AC-03 WAIT", "wait"]];
+      const acStack = acItems.map(([label, cls]) => `<i class="${cls}">${label}</i>`).join("");
+      const evalText = lang === "zh"
+        ? (loopPhase >= 6 ? "R3：全部 AC PASS。" : loopPhase >= 3 ? "R2：AC-03 边界失败。" : "R1：AC-02 未满足。")
+        : (loopPhase >= 6 ? "R3: every AC passes." : loopPhase >= 3 ? "R2: AC-03 edge fails." : "R1: AC-02 fails.");
+      const mainText = lang === "zh"
+        ? (loopPhase >= 6 ? "写入迭代记录，准备收口。" : loopPhase >= 3 ? "压缩 AC-03 边界修复。" : "压缩 AC-02 Fix Payload。")
+        : (loopPhase >= 6 ? "Records the loop and prepares close." : loopPhase >= 3 ? "Compresses the AC-03 edge fix." : "Compresses the AC-02 Fix Payload.");
+      const codeText = lang === "zh"
+        ? (loopPhase >= 6 ? "返回摘要，不自验。" : loopPhase >= 3 ? "只修 AC-03 边界。" : "只修 AC-02，不重开规划。")
+        : (loopPhase >= 6 ? "Returns summary, no self-pass." : loopPhase >= 3 ? "Fixes AC-03 edge only." : "Fixes AC-02 only; no replanning.");
+      const roundClass = (roundIndex) => {
+        const activeRound = loopPhase < 2 ? 0 : loopPhase < 5 ? 1 : 2;
+        if (roundIndex < activeRound) return "done";
+        return roundIndex === activeRound ? "active" : "";
+      };
+      const loopLine = (x1, y1, x2, y2, cls = "") => {
         const dx = x2 - x1;
         const dy = y2 - y1;
         const len = Math.sqrt(dx * dx + dy * dy);
         const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        return `<div class="loop-line" style="left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg)"></div>`;
+        return `<div class="loop-line ${cls}" style="left:${x1}px;top:${y1}px;width:${len}px;transform:rotate(${angle}deg)"></div>`;
       };
 
       const activeView = (() => {
@@ -2641,19 +3102,27 @@ report: ready</div>
         if (idx === 3) return `
           <div class="work-card" style="min-height:168px;text-align:center;display:grid;place-items:center">
             <div>
-              <strong style="font-size:24px">${lang === "zh" ? "用户确认门" : "User confirmation gate"}</strong>
-              <span>${lang === "zh" ? "确认前不生成 Hybrid Tree，避免在错误方案上进入开发。" : "No Hybrid Tree before confirmation; avoid building on the wrong plan."}</span>
+              <strong style="font-size:24px">${lang === "zh" ? "方案确认" : "Plan confirmed"}</strong>
+              <span>${lang === "zh" ? "确认后才生成 Hybrid Tree，避免在错误方向上开发。" : "Generate Hybrid Tree only after the plan is confirmed."}</span>
               <div class="gate-button">${lang === "zh" ? "确认并启动" : "Confirm and start"}</div>
             </div>
           </div>`;
         if (idx === 4) return `
           <div class="signal-field">
-            ${signalDots}
+            <div class="signal-column">
+              <div class="signal-label"><span>${lang === "zh" ? "混杂输入" : "Noisy input"}</span><small>${lang === "zh" ? "聊天 / 假设 / 草稿" : "chat / guesses / drafts"}</small></div>
+              <div class="noise-stack">${noiseRows}</div>
+            </div>
+            <div class="denoise-core">
+              <div class="filter-ring"></div>
+              <div class="filter-label">noiseX</div>
+            </div>
+            <div class="signal-column">
+              <div class="signal-label"><span>${lang === "zh" ? "干净信号" : "Clean signal"}</span><small>${lang === "zh" ? "可写入" : "documentable"}</small></div>
+              <div class="clean-stack">${cleanFacts}</div>
+            </div>
             <div class="signal-beam"></div>
-          </div>
-          <div class="scene-grid-2" style="margin-top:12px">
-            <div class="work-card"><strong>noiseX</strong><span>${lang === "zh" ? "丢弃废弃假设和聊天噪声。" : "Drops discarded hypotheses and chat noise."}</span></div>
-            <div class="work-card"><strong>${lang === "zh" ? "干净信号" : "Clean signal"}</strong><span>${lang === "zh" ? "只留下可写入文档的事实。" : "Keeps only facts fit for documents."}</span></div>
+            <div class="reject-bits">${rejectBits}</div>
           </div>`;
         if (idx === 5) return `
           <div class="tree-map">
@@ -2673,12 +3142,16 @@ report: ready</div>
             <div class="work-card"><strong>Change Summary</strong><span>${lang === "zh" ? "返回改动摘要，不自称验收通过。" : "Returns change summary without self-validating."}</span><div class="doc-bars">${smallBars}</div></div>
           </div>`;
         if (idx === 8) return `
-          <div class="fix-loop">
-            <div class="loop-card loop-eval"><b>evaluatorX</b><span>${lang === "zh" ? "读 diff / code，对照 AC。AC-02 = FIX。" : "Reads diff / code. AC-02 = FIX."}</span></div>
-            <div class="loop-card loop-main"><b>Main Agent</b><span>${lang === "zh" ? "只转发 Fix Payload，不重开规划。" : "Forwards Fix Payload only; no replanning."}</span></div>
-            <div class="loop-card loop-code"><b>coderX</b><span>${lang === "zh" ? "只修失败 AC，进入第 2 轮。" : "Fixes failed AC only; starts round 2."}</span></div>
-            ${loopLine(184, 54, 270, 122)}
-            ${loopLine(370, 122, 458, 54)}
+          <div class="fix-loop" data-payload="${loopPayloadLabels[Math.max(0, loopPhase)]}">
+            <div class="loop-card loop-eval${[0, 3, 6].includes(loopPhase) ? " active" : ""}"><em class="round-tag">${loopPhase >= 6 ? "Round 3" : loopPhase >= 3 ? "Round 2" : "Round 1"}</em><b>evaluatorX</b><span>${evalText}</span><div class="ac-stack">${acStack}</div></div>
+            <div class="loop-card loop-main${[1, 4].includes(loopPhase) ? " active" : ""}"><em class="round-tag">Payload</em><b>Main Agent</b><span>${mainText}</span></div>
+            <div class="loop-card loop-code${[2, 5].includes(loopPhase) ? " active" : ""}"><em class="round-tag">${loopPhase >= 5 ? "Round 3" : "Round 2"}</em><b>coderX</b><span>${codeText}</span><div class="repair-bars"><i style="--w:86%"></i><i style="--w:64%"></i><i style="--w:74%"></i></div></div>
+            ${loopLine(186, 32, 268, 32)}
+            ${loopLine(348, 32, 486, 32)}
+            ${loopLine(486, 32, 186, 32, "return")}
+            <div class="loop-packet"></div>
+            <div class="loop-rounds"><i class="${roundClass(0)}">R1</i><i class="${roundClass(1)}">R2</i><i class="${roundClass(2)}">R3</i></div>
+            <div class="loop-note">${loopCaptions[loopPhase]}</div>
           </div>`;
         return `
           <div class="scene-grid-3">
@@ -2692,7 +3165,7 @@ report: ready</div>
       root.innerHTML = `
         <section class="frame">
           ${header(C.workflowTitle, C.workflowSub)}
-          <div class="workflow-v4" style="${boardStyle}">
+          <div class="workflow-v4${idx === 8 ? " loop-focus" : ""}" style="${boardStyle}">
             <aside class="phase-index">
               <div class="index-title">${lang === "zh" ? "阶段索引" : "Phase Index"}</div>
               <div class="index-list">
@@ -2741,7 +3214,7 @@ report: ready</div>
     } else {
       const start = performance.now();
       function tick(now) {
-        const t = ((now - start) % 15000) / 15000;
+        const t = ((now - start) % 20000) / 20000;
         render(t);
         requestAnimationFrame(tick);
       }
