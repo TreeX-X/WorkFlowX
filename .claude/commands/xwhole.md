@@ -4,7 +4,7 @@ description: Execute Mode A workflow (whole codebase, full planning phase)
 
 # /xwhole - Full Planning Flow
 
-**Executed by Main Agent directly, no orchestratorX sub-agent.**
+**Executed by Main Agent directly.**
 
 ## Critical Principle
 

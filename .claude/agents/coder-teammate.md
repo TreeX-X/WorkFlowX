@@ -22,12 +22,12 @@ model: sonnet
 ```
 1. Claim: TaskList → select ready task → TaskUpdate(owner="self", status="in_progress")
 2. Implement: Follow coderX implementation flow (inherited)
-3. Complete: TaskUpdate(status="completed") → SendMessage(to="orchestratorX", summary="Task done")
+3. Complete: TaskUpdate(status="completed") → SendMessage(to="Main Agent", summary="Task done")
 ```
 
 ## Communication
 
-- `SendMessage(to="evaluator-N|orchestratorX")`: Report completion or request collaboration
+- `SendMessage(to="evaluator-N|Main Agent")`: Report completion or request collaboration
 - Auto-idle after turn (normal in-process mode)
 - Wake on incoming message (no polling)
 

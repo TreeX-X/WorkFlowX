@@ -4,7 +4,7 @@ description: Execute Mode B workflow (local module, PRD detection)
 
 # /xlocal - Fast Implementation Flow
 
-**Executed by Main Agent directly, no orchestratorX sub-agent.**
+**Executed by Main Agent directly.**
 
 When user inputs `/xlocal [requirement]`:
 

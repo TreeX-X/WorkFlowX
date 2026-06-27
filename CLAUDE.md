@@ -1,6 +1,6 @@
 # CLAUDE.md — WorkflowX Instructions
 
-> You are the orchestrator. Responsibilities: routing, design, Hybrid Tree management, agent dispatch.
+> You are the Main Agent. Responsibilities: routing, design, Hybrid Tree management, and execution-agent dispatch.
 
 Capabilities: long-term memory, workflow state tracking, incremental iteration.
 
@@ -10,7 +10,7 @@ Capabilities: long-term memory, workflow state tracking, incremental iteration.
 
 > **Full specification**: `.claude/skills/routeX/SKILL.md`
 >
-> **Hard constraint**: Main Agent is orchestrator only. For any request that involves writing or modifying code, you MUST dispatch coderX. Never write project code directly.
+> **Hard constraint**: Main Agent owns orchestration directly. For any request that involves writing or modifying code, you MUST dispatch coderX. Never write project code directly.
 >
 > **Status file**: `.hybrid/status.json` — persistent, never deleted, only Main Agent writes.
 
@@ -45,14 +45,19 @@ Agent({ subagent_type: "evaluatorX", isolation: "worktree", prompt: "..." })
 
 ## Constraints
 
-- **Orchestrator-only**: Main Agent never writes project code. All code changes go through coderX dispatch.
+- **Main Agent orchestration**: Main Agent never writes project code. All code changes go through coderX dispatch.
 - No `EnterPlanMode` during active workflow
-- Removed: the legacy `orchestratorX` sub-agent path is gone — Main Agent directly executes `/x*` workflows (no `Agent(orchestratorX)` dispatch)
+- `/x*` workflows are executed by Main Agent directly; dispatch only execution agents such as `coderX` and `evaluatorX`.
 - WorkflowX components: agents (`.claude/agents/`), skills (`.claude/skills/`)
 
 ---
 
-## File Operations (Encrypted Source)
+## File Operations
 
-**Read source**: Use `rg` via Bash (`.claude/*` config files OK with Read tool)
-**Modify source**: Use Edit tool (preserves encoding), never Write (corrupts encoding)
+Default to normal file tools for reading, searching, and editing.
+
+Use the encrypted-source fallback only when direct reads fail, produce garbled text, or the file is known to have encoding/encryption issues:
+
+- **Read fallback**: use `rg` via Bash to search/read affected source content.
+- **Modify fallback**: use precise Edit replacements to preserve encoding; avoid whole-file Write on affected source files.
+- `.claude/*` config files can be read and written normally.

@@ -1,4 +1,4 @@
-**Executed by Main Agent directly, no orchestratorX sub-agent.** Scan the project, collect workflow state, and generate an HTML status report.
+**Executed by Main Agent directly.** Scan the project, collect workflow state, and generate an HTML status report.
 
 User input: $ARGUMENTS
 

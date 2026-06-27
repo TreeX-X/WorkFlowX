@@ -20,18 +20,18 @@ model: sonnet
 ## Task Workflow
 
 ```
-1. Receive: Wait for SendMessage from orchestratorX with evaluation request
+1. Receive: Wait for SendMessage from Main Agent with evaluation request
 2. Evaluate: Follow evaluatorX evaluation flow (inherited)
-3. Report: Output Evaluation Result Payload → SendMessage(to="orchestratorX")
+3. Report: Output Evaluation Result Payload → SendMessage(to="Main Agent")
 ```
 
 ## Communication
 
-- `SendMessage(to="coder-N|orchestratorX")`: Send evaluation result or discuss fix plan
+- `SendMessage(to="coder-N|Main Agent")`: Send evaluation result or discuss fix plan
 - Auto-idle after turn (normal in-process mode)
 - Wake on incoming message (no polling)
 
 ## Document Updates
 
 - evaluator-teammate does NOT write to documents
-- orchestratorX handles all document updates (Module 03)
+- Main Agent handles all document updates (Module 03)

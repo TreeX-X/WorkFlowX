@@ -9,4 +9,4 @@ Runtime behavior lives in:
 - `.codex/config.toml` for Codex-native project settings such as sandbox policy and MCP servers.
 - `.codex/skills/` for reusable Codex skills.
 
-There is no `orchestratorX` Codex agent. The active Codex main agent performs orchestration directly and may use the `coderX`, `evaluatorX`, `promptMasterX`, and `abstracterX` prompt references when a WorkflowX handoff needs to be expressed.
+The active Codex main agent performs orchestration directly and may use the `coderX`, `evaluatorX`, `promptMasterX`, and `abstracterX` prompt references when a WorkflowX handoff needs to be expressed.

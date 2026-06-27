@@ -4,7 +4,7 @@ description: Execute Mode C workflow (unit task, minimal change)
 
 # /xunit - Minimal Change Flow
 
-**Executed by Main Agent directly, no orchestratorX sub-agent.**
+**Executed by Main Agent directly.**
 
 When user inputs `/xunit [requirement]`:
 
