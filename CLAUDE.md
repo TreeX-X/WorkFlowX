@@ -37,9 +37,11 @@ Capabilities: long-term memory, workflow state tracking, incremental iteration.
 
 **Agent dispatch**:
 ```js
-Agent({ subagent_type: "coderX", isolation: "worktree", prompt: "..." })
+Agent({ subagent_type: "coderX", isolation: "worktree", prompt: "<Dispatch Payload: coderX Task>" })
 Agent({ subagent_type: "evaluatorX", isolation: "worktree", prompt: "..." })
 ```
+
+Before dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`. Do not send vague implementation prompts to `coderX`.
 
 ---
 

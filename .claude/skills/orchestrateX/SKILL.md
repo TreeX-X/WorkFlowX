@@ -12,7 +12,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
 | 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal only; xunit skips MCP | `modules/01-environment-init.md` |
-| 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
+| 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX dispatch contract | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
@@ -43,7 +43,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
 | `-parallel` | `-parallel` | xwhole | off | Enable Agent Teams parallel execution within Mode A |
 | `-team` | `-team [name]` | xwhole (with `-parallel`) | `workflow-{timestamp}` | Agent Team name for parallel workflow |
-| `-prompt` | `-prompt` | xunit | off | Run promptX before coderX; without it, pass raw requirement directly |
+| `-prompt` | `-prompt` | xunit | off | Run promptX before coderX; without it, place raw requirement in the Type 0 Dispatch Payload |
 
 ### Parsing Rules
 
@@ -248,7 +248,7 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
   4. If multiple plausible Hybrid Trees match → present candidates with match reasons and ask the user to choose; do not auto-generate a duplicate tree
   5. If `$ARGUMENTS` contains a valid non-Hybrid PRD file path → read PRD, wrap into Hybrid Tree
   6. No related Hybrid Tree or PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
-- **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, Main Agent assembles Fix Instructions into a fix prompt for coderX.
+- **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, Main Agent copies Fix Instructions into the next Type 0 Dispatch Payload for coderX.
 - **Status transitions (use templates above)**:
   1. env_init → write `env_init → core_loop (xlocal)` template (skip phase1/phase2)
   2. Each dispatch → use Dispatch Self-Check Protocol (pre/post)
@@ -257,14 +257,14 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
-- **Entry**: Main Agent dispatches coderX directly with the raw requirement by default -> report to user. evaluatorX only invoked when explicitly requested.
-- **promptX integration**: Optional. Only invoke `promptX` when the user passes `-prompt`; then pass the structured prompt plus original requirement to coderX.
+- **Entry**: Main Agent builds a Type 0 Dispatch Payload, dispatches Agent(coderX), then reports to user. evaluatorX only invoked when explicitly requested.
+- **promptX integration**: Optional. Only invoke `promptX` when the user passes `-prompt`; then include the structured prompt plus original requirement in the Type 0 Dispatch Payload.
 - **MCP / knowledge graph**: Skipped entirely. xunit must not probe MCP, call `server-memory`, read knowledge graph sections, or prepend MCP fallback instructions.
-- **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives raw requirement by default, or structured prompt only when `-prompt` is present.
+- **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives a Type 0 Dispatch Payload containing the raw requirement by default, or structured prompt only when `-prompt` is present.
 - **Status transitions (use templates above)**:
   1. xunit lightweight init: skip Module 01 MCP checks and write `env_init → core_loop (xunit)` template
   2. If `-prompt` is present, invoke promptX; otherwise skip prompt preprocessing
-  3. Dispatch coderX lightweight mode with "no MCP / no knowledge graph / no Bus Payload" instruction
+  3. Dispatch Agent(coderX) lightweight mode with a Type 0 Dispatch Payload: "no MCP / no knowledge graph / no Bus Payload"
   4. Auto-complete → write `exit signal → wait` template
 
 ---
@@ -401,7 +401,7 @@ Write confirmed findings into appropriate sections during Hybrid Tree creation:
 
 ## Hybrid Tree Section Map (Optimized: Section-Level Caching)
 
-coderX and evaluatorX receive (Parent, Child) paths, then read according to the following scope:
+coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and evaluatorX receives the validated evaluation context from Main Agent. They read according to the following scope:
 
 | Document | Section | Content | Readers | Cache Strategy |
 |----------|---------|---------|---------|----------------|
@@ -415,7 +415,7 @@ coderX and evaluatorX receive (Parent, Child) paths, then read according to the 
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
 
-> **Context hand-off rule (Optimized)**: In the **first round**, pass full Parent + Child documents to coderX/evaluatorX. In subsequent rounds, prefer a lightweight trunk: pass only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions). Tell the subagent to call `mcp__server-memory__open_nodes` with the exact entity names from §8.2 to pull node details on demand; only fall back to `mcp__server-memory__search_nodes` when an exact name is missing. This mirrors the savings measured in TEST-MEMORY-001 (~13,506 chars / ~3,377 tokens for full context vs ~1,369 chars / ~342 tokens for trunk + on-demand retrieval).
+> **Context hand-off rule (Optimized)**: In the **first round**, make full Parent + Child context available through the Type 0 Dispatch Payload and agent-readable document paths. In subsequent rounds, prefer a lightweight trunk: include only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions). Tell the subagent to call `mcp__server-memory__open_nodes` with the exact entity names from §8.2 to pull node details on demand; only fall back to `mcp__server-memory__search_nodes` when an exact name is missing. This mirrors the savings measured in TEST-MEMORY-001 (~13,506 chars / ~3,377 tokens for full context vs ~1,369 chars / ~342 tokens for trunk + on-demand retrieval).
 
 ---
 
@@ -527,19 +527,28 @@ While ready_queue is not empty:
   
   1. [STATUS CHECK] Execute Pre-Dispatch Checklist (coderX):
      - Read status.json → update current_child, iteration, agent="coderX" → write status.json
-  2. Dispatch coderX: (Parent, current) + [prior Fix Instructions, if any]
-  3. coderX implements, outputs Change Summary Payload
-  4. [STATUS CHECK] Execute Post-Dispatch Checklist:
+  2. Build Type 0 Dispatch Payload for Agent(coderX):
+     - Workflow Mode: xwhole or xlocal
+     - Dispatch Type: implement for first round, fix when prior Fix Instructions exist
+     - Parent Path: current Parent hybrid path
+     - Child Path: current Child hybrid path
+     - Acceptance Criteria Source: Child Section 7
+     - Required Skills: guideX, razorX, specX
+     - Output Contract: Bus Payload Type 1
+     - Fix Instructions: prior evaluator Fix Instructions, if any
+  3. Validate Type 0 Dispatch Payload using module 02, then dispatch Agent(coderX)
+  4. coderX implements, outputs Change Summary Payload
+  5. [STATUS CHECK] Execute Post-Dispatch Checklist:
      - Read status.json → set agent=null → write status.json
-  5. [STATUS CHECK] Execute Pre-Dispatch Checklist (evaluatorX):
+  6. [STATUS CHECK] Execute Pre-Dispatch Checklist (evaluatorX):
      - Read status.json → update agent="evaluatorX" → write status.json
-  6. Validate Payload (module 02), forward to evaluatorX: (Parent, current, Change Summary)
-  7. evaluatorX evaluates, outputs Evaluation Result Payload
-  8. [STATUS CHECK] Execute Post-Dispatch Checklist:
+  7. Validate Payload (module 02), forward to evaluatorX: (Parent, current, Change Summary)
+  8. evaluatorX evaluates, outputs Evaluation Result Payload
+  9. [STATUS CHECK] Execute Post-Dispatch Checklist:
      - Read status.json → set agent=null → write status.json
-  9. Load module 03 for Post-Evaluation document update (incremental, see §6)
+  10. Load module 03 for Post-Evaluation document update (incremental, see §6)
   
-  10. Result handling:
+  11. Result handling:
      - PASS:
        a. Mark current as PASS
        b. For each dependent in adj[current]:
@@ -553,7 +562,7 @@ While ready_queue is not empty:
        a. Mark as "Limit Reached", report to human
        b. Do NOT enqueue dependents (they remain blocked)
 
-  11. [STATUS CHECK] After Child completes (PASS or Limit Reached):
+  12. [STATUS CHECK] After Child completes (PASS or Limit Reached):
      - If next Child in ready_queue:
        → Execute Child Switch Checklist (current_child = next child, iteration = 0)
      - If ready_queue empty (all done):
@@ -594,7 +603,9 @@ child_iterations = {
 ```
 
 **Dispatch Format**:
-- Pass `Parent: [path]` + `Child: [path]` (xwhole/xlocal only; xunit is exempt from Hybrid Tree)
+- Pass a full Type 0 Dispatch Payload from `modules/02-bus-payload.md`.
+- Do not dispatch coderX with only `Parent: [path]` + `Child: [path]`.
+- Do not ask coderX to infer mode, output contract, MCP policy, verification scope, or fix-round intent from conversation context.
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 
@@ -648,7 +659,7 @@ For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
 
 1. Read Parent Section 7 routing table
 2. Compare current task/requirement against each Child's Scope column
-3. Match found -> dispatch coderX and evaluatorX, pass (Parent, Child)
+3. Match found -> build a Type 0 Dispatch Payload for coderX, then dispatch coderX and evaluatorX through the standard Bus pipeline
 4. No match -> execute Requirement Change Handling (Change Type = new_branch)
 
 ### Child Creation Flow
@@ -659,7 +670,8 @@ When Requirement Change Handling determines Change Type = new_branch:
    - Create new Child document using Child template, fill feature description -> Section 7 Description, suggested ACs -> Section 7 AC
    - Add new row to Parent Section 7 (append end; dependency order is resolved at runtime by the Core Loop's deferred queue)
    - Update Parent Section 8.3 (if new dependencies)
-3. Dispatch coderX: (Parent, new Child)
+3. Build a Type 0 Dispatch Payload with `Dispatch Type=new_branch`, then dispatch Agent(coderX)
+   - Include Parent Path, new Child Path, new branch reason, acceptance source, allowed scope, and Output Contract
 
 
 ---

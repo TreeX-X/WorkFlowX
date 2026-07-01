@@ -6,7 +6,7 @@ When entering a workflow for the first time, perform an "out-of-box self-check":
 2. Proactively check whether the project provides MCP tool dependencies (such as `server-memory` and `server-sequential-thinking`) for xwhole/xlocal workflows.
 3. If MCP Servers are missing, remind the user to configure them.
 
-**xunit exception**: xunit is a lightweight unit workflow. It skips MCP health checks entirely and must not use knowledge graph retrieval. Dispatch coderX with an explicit instruction to rely only on the current prompt and local code exploration.
+**xunit exception**: xunit is a lightweight unit workflow. It skips MCP health checks entirely and must not use knowledge graph retrieval. Dispatch Agent(coderX) with a Type 0 Dispatch Payload that sets `MCP Policy=skip` and instructs coderX to rely only on the current prompt and local code exploration.
 
 ## Step 0: Concurrency Lock Check
 

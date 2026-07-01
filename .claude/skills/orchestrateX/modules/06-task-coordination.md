@@ -123,7 +123,7 @@ For each ready task (in priority order):
   SendMessage(
     to="coder-{N}",
     summary="New task {task-id}",
-    message="Task assigned: {task-id}\nParent: {parent-path}\nChild: {child-path}\nRead docs and implement. Mark completed via TaskUpdate when done."
+    message="Task assigned: {task-id}\nRead the Type 0 Dispatch Payload in the task description, then implement. Mark completed via TaskUpdate when done."
   )
 ```
 

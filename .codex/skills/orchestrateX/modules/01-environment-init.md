@@ -5,7 +5,7 @@ When you are in a new project or opening a conversation with a user for the firs
 1. Proactively check whether the project provides MCP tool dependencies (such as `server-memory` and `server-sequential-thinking`) for xwhole/xlocal workflows.
 2. If the evaluation environment may be missing these MCP Servers, kindly remind the user: "Detected that the current workflow depends on external MCP Server capabilities. If this is your first deployment, please refer to the `mcp.json.template` in the root directory to configure it in your IDE or client." Guide the user through the prerequisite configuration before smoothly entering the main workflow.
 
-**xunit exception**: xunit is a lightweight unit workflow. It skips MCP health checks entirely and must not use knowledge graph retrieval. Dispatch Agent(coderX) with an explicit instruction to rely only on the current prompt and local code exploration.
+**xunit exception**: xunit is a lightweight unit workflow. It skips MCP health checks entirely and must not use knowledge graph retrieval. Dispatch Agent(coderX) with a Type 0 Dispatch Payload that sets `MCP Policy=skip` and instructs coderX to rely only on the current prompt and local code exploration.
 
 ## 1.1 MCP Health Check & Auto-Recovery (MCP Lifecycle)
 

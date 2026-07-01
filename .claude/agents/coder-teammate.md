@@ -21,8 +21,9 @@ model: sonnet
 
 ```
 1. Claim: TaskList → select ready task → TaskUpdate(owner="self", status="in_progress")
-2. Implement: Follow coderX implementation flow (inherited)
-3. Complete: TaskUpdate(status="completed") → SendMessage(to="Main Agent", summary="Task done")
+2. Read: Load the `Dispatch Payload: coderX Task` from the task description before deciding scope, skills, MCP usage, or output format
+3. Implement: Follow coderX implementation flow (inherited)
+4. Complete: TaskUpdate(status="completed") → SendMessage(to="Main Agent", summary="Task done")
 ```
 
 ## Communication

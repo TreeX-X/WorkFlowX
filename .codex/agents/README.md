@@ -15,4 +15,6 @@ Runtime behavior lives in:
 
 The active Codex main agent performs orchestration only. When a WorkflowX handoff is required, dispatch the matching subagent definition instead of role-playing that agent inside the main context.
 
+Before dispatching `coderX`, Main Agent must create the `Dispatch Payload: coderX Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. This payload is the handoff contract and must be specific enough for coderX to execute without inferring mode, scope, output format, MCP policy, or verification obligations from conversation context.
+
 If the current Codex host cannot dispatch project subagents, report subagent dispatch as degraded and ask whether to continue in a direct-execution fallback. Do not silently simulate a subagent.

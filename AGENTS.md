@@ -16,6 +16,8 @@ Codex uses project subagent definitions from `.codex/agents/`. The main Codex ag
 
 If a Codex host cannot dispatch project subagents, report that capability as degraded before continuing. Do not silently pretend to be `coderX` / `evaluatorX` / `promptMasterX` in the main-agent context.
 
+Before automatically dispatching `coderX`, Main Agent must assemble a `Dispatch Payload: coderX Task` as defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. The payload must state mode, dispatch type, objective, requirement source, scope, forbidden files, required skills, MCP policy, output contract, verification requirements, and stop conditions. Do not send vague implementation prompts to `coderX`.
+
 For code development, feature implementation, refactoring, or bug fixes:
 
 - Follow the relevant `.codex/skills/` workflow.

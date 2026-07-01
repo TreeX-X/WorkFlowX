@@ -125,9 +125,9 @@ xunit does not invoke promptX by default. It invokes promptX only when the user 
 2. Main Agent dispatches Agent(promptMasterX)
 3. promptMasterX invokes promptX (this skill)
 4. promptX extracts intent and outputs structured prompt
-5. Main Agent passes structured prompt plus original requirement to Agent(coderX)
+5. Main Agent places the structured prompt plus original requirement into the Type 0 Dispatch Payload for Agent(coderX)
 
-Without `-prompt`, xunit passes the raw requirement directly to Agent(coderX).
+Without `-prompt`, xunit places the raw requirement into the Type 0 Dispatch Payload for Agent(coderX).
 
 ## Boundaries
 

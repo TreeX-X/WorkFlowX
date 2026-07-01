@@ -2,11 +2,11 @@
 
 > promptX is a lightweight intent extractor. Its responsibility is single: extract 9 dimensions from user's raw requirement text, run diagnostic checklist, and output structured prompts for coderX.
 
-**Invocation Method**: Main Agent invokes `promptX` skill directly (no sub-agent dispatch needed), passing the raw requirement text as the input.
+**Invocation Method**: Main Agent invokes `promptX` skill directly (no sub-agent dispatch needed), passing the raw requirement text as the input. When prompt preprocessing is used before coderX, Main Agent must place the promptX result into a Type 0 Dispatch Payload instead of forwarding it as a loose prompt.
 
 ## 4.1 Skip Rules (Take Priority Over Auto-Trigger Rules)
 
-When the user input satisfies **any** of the following conditions, skip promptX directly and pass the raw requirement to coderX:
+When the user input satisfies **any** of the following conditions, skip promptX and place the raw requirement into the Type 0 Dispatch Payload for coderX:
 - Input length is **short** (after trimming leading/trailing whitespace, roughly one sentence or less) -- short instructions are already concise enough
 - Input **contains explicit file paths** (e.g., `src/foo.ts`, `lib/bar.py`) **or function names** (e.g., `getUserInfo`, `handleLogin`) -- precise references do not need optimization
 
@@ -16,14 +16,16 @@ When the user input satisfies **any** of the following conditions, skip promptX 
 
 | Mode | Scenario | Call promptX? | Description |
 |---|---|---|---|
-| `/xunit` | Only when `-prompt` is present | Optional | Extract intent, output structured prompt, then pass to coderX. Without `-prompt`, pass the raw requirement directly to coderX |
-| `/xlocal` | After Hybrid Tree ready, before first calling coderX | Yes (auto) | PRD detection + optional auto-generation happens first; then extract intent for coderX |
+| `/xunit` | Only when `-prompt` is present | Optional | Extract intent, then include the structured prompt plus original requirement in the Type 0 Dispatch Payload for Agent(coderX). Without `-prompt`, include only the raw requirement in the Type 0 Dispatch Payload |
+| `/xlocal` | After Hybrid Tree ready, before first calling coderX | Yes (auto) | PRD detection + optional auto-generation happens first; then include the extracted intent as supplemental context in the Type 0 Dispatch Payload for Agent(coderX) |
 | `/xwhole` | Planning phase | No | Planning phase needs to retain original intent for conversational clarification |
 | `/xwhole` | Coder phase (after PRD confirmation) | No | PRD itself is already structured |
-| `/xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements → extract intent → pass to coderX |
+| `/xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements, extract intent, then place the structured fix prompt in the Type 0 Dispatch Payload for Agent(coderX) |
 | `/xprompt` | Direct call | Yes | Does not enter any workflow; only performs intent extraction |
 
-**Passing Specification**: When promptX is invoked, the structured prompt is passed as the main body to coderX, with the original requirement text attached in context to prevent intent loss.
+**Passing Specification**: When promptX is invoked, the structured prompt is placed in the `Structured Requirement` field of the Type 0 Dispatch Payload, with the original requirement retained in `Original Requirement` to prevent intent loss.
+
+For xlocal/xwhole Hybrid Tree workflows, Child Section 7 remains the acceptance criteria source. promptX output may clarify wording and scope, but must not override the Hybrid Tree.
 
 ## 4.3 Prompt Compression (Optimized: Token Reduction)
 

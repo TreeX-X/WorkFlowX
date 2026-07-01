@@ -15,7 +15,9 @@ Enable coderX to execute development following a unified process:
 
 ## Input Document Conventions
 
-Prioritize reading documents explicitly handed off by upstream agents or actively referenced by users; if no explicit specification is given, automatically locate the correct `[Feature Module]-hybrid.md` document. If there is no active reference and no document record in context, coderX is still allowed to continue operations directly using existing conversation context.
+Prioritize the Type 0 Dispatch Payload handed off by Main Agent. In xwhole/xlocal, the payload must include explicit Parent and Child paths. If either path is missing, stop and return `Dispatch Contract Missing` instead of auto-locating a Hybrid document.
+
+Auto-location of a `[Feature Module]-hybrid.md` document is allowed only as a direct-execution fallback when the user explicitly asks to skip WorkflowX orchestration. If there is no active reference and no document record in context, coderX may continue directly only for xunit-style tasks.
 
 ### File Access Rules
 
@@ -39,7 +41,7 @@ coderX receives (Parent, Child) paths, reads corresponding Sections per `.claude
 
 ### Step 1: Requirement Alignment
 
-1. **Hybrid Tree Mode**: Read the Child hybrid Section 7 for branch-specific AC. Read the Parent hybrid Sections 0-6 for shared NFR/DoD/Scope. Read Parent Section 8.2 knowledge graph for cross-branch context.
+1. **Hybrid Tree Mode**: Read the Type 0 Dispatch Payload first. Then read the Child hybrid Section 7 for branch-specific AC. Read the Parent hybrid Sections 0-6 for shared NFR/DoD/Scope. Read Parent Section 8.2 knowledge graph for cross-branch context.
    **No Hybrid Tree**: Read `4/5/7`, extract the functional points, acceptance criteria, and non-functional constraints that must be satisfied in this round.
 2. Form the current round task list; avoid implementing beyond scope.
 
@@ -69,7 +71,9 @@ If a memory observation contradicts the current file content, `git diff`, or act
 
 ### Step 5: Output Change Summary Payload
 
-After implementation, **proactively output a standardized Change Summary Payload**. Do not write to any document; only output Payload for Main Agent to validate and forward to evaluatorX.
+In xwhole/xlocal Hybrid Tree workflows, after implementation, **proactively output a standardized Change Summary Payload**. Do not write to any document; only output Payload for Main Agent to validate and forward to evaluatorX.
+
+xunit does not load specX and does not output Bus Payload.
 
 Format follows `.claude/skills/orchestrateX/modules/02-bus-payload.md` (Payload Type 1). Core fields:
 - `Changed Files`: list of modified files this round with summaries

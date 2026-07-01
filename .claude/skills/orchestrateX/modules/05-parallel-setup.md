@@ -71,7 +71,7 @@ Read Parent Section 7 to get all Children, then use `TaskCreate` for each:
 For each Child in Parent Section 7:
   TaskCreate(
     subject="Implement {child-scope}",
-    description="Parent: {parent-path}\nChild: {child-path}\nAC: {ac-list}"
+    description="### Dispatch Payload: coderX Task\n- **Workflow Mode**: xwhole\n- **Dispatch Type**: implement\n- **Task Objective**: Implement {child-scope}\n- **Requirement Source**: Child Section 7\n- **Original Requirement**: N/A\n- **Structured Requirement**: N/A\n- **Parent Path**: {parent-path}\n- **Child Path**: {child-path}\n- **Acceptance Criteria Source**: Child Section 7\n- **Allowed Scope**:\n  - {child-file-scope}\n- **Do Not Touch**:\n  - N/A\n- **Required Skills**: guideX, razorX, specX\n- **MCP Policy**: allowed\n- **Output Contract**: Bus Payload Type 1\n- **Verification Required**:\n  - Run relevant tests/checks or report best effort with reason\n- **Fix Instructions**: N/A\n- **Stop Conditions**:\n  - Stop if Parent/Child path is missing or task scope conflicts with another Child"
   )
 ```
 
@@ -132,10 +132,11 @@ Agent(
   prompt="You are coder-1 in team '{team-name}'. Your workflow:
 1. Read TaskList to find ready tasks (status='pending', no owner)
 2. Claim a task: TaskUpdate(taskId=X, owner='coder-1', status='in_progress')
-3. Read Parent + Child hybrid docs from the task description
-4. Implement code following specX skill
-5. When done: TaskUpdate(taskId=X, status='completed') then send completion summary (messages auto-deliver to team lead)
-6. Check TaskList for next available task
+3. Read the Type 0 Dispatch Payload from the task description
+4. Read Parent + Child hybrid docs from the payload paths
+5. Implement code following specX skill
+6. When done: TaskUpdate(taskId=X, status='completed') then send completion summary (messages auto-deliver to team lead)
+7. Check TaskList for next available task
 If no ready tasks, wait for new messages."
 )
 
@@ -187,7 +188,7 @@ Notify coders via `SendMessage`:
 SendMessage(
   to="coder-{N}",
   summary="Assign task {task-id}",
-  message="Task {task-id} assigned. Read the Parent and Child hybrid docs, then implement. Mark task completed via TaskUpdate when done."
+  message="Task {task-id} assigned. Read the Type 0 Dispatch Payload in the task description, then implement. Mark task completed via TaskUpdate when done."
 )
 ```
 

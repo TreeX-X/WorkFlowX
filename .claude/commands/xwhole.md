@@ -56,6 +56,7 @@ Trigger keywords:
 
 ### Stage 5: Core Iteration Loop
 - Traverse Children by dependency order
+- Build and validate Type 0 Dispatch Payload for each Child
 - Dispatch Agent(coderX, isolation="worktree")
 - Validate Bus Payload
 - Dispatch Agent(evaluatorX, isolation="worktree")
