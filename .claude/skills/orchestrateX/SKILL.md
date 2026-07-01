@@ -11,7 +11,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
-| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal/xunit | `modules/01-environment-init.md` |
+| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal only; xunit skips MCP | `modules/01-environment-init.md` |
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
@@ -43,6 +43,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
 | `-parallel` | `-parallel` | xwhole | off | Enable Agent Teams parallel execution within Mode A |
 | `-team` | `-team [name]` | xwhole (with `-parallel`) | `workflow-{timestamp}` | Agent Team name for parallel workflow |
+| `-prompt` | `-prompt` | xunit | off | Run promptX before coderX; without it, pass raw requirement directly |
 
 ### Parsing Rules
 
@@ -57,6 +58,7 @@ Extract sequentially from `$ARGUMENTS`: command name → optional flags → requ
 | `-box` | Branch name (alphanumeric, hyphens, underscores) after `-box` | skip | Sandbox branch name |
 | `-parallel` | Presence flag | off | Agent Teams parallel mode |
 | `-team` | Name after `-team` | `workflow-{timestamp}` | Team name for parallel mode |
+| `-prompt` | Presence flag | off | xunit only: enable promptX preprocessing |
 | requirement | Remaining text after removing above params | — | User requirement |
 
 **Examples**:
@@ -74,6 +76,7 @@ Extract sequentially from `$ARGUMENTS`: command name → optional flags → requ
 - `-N`: Must be positive integer (1-10). If invalid or missing, use default `2`.
 - `-box`: Must be valid branch name (alphanumeric, hyphens, underscores). If empty, skip sandbox.
 - `-parallel`: No value needed. Presence flag enables Agent Teams mode within xwhole.
+- `-prompt`: No value needed. Only valid for xunit; ignored by xwhole/xlocal.
 
 **Step 3: Remember parsed parameters**
 
@@ -254,13 +257,14 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
-- **Entry**: Main Agent invokes `promptX` to extract intent → outputs structured prompt → dispatches coderX with structured prompt -> report to user. evaluatorX only invoked when explicitly requested.
-- **promptX integration**: Before dispatching coderX, Main Agent invokes `promptX` skill to extract 9 dimensions from user requirement, run diagnostic checklist, and output structured prompt. This reduces coderX exploration time.
-- **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives structured prompt from promptX.
+- **Entry**: Main Agent dispatches coderX directly with the raw requirement by default -> report to user. evaluatorX only invoked when explicitly requested.
+- **promptX integration**: Optional. Only invoke `promptX` when the user passes `-prompt`; then pass the structured prompt plus original requirement to coderX.
+- **MCP / knowledge graph**: Skipped entirely. xunit must not probe MCP, call `server-memory`, read knowledge graph sections, or prepend MCP fallback instructions.
+- **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives raw requirement by default, or structured prompt only when `-prompt` is present.
 - **Status transitions (use templates above)**:
-  1. env_init → write `env_init → core_loop (xunit)` template
-  2. Invoke promptX → extract intent → output structured prompt
-  3. Dispatch coderX with structured prompt → use Dispatch Self-Check Protocol (pre/post)
+  1. xunit lightweight init: skip Module 01 MCP checks and write `env_init → core_loop (xunit)` template
+  2. If `-prompt` is present, invoke promptX; otherwise skip prompt preprocessing
+  3. Dispatch coderX lightweight mode with "no MCP / no knowledge graph / no Bus Payload" instruction
   4. Auto-complete → write `exit signal → wait` template
 
 ---
@@ -590,7 +594,7 @@ child_iterations = {
 ```
 
 **Dispatch Format**:
-- Pass `Parent: [path]` + `Child: [path]` (all modes use Hybrid Tree)
+- Pass `Parent: [path]` + `Child: [path]` (xwhole/xlocal only; xunit is exempt from Hybrid Tree)
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 
@@ -723,4 +727,3 @@ Read change analysis results, execute:
 2. **State isolation**: Stay in current workflow mode until completion. No cross-mode calls.
 3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrateX/hybrid-template.md`). unit exempt.
 4. **Concurrency protection**: Before starting any workflow, check for `.hybrid/.workflow-lock`. If lock exists, warn user and abort. Otherwise, create lock file with timestamp and mode. Remove lock on workflow completion or interruption.
-

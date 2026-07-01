@@ -1,6 +1,6 @@
 ---
 name: promptX
-description: Lightweight intent extractor for coderX. Extracts 9 dimensions from user input, runs diagnostic checklist, outputs structured prompt for immediate implementation. Used in xunit workflow to reduce coderX exploration time.
+description: Lightweight intent extractor for coderX. Extracts 9 dimensions from user input, runs diagnostic checklist, outputs structured prompt for immediate implementation. Optionally used by xunit when `-prompt` is present.
 version: 1.0.0
 author: TreeX
 ---
@@ -120,11 +120,14 @@ B) {另一个选项} | 优点: ... | 缺点: ...
 
 ## Integration with xunit
 
-When xunit workflow receives a requirement:
-1. Main Agent invokes promptX (this skill)
-2. promptX extracts intent and outputs structured prompt
-3. Main Agent passes structured prompt to coderX
-4. coderX starts implementing with clear context (no exploration needed)
+xunit does not invoke promptX by default. It invokes promptX only when the user passes `-prompt`:
+1. Main Agent detects `xunit -prompt ...`
+2. Main Agent dispatches Agent(promptMasterX)
+3. promptMasterX invokes promptX (this skill)
+4. promptX extracts intent and outputs structured prompt
+5. Main Agent passes structured prompt plus original requirement to Agent(coderX)
+
+Without `-prompt`, xunit passes the raw requirement directly to Agent(coderX).
 
 ## Boundaries
 

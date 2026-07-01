@@ -12,15 +12,17 @@ Do not write `.claude/*` from Codex tasks. Claude-side files are for the Claude 
 
 > **Full specification**: `.codex/skills/orchestrateX/SKILL.md`
 
-Codex does not register project subagents. The main Codex agent owns orchestration directly and uses `.codex/agents/` prompt references when a `coderX`, `evaluatorX`, `promptMasterX`, or `abstracterX` handoff needs to be expressed.
+Codex uses project subagent definitions from `.codex/agents/`. The main Codex agent owns orchestration, but implementation, evaluation, prompt preprocessing, and abstraction handoffs must be dispatched to the corresponding subagent (`coderX`, `evaluatorX`, `promptMasterX`, `abstracterX`) instead of being simulated by main-agent roleplay.
+
+If a Codex host cannot dispatch project subagents, report that capability as degraded before continuing. Do not silently pretend to be `coderX` / `evaluatorX` / `promptMasterX` in the main-agent context.
 
 For code development, feature implementation, refactoring, or bug fixes:
 
 - Follow the relevant `.codex/skills/` workflow.
-- Keep changes scoped to project code and Codex/OpenCode config.
+- Keep changes scoped to project code and Codex config.
 - Do not modify `.claude/*`.
 
-Direct handling is allowed for read-only exploration, Codex/OpenCode config edits, git operations, and cases where the user explicitly asks to skip workflow handling.
+Direct handling is allowed for read-only exploration, Codex config edits, git operations, and cases where the user explicitly asks to skip workflow handling.
 
 ---
 
@@ -46,14 +48,12 @@ Use the encrypted-source fallback only when direct reads fail, produce garbled t
 
 - **Read fallback**: use `rg` via Bash to search/read affected source content.
 - **Modify fallback**: use precise Edit replacements to preserve encoding; avoid whole-file Write on affected source files.
-- Codex/OpenCode config files such as `AGENTS.md`, `.codex/*`, and `.opencode/*` can be read and written normally.
+- Codex config files such as `AGENTS.md` and `.codex/*` can be read and written normally.
 
 ---
 
 ## Runtime Files
 
 - Codex config: `.codex/config.toml`
-- Codex prompt references: `.codex/agents/`
+- Codex subagent definitions: `.codex/agents/`
 - Codex skills: `.codex/skills/`
-- OpenCode prompt references: `.opencode/agents/`
-- OpenCode skills/commands: `.opencode/skills/`, `.opencode/commands/`

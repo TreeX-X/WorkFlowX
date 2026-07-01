@@ -11,7 +11,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
-| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal/xunit | `modules/01-environment-init.md` |
+| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal only; xunit skips MCP | `modules/01-environment-init.md` |
 | 2 | Bus Payload Validation | Cross-agent handoff (coderX <-> evaluatorX) | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
@@ -36,6 +36,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 |-----------|--------|-------|---------|-------------|
 | `-N` | `-N [number]` | xwhole, xlocal | `2` | Maximum evaluation iteration rounds per Child |
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
+| `-prompt` | `-prompt` | xunit | off | Dispatch promptMasterX before coderX; without it, pass raw requirement directly |
 
 ### Parsing Rules (Optimized: Precompiled Regex + Session Object)
 
@@ -47,6 +48,7 @@ const PARAM_PATTERNS = {
   mode: /^\/?(xwhole|xlocal|xunit|xstatus|xprompt)\b/,
   N: /-N\s+(\d+)/,
   box: /-box\s+(\S+)/,
+  prompt: /-prompt\b/,
   team: /-team\s+(\S+)/,
   parallel: /-parallel\b/
 };
@@ -67,6 +69,7 @@ Parsed:
 
 - `-N`: Must be positive integer (1-10). If invalid or missing, use default `2`.
 - `-box`: Must be valid branch name (alphanumeric, hyphens, underscores). If empty, skip sandbox.
+- `-prompt`: No value needed. Only valid for xunit; ignored by xwhole/xlocal.
 
 **Step 3: Store in Session Parameter Object**
 
@@ -76,6 +79,7 @@ const sessionParams = {
   mode: 'xwhole',           // xwhole | xlocal | xunit
   iteration_limit: 2,       // from -N, default 2
   sandbox_branch: null,     // from -box, null if not provided
+  use_prompt_preprocess: false, // from -prompt, xunit only
   team_name: null,          // from -team, null if not provided
   is_parallel: false,       // -parallel flag
   requirement: '',          // remaining text after param extraction
@@ -124,7 +128,7 @@ const sessionParams = {
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> promptMasterX optimization (module 04) -> Core Iteration Loop.
+- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> dispatch Agent(promptMasterX) when prompt preprocessing is required (module 04) -> Core Iteration Loop.
 - **PRD detection (priority order)**:
   1. Explicit Hybrid Tree path in `sessionParams.requirement` -> validate Parent + Child, use directly
   2. No explicit path -> scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent Section 7 Child scopes, Child Section 7 AC, and Section 8.1 file indexes
@@ -136,9 +140,10 @@ const sessionParams = {
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
-- **Entry**: Main Agent invokes `promptX` to extract intent → outputs structured prompt → dispatches coderX with structured prompt -> report to user. evaluatorX only invoked when explicitly requested.
-- **promptX integration**: Before dispatching coderX, Main Agent invokes `promptX` skill to extract 9 dimensions from user requirement, run diagnostic checklist, and output structured prompt. This reduces coderX exploration time.
-- **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives structured prompt from promptX.
+- **Entry**: Main Agent dispatches Agent(coderX) directly with the raw requirement by default -> report to user. evaluatorX only invoked when explicitly requested.
+- **prompt preprocessing**: Optional. Only when the user passes `-prompt`, dispatch Agent(promptMasterX) first; pass its structured prompt plus the original requirement to Agent(coderX).
+- **MCP / knowledge graph**: Skipped entirely. xunit must not probe MCP, call `server-memory`, read knowledge graph sections, or prepend MCP fallback instructions.
+- **coderX lightweight mode**: Dispatch real Agent(coderX). It only loads `guideX` + `razorX`, does not load `specX`, and does not output Bus Payload. It receives raw requirement by default, or structured prompt only when `-prompt` is present.
 
 ---
 
@@ -309,10 +314,10 @@ While ready_queue is not empty:
      - If child_iterations[current].remaining <= 0:
        mark as "Limit Reached", report to human, continue to next
   
-  1. Dispatch coderX: (Parent, current) + [prior Fix Instructions, if any]
+  1. Dispatch Agent(coderX): (Parent, current) + [prior Fix Instructions, if any]
   2. coderX implements, outputs Change Summary Payload
-  3. Validate Payload (module 02), forward to evaluatorX: (Parent, current, Change Summary)
-  4. evaluatorX evaluates, outputs Evaluation Result Payload
+  3. Validate Payload (module 02), forward to Agent(evaluatorX): (Parent, current, Change Summary)
+  4. Agent(evaluatorX) evaluates, outputs Evaluation Result Payload
   5. Load module 03 for Post-Evaluation document update (incremental)
   
   6. Result handling:
@@ -416,7 +421,7 @@ When Requirement Change Handling determines Change Type = new_branch:
    - Create new Child document using Child template, fill feature description -> Section 7 Description, suggested ACs -> Section 7 AC
    - Add new row to Parent Section 7 (no dependency: append end; has dependency: insert before dependent)
    - Update Parent Section 8.3 (if new dependencies)
-3. Dispatch coderX: (Parent, new Child)
+3. Dispatch Agent(coderX): (Parent, new Child)
 
 
 ---

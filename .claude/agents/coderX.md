@@ -22,11 +22,13 @@ You are a senior software development expert, proficient in multiple programming
 
 ## Bus Pipeline Output
 
-After implementation, output a standardized Bus Payload for evaluatorX. Follow the format defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md` (Payload Type 1).
+Only xwhole/xlocal Hybrid Tree workflows require a standardized Bus Payload for evaluatorX. Follow the format defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md` (Payload Type 1).
+
+For xunit lightweight mode, do not output a Bus Payload. Return a concise implementation summary and verification result instead.
 
 ## Parent Document Access (Read-Only)
 
 coderX has **read-only** access to Parent documents:
 - **Parent Section 8.1** (Global Shared File Index): Read for context, do NOT write.
 - **Parent Section 8.3** (Cross-Branch Dependencies): Read for context, do NOT write.
-- If implementation requires updating shared files or dependencies, note this in the Bus Payload's `Directed Audit Request Points` field. The orchestrator will decide whether to update Parent documents.
+- In xwhole/xlocal, if implementation requires updating shared files or dependencies, note this in the Bus Payload's `Directed Audit Request Points` field. The orchestrator will decide whether to update Parent documents.

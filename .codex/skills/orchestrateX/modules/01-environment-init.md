@@ -2,12 +2,16 @@
 
 When you are in a new project or opening a conversation with a user for the first time, you must have "out-of-box self-check" awareness:
 
-1. Proactively check whether the project provides MCP tool dependencies (such as `server-memory` and `server-sequential-thinking`).
+1. Proactively check whether the project provides MCP tool dependencies (such as `server-memory` and `server-sequential-thinking`) for xwhole/xlocal workflows.
 2. If the evaluation environment may be missing these MCP Servers, kindly remind the user: "Detected that the current workflow depends on external MCP Server capabilities. If this is your first deployment, please refer to the `mcp.json.template` in the root directory to configure it in your IDE or client." Guide the user through the prerequisite configuration before smoothly entering the main workflow.
+
+**xunit exception**: xunit is a lightweight unit workflow. It skips MCP health checks entirely and must not use knowledge graph retrieval. Dispatch Agent(coderX) with an explicit instruction to rely only on the current prompt and local code exploration.
 
 ## 1.1 MCP Health Check & Auto-Recovery (MCP Lifecycle)
 
-**Trigger**: Every entry into xwhole/xlocal/xunit workflow, before any other operation.
+**Trigger**: Every entry into xwhole/xlocal workflow, before any other operation.
+
+**Do not run for xunit**. xunit does not probe `server-memory`, does not write MCP status markers, and does not prepend MCP fallback instructions.
 
 ### Step 1: Probe with Retry
 
@@ -47,7 +51,7 @@ If the call fails:
   - **Fallback Impact**: Knowledge graph retrieval skipped; relying on 8.1/8.3 file index only
   ```
 
-**If no hybrid document exists** (unit mode): Fall back to session-local `#tool:todo` marker (`MCP_DEGRADED`), preserving backward compatibility.
+**If no hybrid document exists**: Do not persist MCP status. xunit never reaches this step.
 
 ### Step 4: SubAgent Dispatch Adaptation (Degraded Mode Only)
 
@@ -57,7 +61,7 @@ When calling coderX / evaluatorX in degraded mode, prepend this instruction pref
 
 ### Step 5: Recovery Detection
 
-Each time entering a new xwhole/xlocal/xunit workflow, **always re-probe** (repeat Step 1). If MCP was previously Degraded and is now Active:
+Each time entering a new xwhole/xlocal workflow, **always re-probe** (repeat Step 1). If MCP was previously Degraded and is now Active:
 
 1. Update hybrid doc Section 0 status to `Active`, clear `Degraded Since`, set `Fallback Impact: None`.
 2. Notify user:

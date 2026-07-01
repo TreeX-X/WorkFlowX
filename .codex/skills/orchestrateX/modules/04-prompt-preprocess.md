@@ -2,7 +2,7 @@
 
 > promptX is a lightweight intent extractor. Its responsibility is single: extract 9 dimensions from user's raw requirement text, run diagnostic checklist, and output structured prompts for coderX.
 
-**Invocation Method**: Main Agent invokes `promptX` skill directly (no sub-agent dispatch needed), passing the raw requirement text as the input.
+**Invocation Method**: Main Agent dispatches Agent(promptMasterX), passing the raw requirement text as the input. promptMasterX loads `promptX` internally and returns the structured prompt. Do not role-play promptMasterX in the main-agent context.
 
 ## 4.1 Skip Rules (Take Priority Over Auto-Trigger Rules)
 
@@ -16,14 +16,14 @@ When the user input satisfies **any** of the following conditions, skip promptX 
 
 | Mode | Scenario | Call promptX? | Description |
 |---|---|---|---|
-| `xunit` | Before calling coderX | Yes (auto) | Extract intent → output structured prompt → pass to coderX |
-| `xlocal` | Before first calling coderX | Yes (auto) | Same as above |
+| `xunit` | Only when `-prompt` is present | Optional | Dispatch Agent(promptMasterX), then pass its structured prompt plus original requirement to Agent(coderX). Without `-prompt`, pass the raw requirement directly to Agent(coderX) |
+| `xlocal` | Before first calling coderX | Yes (auto) | Dispatch Agent(promptMasterX), then pass the structured prompt to Agent(coderX) |
 | `xwhole` | Planner phase | No | Planner phase needs to retain original intent for conversational clarification |
 | `xwhole` | Coder phase (after PRD confirmation) | No | PRD itself is already structured |
-| `xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements → extract intent → pass to coderX |
+| `xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements, dispatch Agent(promptMasterX), then pass structured fix prompt to Agent(coderX) |
 | `xprompt` | Direct call | Yes | Does not enter any workflow; only performs intent extraction |
 
-**Passing Specification**: The structured prompt is passed as the main body to coderX, with the original requirement text attached in context to prevent intent loss.
+**Passing Specification**: When prompt preprocessing is invoked, the structured prompt is passed as the main body to Agent(coderX), with the original requirement text attached in context to prevent intent loss.
 
 ## 4.3 Prompt Compression (Optimized: Token Reduction)
 

@@ -6,12 +6,14 @@ description: Execute Mode C workflow (unit task, minimal change)
 
 **Executed by Main Agent directly.**
 
-When user inputs `/xunit [requirement]`:
+When user inputs `/xunit [-prompt] [requirement]`:
 
 1. Execute Mode C flow:
-   - Environment init (Module 01)
+   - Skip MCP health check and all knowledge graph retrieval
+   - If `-prompt` is present: invoke promptX before dispatch
+   - If `-prompt` is absent: pass the raw requirement directly to coderX
    - Dispatch Agent(coderX) lightweight mode
-     - Load guidelines skill only
+     - Load guideX + razorX only
      - No Hybrid Tree, no Bus Payload
      - No worktree isolation
    - Report to user

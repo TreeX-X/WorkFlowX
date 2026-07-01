@@ -34,7 +34,7 @@
 - Add CSS for hover tooltips, trend indicators, empty states, and enhanced mode badges.
 - Update HTML template with new placeholder patterns and enhanced elements.
 - Update rendering logic in module 07 for each optimization.
-- Sync changes to `.codex/`, `.github/`, `.opencode/` copies.
+- Sync changes to `.claude/` and `.codex/` copies.
 
 ### 3.2 Clearly Out-of-Scope / Non-Goals
 - No new colors or fonts beyond huashu-design palette.
@@ -57,7 +57,7 @@
 - [ ] No TODO or FIXME remains in core logic code.
 - [ ] Module 07 updated with enhanced data collection for all 5 optimizations.
 - [ ] HTML template updated with new CSS classes and placeholder patterns.
-- [ ] All 4 copies (`.claude/`, `.codex/`, `.github/`, `.opencode/`) synchronized.
+- [ ] Both runtime copies (`.claude/`, `.codex/`) synchronized.
 
 ---
 

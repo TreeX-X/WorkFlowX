@@ -65,7 +65,9 @@ If a memory observation contradicts the current file content, `git diff`, or act
 
 ### Step 5: Output Change Summary Payload
 
-After implementation, **proactively output a standardized Change Summary Payload**. Do not write to any document; only output Payload for Main Agent to validate and forward to evaluatorX.
+In xwhole/xlocal Hybrid Tree workflows, after implementation, **proactively output a standardized Change Summary Payload**. Do not write to any document; only output Payload for Main Agent to validate and forward to Agent(evaluatorX).
+
+xunit does not load specX and does not output Bus Payload.
 
 Format follows `.codex/skills/orchestrateX/modules/02-bus-payload.md` (Payload Type 1). Core fields:
 - `Changed Files`: list of modified files this round with summaries

@@ -3,8 +3,10 @@
 When entering a workflow for the first time, perform an "out-of-box self-check":
 
 1. Check for concurrent workflow conflicts (Step 0)
-2. Proactively check whether the project provides MCP tool dependencies (such as `server-memory` and `server-sequential-thinking`).
+2. Proactively check whether the project provides MCP tool dependencies (such as `server-memory` and `server-sequential-thinking`) for xwhole/xlocal workflows.
 3. If MCP Servers are missing, remind the user to configure them.
+
+**xunit exception**: xunit is a lightweight unit workflow. It skips MCP health checks entirely and must not use knowledge graph retrieval. Dispatch coderX with an explicit instruction to rely only on the current prompt and local code exploration.
 
 ## Step 0: Concurrency Lock Check
 
@@ -25,7 +27,9 @@ Before any other operation, check for `.hybrid/.workflow-lock`:
 
 ## 1.1 MCP Health Check & Auto-Recovery (MCP Lifecycle)
 
-**Trigger**: Every entry into xwhole/xlocal/xunit workflow, before any other operation.
+**Trigger**: Every entry into xwhole/xlocal workflow, before any other operation.
+
+**Do not run for xunit**. xunit does not probe `server-memory`, does not write MCP status markers, and does not prepend MCP fallback instructions.
 
 ### Step 1: Probe — Single Attempt
 
@@ -72,7 +76,7 @@ Generate real timestamp: `date -u +%Y-%m-%dT%H:%M:%SZ`
   - **Fallback Impact**: Knowledge graph retrieval skipped; relying on 8.1/8.3 file index only
   ```
 
-**If no hybrid document exists** (unit mode): Fall back to session-local `TodoWrite` marker (`MCP_DEGRADED`), preserving backward compatibility.
+**If no hybrid document exists**: Do not persist MCP status. xunit never reaches this step.
 
 ### Step 4: SubAgent Dispatch Adaptation (Degraded Mode Only)
 
@@ -82,7 +86,7 @@ When calling coderX / evaluatorX in degraded mode, prepend this instruction pref
 
 ### Step 5: Recovery Detection
 
-Each time entering a new workflow, **always re-probe** (repeat Step 1). If MCP was previously Degraded and is now Active:
+Each time entering a new xwhole/xlocal workflow, **always re-probe** (repeat Step 1). If MCP was previously Degraded and is now Active:
 
 1. Update hybrid doc Section 0 status to `Active`, clear `Degraded Since`, set `Fallback Impact: None`.
 2. Notify user:
@@ -101,7 +105,7 @@ Based on detected workflow mode, pre-load likely needed modules and sections:
 Mode Detection → Prefetch Map:
 - xwhole: Prefetch modules 01(done), 08, 04, hybrid-template
 - xlocal: Prefetch modules 01(done), 08, 04, hybrid-template
-- xunit: Prefetch modules 01(done), 04 only
+- xunit: No Module 01 MCP prefetch. Load Module 04 only when `-prompt` is present
 - xparallel: Prefetch modules 01(done), 08, 05, 06
 ```
 

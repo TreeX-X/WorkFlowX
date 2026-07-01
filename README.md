@@ -19,7 +19,6 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-FF5A1F?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-Skill-2A211B?style=flat-square&logo=openai&logoColor=white)
-![OpenCode](https://img.shields.io/badge/OpenCode-Skill-4A4038?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMiAxNWwtNS01IDEuNDEtMS40MUwxMCAxNC4xN2w3LjU5LTcuNTlMMTkgOGwtOSA5eiIvPjwvc3ZnPg==&logoColor=white)
 
 </div>
 
@@ -103,8 +102,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 |---|---|
 | **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → 搜索 `workflowx` → Install Plugin |
-| **OpenCode** | 在 `opencode.json` 添加 `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` |
-| **手动部署** | 把 `.claude/`、`.codex/` 或 `.opencode/` 拷进项目根目录，再按 `mcp.json.template` 挂载 MCP |
+| **手动部署** | 把 `.claude/` 或 `.codex/` 拷进项目根目录，再按 `mcp.json.template` 挂载 MCP |
 
 **3. 跑第一条需求**
 
@@ -112,7 +110,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 ```
 
-> Claude Code / OpenCode 可用斜杠命令；OpenAI Codex 使用自然语言前缀，例如直接以 `xwhole` 开头。
+> Claude Code 可用斜杠命令；OpenAI Codex 使用自然语言前缀，例如直接以 `xwhole` 开头。
 
 ---
 
@@ -122,7 +120,7 @@ xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 
 | 模式 | 适用场景 | 规划方式 | 验收循环 | 示例 |
 |---|---|---|---|---|
-| **`xunit`** | 单文件、小改动、明确修复 | promptX 提炼意图 | 默认不启用 evaluatorX | `xunit 给 Config 加超时配置` |
+| **`xunit`** | 单文件、小改动、明确修复 | 直接调用 coderX；仅 `-prompt` 时使用 promptX | 默认不启用 evaluatorX | `xunit 给 Config 加超时配置` |
 | **`xlocal`** | 1-2 个模块内的修复或局部功能 | 复用/生成最小 Hybrid Tree | 自动，最多 N 轮 | `xlocal 修复订单列表分页 bug` |
 | **`xwhole`** | 新功能、跨模块重构、高影响任务 | Phase 1 需求发现 → Phase 2 文档生成 | 自动，最多 N 轮 | `xwhole 实现订单中心` |
 | **`xwhole -parallel`** | 多个独立子任务并行推进 | 生成 Hybrid Tree 后按 Child 并行 | 多 coder / evaluator 并行 | `/xwhole -parallel 实现用户、订单、商品模块` |
@@ -240,9 +238,8 @@ xstatus --output ./reports/today.html
 |---|---|---|---|
 | **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | 支持 `/xwhole -parallel` |
 | **OpenAI Codex** | `.codex/` | 自然语言前缀：`xwhole` `xlocal` `xunit` `xstatus` `xprompt` | 不支持 |
-| **OpenCode** | `.opencode/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | 不支持 |
 
-三套配置共享同一套工作流思想，但会根据宿主工具能力调整触发语法、子代理调用方式和并行能力。
+两套配置共享同一套工作流思想，但会根据宿主工具能力调整触发语法、子代理调用方式和并行能力。
 
 ---
 
@@ -257,7 +254,6 @@ xstatus --output ./reports/today.html
 | Phase 1 需求发现 + 主动质疑 | 强 | 基础 | 基础 |
 | Token 增量优化 | 系统化 | 部分 | 部分 |
 | Worktree 隔离与跨分支检测 | 支持 | 部分 | 部分 |
-| 多平台配置 | Claude / Codex / OpenCode | 多平台 | 有限 |
 | 状态报告可视化 | 内置 xstatus | 不同实现 | 不同实现 |
 
 ---

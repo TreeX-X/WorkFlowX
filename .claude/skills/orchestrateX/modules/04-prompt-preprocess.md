@@ -16,14 +16,14 @@ When the user input satisfies **any** of the following conditions, skip promptX 
 
 | Mode | Scenario | Call promptX? | Description |
 |---|---|---|---|
-| `/xunit` | Before calling coderX | Yes (auto) | Extract intent → output structured prompt → pass to coderX |
+| `/xunit` | Only when `-prompt` is present | Optional | Extract intent, output structured prompt, then pass to coderX. Without `-prompt`, pass the raw requirement directly to coderX |
 | `/xlocal` | After Hybrid Tree ready, before first calling coderX | Yes (auto) | PRD detection + optional auto-generation happens first; then extract intent for coderX |
 | `/xwhole` | Planning phase | No | Planning phase needs to retain original intent for conversational clarification |
 | `/xwhole` | Coder phase (after PRD confirmation) | No | PRD itself is already structured |
 | `/xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements → extract intent → pass to coderX |
 | `/xprompt` | Direct call | Yes | Does not enter any workflow; only performs intent extraction |
 
-**Passing Specification**: The structured prompt is passed as the main body to coderX, with the original requirement text attached in context to prevent intent loss.
+**Passing Specification**: When promptX is invoked, the structured prompt is passed as the main body to coderX, with the original requirement text attached in context to prevent intent loss.
 
 ## 4.3 Prompt Compression (Optimized: Token Reduction)
 

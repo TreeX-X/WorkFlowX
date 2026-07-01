@@ -1,7 +1,11 @@
-# WorkflowX Codex Agent Prompts
+# WorkflowX Codex Subagents
 
-OpenAI Codex does not register project subagents from `.codex/agents/*.toml`.
-These files are prompt references for WorkflowX handoffs only.
+Codex registers project subagents from `.codex/agents/*.toml` when the host supports project subagent dispatch. These files define the WorkflowX handoff agents:
+
+- `coderX`: implementation
+- `evaluatorX`: evaluation
+- `promptMasterX`: prompt preprocessing
+- `abstracterX`: code and architecture summarization
 
 Runtime behavior lives in:
 
@@ -9,4 +13,6 @@ Runtime behavior lives in:
 - `.codex/config.toml` for Codex-native project settings such as sandbox policy and MCP servers.
 - `.codex/skills/` for reusable Codex skills.
 
-The active Codex main agent performs orchestration directly and may use the `coderX`, `evaluatorX`, `promptMasterX`, and `abstracterX` prompt references when a WorkflowX handoff needs to be expressed.
+The active Codex main agent performs orchestration only. When a WorkflowX handoff is required, dispatch the matching subagent definition instead of role-playing that agent inside the main context.
+
+If the current Codex host cannot dispatch project subagents, report subagent dispatch as degraded and ask whether to continue in a direct-execution fallback. Do not silently simulate a subagent.

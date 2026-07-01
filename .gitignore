@@ -12,6 +12,4 @@ PLATFORM-MAP.md
 # Exclude README assets
 !docs/assets/**
 
-# Skills
-.opencode/skills/huashu-design/
 node_modules/

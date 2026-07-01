@@ -19,7 +19,6 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-FF5A1F?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-Skill-2A211B?style=flat-square&logo=openai&logoColor=white)
-![OpenCode](https://img.shields.io/badge/OpenCode-Skill-4A4038?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMiAxNWwtNS01IDEuNDEtMS40MUwxMCAxNC4xN2w3LjU5LTcuNTlMMTkgOGwtOSA5eiIvPjwvc3ZnPg==&logoColor=white)
 
 </div>
 
@@ -103,8 +102,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 |---|---|
 | **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → search `workflowx` → Install Plugin |
-| **OpenCode** | Add `"plugin": ["workflowx@git+https://github.com/TreeX-X/workflowX.git"]` to `opencode.json` |
-| **Manual** | Copy `.claude/`, `.codex/`, or `.opencode/` into the project root, then mount MCP per `mcp.json.template` |
+| **Manual** | Copy `.claude/` or `.codex/` into the project root, then mount MCP per `mcp.json.template` |
 
 **3. Run your first requirement**
 
@@ -112,7 +110,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 xwhole implement user login with email/password and OAuth
 ```
 
-> Claude Code / OpenCode can use slash commands. OpenAI Codex uses natural-language prefixes, for example starting the message with `xwhole`.
+> Claude Code can use slash commands. OpenAI Codex uses natural-language prefixes, for example starting the message with `xwhole`.
 
 ---
 
@@ -122,7 +120,7 @@ Choose by blast radius. If unsure, describe the requirement and RouteX can recom
 
 | Mode | Use case | Planning | Verify loop | Example |
 |---|---|---|---|---|
-| **`xunit`** | Single-file, small, clear change | promptX extracts intent | evaluatorX off by default | `xunit add timeout config to Config` |
+| **`xunit`** | Single-file, small, clear change | Direct coderX; promptX only with `-prompt` | evaluatorX off by default | `xunit add timeout config to Config` |
 | **`xlocal`** | Bug fix or local feature within 1-2 modules | Reuse/create minimal Hybrid Tree | Auto, up to N rounds | `xlocal fix order list pagination bug` |
 | **`xwhole`** | New feature, cross-module refactor, high-impact work | Phase 1 discovery → Phase 2 docs | Auto, up to N rounds | `xwhole build the order center` |
 | **`xwhole -parallel`** | Multiple independent subtasks in parallel | Generate Hybrid Tree, then dispatch by Child | Parallel coder/evaluator teammates | `/xwhole -parallel build user, order, product modules` |
@@ -240,9 +238,8 @@ xstatus --output ./reports/today.html
 |---|---|---|---|
 | **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | Supports `/xwhole -parallel` |
 | **OpenAI Codex** | `.codex/` | Natural-language prefix: `xwhole` `xlocal` `xunit` `xstatus` `xprompt` | Not supported |
-| **OpenCode** | `.opencode/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | Not supported |
 
-All configs share the same workflow model, with trigger syntax, sub-agent dispatch, and parallelism adapted to the host tool.
+Both configs share the same workflow model, with trigger syntax, sub-agent dispatch, and parallelism adapted to the host tool.
 
 ---
 
@@ -257,7 +254,6 @@ Full comparison: [comparison-report.md](docs/comparison-report.md).
 | Phase 1 discovery + proactive challenge | Strong | Basic | Basic |
 | Incremental token optimization | Systematic | Partial | Partial |
 | Worktree isolation + cross-branch checks | Supported | Partial | Partial |
-| Multi-platform configs | Claude / Codex / OpenCode | Multi-platform | Limited |
 | Status report visualization | Built-in xstatus | Different implementation | Different implementation |
 
 ---
