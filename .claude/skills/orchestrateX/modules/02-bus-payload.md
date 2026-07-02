@@ -1,10 +1,10 @@
 # 2. Bus Payload Specification & Validation
 
-> **Core principle**: Main Agent is the sole document writer. Downstream Bus Payloads do not carry document write instructions. The upstream Type 0 Dispatch Payload may carry Parent/Child paths only as read/routing context for coderX.
+> **Core principle**: Main Agent is the sole document writer. Downstream Bus Payloads do not carry document write instructions. Upstream Dispatch Payloads may carry Parent/Child paths only as read/routing context for subagents.
 
 In xwhole/xlocal workflows, agents pass information via structured Payloads. Main Agent validates format, forwards Payloads, and performs document updates. xunit uses only the upstream Type 0 Dispatch Payload and does not require downstream Bus Payloads unless the user explicitly asks for evaluation.
 
-For every automatic handoff to coderX, Main Agent must first build a clear Dispatch Payload. This is the upstream execution contract. Do not rely on loose natural-language prompts such as "implement this Child" or "fix the above issues".
+For every automatic handoff to coderX or evaluatorX, Main Agent must first build a clear Dispatch Payload. This is the upstream execution contract. Do not rely on loose natural-language prompts such as "implement this Child", "fix the above issues", or "review this change".
 
 ---
 
@@ -78,6 +78,72 @@ coderX outputs after completing implementation. Main Agent validates and forward
 
 ---
 
+## 2.1.5 Payload Type 1.5: Main Agent -> evaluatorX (Review Dispatch)
+
+Main Agent outputs this payload as the primary input when dispatching Agent(evaluatorX). evaluatorX must read this payload before deciding what documents, source files, or MCP nodes to inspect.
+
+```markdown
+### Dispatch Payload: evaluatorX Review Task
+- **Workflow Mode**: [xlocal | xwhole | prompt]
+- **Evaluation Type**: [full | partial | fix | final | prompt-based]
+- **Review Objective**: [one concrete review outcome]
+- **Parent Path**: [path or N/A for prompt-based]
+- **Child Path**: [path or N/A for prompt-based]
+- **Acceptance Source**: [Child Section 7 | original prompt]
+- **Original Prompt**: [raw user prompt or N/A]
+- **Prior Evaluation Source**: [Child Section 9 | N/A]
+- **Change Summary**: [Payload Type 1 content or concise reference]
+- **Changed Files**:
+  - [file path]
+- **Affected ACs Claimed**:
+  - [AC identifier or summary, or "N/A for full mode"]
+- **Review Focus**:
+  - [specific logic, risk, integration point, or evaluator attention request]
+- **Required Reads**:
+  1. This Dispatch Payload
+  2. Change Summary Payload
+  3. git diff for Changed Files
+  4. Acceptance Source content: Child Section 7 scoped by Evaluation Type, or Original Prompt for prompt-based
+  5. Child Section 9 only when Prior Evaluation Source is not N/A
+- **Conditional Reads**:
+  - Parent Sections 0-6 only when global scope, NFR, DoD, or project constraints may be affected
+  - Parent Section 8.1 only to map changed files to known ownership/index
+  - Parent Section 8.3 only when dependency or cross-branch ownership is relevant
+  - Parent Section 8.2 / MCP only when exact node names are needed for a named review risk
+  - Additional source files only when changed code references their functions, types, API contracts, or shared state
+- **Do Not Read By Default**:
+  - full Parent document
+  - unrelated Child documents
+  - unrelated source files
+  - knowledge graph deep nodes
+- **Expansion Rules**:
+  - Expand only for a named risk: API contract, shared file, dependency, security, data loss, test gap, or cross-branch conflict
+  - Every expansion must be reported with path, reason, and result in `Context Expansion`
+- **MCP Policy**: [skip | on_demand | allowed]
+- **Output Contract**: Bus Payload Type 2
+```
+
+### Review Dispatch Rules
+
+- `full`: evaluate all ACs in Child Section 7, but still read diff and changed files first.
+- `partial`: evaluate claimed ACs plus ACs implicitly affected by git diff; inherit unaffected ACs from Child Section 9.
+- `fix`: evaluate previous failed/partial ACs and exact Fix Instructions, then verify no regression in directly touched ACs.
+- `final`: evaluate the Child or branch completion summary with the broadest review focus, but still use explicit changed files and declared review focus to guide reading.
+- `prompt-based`: allowed only for explicit no-Hybrid review requests; evaluate original prompt intent and skip Parent/Child reads.
+
+### Review Dispatch Validation
+
+Before invoking evaluatorX, Main Agent checks that required fields are present and mode-consistent:
+
+- `Changed Files`, `Required Reads`, `Conditional Reads`, `Expansion Rules`, and `Output Contract` must be non-empty.
+- `full`, `partial`, `fix`, and `final` must include valid `Parent Path`, `Child Path`, and `Acceptance Source=Child Section 7`.
+- `partial` and `fix` must include `Prior Evaluation Source=Child Section 9`.
+- `partial` must include non-empty `Affected ACs Claimed` unless Main Agent intentionally falls back to `full`.
+- `prompt-based` must use `Parent Path=N/A`, `Child Path=N/A`, `Acceptance Source=original prompt`, and `MCP Policy=skip` unless explicitly overridden.
+- If the payload cannot be assembled clearly, Main Agent must stop and ask for clarification instead of sending an ambiguous review task.
+
+---
+
 ## 2.2 Payload Type 2: evaluatorX -> Main Agent (Evaluation Result)
 
 evaluatorX outputs after completing evaluation. Main Agent reads this Payload for document updates and iteration decisions.
@@ -110,9 +176,13 @@ evaluatorX outputs after completing evaluation. Main Agent reads this Payload fo
 > Only output when cross-branch file conflicts are detected. Empty when no conflicts.
 - [file] modified by current Child, owned by [other Child] — severity: P0
 
+#### Context Expansion
+> Only output when evaluatorX reads beyond Required Reads. Empty when no expansion.
+- [path or MCP node] - Reason: [named risk] - Result: [compatible / issue found / pending]
+
 #### Conclusion
 - **Evaluation Result**: [PASS | Needs Fix]
-- **evaluation_mode**: [full | partial | prompt-based]
+- **evaluation_mode**: [full | partial | fix | final | prompt-based]
 - **Summary**: [one paragraph summarizing implementation quality, main gaps, suggested next steps]
 ```
 
@@ -152,7 +222,7 @@ Generated by Main Agent during the Requirement Change Handling flow to drive doc
 
 ## 2.4 Validation Rules (Optimized: Fast-Path)
 
-**Format check**: After each agent returns, Main Agent checks that all required `- **Field**:` entries in the Payload exist and are non-empty. For Type 0 Dispatch Payloads, `N/A` is allowed only where the mode-specific Dispatch Rules allow it.
+**Format check**: After each agent returns, Main Agent checks that all required `- **Field**:` entries in the Payload exist and are non-empty. For Type 0 and Type 1.5 Dispatch Payloads, `N/A` is allowed only where the mode-specific Dispatch Rules allow it.
 
 **Semantic check** (Payload Type 1): At least one file in `Changed Files` must appear in `git diff`. If none match, treat as anomaly.
 
@@ -176,14 +246,14 @@ return fullValidation(payload);
 
 ## 2.5 Incremental Context Passing (Optimized)
 
-When iterating on the same Child, use incremental context to reduce token consumption:
+When iterating on the same Child, use incremental context to reduce token consumption. coderX receives implementation context through Type 0. evaluatorX receives review context through Type 1.5 and must not default to full Parent/Child reads.
 
-### First Iteration
+### coderX First Iteration
 ```
 Full context: Parent §0-6, §7, §8.1, §8.2, §8.3 + Child §7, §8.1
 ```
 
-### Subsequent Iterations (Same Child)
+### coderX Subsequent Iterations (Same Child)
 
 ```
 Incremental context:
@@ -199,3 +269,7 @@ Incremental context:
 > **Evidence**: In diagnostic TEST-MEMORY-001, full Parent+Child context was ~13,506 chars (~3,377 tokens), while the §8.2 trunk plus on-demand `open_nodes` retrieval was ~1,369 chars (~342 tokens) — roughly a 90% prompt-size reduction.
 
 **Expected Savings**: ~90% token reduction in multi-iteration scenarios when using trunk + on-demand `open_nodes`.
+
+### evaluatorX Review Context
+
+evaluatorX does not use the full-context first-iteration rule. It starts from Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child Section 7 and conditional Parent/Child/MCP context only as allowed by the Review Dispatch.

@@ -193,7 +193,7 @@
 ## 9. Evaluation Report (Branch-Specific)
 ### 9.1 Most Recent Evaluation Metadata
 - **Evaluator/Agent**: [evaluatorX]
-- **evaluation_mode**: [full | partial]
+- **evaluation_mode**: [full | partial | fix | final | prompt-based]
 ### 9.2 Acceptance Criteria (AC) Compliance
 *(Table)*
 ### 9.3 Code Issue List + Fix Instructions

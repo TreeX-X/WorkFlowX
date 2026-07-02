@@ -2,7 +2,7 @@
 name: auditX
 description: >
   Structured code audit workflow supporting both PRD-based and prompt-based evaluation modes.
-  evaluatorX is a pure analyzer — reads docs + code, outputs structured Evaluation Result Payload.
+  evaluatorX is a pure analyzer — reads dispatch-selected docs + code, outputs structured Evaluation Result Payload.
   Document writes are handled by Main Agent, not evaluatorX.
 ---
 
@@ -15,7 +15,7 @@ In iterative development, an independent audit step is needed after the coding a
 - Whether code quality meets standards
 - Optimization direction for the next iteration
 
-**evaluatorX is a pure analyzer**: reads documents and code, outputs structured Evaluation Result Payload. Does not write to any document. Document updates are handled by Main Agent.
+**evaluatorX is a pure analyzer**: reads Review Dispatch-selected documents and code, outputs structured Evaluation Result Payload. Does not write to any document. Document updates are handled by Main Agent.
 
 ## Trigger Conditions
 
@@ -25,57 +25,93 @@ Loaded when the user or upstream agent requests "audit code", "evaluate implemen
 
 ## Core Workflow
 
-### Step 1: Load Specification Documents
+### Step 1: Read Review Dispatch Payload
 
-1. Read documents passed by Main Agent (Parent + Child hybrid paths)
-2. If no hybrid document, switch to **Prompt-Based mode** (see Step 2B)
-3. If specification documents exist, extract:
-   - **Requirements list**: functional requirements, non-functional requirements, business rules
-   - **Acceptance Criteria (AC)**: verifiable conditions for each requirement
-   - **Engineering file index**: Section 8.1 main index
-   - **Knowledge graph**: Section 8.2 node outlines
-4. **MCP knowledge graph retrieval**:
-   1. Read Parent §8.2 to collect exact entity names and relation summaries.
-   2. Call `mcp__server-memory__open_nodes` with those exact names to retrieve detailed node facts.
-   3. Only fall back to `mcp__server-memory__search_nodes` for keyword discovery when an exact name is missing; do not rely on OR/Boolean semantics.
-5. Read Section 8.3 incremental index differences
-6. **Read old Section 9**: Extract previous evaluation results for inheritance (needed by partial mode)
+1. Read the `Dispatch Payload: evaluatorX Review Task` handed off by Main Agent.
+2. If the Review Dispatch Payload is missing, internally inconsistent, or lacks required fields, stop and return `Evaluation Contract Missing` with the missing fields. Do not infer evaluation scope from conversation history.
+3. Extract:
+   - **Evaluation Type**: `full | partial | fix | final | prompt-based`
+   - **Parent Path / Child Path**
+   - **Acceptance Source / Original Prompt**
+   - **Changed Files**
+   - **Affected ACs Claimed**
+   - **Review Focus**
+   - **Required Reads / Conditional Reads / Expansion Rules**
+   - **MCP Policy**
+4. If no hybrid document is provided, switch to **Prompt-Based mode** only when the dispatch explicitly says so.
+
+### Step 1A: Required Reads, In Order
+
+Read only the required materials first:
+
+1. Change Summary Payload
+2. git diff for Changed Files
+3. changed file hunks and immediate surrounding code needed to understand the diff
+4. Acceptance Source content: Child Section 7 acceptance criteria scoped by Evaluation Type, or Original Prompt for prompt-based mode
+5. Child Section 9 only when `Prior Evaluation Source` is not `N/A`
+
+This ordering is intentional: evaluatorX should understand the actual code change before expanding document context.
+
+### Step 1B: Conditional Reads
+
+Read additional context only when the dispatch or diff creates a named risk:
+
+- Parent Sections 0-6: only when global scope, NFR, DoD, or project constraints may be affected.
+- Parent Section 8.1: only to map changed files to known ownership/index.
+- Parent Section 8.3: only when dependency or cross-branch ownership is relevant.
+- Parent Section 8.2 / MCP: only when exact node names are needed for a named review risk and `MCP Policy` permits it.
+- Additional source files: only when changed code references their functions, types, API contracts, or shared state.
+
+Every conditional read must be listed in the `Context Expansion` section of the Evaluation Result Payload with path/node, reason, and result.
 
 #### Memory vs. Code Truth
 
-If a memory observation contradicts the current file content, `git diff`, or actual code, the code/file truth wins. The agent must flag the discrepancy in the Evaluation Report (Payload Type 2) and must update or delete the stale memory observation using `mcp__server-memory__add_observations` or `mcp__server-memory__delete_observations`.
+If a memory observation contradicts the current file content, `git diff`, or actual code, the code/file truth wins. evaluatorX must flag the discrepancy in the Evaluation Report (Payload Type 2) and `Context Expansion`. Do not update memory directly; Main Agent handles stale memory cleanup through the memory hygiene process.
 
 #### Hybrid Tree Reading
 
-Per `orchestrateX/SKILL.md` Hybrid Tree Section Map. evaluatorX-specific: read **Child Section 9** to inherit prior evaluation results (needed by partial mode).
+Use the Review Dispatch Payload as the reading contract. The Hybrid Tree Section Map defines available sections, not permission to read them all by default. evaluatorX-specific default: read **Child Section 7**, and read **Child Section 9** only when prior evaluation inheritance is required.
 
 ### Step 2: Get Code Changes + Evaluation Mode Detection
 
 1. **Read Change Summary Payload**: coderX's change summary (which files modified, which ACs claimed affected)
-2. **Read git diff**: Combine with Payload scope, get unstaged + staged changes
+2. **Read git diff**: Combine with Review Dispatch scope, get unstaged + staged changes for Changed Files
 3. If git diff is empty, get changes from the most recent commit
-4. **Search context files**: Search related files for modules, interfaces, types referenced by coderX
+4. **Context expansion check**: Read related files only when the diff creates a named risk allowed by the Review Dispatch Expansion Rules
 
 #### Evaluation Mode Detection
 
 | Mode | Identifier | Trigger | Behavior |
 |------|-----------|---------|----------|
-| **Full** | `full` | First evaluation / prior Needs Fix / no history 9.* / Payload lacks AC list | Evaluate all ACs in Child Section 7 |
-| **Partial** | `partial` | Prior PASS and Payload contains non-empty AC list | Evaluate only declared ACs, inherit rest |
-| **Prompt-Based** | `prompt-based` | No PRD/hybrid document [DEPRECATED for xlocal — always has Hybrid Tree] | Evaluate original user prompt intent |
+| **Full** | `full` | Review Dispatch says `Evaluation Type=full` | Evaluate all ACs in Child Section 7 |
+| **Partial** | `partial` | Review Dispatch says `Evaluation Type=partial` | Evaluate declared and implicitly affected ACs, inherit rest |
+| **Fix** | `fix` | Review Dispatch says `Evaluation Type=fix` | Evaluate prior failed/partial ACs, exact Fix Instructions, and regression risk in touched ACs |
+| **Final** | `final` | Review Dispatch says `Evaluation Type=final` | Evaluate Child/branch completion with the broadest review focus allowed by dispatch |
+| **Prompt-Based** | `prompt-based` | Dispatch explicitly declares prompt-based evaluation without a Hybrid Tree | Evaluate original user prompt intent |
 
 **Decision rules**:
-1. No hybrid document -> `prompt-based`
-2. Read Child Section 9.1 `evaluation_mode` and 9.4 conclusion
-3. Prior `Needs Fix` or no history -> `full`
-4. Prior `PASS` and Payload has non-empty AC list -> `partial`
-5. Other -> `full` (safe fallback)
+1. Use Review Dispatch `Evaluation Type` as the source of truth. Do not re-derive mode from conversation context.
+2. No hybrid document -> `prompt-based` only when Review Dispatch explicitly declares it and includes the original prompt; otherwise return `Evaluation Contract Missing`.
+3. `partial` and `fix` require `Prior Evaluation Source=Child Section 9`; if missing, return `Evaluation Contract Missing`.
+4. If `partial` has no affected AC list and no explicit fallback to `full`, return `Evaluation Contract Missing`.
+5. If git diff implies undeclared AC impact, widen the evaluated AC set only to the implicitly affected ACs and record the basis.
 
 **Partial mode execution**:
 1. Extract prior passed AC list from Child Section 9.2
 2. Identify this round's declared ACs from Payload's `Affected ACs`
 3. Evaluate only ACs within declared scope
 4. Unaffected ACs directly inherit prior status
+
+**Fix mode execution**:
+1. Extract prior failed/partial ACs and Fix Instructions from Child Section 9.
+2. Evaluate the exact Fix Instructions first.
+3. Evaluate any directly touched ACs for regression risk.
+4. Inherit unaffected passed ACs directly from Child Section 9.
+
+**Final mode execution**:
+1. Evaluate all ACs in Child Section 7.
+2. Use Review Focus to inspect completion, integration, and regression risks.
+3. Keep context expansion bounded by the same Conditional Reads and Expansion Rules.
 
 #### Step 2B: Prompt-Based Mode (No PRD)
 
@@ -154,12 +190,12 @@ Beyond requirement alignment, review general code quality:
 
 ### Step 6: Supplementary Search
 
-If the following situations are discovered during evaluation, proactively search other project files:
+If the following situations are discovered during evaluation, supplementary search is allowed but must follow the Review Dispatch Expansion Rules:
 - Changed code references functions/classes/modules not included in the changes
 - Specification requirements involve integration points with existing systems
 - Suspected duplicate implementation or conflict with existing functionality
 
-Prioritize reading via 8.1 file index; supplement with 8.3 incremental differences as needed.
+Prefer the smallest useful read: changed file hunk -> directly referenced file/function/type -> Parent 8.1/8.3 only when ownership or dependency mapping is needed. Record every supplementary read in `Context Expansion`.
 
 ---
 
@@ -169,4 +205,4 @@ Prioritize reading via 8.1 file index; supplement with 8.3 incremental differenc
 2. **Actionability**: Every issue must specify file:line so coderX can directly locate the fix.
 3. **Severity distinction**: P0 blocking (must fix) / P1 improvement (optimization opportunity) / P2 suggestion (non-functional).
 4. **No standard, no evaluation**: Requirements without defined evaluation criteria in the spec document are marked "Unevaluable".
-5. **Index first**: Read 8.1 main index and knowledge entries before evaluation; supplement with 8.3 incremental differences when present.
+5. **Dispatch first**: Read the Review Dispatch Payload and git diff before expanding document or source context; use 8.1/8.3/8.2 only under the conditional read rules.

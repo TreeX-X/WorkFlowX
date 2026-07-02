@@ -148,11 +148,13 @@ Agent(
   description="Evaluator teammate for parallel review",
   prompt="You are evaluator-1 in team '{team-name}'. Your workflow:
 1. Wait for evaluation requests from team lead via SendMessage
-2. When received: read Parent + Child hybrid docs, check git diff
-3. Evaluate against acceptance criteria
-4. Output Evaluation Result Payload
-5. Send result back (messages auto-deliver to team lead)
-6. Go idle until next request"
+2. When received: read the `Dispatch Payload: evaluatorX Review Task` first
+3. If the Review Dispatch is missing or inconsistent, return `Evaluation Contract Missing`
+4. Inspect git diff for Changed Files, then read only Required Reads and Conditional Reads
+5. Evaluate against acceptance criteria or original prompt as specified by the dispatch
+6. Output Evaluation Result Payload
+7. Send result back (messages auto-deliver to team lead)
+8. Go idle until next request"
 )
 ```
 

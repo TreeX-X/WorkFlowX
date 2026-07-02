@@ -12,7 +12,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
 | 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal only; xunit skips MCP | `modules/01-environment-init.md` |
-| 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX dispatch contract | `modules/02-bus-payload.md` |
+| 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX/evaluatorX dispatch contracts | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
 | 7 | Status Report | `xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
@@ -222,7 +222,7 @@ After trigger: execute knowledge graph writeback first -> output complete Hybrid
 
 ## Hybrid Tree Section Map (Optimized: Section-Level Caching)
 
-coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and evaluatorX receives the validated evaluation context from Main Agent. They read according to the following scope:
+coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and evaluatorX receives a Type 1.5 Review Dispatch Payload from Main Agent. The table below defines available Hybrid Tree sections; for evaluatorX, actual reads are controlled by Required Reads and Conditional Reads in the Review Dispatch Payload, not by default full-document loading.
 
 | Document | Section | Content | Readers | Cache Strategy |
 |----------|---------|---------|---------|----------------|
@@ -325,11 +325,23 @@ While ready_queue is not empty:
      - Fix Instructions: prior evaluator Fix Instructions, if any
   2. Validate Type 0 Dispatch Payload using module 02, then dispatch Agent(coderX)
   3. coderX implements, outputs Change Summary Payload
-  4. Validate Payload (module 02), forward to Agent(evaluatorX): (Parent, current, Change Summary)
-  5. Agent(evaluatorX) evaluates, outputs Evaluation Result Payload
-  6. Load module 03 for Post-Evaluation document update (incremental)
+  4. Validate Payload Type 1 (module 02)
+  5. Build Type 1.5 Review Dispatch Payload for Agent(evaluatorX):
+     - Workflow Mode: xwhole or xlocal
+     - Evaluation Type: full for first evaluation/no history, partial when prior PASS + affected ACs exist, fix when prior Fix Instructions drive this round
+     - Parent Path: current Parent hybrid path
+     - Child Path: current Child hybrid path
+     - Change Summary: validated Payload Type 1
+     - Changed Files: from Payload Type 1 and git diff
+     - Affected ACs Claimed: from Payload Type 1, or N/A for full
+     - Review Focus: Directed Audit Points + changed file risks + prior Fix Instructions, if any
+     - Required Reads / Conditional Reads / Expansion Rules: per module 02 Payload Type 1.5
+     - Output Contract: Bus Payload Type 2
+  6. Validate Type 1.5 Review Dispatch Payload, then dispatch Agent(evaluatorX)
+  7. Agent(evaluatorX) evaluates, outputs Evaluation Result Payload
+  8. Load module 03 for Post-Evaluation document update (incremental)
   
-  7. Result handling:
+  9. Result handling:
      - PASS:
        a. Mark current as PASS
        b. For each dependent in adj[current]:
@@ -370,6 +382,8 @@ child_iterations = {
 - Pass a full Type 0 Dispatch Payload from `modules/02-bus-payload.md`.
 - Do not dispatch coderX with only `Parent: [path]` + `Child: [path]`.
 - Do not ask coderX to infer mode, output contract, MCP policy, verification scope, or fix-round intent from conversation context.
+- Pass a full Type 1.5 Review Dispatch Payload to evaluatorX after validating coderX's Change Summary.
+- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, MCP policy, or expansion rules from conversation context.
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 

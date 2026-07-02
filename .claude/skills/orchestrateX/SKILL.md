@@ -12,7 +12,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
 | 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal only; xunit skips MCP | `modules/01-environment-init.md` |
-| 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX dispatch contract | `modules/02-bus-payload.md` |
+| 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX/evaluatorX dispatch contracts | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
@@ -401,7 +401,7 @@ Write confirmed findings into appropriate sections during Hybrid Tree creation:
 
 ## Hybrid Tree Section Map (Optimized: Section-Level Caching)
 
-coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and evaluatorX receives the validated evaluation context from Main Agent. They read according to the following scope:
+coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and evaluatorX receives a Type 1.5 Review Dispatch Payload from Main Agent. The table below defines available Hybrid Tree sections; for evaluatorX, actual reads are controlled by Required Reads and Conditional Reads in the Review Dispatch Payload, not by default full-document loading.
 
 | Document | Section | Content | Readers | Cache Strategy |
 |----------|---------|---------|---------|----------------|
@@ -415,7 +415,7 @@ coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and eval
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
 
-> **Context hand-off rule (Optimized)**: In the **first round**, make full Parent + Child context available through the Type 0 Dispatch Payload and agent-readable document paths. In subsequent rounds, prefer a lightweight trunk: include only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions). Tell the subagent to call `mcp__server-memory__open_nodes` with the exact entity names from §8.2 to pull node details on demand; only fall back to `mcp__server-memory__search_nodes` when an exact name is missing. This mirrors the savings measured in TEST-MEMORY-001 (~13,506 chars / ~3,377 tokens for full context vs ~1,369 chars / ~342 tokens for trunk + on-demand retrieval).
+> **Context hand-off rule (Optimized)**: coderX may receive full Parent + Child context in the first implementation round through the Type 0 Dispatch Payload and agent-readable document paths. In subsequent coderX rounds, prefer a lightweight trunk: include only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions). evaluatorX does not use the full-context first-round rule; it starts from Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child §7 and conditional Parent/Child/MCP context only as allowed by the Review Dispatch.
 
 ---
 
@@ -542,13 +542,27 @@ While ready_queue is not empty:
      - Read status.json → set agent=null → write status.json
   6. [STATUS CHECK] Execute Pre-Dispatch Checklist (evaluatorX):
      - Read status.json → update agent="evaluatorX" → write status.json
-  7. Validate Payload (module 02), forward to evaluatorX: (Parent, current, Change Summary)
-  8. evaluatorX evaluates, outputs Evaluation Result Payload
-  9. [STATUS CHECK] Execute Post-Dispatch Checklist:
+  7. Validate Payload Type 1 (module 02)
+  8. Build Type 1.5 Review Dispatch Payload for Agent(evaluatorX):
+     - Workflow Mode: xwhole or xlocal
+     - Evaluation Type: full for first evaluation/no history, partial when prior PASS + affected ACs exist, fix when prior Fix Instructions drive this round
+     - Parent Path: current Parent hybrid path
+     - Child Path: current Child hybrid path
+     - Acceptance Source: Child Section 7
+     - Prior Evaluation Source: Child Section 9 when partial/fix, otherwise N/A
+     - Change Summary: validated Payload Type 1
+     - Changed Files: from Payload Type 1 and git diff
+     - Affected ACs Claimed: from Payload Type 1, or N/A for full
+     - Review Focus: Directed Audit Points + changed file risks + prior Fix Instructions, if any
+     - Required Reads / Conditional Reads / Expansion Rules: per module 02 Payload Type 1.5
+     - Output Contract: Bus Payload Type 2
+  9. Validate Type 1.5 Review Dispatch Payload, then dispatch Agent(evaluatorX)
+  10. evaluatorX evaluates, outputs Evaluation Result Payload
+  11. [STATUS CHECK] Execute Post-Dispatch Checklist:
      - Read status.json → set agent=null → write status.json
-  10. Load module 03 for Post-Evaluation document update (incremental, see §6)
+  12. Load module 03 for Post-Evaluation document update (incremental, see §6)
   
-  11. Result handling:
+  13. Result handling:
      - PASS:
        a. Mark current as PASS
        b. For each dependent in adj[current]:
@@ -562,7 +576,7 @@ While ready_queue is not empty:
        a. Mark as "Limit Reached", report to human
        b. Do NOT enqueue dependents (they remain blocked)
 
-  12. [STATUS CHECK] After Child completes (PASS or Limit Reached):
+  14. [STATUS CHECK] After Child completes (PASS or Limit Reached):
      - If next Child in ready_queue:
        → Execute Child Switch Checklist (current_child = next child, iteration = 0)
      - If ready_queue empty (all done):
@@ -606,6 +620,8 @@ child_iterations = {
 - Pass a full Type 0 Dispatch Payload from `modules/02-bus-payload.md`.
 - Do not dispatch coderX with only `Parent: [path]` + `Child: [path]`.
 - Do not ask coderX to infer mode, output contract, MCP policy, verification scope, or fix-round intent from conversation context.
+- Pass a full Type 1.5 Review Dispatch Payload to evaluatorX after validating coderX's Change Summary.
+- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, MCP policy, or expansion rules from conversation context.
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 

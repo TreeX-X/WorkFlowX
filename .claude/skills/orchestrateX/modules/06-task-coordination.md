@@ -29,13 +29,14 @@ When a coder-teammate reports task completion:
 
 1. **Verify completion**: Read the teammate's message for Change Summary
 2. **Load Module 02**: Validate the Bus Payload format (fast-path for known-good)
-3. **Dispatch evaluator**: Send evaluation request to evaluator-teammate
+3. **Build Review Dispatch**: Assemble Payload Type 1.5 from the Change Summary, task description, git diff, and prior evaluation state
+4. **Dispatch evaluator**: Send the Review Dispatch to evaluator-teammate
 
 ```
 SendMessage(
   to="evaluator-1",
   summary="Evaluate task {task-id}",
-  message="Please evaluate the implementation for task {task-id}. Read Parent and Child hybrid docs, check git diff, and output Evaluation Result Payload."
+  message="### Dispatch Payload: evaluatorX Review Task\n- **Workflow Mode**: xwhole\n- **Evaluation Type**: {full|partial|fix}\n- **Review Objective**: Evaluate task {task-id} implementation against scoped acceptance criteria\n- **Parent Path**: {parent-path}\n- **Child Path**: {child-path}\n- **Acceptance Source**: Child Section 7\n- **Original Prompt**: N/A\n- **Prior Evaluation Source**: {Child Section 9|N/A}\n- **Change Summary**: {validated Payload Type 1 content or concise reference}\n- **Changed Files**:\n  - {changed-file}\n- **Affected ACs Claimed**:\n  - {affected-ac-or-N/A}\n- **Review Focus**:\n  - {directed audit points, changed file risks, prior fix instructions if any}\n- **Required Reads**:\n  1. This Dispatch Payload\n  2. Change Summary Payload\n  3. git diff for Changed Files\n  4. Child Section 7 acceptance criteria scoped by Evaluation Type\n  5. Child Section 9 only when Prior Evaluation Source is not N/A\n- **Conditional Reads**:\n  - Parent Sections 0-6 only when global scope, NFR, DoD, or project constraints may be affected\n  - Parent Section 8.1 only to map changed files to known ownership/index\n  - Parent Section 8.3 only when dependency or cross-branch ownership is relevant\n  - Parent Section 8.2 / MCP only when exact node names are needed for a named review risk\n  - Additional source files only when changed code references their functions, types, API contracts, or shared state\n- **Do Not Read By Default**:\n  - full Parent document\n  - unrelated Child documents\n  - unrelated source files\n  - knowledge graph deep nodes\n- **Expansion Rules**:\n  - Expand only for a named risk: API contract, shared file, dependency, security, data loss, test gap, or cross-branch conflict\n  - Every expansion must be reported with path, reason, and result in `Context Expansion`\n- **MCP Policy**: on_demand\n- **Output Contract**: Bus Payload Type 2"
 )
 ```
 
