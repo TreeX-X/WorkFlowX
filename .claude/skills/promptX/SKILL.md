@@ -98,7 +98,9 @@ Step 2: Run diagnostic checklist (silent)
 Step 3: Output structured prompt
     │
     ▼
-coderX receives structured prompt → starts implementing
+Main Agent embeds structured prompt in Type 0 Dispatch Payload
+    ↓
+coderX follows Execution Brief + payload contract → starts implementing
 ```
 
 ## Clarifying Questions
@@ -124,9 +126,9 @@ xunit does not invoke promptX by default. It invokes promptX only when the user 
 1. Main Agent detects `/xunit -prompt ...`
 2. Main Agent invokes promptX (this skill)
 3. promptX extracts intent and outputs structured prompt
-4. Main Agent places the structured prompt plus original requirement into the Type 0 Dispatch Payload for Agent(coderX)
+4. Main Agent places the structured prompt plus original requirement into the Type 0 Dispatch Payload for Agent(coderX), while keeping Execution Brief authoritative
 
-Without `-prompt`, xunit places the raw requirement into the Type 0 Dispatch Payload for Agent(coderX).
+Without `-prompt`, xunit places the raw requirement into the Type 0 Dispatch Payload for Agent(coderX). In both cases, coderX receives a Type 0 payload rather than a loose structured prompt.
 
 ## Boundaries
 

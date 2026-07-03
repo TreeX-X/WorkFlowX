@@ -13,7 +13,7 @@ model: sonnet
 - Core skills (guideX, specX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
 - Bus Payload output (Payload Type 1)
-- Hybrid Tree reading (Parent + Child sections)
+- Manifest-gated Hybrid Tree reading (Execution Brief first, then Context Manifest sections)
 
 **Incremental Diff** (teammate-specific):
 

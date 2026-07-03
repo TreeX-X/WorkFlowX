@@ -13,7 +13,7 @@ model: sonnet
 - Core skill (auditX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
 - Bus Payload output (Payload Type 2)
-- Review Dispatch-gated Hybrid Tree reading. Do not read full Parent/Child documents by default.
+- Review Brief + Review Context Manifest-gated Hybrid Tree reading. Do not read full Parent/Child documents by default.
 
 **Incremental Diff** (teammate-specific):
 

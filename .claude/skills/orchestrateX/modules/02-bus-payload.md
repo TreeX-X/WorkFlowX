@@ -20,6 +20,22 @@ Main Agent outputs this payload as the primary input when dispatching Agent(code
 - **Requirement Source**: [raw_user_prompt | promptX | Child Section 7 | evaluator_fix]
 - **Original Requirement**: [raw user requirement or N/A]
 - **Structured Requirement**: [promptX output summary or N/A]
+- **Execution Brief**:
+  - **User Intent**: [Main Agent's concise understanding of what the user wants]
+  - **Final Interpretation**: [the decision Main Agent has already made after discussion / PRD alignment]
+  - **Non-Goals**:
+    - [explicit exclusions; things coderX must not implement or remove]
+  - **Success Criteria**:
+    - [binary outcome that proves the task is done]
+- **Context Manifest**:
+  - **Read First**:
+    - [path or document section plus reason]
+  - **Read If Needed**:
+    - [path or document section plus trigger condition]
+  - **Do Not Read Unless Needed**:
+    - [path/pattern to avoid by default]
+- **Context Budget**:
+  - [read limits, search limits, and expansion rules for this dispatch]
 - **Parent Path**: [path or N/A]
 - **Child Path**: [path or N/A]
 - **Acceptance Criteria Source**: [raw prompt | Child Section 7 | evaluator Fix Instructions]
@@ -39,6 +55,9 @@ Main Agent outputs this payload as the primary input when dispatching Agent(code
 
 ### Dispatch Rules
 
+- `Execution Brief` is authoritative. coderX must execute the Main Agent's final interpretation and must not reinterpret user intent from scratch unless file evidence contradicts the brief.
+- `Context Manifest` controls the first reading pass. coderX reads `Read First` before any repo-wide search, uses `Read If Needed` only when the trigger applies, and avoids `Do Not Read Unless Needed` paths by default.
+- `Context Budget` limits context expansion. If coderX must read outside the manifest or budget, it records the path and reason in `Directed Audit Points` / implementation summary.
 - `xunit`: `Workflow Mode=xunit`, `MCP Policy=skip`, `Required Skills=guideX, razorX`, `Output Contract=concise summary`, `Parent Path=N/A`, `Child Path=N/A`.
 - `xunit -prompt`: same as xunit, but `Dispatch Type=prompt_preprocessed`, `Requirement Source=promptX`, and include both original and structured requirements.
 - `xlocal/xwhole` first implementation: `Dispatch Type=implement`, `Requirement Source=Child Section 7`, `Required Skills=guideX, razorX, specX`, `Output Contract=Bus Payload Type 1`.
@@ -51,6 +70,7 @@ Before invoking coderX, Main Agent checks that required fields are present and m
 
 - `xunit` must not include Parent/Child paths, must skip MCP, and must not require Bus Payload.
 - `xlocal/xwhole` must include valid Parent and Child paths, must require `specX`, and must require Bus Payload Type 1.
+- Every Type 0 payload must include non-empty `Execution Brief`, `Context Manifest`, and `Context Budget`.
 - Fix rounds must include non-empty `Fix Instructions`.
 - If the payload cannot be assembled clearly, Main Agent must stop and ask for clarification instead of sending an ambiguous task.
 
@@ -87,6 +107,15 @@ Main Agent outputs this payload as the primary input when dispatching Agent(eval
 - **Workflow Mode**: [xlocal | xwhole | prompt]
 - **Evaluation Type**: [full | partial | fix | final | prompt-based]
 - **Review Objective**: [one concrete review outcome]
+- **Review Brief**:
+  - **Audit Target**: [feature / Child / fix / prompt behavior evaluatorX must audit]
+  - **Acceptance Scope**: [all ACs, named ACs, failed ACs, exact fix instructions, or prompt criteria]
+  - **Risk Focus**:
+    - [Main Agent's concrete risks to inspect]
+  - **Non-Goals**:
+    - [explicit exclusions; things evaluatorX must not review unless evidence creates an allowed risk]
+  - **Pass Criteria**:
+    - [binary outcome that proves this review passes]
 - **Parent Path**: [path or N/A for prompt-based]
 - **Child Path**: [path or N/A for prompt-based]
 - **Acceptance Source**: [Child Section 7 | original prompt]
@@ -99,6 +128,15 @@ Main Agent outputs this payload as the primary input when dispatching Agent(eval
   - [AC identifier or summary, or "N/A for full mode"]
 - **Review Focus**:
   - [specific logic, risk, integration point, or evaluator attention request]
+- **Review Context Manifest**:
+  - **Read First**:
+    - [dispatch payload, change summary, changed file diff/hunks, scoped acceptance source]
+  - **Read If Needed**:
+    - [path/section/source file plus trigger condition]
+  - **Do Not Read Unless Needed**:
+    - [path/pattern to avoid by default]
+- **Review Context Budget**:
+  - [read limits, search limits, MCP limits, and expansion reporting rules]
 - **Required Reads**:
   1. This Dispatch Payload
   2. Change Summary Payload
@@ -125,10 +163,13 @@ Main Agent outputs this payload as the primary input when dispatching Agent(eval
 
 ### Review Dispatch Rules
 
+- `Review Brief` is authoritative. evaluatorX must audit the Main Agent's declared target and acceptance scope, not infer a different review target from conversation history.
+- `Review Context Manifest` controls the first reading pass. evaluatorX reads `Read First` before broad search, uses `Read If Needed` only when its trigger applies, and avoids `Do Not Read Unless Needed` paths by default.
+- `Review Context Budget` limits context expansion. Any read outside the manifest or budget must be recorded in `Context Expansion` with path/node, reason, and result.
 - `full`: evaluate all ACs in Child Section 7, but still read diff and changed files first.
 - `partial`: evaluate claimed ACs plus ACs implicitly affected by git diff; inherit unaffected ACs from Child Section 9.
 - `fix`: evaluate previous failed/partial ACs and exact Fix Instructions, then verify no regression in directly touched ACs.
-- `final`: evaluate the Child or branch completion summary with the broadest review focus, but still use explicit changed files and declared review focus to guide reading.
+- `final`: evaluate the Child or branch completion summary with the broadest review focus allowed by `Review Brief`, `Review Context Manifest`, and `Review Context Budget`; still use explicit changed files and declared review focus to guide reading.
 - `prompt-based`: allowed only for explicit no-Hybrid review requests; evaluate original prompt intent and skip Parent/Child reads.
 
 ### Review Dispatch Validation
@@ -136,6 +177,7 @@ Main Agent outputs this payload as the primary input when dispatching Agent(eval
 Before invoking evaluatorX, Main Agent checks that required fields are present and mode-consistent:
 
 - `Changed Files`, `Required Reads`, `Conditional Reads`, `Expansion Rules`, and `Output Contract` must be non-empty.
+- Every Type 1.5 payload must include non-empty `Review Brief`, `Review Context Manifest`, and `Review Context Budget`.
 - `full`, `partial`, `fix`, and `final` must include valid `Parent Path`, `Child Path`, and `Acceptance Source=Child Section 7`.
 - `partial` and `fix` must include `Prior Evaluation Source=Child Section 9`.
 - `partial` must include non-empty `Affected ACs Claimed` unless Main Agent intentionally falls back to `full`.
@@ -250,7 +292,11 @@ When iterating on the same Child, use incremental context to reduce token consum
 
 ### coderX First Iteration
 ```
-Full context: Parent §0-6, §7, §8.1, §8.2, §8.3 + Child §7, §8.1
+Manifest-led context:
+- Execution Brief: authoritative user intent, final interpretation, non-goals, success criteria
+- Context Manifest: read-first sections and scoped source files
+- Context Budget: allowed search/read expansion rules
+- Parent/Child paths: available as references, not as permission to read everything
 ```
 
 ### coderX Subsequent Iterations (Same Child)
@@ -272,4 +318,4 @@ Incremental context:
 
 ### evaluatorX Review Context
 
-evaluatorX does not use the full-context first-iteration rule. It starts from Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child Section 7 and conditional Parent/Child/MCP context only as allowed by the Review Dispatch.
+evaluatorX follows its own Review Dispatch context rules. It starts from Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child Section 7 and conditional Parent/Child/MCP context only as allowed by Review Brief, Review Context Manifest, and Review Context Budget.

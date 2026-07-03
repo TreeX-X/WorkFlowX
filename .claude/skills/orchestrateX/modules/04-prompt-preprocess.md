@@ -2,7 +2,7 @@
 
 > promptX is a lightweight intent extractor. Its responsibility is single: extract 9 dimensions from user's raw requirement text, run diagnostic checklist, and output structured prompts for coderX.
 
-**Invocation Method**: Main Agent invokes `promptX` skill directly (no sub-agent dispatch needed), passing the raw requirement text as the input. When prompt preprocessing is used before coderX, Main Agent must place the promptX result into a Type 0 Dispatch Payload instead of forwarding it as a loose prompt.
+**Invocation Method**: Main Agent invokes `promptX` skill directly (no sub-agent dispatch needed), passing the raw requirement text as the input. When prompt preprocessing is used before coderX, Main Agent must place the promptX result into the `Structured Requirement` field of a Type 0 Dispatch Payload instead of forwarding it as a loose prompt. The Main Agent's `Execution Brief` remains authoritative.
 
 ## 4.1 Skip Rules (Take Priority Over Auto-Trigger Rules)
 
@@ -17,7 +17,7 @@ When the user input satisfies **any** of the following conditions, skip promptX 
 | Mode | Scenario | Call promptX? | Description |
 |---|---|---|---|
 | `/xunit` | Only when `-prompt` is present | Optional | Extract intent, then include the structured prompt plus original requirement in the Type 0 Dispatch Payload for Agent(coderX). Without `-prompt`, include only the raw requirement in the Type 0 Dispatch Payload |
-| `/xlocal` | After Hybrid Tree ready, before first calling coderX | Yes (auto) | PRD detection + optional auto-generation happens first; then include the extracted intent as supplemental context in the Type 0 Dispatch Payload for Agent(coderX) |
+| `/xlocal` | After Hybrid Tree ready, before first calling coderX | Conditional | Use promptX only when Main Agent cannot produce a clear Execution Brief from the requirement and Hybrid Tree. If used, include the extracted intent as supplemental context, not as the authority |
 | `/xwhole` | Planning phase | No | Planning phase needs to retain original intent for conversational clarification |
 | `/xwhole` | Coder phase (after PRD confirmation) | No | PRD itself is already structured |
 | `/xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements, extract intent, then place the structured fix prompt in the Type 0 Dispatch Payload for Agent(coderX) |
@@ -25,7 +25,7 @@ When the user input satisfies **any** of the following conditions, skip promptX 
 
 **Passing Specification**: When promptX is invoked, the structured prompt is placed in the `Structured Requirement` field of the Type 0 Dispatch Payload, with the original requirement retained in `Original Requirement` to prevent intent loss.
 
-For xlocal/xwhole Hybrid Tree workflows, Child Section 7 remains the acceptance criteria source. promptX output may clarify wording and scope, but must not override the Hybrid Tree.
+For xlocal/xwhole Hybrid Tree workflows, Child Section 7 remains the acceptance criteria source and `Execution Brief` remains the implementation interpretation. promptX output may clarify wording and scope, but must not override either.
 
 ## 4.3 Prompt Compression (Optimized: Token Reduction)
 
@@ -52,9 +52,9 @@ When constructing prompts for coderX/evaluatorX, apply compression to reduce tok
 
 | Agent Call | Compression Applied |
 |------------|---------------------|
-| coderX (first iteration) | No compression, full context |
+| coderX (first iteration) | Use Execution Brief + Context Manifest; no broad full-context dump by default |
 | coderX (subsequent iterations) | Compress Parent §0-6, unchanged Child sections |
-| evaluatorX | Compress Parent §0-6, focus on §7 AC + Change Summary |
+| evaluatorX | Use Review Brief + Review Context Manifest; focus on changed-file diff/hunks, scoped AC, and Change Summary |
 | promptX | No compression (raw input extraction) |
 
 **Expected Token Savings**: 30-50% reduction in multi-iteration scenarios.

@@ -31,18 +31,22 @@ Loaded when the user or upstream agent requests "audit code", "evaluate implemen
 2. If the Review Dispatch Payload is missing, internally inconsistent, or lacks required fields, stop and return `Evaluation Contract Missing` with the missing fields. Do not infer evaluation scope from conversation history.
 3. Extract:
    - **Evaluation Type**: `full | partial | fix | final | prompt-based`
+   - **Review Brief**
    - **Parent Path / Child Path**
    - **Acceptance Source / Original Prompt**
    - **Changed Files**
    - **Affected ACs Claimed**
    - **Review Focus**
+   - **Review Context Manifest / Review Context Budget**
    - **Required Reads / Conditional Reads / Expansion Rules**
    - **MCP Policy**
 4. If no hybrid document is provided, switch to **Prompt-Based mode** only when the dispatch explicitly says so.
 
+The `Review Brief` is authoritative. evaluatorX audits the declared target, acceptance scope, risk focus, non-goals, and pass criteria. Do not re-discover the feature or review objective from conversation history.
+
 ### Step 1A: Required Reads, In Order
 
-Read only the required materials first:
+Read only the `Review Context Manifest -> Read First` / Required Reads materials first:
 
 1. Change Summary Payload
 2. git diff for Changed Files
@@ -54,7 +58,7 @@ This ordering is intentional: evaluatorX should understand the actual code chang
 
 ### Step 1B: Conditional Reads
 
-Read additional context only when the dispatch or diff creates a named risk:
+Read additional context only when `Review Context Manifest -> Read If Needed`, the dispatch, or the diff creates a named risk:
 
 - Parent Sections 0-6: only when global scope, NFR, DoD, or project constraints may be affected.
 - Parent Section 8.1: only to map changed files to known ownership/index.
@@ -63,6 +67,8 @@ Read additional context only when the dispatch or diff creates a named risk:
 - Additional source files: only when changed code references their functions, types, API contracts, or shared state.
 
 Every conditional read must be listed in the `Context Expansion` section of the Evaluation Result Payload with path/node, reason, and result.
+
+Use `Review Context Budget` to cap broad searches, document reads, source-file reads, and MCP retrieval. If the audit must exceed the budget, record the exact expansion and reason in `Context Expansion`.
 
 #### Memory vs. Code Truth
 
@@ -77,7 +83,7 @@ Use the Review Dispatch Payload as the reading contract. The Hybrid Tree Section
 1. **Read Change Summary Payload**: coderX's change summary (which files modified, which ACs claimed affected)
 2. **Read git diff**: Combine with Review Dispatch scope, get unstaged + staged changes for Changed Files
 3. If git diff is empty, get changes from the most recent commit
-4. **Context expansion check**: Read related files only when the diff creates a named risk allowed by the Review Dispatch Expansion Rules
+4. **Context expansion check**: Read related files only when the diff creates a named risk allowed by the Review Context Manifest, Review Context Budget, and Review Dispatch Expansion Rules
 
 #### Evaluation Mode Detection
 
@@ -86,11 +92,11 @@ Use the Review Dispatch Payload as the reading contract. The Hybrid Tree Section
 | **Full** | `full` | Review Dispatch says `Evaluation Type=full` | Evaluate all ACs in Child Section 7 |
 | **Partial** | `partial` | Review Dispatch says `Evaluation Type=partial` | Evaluate declared and implicitly affected ACs, inherit rest |
 | **Fix** | `fix` | Review Dispatch says `Evaluation Type=fix` | Evaluate prior failed/partial ACs, exact Fix Instructions, and regression risk in touched ACs |
-| **Final** | `final` | Review Dispatch says `Evaluation Type=final` | Evaluate Child/branch completion with the broadest review focus allowed by dispatch |
+| **Final** | `final` | Review Dispatch says `Evaluation Type=final` | Evaluate Child/branch completion with the broadest review focus allowed by Review Brief and Review Context Budget |
 | **Prompt-Based** | `prompt-based` | Dispatch explicitly declares prompt-based evaluation without a Hybrid Tree | Evaluate original user prompt intent |
 
 **Decision rules**:
-1. Use Review Dispatch `Evaluation Type` as the source of truth. Do not re-derive mode from conversation context.
+1. Use Review Dispatch `Evaluation Type` and `Review Brief` as the source of truth. Do not re-derive mode, audit target, or acceptance scope from conversation context.
 2. No hybrid document -> `prompt-based` only when Review Dispatch explicitly declares it and includes the original prompt; otherwise return `Evaluation Contract Missing`.
 3. `partial` and `fix` require `Prior Evaluation Source=Child Section 9`; if missing, return `Evaluation Contract Missing`.
 4. If `partial` has no affected AC list and no explicit fallback to `full`, return `Evaluation Contract Missing`.
@@ -110,8 +116,8 @@ Use the Review Dispatch Payload as the reading contract. The Hybrid Tree Section
 
 **Final mode execution**:
 1. Evaluate all ACs in Child Section 7.
-2. Use Review Focus to inspect completion, integration, and regression risks.
-3. Keep context expansion bounded by the same Conditional Reads and Expansion Rules.
+2. Use Review Brief and Review Focus to inspect completion, integration, and regression risks.
+3. Keep context expansion bounded by the same Review Context Manifest, Review Context Budget, Conditional Reads, and Expansion Rules.
 
 ---
 

@@ -39,7 +39,9 @@ Agent({ subagent_type: "coderX", isolation: "worktree", prompt: "<Dispatch Paylo
 Agent({ subagent_type: "evaluatorX", isolation: "worktree", prompt: "..." })
 ```
 
-Before dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`. Do not send vague implementation prompts to `coderX`.
+Before dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Execution Brief, Context Manifest, and Context Budget. Do not send vague implementation prompts to `coderX`.
+
+Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Review Brief, Review Context Manifest, and Review Context Budget. Do not send vague review prompts to `evaluatorX`.
 
 ---
 

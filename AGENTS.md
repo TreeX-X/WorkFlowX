@@ -16,7 +16,9 @@ Codex uses project subagent definitions from `.codex/agents/`. The main Codex ag
 
 If a Codex host cannot dispatch project subagents, report that capability as degraded before continuing. Do not silently pretend to be `coderX` / `evaluatorX` / `promptMasterX` in the main-agent context.
 
-Before automatically dispatching `coderX`, Main Agent must assemble a `Dispatch Payload: coderX Task` as defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. The payload must state mode, dispatch type, objective, requirement source, scope, forbidden files, required skills, MCP policy, output contract, verification requirements, and stop conditions. Do not send vague implementation prompts to `coderX`.
+Before automatically dispatching `coderX`, Main Agent must assemble a `Dispatch Payload: coderX Task` as defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. The payload must state mode, dispatch type, objective, requirement source, Execution Brief, Context Manifest, Context Budget, scope, forbidden files, required skills, MCP policy, output contract, verification requirements, and stop conditions. Do not send vague implementation prompts to `coderX`.
+
+Before automatically dispatching `evaluatorX`, Main Agent must assemble a `Dispatch Payload: evaluatorX Review Task` as defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. The payload must state evaluation type, Review Brief, Review Context Manifest, Review Context Budget, changed files, affected ACs, review focus, MCP policy, output contract, and expansion rules. Do not send vague review prompts to `evaluatorX`.
 
 For code development, feature implementation, refactoring, or bug fixes:
 

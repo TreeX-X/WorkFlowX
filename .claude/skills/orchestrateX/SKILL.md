@@ -291,7 +291,7 @@ Write confirmed findings into appropriate sections during Hybrid Tree creation:
 
 ## Hybrid Tree Section Map (Optimized: Section-Level Caching)
 
-coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and evaluatorX receives a Type 1.5 Review Dispatch Payload from Main Agent. The table below defines available Hybrid Tree sections; for evaluatorX, actual reads are controlled by Required Reads and Conditional Reads in the Review Dispatch Payload, not by default full-document loading.
+coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and evaluatorX receives a Type 1.5 Review Dispatch Payload from Main Agent. The table below defines available Hybrid Tree sections; for evaluatorX, actual reads are controlled by Review Brief, Review Context Manifest, Review Context Budget, Required Reads, and Conditional Reads in the Review Dispatch Payload, not by default full-document loading.
 
 | Document | Section | Content | Readers | Cache Strategy |
 |----------|---------|---------|---------|----------------|
@@ -305,7 +305,7 @@ coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and eval
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
 
-> **Context hand-off rule (Optimized)**: coderX may receive full Parent + Child context in the first implementation round through the Type 0 Dispatch Payload and agent-readable document paths. In subsequent coderX rounds, prefer a lightweight trunk: include only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions). evaluatorX does not use the full-context first-round rule; it starts from Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child §7 and conditional Parent/Child/MCP context only as allowed by the Review Dispatch.
+> **Context hand-off rule (Optimized)**: coderX receives the Main Agent's Execution Brief, Context Manifest, Context Budget, and agent-readable document paths through the Type 0 Dispatch Payload. The first implementation round reads only the manifest-listed sections before broad exploration. In subsequent coderX rounds, prefer a lightweight trunk: include only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions), unless the Context Manifest requires more. evaluatorX receives Review Brief, Review Context Manifest, and Review Context Budget through Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child §7 and conditional Parent/Child/MCP context only as allowed by the review manifest and budget.
 
 ---
 
@@ -353,6 +353,9 @@ While ready_queue is not empty:
   1. Build Type 0 Dispatch Payload for Agent(coderX):
      - Workflow Mode: xwhole or xlocal
      - Dispatch Type: implement for first round, fix when prior Fix Instructions exist
+     - Execution Brief: Main Agent's authoritative user intent, final interpretation, non-goals, and success criteria
+     - Context Manifest: Read First / Read If Needed / Do Not Read Unless Needed paths and document sections
+     - Context Budget: limits for broad search, document reads, and expansion reporting
      - Parent Path: current Parent hybrid path
      - Child Path: current Child hybrid path
      - Acceptance Criteria Source: Child Section 7
@@ -365,6 +368,7 @@ While ready_queue is not empty:
   5. Build Type 1.5 Review Dispatch Payload for Agent(evaluatorX):
      - Workflow Mode: xwhole or xlocal
      - Evaluation Type: full for first evaluation/no history, partial when prior PASS + affected ACs exist, fix when prior Fix Instructions drive this round
+     - Review Brief: Main Agent's authoritative audit target, acceptance scope, risk focus, non-goals, and pass criteria
      - Parent Path: current Parent hybrid path
      - Child Path: current Child hybrid path
      - Acceptance Source: Child Section 7
@@ -373,6 +377,8 @@ While ready_queue is not empty:
      - Changed Files: from Payload Type 1 and git diff
      - Affected ACs Claimed: from Payload Type 1, or N/A for full
      - Review Focus: Directed Audit Points + changed file risks + prior Fix Instructions, if any
+     - Review Context Manifest: Read First / Read If Needed / Do Not Read Unless Needed paths, document sections, and diff/code targets
+     - Review Context Budget: limits for broad search, document reads, source reads, MCP retrieval, and expansion reporting
      - Required Reads / Conditional Reads / Expansion Rules: per module 02 Payload Type 1.5
      - Output Contract: Bus Payload Type 2
   6. Validate Type 1.5 Review Dispatch Payload, then dispatch Agent(evaluatorX)
@@ -419,9 +425,11 @@ child_iterations = {
 **Dispatch Format**:
 - Pass a full Type 0 Dispatch Payload from `modules/02-bus-payload.md`.
 - Do not dispatch coderX with only `Parent: [path]` + `Child: [path]`.
-- Do not ask coderX to infer mode, output contract, MCP policy, verification scope, or fix-round intent from conversation context.
+- Do not ask coderX to infer mode, output contract, MCP policy, verification scope, fix-round intent, or user intent from conversation context.
+- Include `Execution Brief`, `Context Manifest`, and `Context Budget` so coderX executes Main Agent's settled interpretation instead of rebuilding the requirement from scratch.
 - Pass a full Type 1.5 Review Dispatch Payload to evaluatorX after validating coderX's Change Summary.
-- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, MCP policy, or expansion rules from conversation context.
+- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, audit target, MCP policy, context-reading strategy, or expansion rules from conversation context.
+- Include `Review Brief`, `Review Context Manifest`, and `Review Context Budget` so evaluatorX audits Main Agent's declared target without rebuilding the feature context from scratch.
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
 
@@ -487,7 +495,7 @@ When Requirement Change Handling determines Change Type = new_branch:
    - Add new row to Parent Section 7 (append end; dependency order is resolved at runtime by the Core Loop's deferred queue)
    - Update Parent Section 8.3 (if new dependencies)
 3. Build a Type 0 Dispatch Payload with `Dispatch Type=new_branch`, then dispatch Agent(coderX)
-   - Include Parent Path, new Child Path, new branch reason, acceptance source, allowed scope, and Output Contract
+   - Include Execution Brief, Context Manifest, Context Budget, Parent Path, new Child Path, new branch reason, acceptance source, allowed scope, and Output Contract
 
 
 ---

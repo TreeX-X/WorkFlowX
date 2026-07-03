@@ -71,7 +71,7 @@ Read Parent Section 7 to get all Children, then use `TaskCreate` for each:
 For each Child in Parent Section 7:
   TaskCreate(
     subject="Implement {child-scope}",
-    description="### Dispatch Payload: coderX Task\n- **Workflow Mode**: xwhole\n- **Dispatch Type**: implement\n- **Task Objective**: Implement {child-scope}\n- **Requirement Source**: Child Section 7\n- **Original Requirement**: N/A\n- **Structured Requirement**: N/A\n- **Parent Path**: {parent-path}\n- **Child Path**: {child-path}\n- **Acceptance Criteria Source**: Child Section 7\n- **Allowed Scope**:\n  - {child-file-scope}\n- **Do Not Touch**:\n  - N/A\n- **Required Skills**: guideX, razorX, specX\n- **MCP Policy**: allowed\n- **Output Contract**: Bus Payload Type 1\n- **Verification Required**:\n  - Run relevant tests/checks or report best effort with reason\n- **Fix Instructions**: N/A\n- **Stop Conditions**:\n  - Stop if Parent/Child path is missing or task scope conflicts with another Child"
+    description="### Dispatch Payload: coderX Task\n- **Workflow Mode**: xwhole\n- **Dispatch Type**: implement\n- **Task Objective**: Implement {child-scope}\n- **Requirement Source**: Child Section 7\n- **Original Requirement**: N/A\n- **Structured Requirement**: N/A\n- **Execution Brief**:\n  - **User Intent**: Implement the assigned Child scope from the confirmed Hybrid Tree.\n  - **Final Interpretation**: Follow Child Section 7 exactly; do not reinterpret the parent requirement.\n  - **Non-Goals**:\n    - Do not modify files outside the Child scope unless required by an explicit dependency.\n  - **Success Criteria**:\n    - Child AC is implemented and relevant checks are run or best-effort reason is reported.\n- **Context Manifest**:\n  - **Read First**:\n    - {child-path} Section 7 and Section 8.1\n    - {parent-path} Section 8.1 and Section 8.3 only for ownership/dependency context\n  - **Read If Needed**:\n    - Parent Sections 0-6 only when Child AC references global NFR/DoD\n  - **Do Not Read Unless Needed**:\n    - unrelated Children and unrelated source modules\n- **Context Budget**:\n  - Read listed sections before searching; expand only for named implementation risks and report each expansion.\n- **Parent Path**: {parent-path}\n- **Child Path**: {child-path}\n- **Acceptance Criteria Source**: Child Section 7\n- **Allowed Scope**:\n  - {child-file-scope}\n- **Do Not Touch**:\n  - N/A\n- **Required Skills**: guideX, razorX, specX\n- **MCP Policy**: allowed\n- **Output Contract**: Bus Payload Type 1\n- **Verification Required**:\n  - Run relevant tests/checks or report best effort with reason\n- **Fix Instructions**: N/A\n- **Stop Conditions**:\n  - Stop if Parent/Child path is missing or task scope conflicts with another Child"
   )
 ```
 
@@ -133,7 +133,7 @@ Agent(
 1. Read TaskList to find ready tasks (status='pending', no owner)
 2. Claim a task: TaskUpdate(taskId=X, owner='coder-1', status='in_progress')
 3. Read the Type 0 Dispatch Payload from the task description
-4. Read Parent + Child hybrid docs from the payload paths
+4. Follow Execution Brief, Context Manifest, and Context Budget before broad exploration
 5. Implement code following specX skill
 6. When done: TaskUpdate(taskId=X, status='completed') then send completion summary (messages auto-deliver to team lead)
 7. Check TaskList for next available task
@@ -150,7 +150,7 @@ Agent(
 1. Wait for evaluation requests from team lead via SendMessage
 2. When received: read the `Dispatch Payload: evaluatorX Review Task` first
 3. If the Review Dispatch is missing or inconsistent, return `Evaluation Contract Missing`
-4. Inspect git diff for Changed Files, then read only Required Reads and Conditional Reads
+4. Follow Review Brief, Review Context Manifest, and Review Context Budget; inspect git diff for Changed Files, then read only manifest/required/conditional context
 5. Evaluate against acceptance criteria or original prompt as specified by the dispatch
 6. Output Evaluation Result Payload
 7. Send result back (messages auto-deliver to team lead)
