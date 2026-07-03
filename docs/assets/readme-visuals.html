@@ -2024,15 +2024,15 @@
         capTitle: "按影响范围选择工作流入口",
         capSub: "xunit、xlocal、xwhole、xwhole -parallel 共享同一套 Hybrid Tree 与 AC 验收模型，只改变规划深度和并行度。",
         workflowTitle: "一次 xwhole 从路由到需求全通过",
-        workflowSub: "RouteX 状态门控、资源初始化、代码探索、苏格拉底式需求发现、Hybrid Tree、promptX、coderX、evaluatorX 与 razorX 修复闭环。",
+        workflowSub: "RouteX 路由上下文、资源初始化、代码探索、苏格拉底式需求发现、Hybrid Tree、promptX、coderX、evaluatorX 与 razorX 修复闭环。",
         labelArch: "架构",
         labelToken: "Token 预算",
         labelCap: "能力矩阵",
         labelFlow: "工作流演示",
         chips: ["RouteX", "Module 08", "Hybrid Tree", "coderX", "evaluatorX"],
         nodes: {
-          command: ["用户 / 指令", "xwhole / xlocal / xunit", "进入状态门控，不直接写代码"],
-          status: ["状态机", ".hybrid/status.json", "wait / normal / xwhole / xlocal / xunit"],
+          command: ["用户 / 指令", "xwhole / xlocal / xunit", "进入路由上下文，不直接写代码"],
+          status: ["路由上下文", "Conversation + Hybrid Tree", "active workflow / direct / command"],
           coder: ["实现代理", "coderX", "读取 Child AC，写代码，返回 Change Summary"],
           evaluator: ["验收代理", "evaluatorX", "不信任自述，读 diff 与代码逐条核对 AC"],
           prompt: ["辅助技能", "promptX / noiseX", "把粗需求与规划噪声转成可执行信号"]
@@ -2041,7 +2041,7 @@
           title: "Main Agent",
           sub: "唯一编排者，唯一 Hybrid Tree 文档写入者",
           orbit: [
-            ["RouteX", "状态门控 / 路由"],
+            ["RouteX", "路由上下文"],
             ["Module 08", "读代码 / 澄清"],
             ["Phase 2", "写 Parent / Child"],
             ["Core Loop", "派发 / 验收 / 记账"]
@@ -2098,15 +2098,15 @@
         capTitle: "Choose the entry by blast radius",
         capSub: "xunit, xlocal, xwhole, and xwhole -parallel share Hybrid Tree and AC validation. Only planning depth and parallelism change.",
         workflowTitle: "One xwhole run from routing to all ACs passed",
-        workflowSub: "RouteX state gate, resource init, code scan, Socratic discovery, Hybrid Tree, promptX, coderX, evaluatorX, and razorX repair loop.",
+        workflowSub: "RouteX routing context, resource init, code scan, Socratic discovery, Hybrid Tree, promptX, coderX, evaluatorX, and razorX repair loop.",
         labelArch: "Architecture",
         labelToken: "Token Budget",
         labelCap: "Capability Matrix",
         labelFlow: "Workflow Demo",
         chips: ["RouteX", "Module 08", "Hybrid Tree", "coderX", "evaluatorX"],
         nodes: {
-          command: ["User / Command", "xwhole / xlocal / xunit", "Enters the state gate instead of writing code directly"],
-          status: ["State Machine", ".hybrid/status.json", "wait / normal / xwhole / xlocal / xunit"],
+          command: ["User / Command", "xwhole / xlocal / xunit", "Enters the routing context instead of writing code directly"],
+          status: ["Routing Context", "Conversation + Hybrid Tree", "active workflow / direct / command"],
           coder: ["Implementation Agent", "coderX", "Reads Child AC, writes code, returns Change Summary"],
           evaluator: ["Verification Agent", "evaluatorX", "Distrusts self-report and checks diff plus code against AC"],
           prompt: ["Helper Skills", "promptX / noiseX", "Turns rough intent and planning noise into executable signal"]
@@ -2115,7 +2115,7 @@
           title: "Main Agent",
           sub: "The only orchestrator and Hybrid Tree document writer",
           orbit: [
-            ["RouteX", "State gate / route"],
+            ["RouteX", "Routing context"],
             ["Module 08", "Read code / clarify"],
             ["Phase 2", "Write Parent / Child"],
             ["Core Loop", "Dispatch / verify / ledger"]
@@ -2150,7 +2150,7 @@
           ["xstatus visualization", "Generate a high-fidelity status report from Hybrid Tree and git activity."]
         ],
         steps: [
-          ["RouteX routing", "Command enters the state gate and chooses xwhole"],
+          ["RouteX routing", "Command enters routing context and chooses xwhole"],
           ["Environment init", "Load MCP / worktree / params"],
           ["Project index", "Scan files and constraints"],
           ["Discovery", "Q&A, challenge, and code search together"],
@@ -2211,7 +2211,7 @@
             <div>
               <div class="label"><span class="accent-dot"></span>${C.core.sub}</div>
               <h2>${C.core.title}</h2>
-              <p>${lang === "zh" ? "路由、规划、文档写入、状态机和任务派发集中在一个编排核心里。" : "Routing, planning, document writes, state, and dispatch converge into one orchestration core."}</p>
+              <p>${lang === "zh" ? "路由、规划、文档写入和任务派发集中在一个编排核心里。" : "Routing, planning, document writes, and dispatch converge into one orchestration core."}</p>
             </div>
             <div class="core-orbit">
               <div class="orbit-ring"></div>
@@ -2385,7 +2385,7 @@
           <div class="route-topology" style="--route-progress:${routeProgress}">
             <div class="route-wire"></div><div class="route-token"></div>
             <div class="route-source"><b>${lang === "zh" ? "入口命令" : "Entry"}</b><span>xwhole / new workflow intent</span></div>
-            <div class="route-gate"><b>RouteX</b><span>${lang === "zh" ? "读取 status、命令前缀与工作区状态" : "Reads status, command prefix, and workspace state"}</span></div>
+            <div class="route-gate"><b>RouteX</b><span>${lang === "zh" ? "读取完整输入、命令前缀与会话上下文" : "Reads full input, command prefix, and conversation context"}</span></div>
             <div class="route-lanes">
               <div class="route-branch" style="--pop:${pop(0)}"><b>Route 0</b><span>${lang === "zh" ? "已有工作流：接入" : "Active workflow: attach"}</span></div>
               <div class="route-branch" style="--pop:${pop(1)}"><b>Route 1</b><span>${lang === "zh" ? "只读探索：不编码" : "Read-only exploration"}</span></div>
@@ -2408,7 +2408,7 @@
       }
       if (idx === 2) {
         const scan = expo(clamp(local * 1.35)).toFixed(3);
-        const files = ["src/routes/order.ts", "src/services/auth.ts", "src/payments/callback.ts", "tests/order.spec.ts", ".hybrid/status.json"];
+        const files = ["src/routes/order.ts", "src/services/auth.ts", "src/payments/callback.ts", "tests/order.spec.ts", ".hybrid/feature/parent-hybrid.md"];
         const lines = [92, 72, 64, 88, 56, 76, 68].map((w, i) => `<i class="code-line ${i === 2 || i === 5 ? "hot" : ""}" style="--w:${w}%;--scan:${scan}"></i>`).join("");
         return `<div class="code-scan">
           <div class="file-tree">${files.map((file, i) => `<div class="file-node ${i < local * files.length ? "active" : ""}">${file}</div>`).join("")}</div>
@@ -2426,7 +2426,7 @@
           ["src/services/auth.ts", "auth"],
           ["src/payments/callback.ts", "risk"],
           ["tests/order.spec.ts", "test"],
-          [".hybrid/status.json", "state"]
+          [".hybrid/feature/parent-hybrid.md", "workflow"]
         ];
         return `<div class="discovery-search">
           <div class="dialogue-stream">${turns.map((turn, i) => `<div class="turn ${i === 1 ? "answer" : ""} ${i === 2 ? "challenge" : ""}" style="--reveal:${reveal(i)}"><b>${turn[0]}</b><span>${turn[1]}</span></div>`).join("")}</div>

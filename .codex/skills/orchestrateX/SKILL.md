@@ -420,7 +420,7 @@ Hybrid Tree exists when:
 - File marked `Document Type: Parent` contains Section 7 routing table
 
 For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
-1. Enumerate `.hybrid/*/` directories, ignoring `.hybrid/status.json`, locks, and non-directory files
+1. Enumerate `.hybrid/*/` directories, ignoring locks and non-directory files
 2. Identify Parent candidates by `Document Type: Parent` plus a Section 7 routing table
 3. Score relevance against the current requirement using:
    - directory name and Parent title

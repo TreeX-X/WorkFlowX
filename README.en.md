@@ -38,7 +38,7 @@ WorkflowX is an **engineering workflow** that lives inside your AI coding tool. 
 <p align="center">
   <img src="docs/assets/06-workflow-animation-en.gif" alt="WorkflowX xwhole Workflow Demo" width="880" />
   <br/>
-  <sub>A complete xwhole workflow: RouteX state gate → discovery → user confirmation → noiseX denoise → Hybrid Tree → coderX → evaluatorX → fix loop → PASS close</sub>
+  <sub>A complete xwhole workflow: RouteX routing context → discovery → user confirmation → noiseX denoise → Hybrid Tree → coderX → evaluatorX → fix loop → PASS close</sub>
 </p>
 
 ---
@@ -67,7 +67,7 @@ you
 │
 ▼
 Main Agent
-├─ RouteX: read .hybrid/status.json and decide continue / explore / start workflow
+├─ RouteX: route from user input plus active conversation context
 ├─ Module 08: xwhole discovery, solution design, and Hard Gate confirmation
 ├─ Phase 2: generate or maintain Hybrid Tree (Main Agent is the sole document writer)
 └─ Core Loop: forward Payloads and drive coderX ↔ evaluatorX iteration
@@ -137,7 +137,7 @@ Common flags: `-N 3` caps verification rounds per Child; `-box demo` isolates wo
 
 For `xwhole implement user login`, the full workflow is:
 
-1. **Entry routing**: Main Agent reads `.hybrid/status.json` and decides whether to start or attach to an existing workflow.
+1. **Entry routing**: Main Agent routes from the command, user input, and active conversation context; Hybrid Tree remains the durable workflow source of truth.
 2. **Environment init**: parse `-N` / `-box` / `-parallel`, probe MCP, and prepare degradation behavior.
 3. **Code exploration**: search project structure, related modules, and existing constraints to build a file index.
 4. **Requirement discovery**: socratesX asks one grounded question at a time and challenges contradictions, missing NFRs, and technical risks.
@@ -199,9 +199,9 @@ noiseX and promptX handle the related problems: planning noise contaminating doc
 </details>
 
 <details>
-<summary><b>RouteX And State Machine</b></summary>
+<summary><b>RouteX And Workflow Context</b></summary>
 
-Every input passes a state gate:
+Every input is routed from the complete prompt and current conversation context:
 
 | Route | Trigger | Handling |
 |---|---|---|
@@ -210,7 +210,7 @@ Every input passes a state gate:
 | **Route 2** | Coding intent while idle | Analyze scope, recommend xwhole / xlocal / xunit, ask for confirmation |
 | **Route 3** | Explicit `xwhole` / `xlocal` / `xunit` command | Enter the requested mode immediately |
 
-State lives in `.hybrid/status.json`: `wait`, `normal`, `xwhole`, `xlocal`, `xunit`. Interrupted sessions can resume from this state.
+Workflow continuity lives in the active conversation plus Hybrid Tree documents.
 
 </details>
 

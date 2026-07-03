@@ -6,11 +6,11 @@ Ensure the MCP server-memory graph remains accurate and compact across workflow 
 ## When to run
 - At the end of the design/planning phase, before creating Children.
 - Before each evaluation round.
-- Before marking a workflow PASS/FAIL in status.json.
+- Before recording workflow PASS/FAIL in Hybrid Tree evaluation sections.
 
 ## Steps
 1. Read current graph: call `mcp__server-memory__read_graph()`.
-2. Compare observations against current files (§8.1/§8.2, code, `.hybrid/status.json`).
+2. Compare observations against current files (§8.1/§8.2, code, Hybrid Tree evaluation sections).
 3. For each discrepancy:
    - If file truth changed → update observation with `add_observations` or replace via delete+create.
    - If observation is stale/obsolete → call `delete_observations` (or `delete_entities`/`delete_relations` if the node itself is obsolete).

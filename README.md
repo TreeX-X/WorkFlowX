@@ -28,7 +28,7 @@
 
 WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍然只和一个主代理对话，但它不再“边聊边写”：
 
-- **Main Agent 直接编排**：负责路由、需求发现、方案确认、Hybrid Tree 文档写入、状态机和任务派发。
+- **Main Agent 直接编排**：负责路由、需求发现、方案确认、Hybrid Tree 文档写入和任务派发。
 - **coderX 只负责实现**：读取需求文档和执行指令，写代码，返回结构化 Change Summary。
 - **evaluatorX 独立验收**：读取真实代码与 diff，对照验收标准逐条核验，失败就生成修复指令。
 - **Hybrid Tree 记账**：Parent + Child 文档树沉淀范围、AC、文件索引、依赖、评估结果和状态。
@@ -38,7 +38,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 <p align="center">
   <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="880" />
   <br/>
-  <sub>一次完整 xwhole：RouteX 状态门控 → 需求发现 → 用户确认 → noiseX 降噪 → Hybrid Tree → coderX → evaluatorX → 修复回流 → PASS 收口</sub>
+  <sub>一次完整 xwhole：RouteX 路由上下文 → 需求发现 → 用户确认 → noiseX 降噪 → Hybrid Tree → coderX → evaluatorX → 修复回流 → PASS 收口</sub>
 </p>
 
 ---
@@ -67,7 +67,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 │
 ▼
 Main Agent
-├─ RouteX：读取 .hybrid/status.json，判断是继续、探索还是启动工作流
+├─ RouteX：结合完整输入和当前会话上下文决定继续、探索或启动工作流
 ├─ Module 08：xwhole 需求发现、方案设计、Hard Gate 确认
 ├─ Phase 2：生成或维护 Hybrid Tree（Main Agent 唯一文档写入者）
 └─ Core Loop：转发 Payload，驱动 coderX ↔ evaluatorX 迭代
@@ -137,7 +137,7 @@ xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 
 以 `xwhole 实现用户登录功能` 为例，完整流程分成 10 个动作：
 
-1. **入口路由**：Main Agent 读取 `.hybrid/status.json`，决定启动新流程或接入现有流程。
+1. **入口路由**：Main Agent 根据命令、用户输入和当前会话上下文路由；Hybrid Tree 作为持久的工作流事实来源。
 2. **环境初始化**：解析 `-N` / `-box` / `-parallel`，探测 MCP，可降级运行。
 3. **代码探索**：先搜索项目结构、相关模块和已有约束，形成文件索引。
 4. **需求发现**：用 socratesX 一次一题澄清边界，并主动挑战矛盾、遗漏和技术风险。
@@ -199,18 +199,18 @@ evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是：
 </details>
 
 <details>
-<summary><b>RouteX 与状态机</b></summary>
+<summary><b>RouteX 与工作流上下文</b></summary>
 
-所有输入先经过状态门控：
+所有输入根据完整提示词和当前会话上下文路由：
 
 | 路由 | 触发条件 | 处理方式 |
 |---|---|---|
 | **Route 0** | 当前已有活跃工作流 | 把用户输入作为当前流程的一部分，支持需求增量变更 |
 | **Route 1** | 只读探索、搜索、git、配置操作 | 直接处理，不派 coderX |
-| **Route 2** | 有编码意图且状态空闲 | 分析范围，推荐 xwhole / xlocal / xunit，需用户确认 |
+| **Route 2** | 有编码意图且无活跃工作流 | 分析范围，推荐 xwhole / xlocal / xunit，需用户确认 |
 | **Route 3** | 显式 `xwhole` / `xlocal` / `xunit` 等命令 | 按指定模式立即进入 |
 
-状态保存在 `.hybrid/status.json`：`wait`、`normal`、`xwhole`、`xlocal`、`xunit`。会话中断后可根据状态恢复。
+工作流连续性来自当前会话上下文和 Hybrid Tree 文档。
 
 </details>
 
