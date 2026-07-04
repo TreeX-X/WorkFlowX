@@ -1,4 +1,4 @@
-﻿---
+---
 name: specX
 description: Spec-driven coding workflow for coderX agents. Use this skill whenever implementing, fixing, refactoring, or iterating code from hybrid docs or specified requirements, especially when file index, knowledge index, or evaluator findings are present.
 ---

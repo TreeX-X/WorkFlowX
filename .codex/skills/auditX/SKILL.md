@@ -1,4 +1,4 @@
-﻿---
+---
 name: auditX
 description: >
   Structured code audit workflow supporting both PRD-based and prompt-based evaluation modes.

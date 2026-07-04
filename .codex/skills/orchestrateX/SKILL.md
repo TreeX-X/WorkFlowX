@@ -1,4 +1,4 @@
-﻿---
+---
 name: orchestrateX
 description: "Main Agent complete workflow handbook. Contains planning dialogue, Mode A/B/C workflows, core iteration loop, Hybrid Tree routing, requirement change handling, routeX, Start Rule."
 ---
