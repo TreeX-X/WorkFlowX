@@ -1,4 +1,4 @@
-# 4. Prompt Preprocessing Rules (Optimized: With Compression)
+﻿# 4. Prompt Preprocessing Rules (Optimized: With Compression)
 
 > promptX is a lightweight intent extractor. Its responsibility is single: extract 9 dimensions from user's raw requirement text, run diagnostic checklist, and output structured prompts for coderX.
 
@@ -35,25 +35,25 @@ When constructing prompts for coderX/evaluatorX, apply compression to reduce tok
 
 1. **Static Section Summarization** (Parent Sections 0-6):
    - First iteration: Pass full sections
-   - Subsequent iterations: Replace with one-line summary: `[Global spec unchanged, see Parent §0-6]`
+   - Subsequent iterations: Replace with one-line summary: `[Global spec unchanged, see Parent Section 0-6]`
 
 2. **Unchanged Child Section Compression**:
-   - If Child §7 AC hasn't changed since last iteration: `[AC unchanged, see Child §7]`
-   - If Child §8.1 file index hasn't changed: `[File index unchanged, see Child §8.1]`
+   - If Child Section 7 AC hasn't changed since last iteration: `[AC unchanged, see Child Section 7]`
+   - If Child Section 8.1 file index hasn't changed: `[File index unchanged, see Child Section 8.1]`
 
 3. **Prior Evaluation Compression**:
-   - Replace full prior evaluation with: `[Prior: {PASS/Needs Fix}, {issue_count} issues, see Child §9]`
+   - Replace full prior evaluation with: `[Prior: {PASS/Needs Fix}, {issue_count} issues, see Child Section 9]`
 
 4. **Fix Instruction Focus**:
    - Extract only P0/P1 issues from Evaluation Result
-   - Format as concise list: `[file:line] — [fix action]`
+   - Format as concise list: `[file:line] -[fix action]`
 
 ### Compression Application Points
 
 | Agent Call | Compression Applied |
 |------------|---------------------|
 | coderX (first iteration) | Use Execution Brief + Context Manifest; no broad full-context dump by default |
-| coderX (subsequent iterations) | Compress Parent §0-6, unchanged Child sections |
+| coderX (subsequent iterations) | Compress Parent Section 0-6, unchanged Child sections |
 | evaluatorX | Use Review Brief + Review Context Manifest; focus on changed-file diff/hunks, scoped AC, and Change Summary |
 | promptX | No compression (raw input extraction) |
 

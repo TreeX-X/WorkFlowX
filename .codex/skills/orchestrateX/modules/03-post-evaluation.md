@@ -1,4 +1,4 @@
-# 3. Post-Evaluation Document Update (Optimized: Incremental Updates)
+﻿# 3. Post-Evaluation Document Update (Optimized: Incremental Updates)
 
 > Main Agent loads this module after evaluatorX outputs the Evaluation Result Payload to perform document updates.
 
@@ -23,11 +23,11 @@ Run `date -u +%Y-%m-%dT%H:%M:%SZ` to get current UTC ISO timestamp. Use this val
 ### Step 1: Write to Child Section 9 (Incremental)
 
 **Only update changed subsections** in Child Section 9:
-- AC Status Table → Section 9.2 (only if AC status changed)
-- Issue List → Section 9.3 (append new issues, don't overwrite existing)
-- Fix Instructions → Section 9.3 appended
-- Conclusion → Section 9.4 (always update)
-- evaluation_mode → Section 9.1 (always update)
+- AC Status Table ->Section 9.2 (only if AC status changed)
+- Issue List ->Section 9.3 (append new issues, don't overwrite existing)
+- Fix Instructions ->Section 9.3 appended
+- Conclusion ->Section 9.4 (always update)
+- evaluation_mode ->Section 9.1 (always update)
 
 **Optimization**: Use Edit tool for targeted updates instead of full file rewrite.
 
@@ -130,15 +130,15 @@ Extract from the Evaluation Result Payload's `Fix Instructions` section, assembl
 
 ```
 AC Status Summary:
-- ✓ AC-1: PASS (round 2)
-- ⚠ AC-2: Partial Pass - P0: [issue description]
-- ✗ AC-3: Fail - P1: [issue description]
+- PASSAC-1: PASS (round 2)
+- WARNAC-2: Partial Pass - P0: [issue description]
+- PASSAC-3: Fail - P1: [issue description]
 
 Focus on AC-2 P0 issue first:
-1. [file:line] — [fix action] (Priority: P0)
+1. [file:line] -[fix action] (Priority: P0)
 
 After P0 fix, address AC-3:
-2. [file:line] — [fix action] (Priority: P1)
+2. [file:line] -[fix action] (Priority: P1)
 
 Please load the specX skill and fix the above issues. After fixing, output the Change Summary Payload.
 ```
@@ -151,6 +151,6 @@ When the Evaluation Result contains Blocking Dependencies:
 
 1. Read the Blocking Dependencies list
 2. Update in_degree map for blocked Child
-3. If in_degree becomes 0 after dependency resolution → enqueue to ready_queue
-4. If circular dependency detected → report to human, terminate
-5. **No manual queue reordering needed** — graph handles automatically
+3. If in_degree becomes 0 after dependency resolution ->enqueue to ready_queue
+4. If circular dependency detected ->report to human, terminate
+5. **No manual queue reordering needed** -graph handles automatically

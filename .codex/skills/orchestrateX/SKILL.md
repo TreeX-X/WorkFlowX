@@ -1,4 +1,4 @@
----
+﻿---
 name: orchestrateX
 description: "Main Agent complete workflow handbook. Contains planning dialogue, Mode A/B/C workflows, core iteration loop, Hybrid Tree routing, requirement change handling, routeX, Start Rule."
 ---
@@ -15,14 +15,14 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX/evaluatorX dispatch contracts | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
-| 7 | Status Report | `xstatus` 指令触发 | `modules/07-status-report.md` + `templates/status-report.html` |
+| 7 | Status Report | `xstatus` command trigger | `modules/07-status-report.md` + `templates/status-report.html` |
 | 8 | Requirements Discovery & Proactive Challenge | xwhole planning only | `modules/08-requirements-discovery.md` |
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
 - **Cache Key**: Use module file path as cache key.
 - **Invalidation**: Cache persists for entire session. Clear only on new session start.
-- **Never load all modules at once** — still applies, but cached modules are instant access.
+- **Never load all modules at once** -still applies, but cached modules are instant access.
 
 ---
 
@@ -96,7 +96,7 @@ const sessionParams = {
 
 **Iteration Limit (`-N`)**:
 - Applied in Core Iteration Loop (Step 6 of xwhole, Step 5 of xlocal)
-- Each Child gets max N rounds of coderX ↔ evaluatorX iteration
+- Each Child gets max N rounds of coderX ->evaluatorX iteration
 - If limit reached and still Needs Fix: stop iteration, report to human
 
 **Sandbox Branch (`-box`)**:
@@ -104,8 +104,8 @@ const sessionParams = {
   - Without `-box`: Work directly on current branch, no stash/checkout needed
   - With `-box`: Execute full sandbox lifecycle (below)
 - **Sandbox Lifecycle**:
-  - Before workflow: `git stash` → record original branch → `git checkout -b {sandbox-branch}` from main
-  - After workflow: switch back → attempt fast merge (see below) → restore stash
+  - Before workflow: `git stash` ->record original branch ->`git checkout -b {sandbox-branch}` from main
+  - After workflow: switch back ->attempt fast merge (see below) ->restore stash
 - **Fast Merge Strategy** (Optimized):
   1. Try `git merge --ff-only {sandbox-branch}` (fastest, no extra commit)
   2. If ff-only fails (diverged), try `git merge --squash {sandbox-branch}` (single commit)
@@ -149,7 +149,7 @@ const sessionParams = {
 
 ## Planning Phase (Mode A)
 
-> Mode A entry: Environment init (module 01) -> **Requirements Discovery** (module 08) -> following planning dialogue -> **Hard Gate (AskUserQuestion)** -> user clicks "确认生成 PRD" -> Core Iteration Loop
+> Mode A entry: Environment init (module 01) -> **Requirements Discovery** (module 08) -> following planning dialogue -> **Hard Gate (AskUserQuestion)** -> user clicks "Confirm PRD generation" -> Core Iteration Loop
 
 ### Requirements Discovery (Module 08)
 
@@ -241,12 +241,12 @@ coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and eval
 ```javascript
 // Session-level section cache
 const sectionCache = {
-  parent_static: null,      // §0-6 (rarely changes)
-  parent_routing: null,      // §7 (changes on child add/remove)
-  parent_shared_files: null, // §8.1 (changes on file structure change)
-  parent_knowledge: null,    // §8.2 (session-level)
-  parent_dependencies: null, // §8.3 (changes on requirement change)
-  child_files: {},           // {child_path: §8.1 content}
+  parent_static: null,      // Section 0-6 (rarely changes)
+  parent_routing: null,      // Section 7 (changes on child add/remove)
+  parent_shared_files: null, // Section 8.1 (changes on file structure change)
+  parent_knowledge: null,    // Section 8.2 (session-level)
+  parent_dependencies: null, // Section 8.3 (changes on requirement change)
+  child_files: {},           // {child_path: Section 8.1 content}
 };
 
 // Cache read function
@@ -288,15 +288,15 @@ function invalidateCache(reason) {
 ### Pre-Loop Setup: Build Dependency Graph
 
 ```
-1. Read Parent Section 7 → extract all Children
-2. Read Parent Section 8.3 → extract dependency edges (CACHE THIS)
+1. Read Parent Section 7 ->extract all Children
+2. Read Parent Section 8.3 ->extract dependency edges (CACHE THIS)
 3. Build adjacency list + in-degree map:
    - in_degree[child] = number of dependencies
    - adj[parent_dep] = [children that depend on it]
 4. Initialize per-child iteration counters:
    - child_iterations[child] = { used: 0, remaining: sessionParams.iteration_limit }
 5. Initialize ready_queue (FIFO):
-   - For each child where in_degree[child] == 0 → push to ready_queue
+   - For each child where in_degree[child] == 0 ->push to ready_queue
 6. Critical Path Analysis (Optimized):
    - Identify critical path: longest dependency chain
    - Identify high-impact nodes: children with most dependents
@@ -304,7 +304,7 @@ function invalidateCache(reason) {
    - Sort ready_queue by priority (highest first)
 ```
 
-### Phase 1 — Ready Queue Processing (replaces sequential scan)
+### Phase 1 -Ready Queue Processing (replaces sequential scan)
 
 ```
 While ready_queue is not empty:
@@ -352,7 +352,7 @@ While ready_queue is not empty:
        a. Mark current as PASS
        b. For each dependent in adj[current]:
             in_degree[dependent]--
-            if in_degree[dependent] == 0 → enqueue to ready_queue
+            if in_degree[dependent] == 0 ->enqueue to ready_queue
      - Needs Fix + child_iterations[current].remaining > 0:
        a. child_iterations[current].used++
        b. child_iterations[current].remaining--
@@ -362,7 +362,7 @@ While ready_queue is not empty:
        b. Do NOT enqueue dependents (they remain blocked)
 ```
 
-### Phase 2 — Blocked Queue Resolution
+### Phase 2 -Blocked Queue Resolution
 
 ```
 If ready_queue is empty but some children not completed:
@@ -372,7 +372,7 @@ If ready_queue is empty but some children not completed:
 ```
 
 **Early Exit (Optimized)**: 
-- PASS → immediately mark complete, enqueue dependents, move to next in queue
+- PASS ->immediately mark complete, enqueue dependents, move to next in queue
 - No need to check iteration limit for PASS'd children
 
 **Per-Child Counter State**:
@@ -480,10 +480,10 @@ Main Agent determines whether user input changed the current Child's requirement
 
 | Change Type | Confirmation Required |
 |-------------|---------------------|
-| New Branch Feature | Yes — describe new feature, ask "Confirm creating new sub-module?" |
-| Scope Expansion > 50% | Yes — describe expansion, ask "Confirm scope expansion?" |
-| Scope Reduction (removing AC) | Yes — list deleted ACs, ask "Confirm deleting these acceptance criteria?" |
-| Adjustment / Optimization | No — proceed directly |
+| New Branch Feature | Yes -describe new feature, ask "Confirm creating new sub-module?" |
+| Scope Expansion > 50% | Yes -describe expansion, ask "Confirm scope expansion?" |
+| Scope Reduction (removing AC) | Yes -list deleted ACs, ask "Confirm deleting these acceptance criteria?" |
+| Adjustment / Optimization | No -proceed directly |
 
 If user rejects, discard the change and resume original flow.
 
@@ -547,25 +547,25 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 
 | # | Optimization | Location | Impact |
 |---|--------------|----------|--------|
-| 1 | Module Memory Cache | SKILL.md §Module Index | Eliminates repeated disk I/O for skill modules |
-| 2 | Parameter Regex Precompilation | SKILL.md §Parameter Parsing | Single-pass parameter extraction |
-| 3 | Dependency Graph + Ready Queue | SKILL.md §Core Iteration Loop | O(1) dependency resolution, no polling |
+| 1 | Module Memory Cache | SKILL.md Section Module Index | Eliminates repeated disk I/O for skill modules |
+| 2 | Parameter Regex Precompilation | SKILL.md Section Parameter Parsing | Single-pass parameter extraction |
+| 3 | Dependency Graph + Ready Queue | SKILL.md Section Core Iteration Loop | O(1) dependency resolution, no polling |
 | 4 | Early PASS Termination | SKILL.md + Module 03 | Immediate completion, no wasted iterations |
 | 5 | Per-Child Iteration Counter | SKILL.md + Module 06 | Precise iteration tracking |
 | 6 | Incremental Hybrid Tree Update | Module 03 | Targeted section updates only |
-| 7 | Conditional Sandbox | SKILL.md §Sandbox | No overhead without -box flag |
-| 8 | Fast Merge Strategy | SKILL.md §Sandbox | 3-tier merge: ff-only → squash → no-ff |
-| 9 | Prompt Compression | Module 04 §4.3 | 30-50% token reduction in iterations |
+| 7 | Conditional Sandbox | SKILL.md Section Sandbox | No overhead without -box flag |
+| 8 | Fast Merge Strategy | SKILL.md Section Sandbox | 3-tier merge: ff-only ->squash ->no-ff |
+| 9 | Prompt Compression | Module 04 Section 4.3 | 30-50% token reduction in iterations |
 
 ### Tier 2: Advanced Optimizations (Active)
 
 | # | Optimization | Location | Impact |
 |---|--------------|----------|--------|
-| 10 | Section-Level Caching | SKILL.md §Hybrid Tree Section Map | Parent §0-6 cached, 40-60% I/O reduction |
-| 11 | Critical Path Analysis | SKILL.md §Pre-Loop Setup | Priority scheduling for high-impact Children |
-| 12 | Payload Fast-Path Validation | Module 02 §2.4 | Skip validation for known-good payloads |
-| 13 | Incremental Context Passing | Module 02 §2.5 | 40-60% token reduction in multi-iteration |
-| 14 | AC-Level Granular Tracking | Module 03 §Iteration Decision | Precise AC targeting, better progress |
+| 10 | Section-Level Caching | SKILL.md Section Hybrid Tree Section Map | Parent Section 0-6 cached, 40-60% I/O reduction |
+| 11 | Critical Path Analysis | SKILL.md Section Pre-Loop Setup | Priority scheduling for high-impact Children |
+| 12 | Payload Fast-Path Validation | Module 02 Section 2.4 | Skip validation for known-good payloads |
+| 13 | Incremental Context Passing | Module 02 Section 2.5 | 40-60% token reduction in multi-iteration |
+| 14 | AC-Level Granular Tracking | Module 03 Section Iteration Decision | Precise AC targeting, better progress |
 
 ### Performance Expectations
 

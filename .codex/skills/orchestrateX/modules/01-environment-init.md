@@ -1,4 +1,4 @@
-# 1. Environment Initialization (Environment & MCP Self-Check Mechanism)
+﻿# 1. Environment Initialization (Environment & MCP Self-Check Mechanism)
 
 When you are in a new project or opening a conversation with a user for the first time, you must have "out-of-box self-check" awareness:
 
@@ -15,14 +15,14 @@ When you are in a new project or opening a conversation with a user for the firs
 
 ### Step 1: Probe with Retry
 
-Attempt to call `mcp_memory_read_graph`. If the call succeeds, MCP is **Active** — proceed to Step 3.
+Attempt to call `mcp_memory_read_graph`. If the call succeeds, MCP is **Active** -proceed to Step 3.
 
 If the call fails:
 1. Wait 3 seconds, then retry (call `mcp_memory_read_graph` again).
 2. If still fails, wait 3 seconds and retry once more (third attempt total).
-3. If all 3 attempts fail, declare MCP **Degraded** — proceed to Step 2.
+3. If all 3 attempts fail, declare MCP **Degraded** -proceed to Step 2.
 
-### Step 2: Degraded Mode — Notify & Persist
+### Step 2: Degraded Mode -Notify & Persist
 
 1. **One-time user notification** (show only once per session):
    > MCP Server is unavailable after 3 retry attempts. The workflow has entered fallback mode. Knowledge graph retrieval steps will be skipped; agents will only rely on the `8.1` file index and `8.3` incremental references in the hybrid document. Functionality is unaffected, but context precision may decrease. To restore full capability, please reload the window to restart MCP servers.

@@ -4,8 +4,6 @@
 
 Codex runtime truth lives in `AGENTS.md`, `.codex/config.toml`, `.codex/skills/`, and `.codex/agents/`.
 
-Do not write `.claude/*` from Codex tasks. Claude-side files are for the Claude runtime only.
-
 ---
 
 ## Routing
@@ -24,7 +22,6 @@ For code development, feature implementation, refactoring, or bug fixes:
 
 - Follow the relevant `.codex/skills/` workflow.
 - Keep changes scoped to project code and Codex config.
-- Do not modify `.claude/*`.
 
 Direct handling is allowed for read-only exploration, Codex config edits, git operations, and cases where the user explicitly asks to skip workflow handling.
 

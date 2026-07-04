@@ -1,8 +1,8 @@
----
+﻿---
 name: auditX
 description: >
   Structured code audit workflow supporting both PRD-based and prompt-based evaluation modes.
-  evaluatorX is a pure analyzer — reads dispatch-selected docs + code, outputs structured Evaluation Result Payload.
+  evaluatorX is a pure analyzer -reads dispatch-selected docs + code, outputs structured Evaluation Result Payload.
   Document writes are handled by Main Agent, not evaluatorX.
 ---
 

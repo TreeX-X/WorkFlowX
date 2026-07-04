@@ -1,4 +1,4 @@
----
+﻿---
 name: specX
 description: Spec-driven coding workflow for coderX agents. Use this skill whenever implementing, fixing, refactoring, or iterating code from hybrid docs or specified requirements, especially when file index, knowledge index, or evaluator findings are present.
 ---
@@ -29,7 +29,7 @@ coderX receives (Parent, Child) paths, reads corresponding Sections per `.codex/
 
 ### Knowledge Graph
 
-1. Read Parent §8.2 to collect the exact entity names and relation summaries (the "trunk").
+1. Read Parent Section 8.2 to collect the exact entity names and relation summaries (the "trunk").
 2. Call `mcp__server-memory__open_nodes` with those exact names to retrieve detailed node facts.
 3. Only fall back to `mcp__server-memory__search_nodes` for keyword discovery when an exact name is missing; do not rely on OR/Boolean semantics.
 
@@ -48,7 +48,7 @@ coderX receives (Parent, Child) paths, reads corresponding Sections per `.codex/
 1. Read `Context Manifest -> Read First` before any repo-wide search.
 2. Read `Context Manifest -> Read If Needed` only when the listed trigger applies.
 3. Use `Context Budget` to cap broad searches and document reads. Do not scan unrelated modules just to rebuild confidence.
-4. For MCP graph retrieval, use exact entity names from the manifest or Parent §8.2 trunk. Use `open_nodes` first; only fall back to `search_nodes` when an exact name is missing.
+4. For MCP graph retrieval, use exact entity names from the manifest or Parent Section 8.2 trunk. Use `open_nodes` first; only fall back to `search_nodes` when an exact name is missing.
 5. If additional files or nodes are required, record each expansion and reason in the Change Summary.
 
 ### Memory vs. Code Truth
