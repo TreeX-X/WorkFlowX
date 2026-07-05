@@ -2,7 +2,7 @@
 
 > promptX is a lightweight intent extractor. Its responsibility is single: extract 9 dimensions from user's raw requirement text, run diagnostic checklist, and output structured prompts for coderX.
 
-**Invocation Method**: Main Agent dispatches Agent(promptMasterX), passing the raw requirement text as the input. promptMasterX loads `promptX` internally and returns the structured prompt. Do not role-play promptMasterX in the main-agent context. When prompt preprocessing is used before coderX, Main Agent must place the promptX result into the `Structured Requirement` field of a Type 0 Dispatch Payload instead of forwarding it as a loose prompt. The Main Agent's `Execution Brief` remains authoritative.
+**Invocation Method**: Main Agent dispatches promptMasterX through module 09, passing the raw requirement text as the input. promptMasterX loads `promptX` internally and returns the structured prompt. Do not role-play promptMasterX in the main-agent context. When prompt preprocessing is used before coderX, Main Agent must place the promptX result into the `Structured Requirement` field of a Type 0 Dispatch Payload instead of forwarding it as a loose prompt. The Main Agent's `Execution Brief` remains authoritative.
 
 ## 4.1 Skip Rules (Take Priority Over Auto-Trigger Rules)
 
@@ -16,11 +16,11 @@ When the user input satisfies **any** of the following conditions, skip promptX 
 
 | Mode | Scenario | Call promptX? | Description |
 |---|---|---|---|
-| `xunit` | Only when `-prompt` is present | Optional | Dispatch Agent(promptMasterX), then include its structured prompt plus original requirement in the Type 0 Dispatch Payload for Agent(coderX). Without `-prompt`, include only the raw requirement in the Type 0 Dispatch Payload |
+| `xunit` | Only when `-prompt` is present | Optional | Dispatch promptMasterX through module 09, then include its structured prompt plus original requirement in the Type 0 Dispatch Payload for coderX. Without `-prompt`, include only the raw requirement in the Type 0 Dispatch Payload |
 | `xlocal` | Before first calling coderX | Conditional | Use promptX only when Main Agent cannot produce a clear Execution Brief from the requirement and Hybrid Tree. If used, include the structured prompt as supplemental context, not as the authority |
 | `xwhole` | Planner phase | No | Planner phase needs to retain original intent for conversational clarification |
 | `xwhole` | Coder phase (after PRD confirmation) | No | PRD itself is already structured |
-| `xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements, dispatch Agent(promptMasterX), then place the structured fix prompt in the Type 0 Dispatch Payload for Agent(coderX) |
+| `xwhole` | Fix round after evaluator rejection | Yes (auto) | Merge evaluator suggestions + user supplements, dispatch promptMasterX through module 09, then place the structured fix prompt in the Type 0 Dispatch Payload for coderX |
 | `xprompt` | Direct call | Yes | Does not enter any workflow; only performs intent extraction |
 
 **Passing Specification**: When prompt preprocessing is invoked, the structured prompt is placed in the `Structured Requirement` field of the Type 0 Dispatch Payload, with the original requirement retained in `Original Requirement` to prevent intent loss.

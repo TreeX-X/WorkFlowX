@@ -12,7 +12,9 @@ Codex runtime truth lives in `AGENTS.md`, `.codex/config.toml`, `.codex/skills/`
 
 Codex uses project subagent definitions from `.codex/agents/`. The main Codex agent owns orchestration, but implementation, evaluation, prompt preprocessing, and abstraction handoffs must be dispatched to the corresponding subagent (`coderX`, `evaluatorX`, `promptMasterX`, `abstracterX`) instead of being simulated by main-agent roleplay.
 
-If a Codex host cannot dispatch project subagents, report that capability as degraded before continuing. Do not silently pretend to be `coderX` / `evaluatorX` / `promptMasterX` in the main-agent context.
+Subagent dispatch follows `.codex/skills/orchestrateX/modules/09-dispatch-adapter.md`: use a native Agent/subagent tool when one is exposed; otherwise use Codex prompt-spawn when the current surface supports prompt-triggered subagents; otherwise report dispatch as degraded. Do not silently pretend to be `coderX` / `evaluatorX` / `promptMasterX` in the main-agent context.
+
+When using prompt-spawn dispatch, Main Agent must emit the `WorkflowX Subagent Spawn Request` envelope from module 09 and require the returned `WorkflowX Subagent Receipt` before accepting the output as a verified subagent result.
 
 Before automatically dispatching `coderX`, Main Agent must assemble a `Dispatch Payload: coderX Task` as defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. The payload must state mode, dispatch type, objective, requirement source, Execution Brief, Context Manifest, Context Budget, scope, forbidden files, required skills, MCP policy, output contract, verification requirements, and stop conditions. Do not send vague implementation prompts to `coderX`.
 

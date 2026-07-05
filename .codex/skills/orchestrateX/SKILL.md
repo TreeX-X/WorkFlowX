@@ -17,6 +17,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
 | 7 | Status Report | `xstatus` command trigger | `modules/07-status-report.md` + `templates/status-report.html` |
 | 8 | Requirements Discovery & Proactive Challenge | xwhole planning only | `modules/08-requirements-discovery.md` |
+| 9 | Codex Dispatch Adapter | Before every Main -> subagent handoff | `modules/09-dispatch-adapter.md` |
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
@@ -122,13 +123,13 @@ const sessionParams = {
 ### Mode A: whole workflow
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: switch back, `--no-commit --no-ff` merge, restore stash.
-- **Entry**: Environment init (module 01) -> **Requirements Discovery** (module 08: Socratic questioning + Proactive Challenge) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> dispatch capability probe (module 09) -> **Requirements Discovery** (module 08: Socratic questioning + Proactive Challenge) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 - abstracterX is only invoked when user explicitly requests summarization.
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> dispatch Agent(promptMasterX) when prompt preprocessing is required (module 04) -> Core Iteration Loop.
+- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> dispatch capability probe (module 09) -> **PRD detection** -> dispatch promptMasterX through module 09 when prompt preprocessing is required (module 04) -> Core Iteration Loop.
 - **PRD detection (priority order)**:
   1. Explicit Hybrid Tree path in `sessionParams.requirement` -> validate Parent + Child, use directly
   2. No explicit path -> scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent Section 7 Child scopes, Child Section 7 AC, and Section 8.1 file indexes
@@ -140,10 +141,10 @@ const sessionParams = {
 
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
-- **Entry**: Main Agent builds a Type 0 Dispatch Payload, dispatches Agent(coderX), then reports to user. evaluatorX only invoked when explicitly requested.
-- **prompt preprocessing**: Optional. Only when the user passes `-prompt`, dispatch Agent(promptMasterX) first; include its structured prompt plus the original requirement in the Type 0 Dispatch Payload.
+- **Entry**: Main Agent runs dispatch capability probe (module 09), builds a Type 0 Dispatch Payload, dispatches coderX through module 09, then reports to user. evaluatorX only invoked when explicitly requested.
+- **prompt preprocessing**: Optional. Only when the user passes `-prompt`, dispatch promptMasterX through module 09 first; include its structured prompt plus the original requirement in the Type 0 Dispatch Payload.
 - **MCP / knowledge graph**: Skipped entirely. xunit must not probe MCP, call `server-memory`, read knowledge graph sections, or prepend MCP fallback instructions.
-- **coderX lightweight mode**: Dispatch real Agent(coderX). It only loads `guideX` + `razorX`, does not load `specX`, and does not output Bus Payload. It receives a Type 0 Dispatch Payload containing the raw requirement by default, or structured prompt only when `-prompt` is present.
+- **coderX lightweight mode**: Dispatch real coderX via `native_tool` or `prompt_spawn` from module 09. It only loads `guideX` + `razorX`, does not load `specX`, and does not output Bus Payload. It receives a Type 0 Dispatch Payload containing the raw requirement by default, or structured prompt only when `-prompt` is present.
 
 ---
 
@@ -314,7 +315,7 @@ While ready_queue is not empty:
      - If child_iterations[current].remaining <= 0:
        mark as "Limit Reached", report to human, continue to next
   
-  1. Build Type 0 Dispatch Payload for Agent(coderX):
+  1. Build Type 0 Dispatch Payload for coderX:
      - Workflow Mode: xwhole or xlocal
      - Dispatch Type: implement for first round, fix when prior Fix Instructions exist
      - Execution Brief: Main Agent's authoritative user intent, final interpretation, non-goals, and success criteria
@@ -326,10 +327,10 @@ While ready_queue is not empty:
      - Required Skills: guideX, razorX, specX
      - Output Contract: Bus Payload Type 1
      - Fix Instructions: prior evaluator Fix Instructions, if any
-  2. Validate Type 0 Dispatch Payload using module 02, then dispatch Agent(coderX)
+  2. Validate Type 0 Dispatch Payload using module 02, then dispatch coderX through module 09 (`native_tool` preferred, `prompt_spawn` allowed, `degraded` stops before implementation unless user approves fallback)
   3. coderX implements, outputs Change Summary Payload
   4. Validate Payload Type 1 (module 02)
-  5. Build Type 1.5 Review Dispatch Payload for Agent(evaluatorX):
+  5. Build Type 1.5 Review Dispatch Payload for evaluatorX:
      - Workflow Mode: xwhole or xlocal
      - Evaluation Type: full for first evaluation/no history, partial when prior PASS + affected ACs exist, fix when prior Fix Instructions drive this round
      - Review Brief: Main Agent's authoritative audit target, acceptance scope, risk focus, non-goals, and pass criteria
@@ -343,8 +344,8 @@ While ready_queue is not empty:
      - Review Context Budget: limits for broad search, document reads, source reads, MCP retrieval, and expansion reporting
      - Required Reads / Conditional Reads / Expansion Rules: per module 02 Payload Type 1.5
      - Output Contract: Bus Payload Type 2
-  6. Validate Type 1.5 Review Dispatch Payload, then dispatch Agent(evaluatorX)
-  7. Agent(evaluatorX) evaluates, outputs Evaluation Result Payload
+  6. Validate Type 1.5 Review Dispatch Payload, then dispatch evaluatorX through module 09 (`native_tool` preferred, `prompt_spawn` allowed, `degraded` stops before evaluation unless user approves fallback)
+  7. evaluatorX evaluates, outputs Evaluation Result Payload
   8. Load module 03 for Post-Evaluation document update (incremental)
   
   9. Result handling:
@@ -386,6 +387,7 @@ child_iterations = {
 
 **Dispatch Format**:
 - Pass a full Type 0 Dispatch Payload from `modules/02-bus-payload.md`.
+- Execute the handoff through `modules/09-dispatch-adapter.md`. A native Agent/subagent tool is preferred; prompt-spawn is valid when the current Codex surface supports prompt-triggered subagents; degraded dispatch must be reported instead of silently role-playing the target agent.
 - Do not dispatch coderX with only `Parent: [path]` + `Child: [path]`.
 - Do not ask coderX to infer mode, output contract, MCP policy, verification scope, fix-round intent, or user intent from conversation context.
 - Include `Execution Brief`, `Context Manifest`, and `Context Budget` so coderX executes Main Agent's settled interpretation instead of rebuilding the requirement from scratch.
@@ -443,7 +445,7 @@ For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
 
 1. Read Parent Section 7 routing table
 2. Compare current task/requirement against each Child's Scope column
-3. Match found -> build a Type 0 Dispatch Payload for coderX, then dispatch coderX and evaluatorX through the standard Bus pipeline
+3. Match found -> build a Type 0 Dispatch Payload for coderX, then dispatch coderX and evaluatorX through module 09 and the standard Bus pipeline
 4. No match -> execute Requirement Change Handling (Change Type = new_branch)
 
 ### Child Creation Flow
@@ -454,7 +456,7 @@ When Requirement Change Handling determines Change Type = new_branch:
    - Create new Child document using Child template, fill feature description -> Section 7 Description, suggested ACs -> Section 7 AC
    - Add new row to Parent Section 7 (no dependency: append end; has dependency: insert before dependent)
    - Update Parent Section 8.3 (if new dependencies)
-3. Build a Type 0 Dispatch Payload with `Dispatch Type=new_branch`, then dispatch Agent(coderX)
+3. Build a Type 0 Dispatch Payload with `Dispatch Type=new_branch`, then dispatch coderX through module 09
    - Include Execution Brief, Context Manifest, Context Budget, Parent Path, new Child Path, new branch reason, acceptance source, allowed scope, and Output Contract
 
 

@@ -10,7 +10,7 @@ For every automatic handoff to coderX or evaluatorX, Main Agent must first build
 
 ## 2.0 Payload Type 0: Main Agent -> coderX (Dispatch Payload)
 
-Main Agent outputs this payload as the primary input when dispatching Agent(coderX). coderX must read this payload before loading implementation context.
+Main Agent outputs this payload as the primary input when dispatching coderX. coderX must read this payload before loading implementation context. The handoff mechanism is selected by `modules/09-dispatch-adapter.md`: native Agent/subagent tool first, prompt-spawn second, degraded handling last.
 
 ```markdown
 ### Dispatch Payload: coderX Task
@@ -63,6 +63,7 @@ Main Agent outputs this payload as the primary input when dispatching Agent(code
 - `xlocal/xwhole` first implementation: `Dispatch Type=implement`, `Requirement Source=Child Section 7`, `Required Skills=guideX, razorX, specX`, `Output Contract=Bus Payload Type 1`.
 - Fix rounds: `Dispatch Type=fix`, `Requirement Source=evaluator_fix`, include exact evaluator Fix Instructions, and keep Child Section 7 as the acceptance source.
 - New branch: `Dispatch Type=new_branch`, include the new Child path and the reason it was created.
+- Prompt-spawn dispatch wraps this payload in the `WorkflowX Subagent Spawn Request` envelope from module 09. The payload content itself stays unchanged.
 
 ### Dispatch Validation
 
@@ -72,6 +73,7 @@ Before invoking coderX, Main Agent checks that required fields are present and m
 - `xlocal/xwhole` must include valid Parent and Child paths, must require `specX`, and must require Bus Payload Type 1.
 - Every Type 0 payload must include non-empty `Execution Brief`, `Context Manifest`, and `Context Budget`.
 - Fix rounds must include non-empty `Fix Instructions`.
+- When using prompt-spawn, Main Agent must require a `WorkflowX Subagent Receipt` from coderX before accepting the returned content as a verified subagent result.
 - If the payload cannot be assembled clearly, Main Agent must stop and ask for clarification instead of sending an ambiguous task.
 
 ---
@@ -100,7 +102,7 @@ coderX outputs after completing implementation. Main Agent validates and forward
 
 ## 2.1.5 Payload Type 1.5: Main Agent -> evaluatorX (Review Dispatch)
 
-Main Agent outputs this payload as the primary input when dispatching Agent(evaluatorX). evaluatorX must read this payload before deciding what documents, source files, or MCP nodes to inspect.
+Main Agent outputs this payload as the primary input when dispatching evaluatorX. evaluatorX must read this payload before deciding what documents, source files, or MCP nodes to inspect. The handoff mechanism is selected by `modules/09-dispatch-adapter.md`: native Agent/subagent tool first, prompt-spawn second, degraded handling last.
 
 ```markdown
 ### Dispatch Payload: evaluatorX Review Task
@@ -171,6 +173,7 @@ Main Agent outputs this payload as the primary input when dispatching Agent(eval
 - `fix`: evaluate previous failed/partial ACs and exact Fix Instructions, then verify no regression in directly touched ACs.
 - `final`: evaluate the Child or branch completion summary with the broadest review focus allowed by `Review Brief`, `Review Context Manifest`, and `Review Context Budget`; still use explicit changed files and declared review focus to guide reading.
 - `prompt-based`: allowed only for explicit no-Hybrid review requests; evaluate original prompt intent and skip Parent/Child reads.
+- Prompt-spawn dispatch wraps this payload in the `WorkflowX Subagent Spawn Request` envelope from module 09. The payload content itself stays unchanged.
 
 ### Review Dispatch Validation
 
@@ -182,6 +185,7 @@ Before invoking evaluatorX, Main Agent checks that required fields are present a
 - `partial` and `fix` must include `Prior Evaluation Source=Child Section 9`.
 - `partial` must include non-empty `Affected ACs Claimed` unless Main Agent intentionally falls back to `full`.
 - `prompt-based` must use `Parent Path=N/A`, `Child Path=N/A`, `Acceptance Source=original prompt`, and `MCP Policy=skip` unless explicitly overridden.
+- When using prompt-spawn, Main Agent must require a `WorkflowX Subagent Receipt` from evaluatorX before accepting the returned content as a verified subagent result.
 - If the payload cannot be assembled clearly, Main Agent must stop and ask for clarification instead of sending an ambiguous review task.
 
 ---
