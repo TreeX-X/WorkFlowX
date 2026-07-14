@@ -47,10 +47,10 @@ Treat these natural-language prefixes as workflow commands:
 
 Default to normal file tools for reading, searching, and editing.
 
-Use the encrypted-source fallback only when direct reads fail, produce garbled text, or the file is known to have encoding/encryption issues:
+Automatically use the encrypted-source fallback when a file cannot be edited directly, direct reads fail or produce garbled text, or the file is known to be encrypted or have encoding issues:
 
 - **Read fallback**: use `rg` via Bash to search/read affected source content.
-- **Modify fallback**: use precise Edit replacements to preserve encoding; avoid whole-file Write on affected source files.
+- **Modify fallback**: automatically use the Git plaintext/index method to perform precise replacements, preserving encoding and unrelated content; avoid whole-file Write on affected source files.
 - Codex config files such as `AGENTS.md` and `.codex/*` can be read and written normally.
 
 ---
