@@ -62,4 +62,5 @@ Use the encrypted-source fallback only when direct reads fail, produce garbled t
 
 - **Read fallback**: use `rg` via Bash to search/read affected source content.
 - **Modify fallback**: use precise Edit replacements to preserve encoding; avoid whole-file Write on affected source files.
+- **PowerShell direct-write fallback**: when encryption or encoding issues prevent normal editing, `[IO.File]::WriteAllText(...)` may be used to write the resulting content directly back to source files inside the workspace. Preserve the original encoding and unrelated content, and verify the resulting diff after writing.
 - `.claude/*` config files can be read and written normally.
