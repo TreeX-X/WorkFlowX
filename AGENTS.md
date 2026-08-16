@@ -24,6 +24,7 @@ For code development, feature implementation, refactoring, or bug fixes:
 
 - Follow the relevant `.codex/skills/` workflow.
 - Keep changes scoped to project code and Codex config.
+- `xmain` is the direct-execution exception: the Main Agent reads the relevant skills, decomposes each requirement, and implements it directly without dispatching subagents or enabling parallel execution.
 
 Direct handling is allowed for read-only exploration, Codex config edits, git operations, and cases where the user explicitly asks to skip workflow handling.
 
@@ -38,6 +39,7 @@ Treat these natural-language prefixes as workflow commands:
 | `xwhole` | Full-repo workflow: discovery -> implementation -> evaluation |
 | `xlocal` | Local/module workflow |
 | `xunit` | Minimal unit task |
+| `xmain` | Main Agent direct execution; re-decompose each new requirement; no subagents or parallelism |
 | `xstatus` | Generate workflow status report |
 | `xprompt` | Prompt optimization only |
 

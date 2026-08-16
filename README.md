@@ -114,7 +114,7 @@ xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 
 ---
 
-## 四种模式
+## 五种模式
 
 按改动影响范围选择。拿不准时直接描述需求，RouteX 会结合状态推荐模式。
 
@@ -124,8 +124,9 @@ xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 | **`xlocal`** | 1-2 个模块内的修复或局部功能 | 复用/生成最小 Hybrid Tree | 自动，最多 N 轮 | `xlocal 修复订单列表分页 bug` |
 | **`xwhole`** | 新功能、跨模块重构、高影响任务 | Phase 1 需求发现 → Phase 2 文档生成 | 自动，最多 N 轮 | `xwhole 实现订单中心` |
 | **`xwhole -parallel`** | 多个独立子任务并行推进 | 生成 Hybrid Tree 后按 Child 并行 | 多 coder / evaluator 并行 | `/xwhole -parallel 实现用户、订单、商品模块` |
+| **`xmain`** | 主智能体直接执行的持续任务 | 每次输入先拆分，再直接执行；Claude 可按需并行 | 主智能体验证 | `xmain 实现订单中心` |
 
-常用参数：`-N 3` 限制每个 Child 最多验收迭代 3 轮；`-box demo` 在沙箱分支隔离执行；`-parallel` 仅 Claude Code Agent Teams 支持。
+常用参数：`-N 3` 限制每个 Child 最多验收迭代 3 轮；`-box demo` 在沙箱分支隔离执行；`-parallel` 仅 Claude Code Agent Teams 支持。`xmain` 在 Codex 中始终串行且不派发子智能体。
 
 <p align="center">
   <img src="docs/assets/05-capabilities-zh.png" alt="WorkflowX 模式与能力矩阵" width="880" />
@@ -236,8 +237,8 @@ xstatus --output ./reports/today.html
 
 | 平台 | 配置目录 | 触发方式 | 并行模式 |
 |---|---|---|---|
-| **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | 支持 `/xwhole -parallel` |
-| **OpenAI Codex** | `.codex/` | 自然语言前缀：`xwhole` `xlocal` `xunit` `xstatus` `xprompt` | 不支持 |
+| **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xmain` `/xstatus` `/xprompt` | `xmain` 按需支持 Agent Teams 并行 |
+| **OpenAI Codex** | `.codex/` | 自然语言前缀：`xwhole` `xlocal` `xunit` `xmain` `xstatus` `xprompt` | `xmain` 始终主智能体串行执行 |
 
 两套配置共享同一套工作流思想，但会根据宿主工具能力调整触发语法、子代理调用方式和并行能力。
 

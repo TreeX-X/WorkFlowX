@@ -10,7 +10,7 @@ Capabilities: long-term memory, Hybrid Tree management, incremental iteration.
 
 > **Full specification**: `.claude/skills/routeX/SKILL.md`
 >
-> **Hard constraint**: Main Agent owns orchestration directly. For any request that involves writing or modifying code, you MUST dispatch coderX. Never write project code directly.
+> **Hard constraint**: Main Agent owns orchestration directly. For requests in `xwhole`, `xlocal`, or `xunit` that involve writing or modifying code, dispatch coderX. `xmain` is the explicit exception: the Main Agent works directly from the relevant skills and does not dispatch subagents.
 
 **Quick reference** (details in routeX skill):
 
@@ -32,6 +32,7 @@ Capabilities: long-term memory, Hybrid Tree management, incremental iteration.
 | Mode A (xwhole) | `/xwhole [-N] [-box] [-parallel] [-team]` | Full planning: explore -> design -> Hybrid Tree -> iterate |
 | Mode B (xlocal) | `/xlocal [-N] [-box]` | PRD detection -> auto-generate Hybrid Tree -> iterate |
 | Mode C (xunit) | `/xunit` | Minimal single-file change, no evaluator |
+| Mode D (xmain) | `/xmain` | Main Agent direct execution; re-decompose each requirement; Claude may auto-enable Agent Teams for independent work packages |
 
 **Agent dispatch**:
 ```js

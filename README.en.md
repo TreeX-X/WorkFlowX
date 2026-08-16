@@ -114,7 +114,7 @@ xwhole implement user login with email/password and OAuth
 
 ---
 
-## Four Modes
+## Five Modes
 
 Choose by blast radius. If unsure, describe the requirement and RouteX can recommend a mode based on current state.
 
@@ -124,8 +124,9 @@ Choose by blast radius. If unsure, describe the requirement and RouteX can recom
 | **`xlocal`** | Bug fix or local feature within 1-2 modules | Reuse/create minimal Hybrid Tree | Auto, up to N rounds | `xlocal fix order list pagination bug` |
 | **`xwhole`** | New feature, cross-module refactor, high-impact work | Phase 1 discovery → Phase 2 docs | Auto, up to N rounds | `xwhole build the order center` |
 | **`xwhole -parallel`** | Multiple independent subtasks in parallel | Generate Hybrid Tree, then dispatch by Child | Parallel coder/evaluator teammates | `/xwhole -parallel build user, order, product modules` |
+| **`xmain`** | Persistent tasks owned directly by the Main Agent | Decompose each input, then execute directly; Claude may parallelize when justified | Main Agent verification | `xmain build the order center` |
 
-Common flags: `-N 3` caps verification rounds per Child; `-box demo` isolates work in a sandbox branch; `-parallel` requires Claude Code Agent Teams.
+Common flags: `-N 3` caps verification rounds per Child; `-box demo` isolates work in a sandbox branch; `-parallel` requires Claude Code Agent Teams. In Codex, `xmain` is always serial and does not dispatch subagents.
 
 <p align="center">
   <img src="docs/assets/05-capabilities.png" alt="WorkflowX modes and capability matrix" width="880" />
@@ -236,8 +237,8 @@ xstatus --output ./reports/today.html
 
 | Platform | Config dir | Trigger style | Parallel mode |
 |---|---|---|---|
-| **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xstatus` `/xprompt` | Supports `/xwhole -parallel` |
-| **OpenAI Codex** | `.codex/` | Natural-language prefix: `xwhole` `xlocal` `xunit` `xstatus` `xprompt` | Not supported |
+| **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xmain` `/xstatus` `/xprompt` | `xmain` may use Agent Teams when justified |
+| **OpenAI Codex** | `.codex/` | Natural-language prefix: `xwhole` `xlocal` `xunit` `xmain` `xstatus` `xprompt` | `xmain` is always direct and serial |
 
 Both configs share the same workflow model, with trigger syntax, sub-agent dispatch, and parallelism adapted to the host tool.
 

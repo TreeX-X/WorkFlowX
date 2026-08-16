@@ -1,6 +1,6 @@
 ---
 name: orchestrateX
-description: "Main Agent complete workflow handbook. Contains planning dialogue, Mode A/B/C workflows, core iteration loop, Hybrid Tree routing, requirement change handling, routeX, Start Rule."
+description: "Main Agent complete workflow handbook. Contains planning dialogue, Mode A/B/C/D workflows, core iteration loop, Hybrid Tree routing, requirement change handling, routeX, Start Rule."
 ---
 
 # orchestrateX Playbook
@@ -46,7 +46,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 ```javascript
 // Precompile once per session, store in session memory
 const PARAM_PATTERNS = {
-  mode: /^\/?(xwhole|xlocal|xunit|xstatus|xprompt)\b/,
+  mode: /^\/?(xwhole|xlocal|xunit|xmain|xstatus|xprompt)\b/,
   N: /-N\s+(\d+)/,
   box: /-box\s+(\S+)/,
   prompt: /-prompt\b/,
@@ -77,7 +77,7 @@ Parsed:
 ```javascript
 // Structured session parameter object (persisted across workflow)
 const sessionParams = {
-  mode: 'xwhole',           // xwhole | xlocal | xunit
+  mode: 'xwhole',           // xwhole | xlocal | xunit | xmain
   iteration_limit: 2,       // from -N, default 2
   sandbox_branch: null,     // from -box, null if not provided
   use_prompt_preprocess: false, // from -prompt, xunit only
@@ -145,6 +145,13 @@ const sessionParams = {
 - **prompt preprocessing**: Optional. Only when the user passes `-prompt`, dispatch promptMasterX through module 09 first; include its structured prompt plus the original requirement in the Type 0 Dispatch Payload.
 - **MCP / knowledge graph**: Skipped entirely. xunit must not probe MCP, call `server-memory`, read knowledge graph sections, or prepend MCP fallback instructions.
 - **coderX lightweight mode**: Dispatch real coderX via `native_tool` or `prompt_spawn` from module 09. It only loads `guideX` + `razorX`, does not load `specX`, and does not output Bus Payload. It receives a Type 0 Dispatch Payload containing the raw requirement by default, or structured prompt only when `-prompt` is present.
+
+### Mode D: direct Main Agent workflow (`xmain`)
+- Scope: Persistent direct execution for any task size.
+- Every new requirement is decomposed against unfinished work before execution.
+- The Main Agent loads relevant skills and implements directly.
+- No coderX, evaluatorX, promptMasterX, Bus Payload, Hybrid Tree, or parallel dispatch is used.
+- Verification is performed by the Main Agent with relevant checks and reported with residual risks.
 
 ---
 
@@ -519,7 +526,7 @@ When user does not explicitly specify a mode, route by the following rules:
 
 ### Routing Rules (by priority)
 
-1. **Explicit commands first**: `xwhole`, `xlocal`, `xunit` bypass routeX.
+1. **Explicit commands first**: `xwhole`, `xlocal`, `xunit`, `xmain` bypass routeX.
 2. **Scope inference**:
 
    | Dimension | whole | local | unit |
@@ -537,9 +544,9 @@ Auto-route (notify user) when 2+ dimensions align; otherwise show options and wa
 
 ## Start Rule
 
-1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `xwhole`, `xlocal`, `xunit`.
+1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `xwhole`, `xlocal`, `xunit`, or `xmain`.
 2. **State isolation**: Stay in current workflow mode until completion. No cross-mode calls.
-3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrateX/hybrid-template.md`). unit exempt.
+3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrateX/hybrid-template.md`). unit and xmain are exempt.
 
 ---
 

@@ -13,7 +13,7 @@ Runtime behavior lives in:
 - `.codex/config.toml` for Codex-native project settings such as sandbox policy and MCP servers.
 - `.codex/skills/` for reusable Codex skills.
 
-The active Codex main agent performs orchestration only. When a WorkflowX handoff is required, dispatch the matching subagent definition instead of role-playing that agent inside the main context.
+The active Codex main agent performs orchestration only for `xwhole`, `xlocal`, and `xunit`. In `xmain`, the Main Agent is the direct implementation owner, reads the relevant skills, and does not dispatch subagents or enable parallel execution.
 
 Before dispatching `coderX`, Main Agent must create the `Dispatch Payload: coderX Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. This payload is the handoff contract and must be specific enough for coderX to execute without inferring user intent, mode, scope, output format, MCP policy, verification obligations, or context-reading strategy from conversation context. Include Execution Brief, Context Manifest, and Context Budget.
 

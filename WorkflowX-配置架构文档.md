@@ -16,13 +16,14 @@
 - **结构化通信**：智能体间通过 Bus Payload 传递结构化信息
 - **单一写入者**：Main Agent 是唯一的文档写入者，其他智能体只读
 
-### 1.2 三种工作模式
+### 1.2 工作模式
 
 | 模式 | 指令 | 适用场景 | 特点 |
 |------|------|---------|------|
 | **Mode A (whole)** | `/xwhole` | 大规模、高影响力任务 | 完整规划-编码-评估循环，自动 worktree 隔离 |
 | **Mode B (local)** | `/xlocal` | 需求明确的局部模块 | PRD检测 + 迭代循环，自动 worktree 隔离 |
 | **Mode C (unit)** | `/xunit` | 最小单元任务 | 单文件/最小改动，无评估环节，无隔离 |
+| **Mode D (main)** | `/xmain` | 主智能体直接执行 | 每次需求先拆分；Claude 可按需并行，Codex 始终串行 |
 
 **Mode A-parallel**: `/xwhole -parallel` 启用 Agent Teams 并行执行模式（需要 Claude Code 环境）
 

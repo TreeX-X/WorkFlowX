@@ -1,6 +1,6 @@
 ---
 name: orchestrateX
-description: "Main Agent complete workflow handbook. Contains planning dialogue, Mode A/B/C workflows, core iteration loop, Hybrid Tree routing, requirement change handling, routeX, Start Rule."
+description: "Main Agent complete workflow handbook. Contains planning dialogue, Mode A/B/C/D workflows, core iteration loop, Hybrid Tree routing, requirement change handling, routeX, Start Rule."
 ---
 
 # orchestrator Playbook
@@ -156,6 +156,12 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
   2. If `-prompt` is present, invoke promptX; otherwise skip prompt preprocessing.
   3. Dispatch Agent(coderX) lightweight mode with a Type 0 Dispatch Payload: "no MCP / no knowledge graph / no Bus Payload".
   4. Report result and complete the command.
+
+### Mode D: direct Main Agent workflow (`xmain`)
+- Default execution owner is the Main Agent; no coderX/evaluatorX dispatch is required.
+- Re-decompose every new requirement against unfinished work before acting.
+- Use the relevant skills directly and verify changes in the Main Agent.
+- Claude may enter the existing Agent Teams path only when decomposition identifies at least two independent, non-overlapping work packages; otherwise remain serial.
 
 ---
 
@@ -559,7 +565,7 @@ Read change analysis results, execute:
 
 ## Start Rule
 
-1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`. Parallel execution via `/xwhole -parallel`.
+1. **Routing priority**: Explicit command > natural language intent > Auto-Routing. When uncertain, require user to specify `/xwhole`, `/xlocal`, `/xunit`, or `/xmain`. Parallel execution via `/xwhole -parallel` or an eligible xmain decomposition.
 2. **State isolation**: Stay in current workflow mode until completion. No cross-mode calls.
-3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrateX/hybrid-template.md`). unit exempt.
+3. **Hybrid Tree**: whole and local must generate Hybrid Tree (even if skipping planning, create minimal version from `orchestrateX/hybrid-template.md`). unit and xmain exempt.
 4. **Concurrency protection**: Before starting any workflow, check for `.hybrid/.workflow-lock`. If lock exists, warn user and abort. Otherwise, create lock file with timestamp and mode. Remove lock on workflow completion or interruption.

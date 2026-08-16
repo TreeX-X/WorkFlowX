@@ -29,6 +29,8 @@ Routing is decided from the complete user input plus the active conversation/wor
 
 **Behavior**: Treat the input as part of the current workflow. Do not restart mode selection.
 
+**xmain exception**: Re-decompose the input against unfinished work, then execute directly in the Main Agent. Do not update a Hybrid Tree or dispatch coderX/evaluatorX unless the xmain parallel eligibility rule explicitly applies.
+
 ### Requirement Change Handling
 
 ```
@@ -114,7 +116,7 @@ After user selection, execute the selected Mode Execution flow directly.
 
 ## 5. Route 3 - Explicit Command
 
-**Trigger**: `/xwhole`, `/xlocal`, `/xunit`, `/xprompt`, `/xstatus`
+**Trigger**: `/xwhole`, `/xlocal`, `/xunit`, `/xmain`, `/xprompt`, `/xstatus`
 
 **Action**: Execute immediately. No mode-selection question is needed. If another workflow is active in the current conversation, the explicit command starts the new requested workflow.
 
@@ -150,6 +152,14 @@ After user selection, execute the selected Mode Execution flow directly.
 3. Dispatch coderX with lightweight scope.
 4. Report result and complete.
 
+### Mode D (xmain) - Direct Main Agent Workflow
+
+1. Keep the mode active for the conversation.
+2. Decompose every new requirement against unfinished work before editing.
+3. Execute directly with the relevant skills; do not dispatch coderX/evaluatorX by default.
+4. If the decomposition has at least two independent, non-overlapping work packages and Claude Agent Teams is available, use the existing parallel setup and coordination modules.
+5. Otherwise execute serially in the Main Agent.
+
 ---
 
 ## 7. Commands
@@ -159,6 +169,7 @@ After user selection, execute the selected Mode Execution flow directly.
 | `/xwhole [-N] [-box] [-parallel] [-team]` | Mode A | Full planning: explore -> design -> implement |
 | `/xlocal [-N] [-box]` | Mode B | Fast implementation via PRD detection |
 | `/xunit` | Mode C | Minimal single-file change |
+| `/xmain` | Mode D | Main Agent direct execution; Claude may auto-parallelize independent work |
 | `/xstatus [--output]` | - | Generate HTML status report |
 | `/xprompt` | - | Intent extraction (promptX skill) |
 | `/noiseX [focus|summary]` | - | Context denoising |
