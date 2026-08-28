@@ -8,11 +8,6 @@
       "Bash(npm *)"
     ]
   },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "server-memory",
-    "server-sequential-thinking"
-  ],
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },

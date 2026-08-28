@@ -120,7 +120,7 @@ open screenshot.png
 
 ### 上传图床分享链接
 
-如果需要给远程协作者看（比如 Slack/飞书/微信），让用户用自己的图床工具或 MCP 上传：
+如果需要给远程协作者看（比如 Slack/飞书/微信），让用户用自己的图床工具或 上传：
 
 ```bash
 python ~/Documents/写作/tools/upload_image.py screenshot.png

@@ -234,7 +234,6 @@ Environment init
      -> Socratic Discovery only if clarity < 5.0
      -> Proactive Challenge
   -> PRD detection
-  -> promptMasterX optimization when needed
   -> Core Iteration Loop
 ```
 

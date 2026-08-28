@@ -70,7 +70,6 @@
 
 ```
 用户 → orchestratorX (唯一编排者 & 唯一文档写入者)
-         ├── promptMasterX (Prompt 优化，37 反模式检测)
          ├── coderX (编码实现，Karpathy 指南驱动)
          │     └── coder-teammate (并行模式)
          ├── evaluatorX (质量审计，AC 交叉验证)
@@ -141,7 +140,6 @@
 |------|-----------|-------------|-----|
 | **需求澄清** | 苏格拉底式追问 + 加权清晰度评估 + 主动质疑 (Module 08) | brainstorming (苏格拉底式 + HARD-GATE) | deep-interview (维度化清晰度) |
 | **任务规划** | Hybrid Tree (Parent + Children) + 依赖图 + 关键路径分析 | writing-plans (2-5 分钟粒度任务) | planner → .omc/plans/*.md |
-| **Prompt 优化** | promptMasterX (37 反模式检测 + 压缩) | ❌ | ❌ |
 | **编码实现** | coderX (Karpathy 指南 + 规格驱动) | TDD + implementer subagent | executor (Sonnet) |
 | **质量审计** | evaluatorX (AC 交叉验证 + 代码审查) | spec reviewer + code quality reviewer | critic + code-reviewer + security-reviewer |
 | **迭代修复** | Core Loop: coder→evaluator→fix (最多 N 轮，早退机制) | implementer→review→fix (持续执行) | 3-strike escalation + team-fix loop |
@@ -169,7 +167,6 @@
 | **自动计划** | 自动生成 Hybrid Tree | 自动进入 brainstorming | 自动生成 .omc/plans/ |
 | **自动迭代** | 评估失败自动重试 (最多 N 轮，早退) | 持续执行直到完成 | 3-strike + team-fix loop |
 | **自动验证** | evaluatorX AC 交叉验证 | 两阶段审查 | critic + verifier + LSP 诊断 |
-| **Prompt 优化** | promptMasterX (37 反模式) | ❌ | ❌ |
 | **依赖图调度** | 拓扑排序 + 关键路径分析 | ❌ | Team 依赖管理 |
 | **技能学习** | ❌ | ❌ | 自动提取 + 自动注入模式 |
 | **通知系统** | ❌ | ❌ | Telegram/Discord/Slack |
@@ -185,7 +182,6 @@
 | **Section-Level Caching** | Hybrid Tree 静态段在前，动态段在后，利用 LLM prompt caching | 首次后 40-60% |
 | **增量上下文传递** | 后续迭代只传变化段，静态段用引用替代 | 40-60% |
 | **Prompt 压缩** | 静态段摘要化、评估结果压缩、修复指令聚焦 | 30-50% |
-| **promptMasterX 跳过规则** | 短输入或已精确的输入跳过优化 | 避免无效开销 |
 | **快速 Payload 验证** | 已知可靠来源跳过 git diff 语义检查 | 减少验证开销 |
 | **按需模块加载** | 模块只在触发时加载，不全量加载 | 减少初始上下文 |
 | **预测性预取** | 根据模式预取可能需要的模块 | 减少延迟 |
@@ -399,7 +395,6 @@
 2. **Token 效率最高** — 系统化增量传递 + 压缩策略，多轮迭代节省 40-60%
 3. **质量控制最严** — AC 交叉验证 (不信任 coder 声明) + 跨分支检测
 4. **需求发现最深** — Module 08 苏格拉底式追问 + 加权清晰度 + 主动质疑
-5. **Prompt 优化内置** — promptMasterX 37 反模式检测
 6. **代码美学框架** — razorX 独特的代码审美标准
 7. **迭代控制最精确** — 独立计数器 + 早退 + 上限，无无限循环风险
 8. **Plugin Marketplace 已就绪** — 支持 Claude / Codex 双平台一键安装
@@ -465,7 +460,6 @@
 | **Hybrid Tree 数据结构** | Parent + Child 的 MECE 组织方式，唯一将需求文档结构化的方案 | 需求可追溯、可验证、可增量更新 |
 | **AC 交叉验证** | evaluatorX 不信任 coderX 声明，独立验证每个验收标准 | 消除"自我验证"偏差，质量控制最严谨 |
 | **跨分支违规检测** | 文件所有权 + 共享文件兼容性检查 | 多分支并行开发不冲突 |
-| **promptMasterX** | 37 反模式检测的 Prompt 优化能力 | 编码前提升输入质量 |
 | **razorX 代码美学** | "路径能否更短？认知负荷能否更低？" | 代码不仅正确，而且优雅 |
 | **苏格拉底式需求发现** | 加权清晰度评估 + 主动质疑 (Module 08) | 规划阶段暴露隐藏假设和边界条件 |
 | **Section-Level Caching** | 静态段在前、动态段在后，利用 LLM prompt caching | Token 效率最高 |

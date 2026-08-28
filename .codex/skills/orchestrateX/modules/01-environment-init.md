@@ -1,69 +1,23 @@
-﻿# 1. Environment Initialization (Environment & MCP Self-Check Mechanism)
+# 1. Environment Initialization
 
-When you are in a new project or opening a conversation with a user for the first time, you must have "out-of-box self-check" awareness:
+When entering a workflow for the first time, perform an "out-of-box self-check":
 
-1. Proactively check whether the project provides MCP tool dependencies (such as `server-memory` and `server-sequential-thinking`) for xwhole/xlocal workflows.
-2. If the evaluation environment may be missing these MCP Servers, kindly remind the user: "Detected that the current workflow depends on external MCP Server capabilities. If this is your first deployment, please refer to the `mcp.json.template` in the root directory to configure it in your IDE or client." Guide the user through the prerequisite configuration before smoothly entering the main workflow.
+1. Check for concurrent workflow conflicts (Step 0).
+2. Proceed to workflow execution.
 
-**xunit exception**: xunit is a lightweight unit workflow. It skips MCP health checks entirely and must not use knowledge graph retrieval. Dispatch coderX through module 09 with a Type 0 Dispatch Payload that sets `MCP Policy=skip` and gives coderX a concise Execution Brief, Context Manifest, and Context Budget for local code exploration.
+## Step 0: Concurrency Lock Check
 
-## 1.1 MCP Health Check & Auto-Recovery (MCP Lifecycle)
+Before any other operation, check for `.hybrid/.workflow-lock`:
 
-**Trigger**: Every entry into xwhole/xlocal workflow, before any other operation.
+1. **If lock exists**: Read the lock file to get the active workflow mode and timestamp. Warn the user:
+   > Another workflow is currently running (mode: {mode}, started: {timestamp}). Please wait for it to complete or manually delete `.hybrid/.workflow-lock` to force-start.
 
-**Do not run for xunit**. xunit does not probe `server-memory`, does not write MCP status markers, and does not prepend MCP fallback instructions.
+   Then abort.
 
-### Step 1: Probe with Retry
+2. **If no lock**: Create `.hybrid/.workflow-lock` with content:
+   ```
+   mode: {current-mode}
+   started: {real-timestamp}
+   ```
 
-Attempt to call `mcp_memory_read_graph`. If the call succeeds, MCP is **Active** -proceed to Step 3.
-
-If the call fails:
-1. Wait 3 seconds, then retry (call `mcp_memory_read_graph` again).
-2. If still fails, wait 3 seconds and retry once more (third attempt total).
-3. If all 3 attempts fail, declare MCP **Degraded** -proceed to Step 2.
-
-### Step 2: Degraded Mode -Notify & Persist
-
-1. **One-time user notification** (show only once per session):
-   > MCP Server is unavailable after 3 retry attempts. The workflow has entered fallback mode. Knowledge graph retrieval steps will be skipped; agents will only rely on the `8.1` file index and `8.3` incremental references in the hybrid document. Functionality is unaffected, but context precision may decrease. To restore full capability, please reload the window to restart MCP servers.
-
-2. **Persist status** (see Step 3 for format).
-
-### Step 3: Write MCP Status to Hybrid Doc
-
-**If a hybrid document exists** (xwhole / xlocal workflows): Update `Section 0. Runtime Environment Status` in the static zone:
-
-- **MCP Active**:
-  ```
-  - **MCP Status**: Active
-  - **MCP Servers**: server-memory, server-sequential-thinking
-  - **Last Checked**: [ISO timestamp]
-  - **Degraded Since**: N/A
-  - **Fallback Impact**: None
-  ```
-
-- **MCP Degraded**:
-  ```
-  - **MCP Status**: Degraded
-  - **MCP Servers**: server-memory, server-sequential-thinking
-  - **Last Checked**: [ISO timestamp]
-  - **Degraded Since**: [ISO timestamp]
-  - **Fallback Impact**: Knowledge graph retrieval skipped; relying on 8.1/8.3 file index only
-  ```
-
-**If no hybrid document exists**: Do not persist MCP status. xunit never reaches this step.
-
-### Step 4: SubAgent Dispatch Adaptation (Degraded Mode Only)
-
-When calling coderX / evaluatorX in degraded mode, prepend this instruction prefix to the dispatch prompt:
-
-> [MCP Fallback Mode] Current MCP Server is unavailable. Please skip all `mcp_memory_open_nodes` / `mcp_memory_search_nodes` and other MCP graph retrieval steps. Instead: rely only on information from the hybrid document `8.1` main index and `8.3` incremental references as context. If context is insufficient, explicitly point out what specific information is missing and continue execution; do not block.
-
-### Step 5: Recovery Detection
-
-Each time entering a new xwhole/xlocal workflow, **always re-probe** (repeat Step 1). If MCP was previously Degraded and is now Active:
-
-1. Update hybrid doc Section 0 status to `Active`, clear `Degraded Since`, set `Fallback Impact: None`.
-2. Notify user:
-   > MCP Server has recovered. Full knowledge graph capabilities restored.
-3. Clear any `#tool:todo` `MCP_DEGRADED` marker if present.
+3. **On workflow completion or interruption**: Delete `.hybrid/.workflow-lock`.

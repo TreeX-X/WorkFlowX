@@ -11,13 +11,12 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
-| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal only; xunit skips MCP | `modules/01-environment-init.md` |
+| 1 | Environment Init | First entry to xwhole/xlocal/xunit; concurrency lock check | `modules/01-environment-init.md` |
 | 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX/evaluatorX dispatch contracts | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
 | 8 | Discovery & Solution Design | xwhole only: Phase 1 (exploration and design consensus) | `modules/08-requirements-discovery.md` |
-| 鈥?| noiseX (Context Denoising) | xwhole only: auto-invoked at Phase 1鈫? transition | `skills/noiseX/skill.md` |
 | 10 | Memory Hygiene | End of planning, before each evaluation, before PASS/FAIL | `modules/10-memory-hygiene.md` |
 
 **Note**: Module 00 (Auto-Routing) has been superseded by `.claude/skills/routeX/SKILL.md` 鈥?the consolidated routing specification for the Main Agent. Main Agent always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
@@ -42,7 +41,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
 | `-parallel` | `-parallel` | xwhole | off | Enable Agent Teams parallel execution within Mode A |
 | `-team` | `-team [name]` | xwhole (with `-parallel`) | `workflow-{timestamp}` | Agent Team name for parallel workflow |
-| `-prompt` | `-prompt` | xunit | off | Run promptX before coderX; without it, place raw requirement in the Type 0 Dispatch Payload |
+| `-prompt` | `-prompt` | xunit | off | (deprecated, kept for backward compat) |
 
 ### Parsing Rules
 
@@ -57,7 +56,7 @@ Extract sequentially from `$ARGUMENTS`: command name 鈫?optional flags 鈫?requ
 | `-box` | Branch name (alphanumeric, hyphens, underscores) after `-box` | skip | Sandbox branch name |
 | `-parallel` | Presence flag | off | Agent Teams parallel mode |
 | `-team` | Name after `-team` | `workflow-{timestamp}` | Team name for parallel mode |
-| `-prompt` | Presence flag | off | xunit only: enable promptX preprocessing |
+| `-prompt` | Presence flag | off | xunit only: deprecated |
 | requirement | Remaining text after removing above params | 鈥?| User requirement |
 
 **Examples**:
@@ -112,7 +111,7 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: merge worktree branches into sandbox, switch back, `--no-commit --no-ff` merge sandbox into original, restore stash.
-- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> **Hard Gate (AskUserQuestion)** -> user clicks "纭鐢熸垚 PRD" -> **noiseX summary** (denoise Phase 1 context) -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> **Hard Gate (AskUserQuestion)** -> user clicks "纭鐢熸垚 PRD" -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
 
 #### Mode A-parallel (`-parallel`)
@@ -134,7 +133,7 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> Core Iteration Loop.
+- **Entry**: Environment init (module 01) -> **PRD detection** -> Core Iteration Loop.
 - **PRD detection (priority order)**:
   1. Explicit Hybrid Tree path in `$ARGUMENTS` 鈫?validate Parent + Child, use directly
   2. No explicit path 鈫?scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent 搂7 Child scopes, Child 搂7 AC, and 搂8.1 file indexes
@@ -147,13 +146,12 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
 - **Entry**: Main Agent builds a Type 0 Dispatch Payload, dispatches Agent(coderX), then reports to user. evaluatorX only invoked when explicitly requested.
-- **promptX integration**: Optional. Only invoke `promptX` when the user passes `-prompt`; then include the structured prompt plus original requirement in the Type 0 Dispatch Payload.
-- **MCP / knowledge graph**: Skipped entirely. xunit must not probe MCP, call `server-memory`, read knowledge graph sections, or prepend MCP fallback instructions.
+
 - **coderX lightweight mode**: Only loads `guideX` + `razorX`, does not load `specX`, no Bus Payload needed. Receives a Type 0 Dispatch Payload containing the raw requirement by default, or structured prompt only when `-prompt` is present.
 - **Execution flow**:
-  1. xunit lightweight init: skip Module 01 MCP checks.
-  2. If `-prompt` is present, invoke promptX; otherwise skip prompt preprocessing.
-  3. Dispatch Agent(coderX) lightweight mode with a Type 0 Dispatch Payload: "no MCP / no knowledge graph / no Bus Payload".
+  1. xunit lightweight init: skip Module 01 concurrency check.
+  2. Skip prompt preprocessing.
+  3. Dispatch Agent(coderX) lightweight mode with a Type 0 Dispatch Payload: "no Bus Payload".
   4. Report result and complete the command.
 
 ### Mode D: direct Main Agent workflow (`xmain`)
@@ -236,15 +234,14 @@ AskUserQuestion({
 
 **Phase 2 entry:**
 - ONLY after user clicks "纭鐢熸垚 PRD" in AskUserQuestion
-- Invoke `noiseX summary` to denoise Phase 1 context (internal, not shown to user)
-- Generate Hybrid Tree with all discoveries written to appropriate sections, using noiseX purified summary as clean signal source
+- Generate Hybrid Tree with all discoveries written to appropriate sections, using Phase 1 consensus summary as clean signal source
 - Proceed to Core Iteration Loop
 
 ### Knowledge Graph Writeback
 
 When the user triggers Summary:
 
-1. Read confirmed facts from `mcp/server-memory` for the current session, generate a structured knowledge graph
+1. Collect confirmed facts from the current session, generate a structured knowledge index
 2. Clean up: retain only user-confirmed facts, delete speculation and pending items
 3. Serialize and write to Parent Section 8.4
 4. If old snapshot exists, overwrite with timestamp preserved, do not add duplicates
@@ -303,14 +300,14 @@ coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and eval
 | Parent | 0-6 | Global spec (NFR, DoD, Scope) | coderX, evaluatorX | **Session Cache**: Read once, cache entire block. Invalidate only on requirement change. |
 | Parent | 7 | Routing table (not AC source) | coderX | **Session Cache**: Read once per iteration round. |
 | Parent | 8.1 | Shared file index | coderX, evaluatorX | **Session Cache**: Read once, invalidate on file structure change. |
-| Parent | 8.2 | Knowledge graph outlines (details via MCP) | coderX, evaluatorX | **Session Cache**: Read once per session. |
+| Parent | 8.2 | Knowledge index | coderX, evaluatorX | **Session Cache**: Read once per session. |
 | Parent | 8.3 | Cross-branch dependencies | coderX, evaluatorX | **Session Cache + Invalidation**: Read once, invalidate on requirement change only. |
 | Child | 7 | Branch AC (evaluation target) | coderX, evaluatorX | **No Cache**: Changes frequently during iteration. |
 | Child | 8.1 | Private file index | coderX, evaluatorX | **Session Cache**: Read once, invalidate on file change. |
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
 
-> **Context hand-off rule (Optimized)**: coderX receives the Main Agent's Execution Brief, Context Manifest, Context Budget, and agent-readable document paths through the Type 0 Dispatch Payload. The first implementation round reads only the manifest-listed sections before broad exploration. In subsequent coderX rounds, prefer a lightweight trunk: include only Parent 搂8.2 (Memory Pointers entity/relation summaries) plus the current Child 搂7 (AC) and 搂9 (prior evaluation / fix instructions), unless the Context Manifest requires more. evaluatorX receives Review Brief, Review Context Manifest, and Review Context Budget through Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child 搂7 and conditional Parent/Child/MCP context only as allowed by the review manifest and budget.
+> **Context hand-off rule (Optimized)**: coderX receives the Main Agent's Execution Brief, Context Manifest, Context Budget, and agent-readable document paths through the Type 0 Dispatch Payload. The first implementation round reads only the manifest-listed sections before broad exploration. In subsequent coderX rounds, prefer a lightweight trunk: include only Parent 搂8.2 (Memory Pointers entity/relation summaries) plus the current Child 搂7 (AC) and 搂9 (prior evaluation / fix instructions), unless the Context Manifest requires more. evaluatorX receives Review Brief, Review Context Manifest, and Review Context Budget through Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child 搂7 and conditional Parent/Child context only as allowed by the review manifest and budget.
 
 ---
 
@@ -383,7 +380,7 @@ While ready_queue is not empty:
      - Affected ACs Claimed: from Payload Type 1, or N/A for full
      - Review Focus: Directed Audit Points + changed file risks + prior Fix Instructions, if any
      - Review Context Manifest: Read First / Read If Needed / Do Not Read Unless Needed paths, document sections, and diff/code targets
-     - Review Context Budget: limits for broad search, document reads, source reads, MCP retrieval, and expansion reporting
+     - Review Context Budget: limits for broad search, document reads, source reads, and expansion reporting
      - Required Reads / Conditional Reads / Expansion Rules: per module 02 Payload Type 1.5
      - Output Contract: Bus Payload Type 2
   6. Validate Type 1.5 Review Dispatch Payload, then dispatch Agent(evaluatorX)
@@ -430,10 +427,10 @@ child_iterations = {
 **Dispatch Format**:
 - Pass a full Type 0 Dispatch Payload from `modules/02-bus-payload.md`.
 - Do not dispatch coderX with only `Parent: [path]` + `Child: [path]`.
-- Do not ask coderX to infer mode, output contract, MCP policy, verification scope, fix-round intent, or user intent from conversation context.
+- Do not ask coderX to infer mode, output contract, verification scope, fix-round intent, or user intent from conversation context.
 - Include `Execution Brief`, `Context Manifest`, and `Context Budget` so coderX executes Main Agent's settled interpretation instead of rebuilding the requirement from scratch.
 - Pass a full Type 1.5 Review Dispatch Payload to evaluatorX after validating coderX's Change Summary.
-- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, audit target, MCP policy, context-reading strategy, or expansion rules from conversation context.
+- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, audit target, context-reading strategy, or expansion rules from conversation context.
 - Include `Review Brief`, `Review Context Manifest`, and `Review Context Budget` so evaluatorX audits Main Agent's declared target without rebuilding the feature context from scratch.
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
@@ -444,7 +441,7 @@ child_iterations = {
 
 1. **Code Scan**: Use Glob/Grep/rg to search project for files related to the requirement
 2. **Generate Parent** (`hybrid-template.md`):
-   - Section 0: MCP status from Module 01
+   - Section 0: Runtime environment status from Module 01
    - Sections 1-6: Minimal fill from requirement (project goal, boundaries, NFR, DoD)
    - Section 7: Routing table with single Child row
    - Section 8.1: Shared file index from scan results

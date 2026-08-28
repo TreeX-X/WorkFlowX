@@ -22,7 +22,7 @@ When user inputs `/xwhole [requirement]`:
 - Extract requirement text
 
 ### Stage 1: Environment Init
-- Execute Module 01 (MCP probe, concurrency lock)
+- Execute Module 01 (concurrency lock)
 
 ### Stage 2: Phase 1 - Discovery & Solution Design (Mandatory)
 **Cannot skip, even if user wrote detailed requirements!**

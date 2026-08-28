@@ -38,7 +38,7 @@ WorkflowX is an **engineering workflow** that lives inside your AI coding tool. 
 <p align="center">
   <img src="docs/assets/06-workflow-animation-en.gif" alt="WorkflowX xwhole Workflow Demo" width="880" />
   <br/>
-  <sub>A complete xwhole workflow: RouteX routing context → discovery → user confirmation → noiseX denoise → Hybrid Tree → coderX → evaluatorX → fix loop → PASS close</sub>
+  <sub>A complete xwhole workflow: RouteX routing context → discovery → user confirmation → Hybrid Tree → coderX → evaluatorX → fix loop → PASS close</sub>
 </p>
 
 ---
@@ -53,7 +53,7 @@ The real problem with single-agent AI coding is not just model quality. It is th
 | **Requirements disappear into chat history** | Requirements become a Hybrid Tree; changes update only the relevant Section and affected Children re-enter the loop |
 | **AI says "done" but misses the requirement** | evaluatorX distrusts coderX self-report and independently checks code, diff, and AC |
 | **Misread requirements surface after coding** | xwhole Phase 1 explores the codebase, asks Socratic questions, and proactively challenges assumptions |
-| **Multi-round iteration burns tokens** | Section caching, trunk/leaf split, MCP memory snapshots, and noiseX denoising control context budget |
+| **Multi-round iteration burns tokens** | Section caching, trunk/leaf split,  control context budget |
 | **Parallel work overwrites itself** | Worktree isolation, Child ownership boundaries, and cross-branch violation detection |
 
 ---
@@ -79,7 +79,7 @@ Main Agent
 <p align="center">
   <img src="docs/assets/01-architecture.png" alt="WorkflowX Main Agent orchestration architecture" width="880" />
   <br/>
-  <sub>Main Agent centralizes orchestration and document writes; coderX / evaluatorX / promptX / noiseX enter as execution or helper units</sub>
+  <sub>Main Agent centralizes orchestration and document writes; coderX / evaluatorX enter as execution or helper units</sub>
 </p>
 
 In one line: **Main Agent owns flow and facts, coderX writes code, evaluatorX gates quality, Hybrid Tree keeps everything traceable.**
@@ -90,9 +90,7 @@ In one line: **Main Agent owns flow and facts, coderX writes code, evaluatorX ga
 
 **Requirement**: Node.js v18+
 
-**1. Install MCP dependencies** for cross-session memory:
-
-```bash
+**```bash
 npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
 ```
 
@@ -102,7 +100,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 |---|---|
 | **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → search `workflowx` → Install Plugin |
-| **Manual** | Copy `.claude/` or `.codex/` into the project root, then mount MCP per `mcp.json.template` |
+| **Manual** | Copy `.claude/` or `.codex/` into the project root |
 
 **3. Run your first requirement**
 
@@ -120,7 +118,7 @@ Choose by blast radius. If unsure, describe the requirement and RouteX can recom
 
 | Mode | Use case | Planning | Verify loop | Example |
 |---|---|---|---|---|
-| **`xunit`** | Single-file, small, clear change | Direct coderX; promptX only with `-prompt` | evaluatorX off by default | `xunit add timeout config to Config` |
+| **`xunit`** | Single-file, small, clear change | Direct coderX | evaluatorX off by default | `xunit add timeout config to Config` |
 | **`xlocal`** | Bug fix or local feature within 1-2 modules | Reuse/create minimal Hybrid Tree | Auto, up to N rounds | `xlocal fix order list pagination bug` |
 | **`xwhole`** | New feature, cross-module refactor, high-impact work | Phase 1 discovery → Phase 2 docs | Auto, up to N rounds | `xwhole build the order center` |
 | **`xwhole -parallel`** | Multiple independent subtasks in parallel | Generate Hybrid Tree, then dispatch by Child | Parallel coder/evaluator teammates | `/xwhole -parallel build user, order, product modules` |
@@ -139,11 +137,10 @@ Common flags: `-N 3` caps verification rounds per Child; `-box demo` isolates wo
 For `xwhole implement user login`, the full workflow is:
 
 1. **Entry routing**: Main Agent routes from the command, user input, and active conversation context; Hybrid Tree remains the durable workflow source of truth.
-2. **Environment init**: parse `-N` / `-box` / `-parallel`, probe MCP, and prepare degradation behavior.
+2. **Environment init**: parse `-N` / `-box` / `-parallel`.
 3. **Code exploration**: search project structure, related modules, and existing constraints to build a file index.
 4. **Requirement discovery**: socratesX asks one grounded question at a time and challenges contradictions, missing NFRs, and technical risks.
 5. **Hard Gate confirmation**: docs cannot be generated until the user confirms the plan.
-6. **noiseX denoising**: compress Phase 1 exploration, discarded hypotheses, and confirmed facts into a clean signal.
 7. **Hybrid Tree generation**: Main Agent writes Parent / Child docs with scope, AC, dependencies, and file index.
 8. **coderX implementation**: implements against Child AC and returns a Change Summary Payload.
 9. **evaluatorX verification**: independently reads diff and code, then outputs AC status, severity-ranked issues, and fix instructions.
@@ -192,11 +189,8 @@ This turns "the AI says it is done" into "an independent quality gate confirms i
 | Layer | Strategy | Effect |
 |---|---|---|
 | **L1 Section caching** | Stable sections at top, dynamic sections overwritten at bottom | Better Prompt Cache hit rate |
-| **L2 Trunk/leaf split** | Markdown keeps the requirement trunk; entity relations live in MCP memory | Smaller docs |
+| **L2 Trunk/leaf split** | Markdown keeps the requirement trunk; entity relations in knowledge files | Smaller docs |
 | **L3 Memory snapshot** | Hybrid Tree stores summaries and pointers; full nodes persist in server-memory | Cross-session fact reuse |
-
-noiseX and promptX handle the related problems: planning noise contaminating docs, and fix-round prompts becoming too scattered.
-
 </details>
 
 <details>
@@ -218,8 +212,6 @@ Workflow continuity lives in the active conversation plus Hybrid Tree documents.
 <details>
 <summary><b>Other Built-In Capabilities</b></summary>
 
-- **promptX / promptMasterX**: convert rough requirements or fix instructions into structured input for coderX.
-- **noiseX**: cleans Phase 1 context before Phase 2 so discarded assumptions do not enter the PRD.
 - **razorX**: uses "Can the path be shorter? Can cognitive load be lower?" to guide implementation and review.
 - **guideX**: keeps coderX away from overdesign, false completion, and unverified edits.
 - **xstatus**: generates a high-fidelity HTML workflow status report.

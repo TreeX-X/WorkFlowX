@@ -93,7 +93,6 @@ Hybrid Tree + Bus Payload 记录了完整的决策链路。可以做一个：
 
 ### 创新 3：跨项目知识迁移（Cross-Project Pattern Learning）
 
-利用已有的 MCP Knowledge Graph：
 
 - 当用户在项目 A 中用 xwhole 完成了"用户认证模块"，工作流自动提取这个模式
 - 下次用户在项目 B 中说"实现登录功能"，自动推荐项目 A 的 Hybrid Tree 模板

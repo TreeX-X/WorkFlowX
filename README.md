@@ -38,7 +38,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 <p align="center">
   <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="880" />
   <br/>
-  <sub>一次完整 xwhole：RouteX 路由上下文 → 需求发现 → 用户确认 → noiseX 降噪 → Hybrid Tree → coderX → evaluatorX → 修复回流 → PASS 收口</sub>
+  <sub>一次完整 xwhole：RouteX 路由上下文 → 需求发现 → 用户确认 → Hybrid Tree → coderX → evaluatorX → 修复回流 → PASS 收口</sub>
 </p>
 
 ---
@@ -53,7 +53,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 | **需求散落在聊天里** | 需求落到 Hybrid Tree，变更只改对应 Section，受影响 Child 重新进入循环 |
 | **AI 自称完成但没达标** | evaluatorX 不信任 coderX 自述，独立读代码、读 diff、逐条核对 AC |
 | **编码后才发现需求误解** | xwhole Phase 1 先做代码探索、苏格拉底式追问和主动质疑，再进入文档生成 |
-| **多轮迭代 Token 成本高** | 分区缓存、干叶分离、MCP 记忆快照、noiseX 降噪共同控制上下文预算 |
+| **多轮迭代 Token 成本高** | 分区缓存、干叶分离、
 | **并行任务相互覆盖** | worktree 隔离 + Child 责任边界 + 跨分支违规检测 |
 
 ---
@@ -79,7 +79,7 @@ Main Agent
 <p align="center">
   <img src="docs/assets/01-architecture-zh.png" alt="WorkflowX Main Agent 编排架构" width="880" />
   <br/>
-  <sub>Main Agent 集中编排与写文档；coderX / evaluatorX / promptX / noiseX 作为执行或辅助单元进入循环</sub>
+  <sub>Main Agent 集中编排与写文档；coderX / evaluatorX 作为执行或辅助单元进入循环</sub>
 </p>
 
 一句话：**Main Agent 管流程和事实，coderX 写代码，evaluatorX 把关，Hybrid Tree 保持可追踪。**
@@ -90,9 +90,7 @@ Main Agent
 
 **环境要求**：Node.js v18+
 
-**1. 安装 MCP 依赖**（用于跨会话记忆）
-
-```bash
+**```bash
 npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
 ```
 
@@ -102,7 +100,7 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 |---|---|
 | **Claude Code** | `/plugin marketplace add https://github.com/TreeX-X/workflowX` → `/plugin install workflowx` |
 | **OpenAI Codex** | `/plugins` → 搜索 `workflowx` → Install Plugin |
-| **手动部署** | 把 `.claude/` 或 `.codex/` 拷进项目根目录，再按 `mcp.json.template` 挂载 MCP |
+| **手动部署** | 把 `.claude/` 或 `.codex/` 拷进项目根目录 |
 
 **3. 跑第一条需求**
 
@@ -120,7 +118,7 @@ xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 
 | 模式 | 适用场景 | 规划方式 | 验收循环 | 示例 |
 |---|---|---|---|---|
-| **`xunit`** | 单文件、小改动、明确修复 | 直接调用 coderX；仅 `-prompt` 时使用 promptX | 默认不启用 evaluatorX | `xunit 给 Config 加超时配置` |
+| **`xunit`** | 单文件、小改动、明确修复 | 直接调用 coderX | 默认不启用 evaluatorX | `xunit 给 Config 加超时配置` |
 | **`xlocal`** | 1-2 个模块内的修复或局部功能 | 复用/生成最小 Hybrid Tree | 自动，最多 N 轮 | `xlocal 修复订单列表分页 bug` |
 | **`xwhole`** | 新功能、跨模块重构、高影响任务 | Phase 1 需求发现 → Phase 2 文档生成 | 自动，最多 N 轮 | `xwhole 实现订单中心` |
 | **`xwhole -parallel`** | 多个独立子任务并行推进 | 生成 Hybrid Tree 后按 Child 并行 | 多 coder / evaluator 并行 | `/xwhole -parallel 实现用户、订单、商品模块` |
@@ -139,11 +137,10 @@ xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 以 `xwhole 实现用户登录功能` 为例，完整流程分成 10 个动作：
 
 1. **入口路由**：Main Agent 根据命令、用户输入和当前会话上下文路由；Hybrid Tree 作为持久的工作流事实来源。
-2. **环境初始化**：解析 `-N` / `-box` / `-parallel`，探测 MCP，可降级运行。
+2. **环境初始化**：解析 `-N` / `-box` / `-parallel`。。
 3. **代码探索**：先搜索项目结构、相关模块和已有约束，形成文件索引。
 4. **需求发现**：用 socratesX 一次一题澄清边界，并主动挑战矛盾、遗漏和技术风险。
 5. **Hard Gate 确认**：用户确认方案后才允许进入文档生成。
-6. **noiseX 降噪**：把 Phase 1 中的探索、废弃假设和确认事实提炼成干净信号。
 7. **生成 Hybrid Tree**：Main Agent 写 Parent / Child，包含范围、AC、依赖和文件索引。
 8. **coderX 实现**：按 Child AC 写代码，完成后输出 Change Summary Payload。
 9. **evaluatorX 验收**：独立读 diff 和代码，输出 AC 状态、问题等级和修复指令。
@@ -192,11 +189,8 @@ evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是：
 | 层 | 策略 | 作用 |
 |---|---|---|
 | **L1 分区缓存** | 稳定区置顶，动态区置底覆写 | 提高 Prompt Cache 命中率 |
-| **L2 干叶分离** | Markdown 只保留需求树干，实体关系交给 MCP 知识图谱 | 减少文档体积 |
-| **L3 记忆快照** | Hybrid Tree 存摘要和指针，完整节点持久化到 server-memory | 跨会话复用事实 |
-
-配套的 noiseX 和 promptX 分别解决“规划阶段噪声污染文档”和“修复轮输入过散”的问题。
-
+| **L2 干叶分离** | Markdown 只保留需求树干，实体关系存于知识文件 | 减少文档体积 |
+| **L3 记忆快照** | Hybrid Tree 存摘要和指针，完整节点持久化到知识文件 | 跨会话复用事实 |
 </details>
 
 <details>
@@ -218,8 +212,6 @@ evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是：
 <details>
 <summary><b>其他内置能力</b></summary>
 
-- **promptX / promptMasterX**：把粗需求或修复指令转成 coderX 更容易执行的结构化输入。
-- **noiseX**：在 xwhole Phase 1 → Phase 2 之间清理对话噪声，避免把废弃假设写进 PRD。
 - **razorX**：用“路径能否更短、认知负担能否更低”约束实现与 review。
 - **guideX**：约束 coderX 避免过度设计、虚假完成和无验证修改。
 - **xstatus**：生成高保真 HTML 工作流状态报告。

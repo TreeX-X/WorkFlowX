@@ -38,7 +38,6 @@
 ├── agents/                    # 智能体定义（Main Claude Agent 自身担任编排者，无独立编排者文件）
 │   ├── coderX.md              # 编码智能体
 │   ├── evaluatorX.md          # 评估智能体
-│   ├── promptMasterX.md       # 提示词优化
 │   ├── coder-teammate.md      # 并行编码队友
 │   └── evaluator-teammate.md  # 并行评估队友
 │
@@ -110,9 +109,8 @@ description: "触发条件和功能说明"
 | 智能体 | 职责 | 核心技能 | 可用工具 |
 |--------|------|----------|---------|
 | **Main Agent** | 流程编排、文档写入、子智能体调度 | `orchestrateX` | Bash, Read, Write, Edit, Agent, SendMessage, Team*, Task* |
-| **coderX** | 代码实现、最小化修改 | `guidelines`<br>`specX` | Bash, Read, Write, Edit, Glob, Grep, mcp |
-| **evaluatorX** | 代码审计、质量评估 | `auditX` | Bash, Read, Glob, Grep, mcp |
-| **promptMasterX** | 提示词优化 | `prompt-master` | Read, Glob, Grep |
+| **coderX** | 代码实现、最小化修改 | `guidelines`<br>`specX` | Bash, Read, Write, Edit, Glob, Grep |
+| **evaluatorX** | 代码审计、质量评估 | `auditX` | Bash, Read, Glob, Grep |
 
 ### 3.2 并行模式队友智能体
 
@@ -131,7 +129,6 @@ description: "触发条件和功能说明"
 | `guidelines` | coderX, coder-teammate | 每次编码任务开始时（Mode A/B/C 均需） |
 | `specX` | coderX, coder-teammate | Hybrid Tree 工作流（Mode A/B）时加载 |
 | `auditX` | evaluatorX, evaluator-teammate | 评估任务开始时 |
-| `prompt-master` | promptMasterX | Main Agent 调用 Module 04 时 |
 
 ---
 
@@ -143,7 +140,6 @@ description: "触发条件和功能说明"
 - 全局规范、非功能需求、完成定义
 - 路由表（Child 索引）
 - 共享文件索引（8.1）
-- 知识图谱（8.2）
 - 跨分支依赖（8.3）
 - 聚合评估表（9）
 
@@ -156,7 +152,7 @@ description: "触发条件和功能说明"
 
 **Parent 文档结构**：
 ```
-## 0. MCP Status                # MCP 工具可用性
+## 0. Environment Status       # 环境状态
 ## 1. Project Overview          # 项目概览
 ## 2. Boundaries                # 边界定义
 ## 3. Technical Constraints     # 技术约束
@@ -165,7 +161,7 @@ description: "触发条件和功能说明"
 ## 6. Scope                     # 范围声明
 ## 7. Routing Table             # Child 路由表
 ## 8.1 Shared File Index        # 共享文件索引
-## 8.2 Knowledge Graph          # 知识图谱大纲（详情在 MCP）
+## 8.2 Knowledge Index         # 知识索引大纲
 ## 8.3 Cross-Branch Dependencies  # 跨分支依赖
 ## 9. Aggregation Table         # 聚合评估汇总
 ```
@@ -241,7 +237,7 @@ description: "触发条件和功能说明"
 ```
 用户输入 → Main Agent 启动
     ↓
-[Module 01] 环境初始化 + MCP 探测
+[Module 01] 环境初始化
     ↓
 [Module 08] 需求发现 + 主动挑战
     ↓
@@ -253,7 +249,6 @@ Planning Phase 对话
     ├→ 读取 Parent §7 路由表
     ├→ 解析依赖关系（Parent §8.3）
     ├→ 按拓扑序遍历 Children：
-    │   ├→ [Module 04] promptMasterX 优化提示词
     │   ├→ Agent(coderX, isolation="worktree")
     │   │   ├→ 读取 Parent §0-6, §8.1-8.3
     │   │   ├→ 读取 Child §7 (AC), §8.1, §9 (prior eval)
@@ -316,7 +311,6 @@ PRD 检测（优先级顺序）：
     2. 参数包含 PRD 文件路径 → 读取并包装为 Hybrid Tree
     3. 无 PRD → 自动生成最小 Hybrid Tree
     ↓
-[Module 04] promptMasterX 优化
     ↓
 [Core Iteration Loop]（同 Mode A）
 ```
@@ -326,7 +320,6 @@ PRD 检测（优先级顺序）：
 ```
 用户输入 → Main Agent 启动
     ↓
-[Module 04] promptMasterX 优化
     ↓
 Agent(coderX)（轻量模式）
     ├→ 只加载 guidelines 技能
@@ -467,9 +460,9 @@ Main Agent 通过 `orchestrateX` 的模块系统实现按需加载：
 
 **Q: Main Agent 什么时候调用哪个智能体？**
 A: 根据模式和阶段：
-- Mode A: Planning → promptMasterX → (coderX → evaluatorX) 循环
-- Mode B: PRD 检测 → promptMasterX → (coderX → evaluatorX) 循环
-- Mode C: promptMasterX → coderX（单次）
+- Mode A: Planning -> (coderX -> evaluatorX) 循环
+- Mode B: PRD 检测 -> (coderX -> evaluatorX) 循环
+- Mode C: coderX（单次）
 
 **Q: 如果 evaluatorX 发现问题，怎么反馈给 coderX？**
 A: evaluatorX 输出 Payload Type 2 → Main Agent 读取 Fix Instructions → 组装成 fix prompt → 调用 coderX（带上 fix 指令）
@@ -494,7 +487,6 @@ A: 串行模式中 Main Agent 依次调用 coderX/evaluatorX（一个智能体�
 - Main Agent（编排核心）
 - coderX（编码）
 - evaluatorX（评估）
-- promptMasterX（提示词优化）
 - coder-teammate（并行编码）
 - evaluator-teammate（并行评估）
 

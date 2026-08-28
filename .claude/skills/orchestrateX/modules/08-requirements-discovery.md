@@ -126,26 +126,17 @@ Main Agent MUST call AskUserQuestion:
 
 **Only option A ("确认生成 PRD") proceeds to Phase 2.** All other options loop back within Phase 1.
 
-### Context Denoising (noiseX summary)
-
-**After user clicks "确认生成 PRD"**, Main Agent invokes `noiseX summary` before entering Phase 2.
-
-**Purpose**: Phase 1 accumulates 3-6 turns of Socratic dialogue, exploratory reads, discarded hypotheses — signal and noise are heavily entangled. Phase 2 (Hybrid Tree generation) needs clean signal input. noiseX summary distills the Socratic dialogue into a purified summary, providing a clean context baseline for all downstream work.
-
-**Invocation**: Apply noiseX summary mode to the Phase 1 conversation history. Output the purified summary as internal context — NOT shown to user, NOT written to file. Use it as the signal source when generating the Hybrid Tree in Phase 2.
-
 ### Phase 2 Entry (Main Agent main flow)
 
-**Only after user clicks "确认生成 PRD" in the gate and noiseX summary completes**, Main Agent executes Phase 2:
+**Only after user clicks "确认生成 PRD" in the gate**, Main Agent executes Phase 2:
 
-1. **Create Hybrid Tree** (Parent + Children) with findings mapped to sections, using noiseX purified summary as clean signal source
+1. **Create Hybrid Tree** (Parent + Children) with findings mapped to sections
 2. **Write to `.hybrid/[feature]/`**
 3. **Enter Core Iteration Loop**
 
 ### Findings → Hybrid Tree Mapping (Phase 2)
 
-**Phase 2 responsibility**: Main Agent writes confirmed findings into appropriate sections:
-
+**Phase 2 responsibility**: Read confirmed facts from the knowledge files for the current session.
 | Finding Type | Target Section | What to Write |
 |-------------|---------------|---------------|
 | Confirmed scope | Parent §1 Project Overview | Feature description with context |
@@ -157,15 +148,6 @@ Main Agent MUST call AskUserQuestion:
 | Cross-module dependencies | Parent §8.3 Dependencies | Dependency edges |
 | File index | Parent §8.1 (shared), Child §8.1 (private) | Accumulated file index |
 | Knowledge insights | Parent §8.2 Knowledge Graph | Key insights from exploration |
-
-### Knowledge Graph Writeback (Phase 2)
-
-**Phase 2 responsibility**: If MCP memory is available:
-1. Read confirmed facts from `mcp/server-memory` for current session
-2. Generate structured knowledge graph
-3. Clean up: retain only user-confirmed facts, delete speculation
-4. Serialize and write to Parent Section 8.4
-5. Overwrite old snapshot with timestamp preserved (no duplicates)
 
 ## 8.6 Mode-Specific Adaptations
 
@@ -186,9 +168,8 @@ Environment init (module 01)
     ├─ "继续澄清" → back to socratesX question
     └─ "修改范围" → re-define scope → update facts
   → User clicks "确认生成 PRD"
-  → noiseX summary: denoise Phase 1 context (internal, not shown to user)
   → Phase 2: Document Generation (Main Agent):
-    → Create Hybrid Tree with all findings (using noiseX purified summary)
+    → Create Hybrid Tree with all findings
     → Write to .hybrid/
   → Core Iteration Loop
 ```

@@ -11,7 +11,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 
 | # | Module | Trigger | File Path |
 |---|--------|---------|-----------|
-| 1 | Environment Init + MCP Degradation | First entry to xwhole/xlocal only; xunit skips MCP | `modules/01-environment-init.md` |
+| 1 | Environment Init | First entry to xwhole/xlocal/xunit; concurrency lock check | `modules/01-environment-init.md` |
 | 2 | Bus Payload Validation | Cross-agent handoff and Main -> coderX/evaluatorX dispatch contracts | `modules/02-bus-payload.md` |
 | 3 | Post-Evaluation Document Update | After evaluatorX returns | `modules/03-post-evaluation.md` |
 | 4 | Prompt Preprocessing | Before calling coderX (not whole planning first round) | `modules/04-prompt-preprocess.md` |
@@ -37,7 +37,7 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 |-----------|--------|-------|---------|-------------|
 | `-N` | `-N [number]` | xwhole, xlocal | `2` | Maximum evaluation iteration rounds per Child |
 | `-box` | `-box [name]` | xwhole | N/A | Sandbox branch name for isolated execution |
-| `-prompt` | `-prompt` | xunit | off | Dispatch promptMasterX before coderX; without it, place raw requirement in the Type 0 Dispatch Payload |
+| `-prompt` | `-prompt` | xunit | off | (deprecated, kept for backward compat) |
 
 ### Parsing Rules (Optimized: Precompiled Regex + Session Object)
 
@@ -128,7 +128,7 @@ const sessionParams = {
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.
-- **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> dispatch capability probe (module 09) -> **PRD detection** -> dispatch promptMasterX through module 09 when prompt preprocessing is required (module 04) -> Core Iteration Loop.
+- **Entry**: Environment init (module 01) -> dispatch capability probe (module 09) -> **PRD detection** -> Core Iteration Loop.
 - **PRD detection (priority order)**:
   1. Explicit Hybrid Tree path in `sessionParams.requirement` -> validate Parent + Child, use directly
   2. No explicit path -> scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent Section 7 Child scopes, Child Section 7 AC, and Section 8.1 file indexes
@@ -141,15 +141,14 @@ const sessionParams = {
 ### Mode C: unit workflow
 - Scope: Minimal tasks: single fix, single file, minimal change.
 - **Entry**: Main Agent runs dispatch capability probe (module 09), builds a Type 0 Dispatch Payload, dispatches coderX through module 09, then reports to user. evaluatorX only invoked when explicitly requested.
-- **prompt preprocessing**: Optional. Only when the user passes `-prompt`, dispatch promptMasterX through module 09 first; include its structured prompt plus the original requirement in the Type 0 Dispatch Payload.
-- **MCP / knowledge graph**: Skipped entirely. xunit must not probe MCP, call `server-memory`, read knowledge graph sections, or prepend MCP fallback instructions.
+
 - **coderX lightweight mode**: Dispatch real coderX via `native_tool` or `prompt_spawn` from module 09. It only loads `guideX` + `razorX`, does not load `specX`, and does not output Bus Payload. It receives a Type 0 Dispatch Payload containing the raw requirement by default, or structured prompt only when `-prompt` is present.
 
 ### Mode D: direct Main Agent workflow (`xmain`)
 - Scope: Persistent direct execution for any task size.
 - Every new requirement is decomposed against unfinished work before execution.
 - The Main Agent loads relevant skills and implements directly.
-- No coderX, evaluatorX, promptMasterX, Bus Payload, Hybrid Tree, or parallel dispatch is used.
+- No coderX, evaluatorX, Bus Payload, Hybrid Tree, or parallel dispatch is used.
 - Verification is performed by the Main Agent with relevant checks and reported with residual risks.
 
 ---
@@ -185,7 +184,7 @@ Continuously maintain "engineering file index + knowledge index", recording only
 
 When the user inputs `Summary` or expresses intent like "hand off to coder / start development / finish planning":
 
-1. Read confirmed facts from `mcp/server-memory` for the current session, generate a structured knowledge graph
+1. Collect confirmed facts from the current session, generate a structured knowledge index
 2. Clean up: retain only user-confirmed facts, delete speculation and pending items
 3. Serialize and write to Parent Section 8.4
 4. If old snapshot exists, overwrite with timestamp preserved, do not add duplicates
@@ -236,7 +235,7 @@ coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and eval
 | Parent | 0-6 | Global spec (NFR, DoD, Scope) | coderX, evaluatorX | **Session Cache**: Read once, cache entire block. Invalidate only on requirement change. |
 | Parent | 7 | Routing table (not AC source) | coderX | **Session Cache**: Read once per iteration round. |
 | Parent | 8.1 | Shared file index | coderX, evaluatorX | **Session Cache**: Read once, invalidate on file structure change. |
-| Parent | 8.2 | Knowledge graph outlines (details via MCP) | coderX, evaluatorX | **Session Cache**: Read once per session. |
+| Parent | 8.2 | Knowledge index | coderX, evaluatorX | **Session Cache**: Read once per session. |
 | Parent | 8.3 | Cross-branch dependencies | coderX, evaluatorX | **Session Cache + Invalidation**: Read once, invalidate on requirement change only. |
 | Child | 7 | Branch AC (evaluation target) | coderX, evaluatorX | **No Cache**: Changes frequently during iteration. |
 | Child | 8.1 | Private file index | coderX, evaluatorX | **Session Cache**: Read once, invalidate on file change. |
@@ -347,7 +346,7 @@ While ready_queue is not empty:
      - Affected ACs Claimed: from Payload Type 1, or N/A for full
      - Review Focus: Directed Audit Points + changed file risks + prior Fix Instructions, if any
      - Review Context Manifest: Read First / Read If Needed / Do Not Read Unless Needed paths, document sections, and diff/code targets
-     - Review Context Budget: limits for broad search, document reads, source reads, MCP retrieval, and expansion reporting
+     - Review Context Budget: limits for broad search, document reads, source reads, and expansion reporting
      - Required Reads / Conditional Reads / Expansion Rules: per module 02 Payload Type 1.5
      - Output Contract: Bus Payload Type 2
   6. Validate Type 1.5 Review Dispatch Payload, then dispatch evaluatorX through module 09 (`native_tool` preferred, `prompt_spawn` allowed, `degraded` stops before evaluation unless user approves fallback)
@@ -395,10 +394,10 @@ child_iterations = {
 - Pass a full Type 0 Dispatch Payload from `modules/02-bus-payload.md`.
 - Execute the handoff through `modules/09-dispatch-adapter.md`. A native Agent/subagent tool is preferred; prompt-spawn is valid when the current Codex surface supports prompt-triggered subagents; degraded dispatch must be reported instead of silently role-playing the target agent.
 - Do not dispatch coderX with only `Parent: [path]` + `Child: [path]`.
-- Do not ask coderX to infer mode, output contract, MCP policy, verification scope, fix-round intent, or user intent from conversation context.
+- Do not ask coderX to infer mode, output contract, verification scope, fix-round intent, or user intent from conversation context.
 - Include `Execution Brief`, `Context Manifest`, and `Context Budget` so coderX executes Main Agent's settled interpretation instead of rebuilding the requirement from scratch.
 - Pass a full Type 1.5 Review Dispatch Payload to evaluatorX after validating coderX's Change Summary.
-- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, audit target, MCP policy, context-reading strategy, or expansion rules from conversation context.
+- Do not dispatch evaluatorX with only `Parent + Child + Change Summary`, and do not ask it to infer review scope, evaluation mode, audit target, context-reading strategy, or expansion rules from conversation context.
 - Include `Review Brief`, `Review Context Manifest`, and `Review Context Budget` so evaluatorX audits Main Agent's declared target without rebuilding the feature context from scratch.
 
 ## Minimal Hybrid Tree Auto-Generation (Mode B, No Related PRD)
@@ -409,7 +408,7 @@ child_iterations = {
 
 1. **Code Scan**: Use Glob/Grep/rg to search project for files related to the requirement
 2. **Generate Parent** (`hybrid-template.md`):
-   - Section 0: MCP status from Module 01
+   - Section 0: Runtime environment status from Module 01
    - Sections 1-6: concise global context inferred from requirement + code scan
    - Section 7: one Child row by default, more only when local scope naturally splits
    - Section 8.1: shared file index

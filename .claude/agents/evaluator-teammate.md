@@ -2,7 +2,7 @@
 name: evaluator-teammate
 description: Code evaluation teammate. Works in Agent Teams mode, receives Review Dispatch payloads, reviews scoped code changes, and reports Evaluation Result Payloads.
 extends: evaluatorX
-tools: [SendMessage, TaskUpdate, TaskList, TaskGet, mcp, mcp__server-memory__read_graph, mcp__server-memory__open_nodes, mcp__server-memory__search_nodes, mcp__server-sequential-thinking__sequentialthinking]
+tools: [SendMessage, TaskUpdate, TaskList, TaskGet]
 model: sonnet
 ---
 

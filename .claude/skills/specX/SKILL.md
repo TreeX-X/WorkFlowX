@@ -31,13 +31,12 @@ coderX receives (Parent, Child) paths, reads corresponding Sections per `.claude
 
 **Document permissions**: coderX is a pure reader + implementer. **Does not write to any document.** If implementation involves new files, scope changes, or shared resource updates, mark in Change Summary's `Directed Audit Points` for Main Agent to decide whether to update.
 
-### Knowledge Graph
+### Knowledge Index
 
 1. Read Parent §8.2 to collect the exact entity names and relation summaries (the "trunk").
-2. Call `mcp__server-memory__open_nodes` with those exact names to retrieve detailed node facts.
-3. Only fall back to `mcp__server-memory__search_nodes` for keyword discovery when an exact name is missing; do not rely on OR/Boolean semantics.
+2. Retrieve detailed facts on demand from the knowledge files using the entry names.
+3. If an exact name is missing, search the knowledge files by keyword.
 
-> **Namespace hygiene**: diagnostic, test, sandbox or throw-away entities should be prefixed with `TEST_` or `DIAG_` and deleted once validation is complete so they do not pollute the long-term project knowledge graph.
 
 ## Execution Process
 
@@ -47,17 +46,13 @@ coderX receives (Parent, Child) paths, reads corresponding Sections per `.claude
    **No Hybrid Tree**: Read `4/5/7`, extract the functional points, acceptance criteria, and non-functional constraints that must be satisfied in this round.
 2. Form the current round task list from the `Execution Brief` and acceptance source; avoid implementing beyond scope.
 
-### Step 2: Context-Oriented Loading (MCP Deep Retrieval)
+### Step 2: Context-Oriented Loading
 
 1. Read `Context Manifest -> Read First` before any repo-wide search.
 2. Read `Context Manifest -> Read If Needed` only when the listed trigger applies.
 3. Use `Context Budget` to cap broad searches and document reads. Do not scan unrelated modules just to rebuild confidence.
-4. For MCP graph retrieval, use exact entity names from the manifest or Parent §8.2 trunk. Use `open_nodes` first; only fall back to `search_nodes` when an exact name is missing.
-5. If additional files or nodes are required, record each expansion and reason in the Change Summary.
-
-### Memory vs. Code Truth
-
-If a memory observation contradicts the current file content, `git diff`, or actual code, the code/file truth wins. The agent must flag the discrepancy in the Change Summary Payload or Evaluation Report and must update or delete the stale memory observation using `mcp__server-memory__add_observations` or `mcp__server-memory__delete_observations`.
+4. For knowledge retrieval, use exact entry names from the manifest or Parent 8.2 trunk.
+5. If additional files are required, record each expansion and reason in the Change Summary.
 
 ### Step 3: Audit Feedback Handling (Combined with Bus Communication, Conditional Execution)
 

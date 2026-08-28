@@ -39,7 +39,6 @@ Loaded when the user or upstream agent requests "audit code", "evaluate implemen
    - **Review Focus**
    - **Review Context Manifest / Review Context Budget**
    - **Required Reads / Conditional Reads / Expansion Rules**
-   - **MCP Policy**
 4. If no hybrid document is provided, switch to **Prompt-Based mode** only when the dispatch explicitly says so.
 
 The `Review Brief` is authoritative. evaluatorX audits the declared target, acceptance scope, risk focus, non-goals, and pass criteria. Do not re-discover the feature or review objective from conversation history.
@@ -63,16 +62,12 @@ Read additional context only when `Review Context Manifest -> Read If Needed`, t
 - Parent Sections 0-6: only when global scope, NFR, DoD, or project constraints may be affected.
 - Parent Section 8.1: only to map changed files to known ownership/index.
 - Parent Section 8.3: only when dependency or cross-branch ownership is relevant.
-- Parent Section 8.2 / MCP: only when exact node names are needed for a named review risk and `MCP Policy` permits it.
+- Parent Section 8.2: only when exact knowledge entries are needed for a named review risk.
 - Additional source files: only when changed code references their functions, types, API contracts, or shared state.
 
 Every conditional read must be listed in the `Context Expansion` section of the Evaluation Result Payload with path/node, reason, and result.
 
-Use `Review Context Budget` to cap broad searches, document reads, source-file reads, and MCP retrieval. If the audit must exceed the budget, record the exact expansion and reason in `Context Expansion`.
-
-#### Memory vs. Code Truth
-
-If a memory observation contradicts the current file content, `git diff`, or actual code, the code/file truth wins. evaluatorX must flag the discrepancy in the Evaluation Report (Payload Type 2) and `Context Expansion`. Do not update memory directly; Main Agent handles stale memory cleanup through the memory hygiene process.
+Use `Review Context Budget` to cap broad searches, document reads, and source-file reads. If the audit must exceed the budget, record the exact expansion and reason in `Context Expansion`.
 
 #### Hybrid Tree Reading
 

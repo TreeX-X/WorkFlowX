@@ -130,7 +130,7 @@ After user selection, execute the selected Mode Execution flow directly.
 
 1. Env init.
 2. Explore codebase -> propose 2-3 solutions -> wait for user confirmation.
-3. noiseX summary -> generate Hybrid Tree.
+3. Generate Hybrid Tree.
 4. Enter iteration:
    - Dispatch coderX/evaluatorX per Child, iterate up to `-N` times.
    - All Children PASS or hit the iteration limit -> report completion or blockers.
@@ -148,7 +148,6 @@ After user selection, execute the selected Mode Execution flow directly.
 ### Mode C (xunit) - Ephemeral Workflow
 
 1. Build Type 0 Dispatch Payload.
-2. Optionally invoke promptX when `-prompt` is present.
 3. Dispatch coderX with lightweight scope.
 4. Report result and complete.
 
@@ -171,7 +170,5 @@ After user selection, execute the selected Mode Execution flow directly.
 | `/xunit` | Mode C | Minimal single-file change |
 | `/xmain` | Mode D | Main Agent direct execution; Claude may auto-parallelize independent work |
 | `/xstatus [--output]` | - | Generate HTML status report |
-| `/xprompt` | - | Intent extraction (promptX skill) |
-| `/noiseX [focus|summary]` | - | Context denoising |
 
 **Parameters**: `-N [1-10]` (iteration limit), `-box [name]` (sandbox branch), `-parallel` (Agent Teams, xwhole only), `-team [name]` (team name)

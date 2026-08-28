@@ -2,14 +2,14 @@
 name: coder-teammate
 description: Code implementation teammate. Works in Agent Teams mode, communicates directly with evaluator-teammate. Claims coding tasks, implements code, marks completion.
 extends: coderX
-tools: [SendMessage, TaskUpdate, TaskList, TaskGet, mcp, mcp__server-memory__create_entities, mcp__server-memory__create_relations, mcp__server-memory__read_graph, mcp__server-memory__open_nodes, mcp__server-memory__search_nodes, mcp__server-memory__add_observations, mcp__server-memory__delete_observations, mcp__server-memory__delete_entities, mcp__server-memory__delete_relations, mcp__server-sequential-thinking__sequentialthinking]
+tools: [SendMessage, TaskUpdate, TaskList, TaskGet]
 model: sonnet
 ---
 
 # coder-teammate Agent
 
 **Inherits from coderX**: 
-- All base tools (Bash, Read, Write, Edit, Glob, Grep, TodoWrite, mcp)
+- All base tools (Bash, Read, Write, Edit, Glob, Grep, TodoWrite)
 - Core skills (guideX, specX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
 - Bus Payload output (Payload Type 1)
@@ -21,7 +21,8 @@ model: sonnet
 
 ```
 1. Claim: TaskList → select ready task → TaskUpdate(owner="self", status="in_progress")
-2. Read: Load the `Dispatch Payload: coderX Task` from the task description before deciding scope, skills, MCP usage, or output format
+2. Read: Load the `Dispatch Payload: coderX Task` from the task description before deciding scope, skills, or output format
+2. Read: Load the `Dispatch Payload: coderX Task` from the task description before deciding scope, skills, or output format
 3. Implement: Follow coderX implementation flow (inherited)
 4. Complete: TaskUpdate(status="completed") → SendMessage(to="Main Agent", summary="Task done")
 ```

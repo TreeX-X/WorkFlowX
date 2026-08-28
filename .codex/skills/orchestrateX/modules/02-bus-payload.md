@@ -1,4 +1,4 @@
-﻿# 2. Bus Payload Specification & Validation
+# 2. Bus Payload Specification & Validation
 
 > **Core principle**: Main Agent is the sole document writer. Downstream Bus Payloads do not carry document write instructions. Upstream Dispatch Payloads may carry Parent/Child paths only as read/routing context for subagents.
 
@@ -15,11 +15,10 @@ Main Agent outputs this payload as the primary input when dispatching coderX. co
 ```markdown
 ### Dispatch Payload: coderX Task
 - **Workflow Mode**: [xunit | xlocal | xwhole]
-- **Dispatch Type**: [implement | fix | new_branch | prompt_preprocessed]
+- **Dispatch Type**: [implement | fix | new_branch]
 - **Task Objective**: [one concrete outcome coderX must produce]
-- **Requirement Source**: [raw_user_prompt | promptX | Child Section 7 | evaluator_fix]
+- **Requirement Source**: [raw_user_prompt | Child Section 7 | evaluator_fix]
 - **Original Requirement**: [raw user requirement or N/A]
-- **Structured Requirement**: [promptX output summary or N/A]
 - **Execution Brief**:
   - **User Intent**: [Main Agent's concise understanding of what the user wants]
   - **Final Interpretation**: [the decision Main Agent has already made after discussion / PRD alignment]
@@ -44,7 +43,6 @@ Main Agent outputs this payload as the primary input when dispatching coderX. co
 - **Do Not Touch**:
   - [file/path/module or "N/A"]
 - **Required Skills**: [guideX, razorX, optional specX]
-- **MCP Policy**: [skip | allowed | required]
 - **Output Contract**: [concise summary | Bus Payload Type 1]
 - **Verification Required**:
   - [test/build/static check/manual verification or "best effort with reason"]
@@ -58,8 +56,7 @@ Main Agent outputs this payload as the primary input when dispatching coderX. co
 - `Execution Brief` is authoritative. coderX must execute the Main Agent's final interpretation and must not reinterpret user intent from scratch unless file evidence contradicts the brief.
 - `Context Manifest` controls the first reading pass. coderX reads `Read First` before any repo-wide search, uses `Read If Needed` only when the trigger applies, and avoids `Do Not Read Unless Needed` paths by default.
 - `Context Budget` limits context expansion. If coderX must read outside the manifest or budget, it records the path and reason in `Directed Audit Points` / implementation summary.
-- `xunit`: `Workflow Mode=xunit`, `MCP Policy=skip`, `Required Skills=guideX, razorX`, `Output Contract=concise summary`, `Parent Path=N/A`, `Child Path=N/A`.
-- `xunit -prompt`: same as xunit, but `Dispatch Type=prompt_preprocessed`, `Requirement Source=promptX`, and include both original and structured requirements.
+- `xunit`: `Workflow Mode=xunit`, `Required Skills=guideX, razorX`, `Output Contract=concise summary`, `Parent Path=N/A`, `Child Path=N/A`.
 - `xlocal/xwhole` first implementation: `Dispatch Type=implement`, `Requirement Source=Child Section 7`, `Required Skills=guideX, razorX, specX`, `Output Contract=Bus Payload Type 1`.
 - Fix rounds: `Dispatch Type=fix`, `Requirement Source=evaluator_fix`, include exact evaluator Fix Instructions, and keep Child Section 7 as the acceptance source.
 - New branch: `Dispatch Type=new_branch`, include the new Child path and the reason it was created.
@@ -69,7 +66,7 @@ Main Agent outputs this payload as the primary input when dispatching coderX. co
 
 Before invoking coderX, Main Agent checks that required fields are present and mode-consistent:
 
-- `xunit` must not include Parent/Child paths, must skip MCP, and must not require Bus Payload.
+- `xunit` must not include Parent/Child paths and must not require Bus Payload.
 - `xlocal/xwhole` must include valid Parent and Child paths, must require `specX`, and must require Bus Payload Type 1.
 - Every Type 0 payload must include non-empty `Execution Brief`, `Context Manifest`, and `Context Budget`.
 - Fix rounds must include non-empty `Fix Instructions`.
@@ -102,7 +99,7 @@ coderX outputs after completing implementation. Main Agent validates and forward
 
 ## 2.1.5 Payload Type 1.5: Main Agent -> evaluatorX (Review Dispatch)
 
-Main Agent outputs this payload as the primary input when dispatching evaluatorX. evaluatorX must read this payload before deciding what documents, source files, or MCP nodes to inspect. The handoff mechanism is selected by `modules/09-dispatch-adapter.md`: native Agent/subagent tool first, prompt-spawn second, degraded handling last.
+Main Agent outputs this payload as the primary input when dispatching evaluatorX. evaluatorX must read this payload before deciding what documents or source files to inspect. The handoff mechanism is selected by `modules/09-dispatch-adapter.md`: native Agent/subagent tool first, prompt-spawn second, degraded handling last.
 
 ```markdown
 ### Dispatch Payload: evaluatorX Review Task
@@ -138,7 +135,7 @@ Main Agent outputs this payload as the primary input when dispatching evaluatorX
   - **Do Not Read Unless Needed**:
     - [path/pattern to avoid by default]
 - **Review Context Budget**:
-  - [read limits, search limits, MCP limits, and expansion reporting rules]
+  - [read limits, search limits, and expansion reporting rules]
 - **Required Reads**:
   1. This Dispatch Payload
   2. Change Summary Payload
@@ -149,17 +146,16 @@ Main Agent outputs this payload as the primary input when dispatching evaluatorX
   - Parent Sections 0-6 only when global scope, NFR, DoD, or project constraints may be affected
   - Parent Section 8.1 only to map changed files to known ownership/index
   - Parent Section 8.3 only when dependency or cross-branch ownership is relevant
-  - Parent Section 8.2 / MCP only when exact node names are needed for a named review risk
+  - Parent Section 8.2 only when exact knowledge entries are needed for a named review risk
   - Additional source files only when changed code references their functions, types, API contracts, or shared state
 - **Do Not Read By Default**:
   - full Parent document
   - unrelated Child documents
   - unrelated source files
-  - knowledge graph deep nodes
+  - knowledge entries beyond the trunk
 - **Expansion Rules**:
   - Expand only for a named risk: API contract, shared file, dependency, security, data loss, test gap, or cross-branch conflict
   - Every expansion must be reported with path, reason, and result in `Context Expansion`
-- **MCP Policy**: [skip | on_demand | allowed]
 - **Output Contract**: Bus Payload Type 2
 ```
 
@@ -184,7 +180,7 @@ Before invoking evaluatorX, Main Agent checks that required fields are present a
 - `full`, `partial`, `fix`, and `final` must include valid `Parent Path`, `Child Path`, and `Acceptance Source=Child Section 7`.
 - `partial` and `fix` must include `Prior Evaluation Source=Child Section 9`.
 - `partial` must include non-empty `Affected ACs Claimed` unless Main Agent intentionally falls back to `full`.
-- `prompt-based` must use `Parent Path=N/A`, `Child Path=N/A`, `Acceptance Source=original prompt`, and `MCP Policy=skip` unless explicitly overridden.
+- `prompt-based` must use `Parent Path=N/A`, `Child Path=N/A`, `Acceptance Source=original prompt` unless explicitly overridden.
 - When using prompt-spawn, Main Agent must require a `WorkflowX Subagent Receipt` from evaluatorX before accepting the returned content as a verified subagent result.
 - If the payload cannot be assembled clearly, Main Agent must stop and ask for clarification instead of sending an ambiguous review task.
 
@@ -224,7 +220,7 @@ evaluatorX outputs after completing evaluation. Main Agent reads this Payload fo
 
 #### Context Expansion
 > Only output when evaluatorX reads beyond Required Reads. Empty when no expansion.
-- [path or MCP node] - Reason: [named risk] - Result: [compatible / issue found / pending]
+- [path] - Reason: [named risk] - Result: [compatible / issue found / pending]
 
 #### Conclusion
 - **Evaluation Result**: [PASS | Needs Fix]
@@ -307,19 +303,15 @@ Manifest-led context:
 
 ```
 Incremental context:
-- Parent Section 8.2 Memory Pointers: include the trunk only (entity names and relation summaries)
+- Parent Section 8.2 Knowledge Pointers: include the trunk only (entry names and relation summaries)
 - Child Section 7: [Full content -branch AC, may have changed]
 - Child Section 9: [Full content -prior evaluation report / fix instructions]
 - Change Summary: [Current iteration's changes]
 - Fix Instructions: [From last evaluation, if any]
 ```
 
-> Deep node facts are **not** included in the prompt. The subagent reads the exact entity names from Parent Section 8.2 and retrieves detailed facts on demand by calling `mcp__server-memory__open_nodes(names=[...])`. Only fall back to `mcp__server-memory__search_nodes` when an exact name is missing.
->
-> **Evidence**: In diagnostic TEST-MEMORY-001, full Parent+Child context was ~13,506 chars (~3,377 tokens), while the Section 8.2 trunk plus on-demand `open_nodes` retrieval was ~1,369 chars (~342 tokens) -roughly a 90% prompt-size reduction.
-
-**Expected Savings**: ~90% token reduction in multi-iteration scenarios when using trunk + on-demand `open_nodes`.
+> Deep knowledge entries are **not** included in the prompt. The subagent reads the exact entry names from Parent Section 8.2 and retrieves detailed facts on demand from the knowledge files. This keeps incremental context lightweight without external MCP dependency.
 
 ### evaluatorX Review Context
 
-evaluatorX follows its own Review Dispatch context rules. It starts from Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child Section 7 and conditional Parent/Child/MCP context only as allowed by Review Brief, Review Context Manifest, and Review Context Budget.
+evaluatorX follows its own Review Dispatch context rules. It starts from Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child Section 7 and conditional Parent/Child context only as allowed by Review Brief, Review Context Manifest, and Review Context Budget.

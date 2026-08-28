@@ -38,7 +38,7 @@ When using `prompt_spawn`, Main Agent emits a subagent request in this exact sha
 
 ````markdown
 ### WorkflowX Subagent Spawn Request
-- **Target Agent**: [coderX | evaluatorX | promptMasterX | worker | explorer | default]
+- **Target Agent**: [coderX | evaluatorX | worker | explorer | default]
 - **Dispatch Mode**: prompt_spawn
 - **Isolation Request**: [worktree | shared | readonly | N/A]
 - **Return Contract**: [concise summary | Bus Payload Type 1 | Bus Payload Type 2 | structured prompt]

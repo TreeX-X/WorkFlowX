@@ -9,8 +9,7 @@ description: Execute Mode C workflow (unit task, minimal change)
 When user inputs `/xunit [-prompt] [requirement]`:
 
 1. Execute Mode C flow:
-   - Skip MCP health check and all knowledge graph retrieval
-   - If `-prompt` is present: invoke promptX before dispatch and include its output in the Type 0 Dispatch Payload
+   - Skip knowledge graph retrieval
    - If `-prompt` is absent: place the raw requirement in the Type 0 Dispatch Payload
    - Build and validate Type 0 Dispatch Payload before dispatch
    - Dispatch Agent(coderX) lightweight mode

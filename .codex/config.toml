@@ -29,11 +29,3 @@ job_max_runtime_seconds = 1800
 [skills]
 [skills.bundled]
 enabled = true
-
-[mcp_servers.server-memory]
-command = "npx"
-args = ["-y", "@modelcontextprotocol/server-memory"]
-
-[mcp_servers.server-sequential-thinking]
-command = "npx"
-args = ["-y", "@modelcontextprotocol/server-sequential-thinking"]
