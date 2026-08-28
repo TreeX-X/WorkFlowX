@@ -29,7 +29,7 @@
 - **Acceptance Criteria (AC)**:
 
   **01-architecture split (orchestratorX + agents / data layer + parallel):**
-  - [ ] AC-1: Created `01a-architecture-zh.html` with header "系统架构 · 编排层" containing orchestratorX box + connector + 2x2 agent grid (promptMasterX, coderX, evaluatorX, abstracterX)
+  - [ ] AC-1: Created `01a-architecture-zh.html` with header "系统架构 · 编排层" containing orchestratorX box + connector + 2x2 agent grid (promptMasterX, coderX, evaluatorX)
   - [ ] AC-2: Created `01b-architecture-zh.html` with header "系统架构 · 数据与通信" containing data layer (Hybrid Tree + MCP Memory Graph) + payload badges + parallel mode section
   - [ ] AC-3: Created `01a-architecture.html` (English version of 01a) with header "Architecture · Orchestration Layer"
   - [ ] AC-4: Created `01b-architecture.html` (English version of 01b) with header "Architecture · Data & Communication"

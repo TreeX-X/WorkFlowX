@@ -13,3 +13,6 @@ PLATFORM-MAP.md
 !docs/assets/**
 
 node_modules/
+
+# JanusX
+.janusX/

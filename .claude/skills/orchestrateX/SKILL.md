@@ -17,16 +17,16 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 | 5 | Parallel Setup | `/xwhole -parallel` triggered | `modules/05-parallel-setup.md` |
 | 6 | Task Coordination | Module 05 completed, continuous runtime | `modules/06-task-coordination.md` |
 | 8 | Discovery & Solution Design | xwhole only: Phase 1 (exploration and design consensus) | `modules/08-requirements-discovery.md` |
-| — | noiseX (Context Denoising) | xwhole only: auto-invoked at Phase 1→2 transition | `skills/noiseX/skill.md` |
+| 鈥?| noiseX (Context Denoising) | xwhole only: auto-invoked at Phase 1鈫? transition | `skills/noiseX/skill.md` |
 | 10 | Memory Hygiene | End of planning, before each evaluation, before PASS/FAIL | `modules/10-memory-hygiene.md` |
 
-**Note**: Module 00 (Auto-Routing) has been superseded by `.claude/skills/routeX/SKILL.md` — the consolidated routing specification for the Main Agent. Main Agent always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
+**Note**: Module 00 (Auto-Routing) has been superseded by `.claude/skills/routeX/SKILL.md` 鈥?the consolidated routing specification for the Main Agent. Main Agent always receives an explicit mode parameter (`Mode: xwhole/xlocal/xunit`) and does NOT perform mode selection itself.
 
 **Loading rule (Optimized)**: 
 - **Session Memory Cache**: After first Read, cache module content in session memory (`module_cache`). Subsequent accesses read from cache instead of disk.
 - **Cache Key**: Use module file path as cache key.
 - **Invalidation**: Cache persists for entire session. Clear only on new session start.
-- **Never load all modules at once** — still applies, but cached modules are instant access.
+- **Never load all modules at once** 鈥?still applies, but cached modules are instant access.
 
 ---
 
@@ -48,26 +48,26 @@ description: "Main Agent complete workflow handbook. Contains planning dialogue,
 
 **Step 1: Extract parameters from $ARGUMENTS**
 
-Extract sequentially from `$ARGUMENTS`: command name → optional flags → requirement text.
+Extract sequentially from `$ARGUMENTS`: command name 鈫?optional flags 鈫?requirement text.
 
 | Param | Match Rule | Default | Description |
 |-------|-----------|---------|-------------|
-| mode | Starts with `/xwhole`, `/xlocal`, `/xunit`, `/xprompt` | — | Command determines mode |
+| mode | Starts with `/xwhole`, `/xlocal`, `/xunit`, `/xprompt` | 鈥?| Command determines mode |
 | `-N` | Positive integer (1-10) after `-N` | `2` | Max evaluation iterations per Child |
 | `-box` | Branch name (alphanumeric, hyphens, underscores) after `-box` | skip | Sandbox branch name |
 | `-parallel` | Presence flag | off | Agent Teams parallel mode |
 | `-team` | Name after `-team` | `workflow-{timestamp}` | Team name for parallel mode |
 | `-prompt` | Presence flag | off | xunit only: enable promptX preprocessing |
-| requirement | Remaining text after removing above params | — | User requirement |
+| requirement | Remaining text after removing above params | 鈥?| User requirement |
 
 **Examples**:
 
 ```
 /xwhole -N 5 -box feature-test Add user authentication
-  → mode=xwhole, N=5, box="feature-test", parallel=false, requirement="Add user authentication"
+  鈫?mode=xwhole, N=5, box="feature-test", parallel=false, requirement="Add user authentication"
 
 /xwhole -parallel -team my-team Implement auth module
-  → mode=xwhole, N=2, parallel=true, team="my-team", requirement="Implement auth module"
+  鈫?mode=xwhole, N=2, parallel=true, team="my-team", requirement="Implement auth module"
 ```
 
 **Step 2: Validate parameters**
@@ -85,7 +85,7 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 
 **Iteration Limit (`-N`)**:
 - Applied in Core Iteration Loop (Step 6 of xwhole, Step 5 of xlocal)
-- Each Child gets max N rounds of coderX ↔ evaluatorX iteration
+- Each Child gets max N rounds of coderX 鈫?evaluatorX iteration
 - If limit reached and still Needs Fix: stop iteration, report to human
 
 **Sandbox Branch (`-box`)**:
@@ -93,8 +93,8 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
   - Without `-box`: Work directly on current branch, no stash/checkout needed
   - With `-box`: Execute full sandbox lifecycle (below)
 - **Sandbox Lifecycle**:
-  - Before workflow: `git stash` → record original branch → `git checkout -b {sandbox-branch}` from main
-  - After workflow: switch back → attempt fast merge (see below) → restore stash
+  - Before workflow: `git stash` 鈫?record original branch 鈫?`git checkout -b {sandbox-branch}` from main
+  - After workflow: switch back 鈫?attempt fast merge (see below) 鈫?restore stash
 - **Fast Merge Strategy** (Optimized):
   1. Try `git merge --ff-only {sandbox-branch}` (fastest, no extra commit)
   2. If ff-only fails (diverged), try `git merge --squash {sandbox-branch}` (single commit)
@@ -112,9 +112,8 @@ Store extracted results as session working memory (mode, iteration_limit, sandbo
 - Scope: Large-scale, high-impact, requiring full planning-evaluation cycle.
 - **Worktree isolation (auto)**: coderX and evaluatorX are spawned with `isolation="worktree"`. Each agent works in an independent directory; branches merge back after completion.
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: merge worktree branches into sandbox, switch back, `--no-commit --no-ff` merge sandbox into original, restore stash.
-- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> **Hard Gate (AskUserQuestion)** -> user clicks "确认生成 PRD" -> **noiseX summary** (denoise Phase 1 context) -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
+- **Entry**: Environment init (module 01) -> **Phase 1: Discovery & Solution Design** (module 08: explore, challenge, propose solutions) -> **Hard Gate (AskUserQuestion)** -> user clicks "纭鐢熸垚 PRD" -> **noiseX summary** (denoise Phase 1 context) -> **Phase 2: Document Generation** (Hybrid Tree creation) -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
-- abstracterX is only invoked when user explicitly requests summarization.
 
 #### Mode A-parallel (`-parallel`)
 When `-parallel` is specified, Mode A uses Agent Teams for parallel execution instead of sequential sub-agent dispatch:
@@ -137,12 +136,12 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 - Scope: Requirements relatively clear, limited to a local part of the project.
 - **Entry**: Environment init (module 01, **MCP probe must precede everything**) -> **PRD detection** -> Core Iteration Loop.
 - **PRD detection (priority order)**:
-  1. Explicit Hybrid Tree path in `$ARGUMENTS` → validate Parent + Child, use directly
-  2. No explicit path → scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent §7 Child scopes, Child §7 AC, and §8.1 file indexes
-  3. If exactly one related Hybrid Tree matches → reuse and maintain that tree; route to the matching Child, or create a new Child through Requirement Change Handling when no Child scope matches
-  4. If multiple plausible Hybrid Trees match → present candidates with match reasons and ask the user to choose; do not auto-generate a duplicate tree
-  5. If `$ARGUMENTS` contains a valid non-Hybrid PRD file path → read PRD, wrap into Hybrid Tree
-  6. No related Hybrid Tree or PRD → auto-generate minimal Hybrid Tree (scan code → build index → decompose AC → write Parent + Child)
+  1. Explicit Hybrid Tree path in `$ARGUMENTS` 鈫?validate Parent + Child, use directly
+  2. No explicit path 鈫?scan `.hybrid/` for existing Hybrid Trees and match the current requirement against Parent title/overview/scope, Parent 搂7 Child scopes, Child 搂7 AC, and 搂8.1 file indexes
+  3. If exactly one related Hybrid Tree matches 鈫?reuse and maintain that tree; route to the matching Child, or create a new Child through Requirement Change Handling when no Child scope matches
+  4. If multiple plausible Hybrid Trees match 鈫?present candidates with match reasons and ask the user to choose; do not auto-generate a duplicate tree
+  5. If `$ARGUMENTS` contains a valid non-Hybrid PRD file path 鈫?read PRD, wrap into Hybrid Tree
+  6. No related Hybrid Tree or PRD 鈫?auto-generate minimal Hybrid Tree (scan code 鈫?build index 鈫?decompose AC 鈫?write Parent + Child)
 - **evaluatorX evaluation criteria**: Always PRD-based (evaluate against Child Section 7 AC). After reading Evaluation Result, Main Agent copies Fix Instructions into the next Type 0 Dispatch Payload for coderX.
 
 ### Mode C: unit workflow
@@ -171,22 +170,22 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Two-Phase Workflow
 
-**Phase 1: Discovery & Solution Design** (module 08) — thinking and design stage:
+**Phase 1: Discovery & Solution Design** (module 08) 鈥?thinking and design stage:
 - Autonomous exploration, gap identification, risk surfacing
 - Propose 2-3 solutions with trade-offs
 - Multi-turn refinement with user
 - **Output**: Design consensus (no Hybrid Tree yet)
-- **Exit signal**: "等待你确认方案后，我会生成 Hybrid Tree 并启动开发流程。"
+- **Exit signal**: "绛夊緟浣犵‘璁ゆ柟妗堝悗锛屾垜浼氱敓鎴?Hybrid Tree 骞跺惎鍔ㄥ紑鍙戞祦绋嬨€?
 
-**Phase 2: Document Generation** — triggered ONLY by user clicking gate option:
-- **Hard Gate**: User signals intent → MUST invoke AskUserQuestion (see §8.5)
-- Only "确认生成 PRD" option proceeds to Phase 2
+**Phase 2: Document Generation** 鈥?triggered ONLY by user clicking gate option:
+- **Hard Gate**: User signals intent 鈫?MUST invoke AskUserQuestion (see 搂8.5)
+- Only "纭鐢熸垚 PRD" option proceeds to Phase 2
 - Generate Hybrid Tree (Parent + Children) based on Phase 1 consensus
 - Write to `.hybrid/[feature]/` directory
 - Enter Core Iteration Loop
 
 **Core behaviors (Phase 1)**:
-- Invoke the `socratesX` skill to drive Socratic clarification — one core question per turn, each with 2-4 options + a recommendation (see module 08 §8.2)
+- Invoke the `socratesX` skill to drive Socratic clarification 鈥?one core question per turn, each with 2-4 options + a recommendation (see module 08 搂8.2)
 - Meanwhile **autonomously search** the codebase (Glob/Grep/rg) so questions are grounded in code evidence
 - Present findings as "here's what I found" rather than "can you tell me"
 - Challenge assumptions based on **actual code evidence**
@@ -195,48 +194,48 @@ When `-parallel` is specified, Mode A uses Agent Teams for parallel execution in
 
 ### Phase 1 Clarification (via socratesX)
 
-Phase 1 requirement clarification is driven by the `socratesX` skill — the Main Agent invokes `socratesX` in `question` mode to surface hidden assumptions, contradictions, missing boundaries, technical risks, cross-module conflicts, and non-functional ambiguity. Explore the codebase first (Glob/Grep/rg) so each question is grounded in code evidence. The socratesX output structure (`当前理解` / `已确认关键事实` / `待澄清问题`) accumulates into the design consensus, and `socratesX summary` aligns with the Phase 1 Exit Output below. Do NOT generate the Hybrid Tree in Phase 1.
+Phase 1 requirement clarification is driven by the `socratesX` skill 鈥?the Main Agent invokes `socratesX` in `question` mode to surface hidden assumptions, contradictions, missing boundaries, technical risks, cross-module conflicts, and non-functional ambiguity. Explore the codebase first (Glob/Grep/rg) so each question is grounded in code evidence. The socratesX output structure (`褰撳墠鐞嗚В` / `宸茬‘璁ゅ叧閿簨瀹瀈 / `寰呮緞娓呴棶棰榒) accumulates into the design consensus, and `socratesX summary` aligns with the Phase 1 Exit Output below. Do NOT generate the Hybrid Tree in Phase 1.
 
-Full specification: `modules/08-requirements-discovery.md` §8.2
+Full specification: `modules/08-requirements-discovery.md` 搂8.2
 
 ### Phase Transition (Hard Gate)
 
-**Phase 1 → Phase 2 transition requires HARD GATE — no bypass allowed.**
+**Phase 1 鈫?Phase 2 transition requires HARD GATE 鈥?no bypass allowed.**
 
-**HARD CONSTRAINT**: User language/text input does NOT directly trigger Phase 2. It only triggers the Hard Gate (AskUserQuestion). Only after user clicks "确认生成 PRD" option does Phase 2 proceed.
+**HARD CONSTRAINT**: User language/text input does NOT directly trigger Phase 2. It only triggers the Hard Gate (AskUserQuestion). Only after user clicks "纭鐢熸垚 PRD" option does Phase 2 proceed.
 
-**Trigger detection** — when user message contains:
-- 中文: 确认, 开始, 开工, 生成文档, 就这样, 可以了, 没问题, 好的, 行, 确定
+**Trigger detection** 鈥?when user message contains:
+- 涓枃: 纭, 寮€濮? 寮€宸? 鐢熸垚鏂囨。, 灏辫繖鏍? 鍙互浜? 娌￠棶棰? 濂界殑, 琛? 纭畾
 - English: confirm, start, generate, proceed, go ahead, done, ok, yes, sure
 
-**Gate mechanism** — Main Agent MUST call AskUserQuestion:
+**Gate mechanism** 鈥?Main Agent MUST call AskUserQuestion:
 ```javascript
 AskUserQuestion({
   questions: [{
-    question: "需求澄清已完成，已确认 [N] 项事实。请确认：",
-    header: "Phase 1 确认",
+    question: "闇€姹傛緞娓呭凡瀹屾垚锛屽凡纭 [N] 椤逛簨瀹炪€傝纭锛?,
+    header: "Phase 1 纭",
     multiSelect: false,
     options: [
-      { label: "确认生成 PRD（推荐）", description: "生成 Hybrid Tree 并启动开发迭代" },
-      { label: "查看已确认内容", description: "输出 socratesX summary 格式摘要" },
-      { label: "继续澄清", description: "返回 socratesX question 模式" },
-      { label: "修改范围", description: "重新界定需求目标和边界" }
+      { label: "纭鐢熸垚 PRD锛堟帹鑽愶級", description: "鐢熸垚 Hybrid Tree 骞跺惎鍔ㄥ紑鍙戣凯浠? },
+      { label: "鏌ョ湅宸茬‘璁ゅ唴瀹?, description: "杈撳嚭 socratesX summary 鏍煎紡鎽樿" },
+      { label: "缁х画婢勬竻", description: "杩斿洖 socratesX question 妯″紡" },
+      { label: "淇敼鑼冨洿", description: "閲嶆柊鐣屽畾闇€姹傜洰鏍囧拰杈圭晫" }
     ]
   }]
 })
 ```
 
-**Only "确认生成 PRD" proceeds to Phase 2.** Other options loop back within Phase 1.
+**Only "纭鐢熸垚 PRD" proceeds to Phase 2.** Other options loop back within Phase 1.
 
 **Phase 1 exit signal template** (shown before gate):
 ```
-方案设计完成。以下是推荐方案：
+鏂规璁捐瀹屾垚銆備互涓嬫槸鎺ㄨ崘鏂规锛?
 
 [Brief design consensus summary]
 ```
 
 **Phase 2 entry:**
-- ONLY after user clicks "确认生成 PRD" in AskUserQuestion
+- ONLY after user clicks "纭鐢熸垚 PRD" in AskUserQuestion
 - Invoke `noiseX summary` to denoise Phase 1 context (internal, not shown to user)
 - Generate Hybrid Tree with all discoveries written to appropriate sections, using noiseX purified summary as clean signal source
 - Proceed to Core Iteration Loop
@@ -250,21 +249,21 @@ When the user triggers Summary:
 3. Serialize and write to Parent Section 8.4
 4. If old snapshot exists, overwrite with timestamp preserved, do not add duplicates
 
-### Findings → Hybrid Tree Mapping
+### Findings 鈫?Hybrid Tree Mapping
 
 Write confirmed findings into appropriate sections during Hybrid Tree creation:
 
 | Finding Type | Target Section |
 |-------------|---------------|
-| Confirmed scope | Parent §1 Project Overview |
-| Technical constraints | Parent §3 Technical Constraints |
-| Edge cases | Child §7 AC |
-| NFRs (security, perf) | Parent §4 NFR |
-| Risk mitigations | Child §7 AC |
-| Accepted risks | Parent §4 NFR |
-| Cross-module dependencies | Parent §8.3 Dependencies |
-| File index | Parent §8.1 (shared), Child §8.1 (private) |
-| Knowledge insights | Parent §8.2 Knowledge Graph |
+| Confirmed scope | Parent 搂1 Project Overview |
+| Technical constraints | Parent 搂3 Technical Constraints |
+| Edge cases | Child 搂7 AC |
+| NFRs (security, perf) | Parent 搂4 NFR |
+| Risk mitigations | Child 搂7 AC |
+| Accepted risks | Parent 搂4 NFR |
+| Cross-module dependencies | Parent 搂8.3 Dependencies |
+| File index | Parent 搂8.1 (shared), Child 搂8.1 (private) |
+| Knowledge insights | Parent 搂8.2 Knowledge Graph |
 
 ### Hybrid Tree Creation
 
@@ -311,7 +310,7 @@ coderX receives Parent/Child paths through the Type 0 Dispatch Payload, and eval
 | Child | 8.2 | Incremental references | coderX | **No Cache**: Iteration-specific. |
 | Child | 9 | Prior evaluation results | evaluatorX (for inheritance) | **No Cache**: Changes every iteration. |
 
-> **Context hand-off rule (Optimized)**: coderX receives the Main Agent's Execution Brief, Context Manifest, Context Budget, and agent-readable document paths through the Type 0 Dispatch Payload. The first implementation round reads only the manifest-listed sections before broad exploration. In subsequent coderX rounds, prefer a lightweight trunk: include only Parent §8.2 (Memory Pointers entity/relation summaries) plus the current Child §7 (AC) and §9 (prior evaluation / fix instructions), unless the Context Manifest requires more. evaluatorX receives Review Brief, Review Context Manifest, and Review Context Budget through Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child §7 and conditional Parent/Child/MCP context only as allowed by the review manifest and budget.
+> **Context hand-off rule (Optimized)**: coderX receives the Main Agent's Execution Brief, Context Manifest, Context Budget, and agent-readable document paths through the Type 0 Dispatch Payload. The first implementation round reads only the manifest-listed sections before broad exploration. In subsequent coderX rounds, prefer a lightweight trunk: include only Parent 搂8.2 (Memory Pointers entity/relation summaries) plus the current Child 搂7 (AC) and 搂9 (prior evaluation / fix instructions), unless the Context Manifest requires more. evaluatorX receives Review Brief, Review Context Manifest, and Review Context Budget through Type 1.5 Review Dispatch, reads git diff and changed file hunks first, then reads Child 搂7 and conditional Parent/Child/MCP context only as allowed by the review manifest and budget.
 
 ---
 
@@ -330,15 +329,15 @@ Before each dispatch, Main Agent must still assemble and validate the full Type 
 ### Pre-Loop Setup: Build Dependency Graph
 
 ```
-1. Read Parent Section 7 → extract all Children
-2. Read Parent Section 8.3 → extract dependency edges (CACHE THIS)
+1. Read Parent Section 7 鈫?extract all Children
+2. Read Parent Section 8.3 鈫?extract dependency edges (CACHE THIS)
 3. Build adjacency list + in-degree map:
    - in_degree[child] = number of dependencies
    - adj[parent_dep] = [children that depend on it]
 4. Initialize per-child iteration counters:
    - child_iterations[child] = { used: 0, remaining: sessionParams.iteration_limit }
 5. Initialize ready_queue (FIFO):
-   - For each child where in_degree[child] == 0 → push to ready_queue
+   - For each child where in_degree[child] == 0 鈫?push to ready_queue
 6. Critical Path Analysis (Optimized):
    - Identify critical path: longest dependency chain
    - Identify high-impact nodes: children with most dependents
@@ -346,7 +345,7 @@ Before each dispatch, Main Agent must still assemble and validate the full Type 
    - Sort ready_queue by priority (highest first)
 ```
 
-### Phase 1 — Ready Queue Processing (replaces sequential scan)
+### Phase 1 鈥?Ready Queue Processing (replaces sequential scan)
 
 ```
 While ready_queue is not empty:
@@ -389,14 +388,14 @@ While ready_queue is not empty:
      - Output Contract: Bus Payload Type 2
   6. Validate Type 1.5 Review Dispatch Payload, then dispatch Agent(evaluatorX)
   7. evaluatorX evaluates, outputs Evaluation Result Payload
-  8. Load module 03 for Post-Evaluation document update (incremental, see §6)
+  8. Load module 03 for Post-Evaluation document update (incremental, see 搂6)
   
   9. Result handling:
      - PASS:
        a. Mark current as PASS
        b. For each dependent in adj[current]:
             in_degree[dependent]--
-            if in_degree[dependent] == 0 → enqueue to ready_queue
+            if in_degree[dependent] == 0 鈫?enqueue to ready_queue
      - Needs Fix + child_iterations[current].remaining > 0:
        a. child_iterations[current].used++
        b. child_iterations[current].remaining--
@@ -406,7 +405,7 @@ While ready_queue is not empty:
        b. Do NOT enqueue dependents (they remain blocked)
 ```
 
-### Phase 2 — Blocked Queue Resolution
+### Phase 2 鈥?Blocked Queue Resolution
 
 ```
 If ready_queue is empty but some children not completed:
@@ -416,7 +415,7 @@ If ready_queue is empty but some children not completed:
 ```
 
 **Early Exit (Optimized)**: 
-- PASS → immediately mark complete, enqueue dependents, move to next in queue
+- PASS 鈫?immediately mark complete, enqueue dependents, move to next in queue
 - No need to check iteration limit for PASS'd children
 
 **Per-Child Counter State**:
@@ -478,10 +477,10 @@ For xlocal without an explicit Hybrid Tree path, discovery is repository-wide:
 2. Identify Parent candidates by `Document Type: Parent` plus a Section 7 routing table
 3. Score relevance against the current requirement using:
    - directory name and Parent title
-   - Parent §1 overview, §3 boundaries/scope, and §6 scope
-   - Parent §7 Child scope rows
-   - Child §7 acceptance criteria
-   - Parent/Child §8.1 file indexes
+   - Parent 搂1 overview, 搂3 boundaries/scope, and 搂6 scope
+   - Parent 搂7 Child scope rows
+   - Child 搂7 acceptance criteria
+   - Parent/Child 搂8.1 file indexes
 4. Treat a candidate as reusable only when the requirement clearly overlaps an existing Parent scope or file index
 5. If one candidate matches, reuse and maintain it; if several match, ask the user to choose; if none match, continue to PRD file detection or minimal auto-generation
 
@@ -526,10 +525,10 @@ Main Agent determines whether user input changed the current Child's requirement
 
 | Change Type | Confirmation Required |
 |-------------|---------------------|
-| New Branch Feature | Yes — describe new feature, ask "Confirm creating new sub-module?" |
-| Scope Expansion > 50% | Yes — describe expansion, ask "Confirm scope expansion?" |
-| Scope Reduction (removing AC) | Yes — list deleted ACs, ask "Confirm deleting these acceptance criteria?" |
-| Adjustment / Optimization | No — proceed directly |
+| New Branch Feature | Yes 鈥?describe new feature, ask "Confirm creating new sub-module?" |
+| Scope Expansion > 50% | Yes 鈥?describe expansion, ask "Confirm scope expansion?" |
+| Scope Reduction (removing AC) | Yes 鈥?list deleted ACs, ask "Confirm deleting these acceptance criteria?" |
+| Adjustment / Optimization | No 鈥?proceed directly |
 
 If user rejects, discard the change and resume original flow.
 

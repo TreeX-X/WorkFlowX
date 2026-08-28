@@ -5,7 +5,6 @@ Codex registers project subagents from `.codex/agents/*.toml` when the host supp
 - `coderX`: implementation
 - `evaluatorX`: evaluation
 - `promptMasterX`: prompt preprocessing
-- `abstracterX`: code and architecture summarization
 
 Runtime behavior lives in:
 

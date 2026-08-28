@@ -39,7 +39,6 @@
 │   ├── coderX.md              # 编码智能体
 │   ├── evaluatorX.md          # 评估智能体
 │   ├── promptMasterX.md       # 提示词优化
-│   ├── abstracterX.md         # 代码分析
 │   ├── coder-teammate.md      # 并行编码队友
 │   └── evaluator-teammate.md  # 并行评估队友
 │
@@ -63,7 +62,6 @@
 │   │   └── SKILL.md           # Karpathy 编码准则
 │   ├── prompt-master/
 │   │   └── SKILL.md           # 提示词优化规则
-│   └── abstracter-code-summary/
 │       └── SKILL.md           # 代码分析规范
 │
 └── settings.json              # 全局配置
@@ -115,7 +113,6 @@ description: "触发条件和功能说明"
 | **coderX** | 代码实现、最小化修改 | `guidelines`<br>`specX` | Bash, Read, Write, Edit, Glob, Grep, mcp |
 | **evaluatorX** | 代码审计、质量评估 | `auditX` | Bash, Read, Glob, Grep, mcp |
 | **promptMasterX** | 提示词优化 | `prompt-master` | Read, Glob, Grep |
-| **abstracterX** | 代码分析、架构总结 | `abstracter-code-summary` | Read, Glob, Grep, Bash |
 
 ### 3.2 并行模式队友智能体
 
@@ -135,7 +132,6 @@ description: "触发条件和功能说明"
 | `specX` | coderX, coder-teammate | Hybrid Tree 工作流（Mode A/B）时加载 |
 | `auditX` | evaluatorX, evaluator-teammate | 评估任务开始时 |
 | `prompt-master` | promptMasterX | Main Agent 调用 Module 04 时 |
-| `abstracter-code-summary` | abstracterX | 用户请求代码分析时 |
 
 ---
 
@@ -499,7 +495,6 @@ A: 串行模式中 Main Agent 依次调用 coderX/evaluatorX（一个智能体�
 - coderX（编码）
 - evaluatorX（评估）
 - promptMasterX（提示词优化）
-- abstracterX（代码分析）
 - coder-teammate（并行编码）
 - evaluator-teammate（并行评估）
 
@@ -509,7 +504,6 @@ A: 串行模式中 Main Agent 依次调用 coderX/evaluatorX（一个智能体�
 - auditX（审计流程）
 - guidelines（Karpathy 编码准则）
 - prompt-master（提示词优化）
-- abstracter-code-summary（代码分析）
 
 ### A.3 关键文件路径
 ```

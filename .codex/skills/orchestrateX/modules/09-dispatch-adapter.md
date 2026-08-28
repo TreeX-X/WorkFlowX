@@ -38,7 +38,7 @@ When using `prompt_spawn`, Main Agent emits a subagent request in this exact sha
 
 ````markdown
 ### WorkflowX Subagent Spawn Request
-- **Target Agent**: [coderX | evaluatorX | promptMasterX | abstracterX | worker | explorer | default]
+- **Target Agent**: [coderX | evaluatorX | promptMasterX | worker | explorer | default]
 - **Dispatch Mode**: prompt_spawn
 - **Isolation Request**: [worktree | shared | readonly | N/A]
 - **Return Contract**: [concise summary | Bus Payload Type 1 | Bus Payload Type 2 | structured prompt]
@@ -51,7 +51,7 @@ The spawned agent must begin its response with:
 ### WorkflowX Subagent Receipt
 - **Agent Identity**: [same as Target Agent]
 - **Dispatch Mode Observed**: prompt_spawn
-- **Payload Type Received**: [coderX Task | evaluatorX Review Task | prompt preprocessing | abstraction task]
+- **Payload Type Received**: [coderX Task | evaluatorX Review Task | prompt preprocessing]
 ```
 
 [Full Dispatch Payload follows]
@@ -76,7 +76,7 @@ If the native tool returns metadata, Main Agent records agent name, thread id, s
 When `degraded`:
 
 1. Report: `subagent dispatch degraded: no native Agent tool and no verified prompt-spawn support in this surface`.
-2. Do not silently execute implementation, evaluation, prompt preprocessing, or abstraction as Main Agent roleplay.
+2. Do not silently execute implementation, evaluation, prompt preprocessing as Main Agent roleplay.
 3. Continue only for direct-handling tasks allowed by `AGENTS.md`, or when the user explicitly approves a direct-execution fallback.
 
 ## Output Validation

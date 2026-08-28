@@ -10,7 +10,7 @@ Codex runtime truth lives in `AGENTS.md`, `.codex/config.toml`, `.codex/skills/`
 
 > **Full specification**: `.codex/skills/orchestrateX/SKILL.md`
 
-Codex uses project subagent definitions from `.codex/agents/`. The main Codex agent owns orchestration, but implementation, evaluation, prompt preprocessing, and abstraction handoffs must be dispatched to the corresponding subagent (`coderX`, `evaluatorX`, `promptMasterX`, `abstracterX`) instead of being simulated by main-agent roleplay.
+Codex uses project subagent definitions from `.codex/agents/`. The main Codex agent owns orchestration, but implementation, evaluation, and prompt preprocessing handoffs must be dispatched to the corresponding subagent (`coderX`, `evaluatorX`, `promptMasterX`) instead of being simulated by main-agent roleplay.
 
 Subagent dispatch follows `.codex/skills/orchestrateX/modules/09-dispatch-adapter.md`: use a native Agent/subagent tool when one is exposed; otherwise use Codex prompt-spawn when the current surface supports prompt-triggered subagents; otherwise report dispatch as degraded. Do not silently pretend to be `coderX` / `evaluatorX` / `promptMasterX` in the main-agent context.
 

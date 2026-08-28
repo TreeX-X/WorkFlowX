@@ -125,7 +125,6 @@ const sessionParams = {
 - **Sandbox (`-box`)**: When specified, creates a physically isolated sandbox branch. Before: stash, record original branch, create sandbox branch. After: switch back, `--no-commit --no-ff` merge, restore stash.
 - **Entry**: Environment init (module 01) -> dispatch capability probe (module 09) -> **Requirements Discovery** (module 08: Socratic questioning + Proactive Challenge) -> **Planning Phase** (multi-turn dialogue in current session, do not exit until user triggers Summary) -> User confirms PRD -> **Core Iteration Loop**
 - Iteration limit: Each Child defaults to max 2 rounds (`-N` overrides). If limit reached and still failing, stop and report to human.
-- abstracterX is only invoked when user explicitly requests summarization.
 
 ### Mode B: local workflow
 - Scope: Requirements relatively clear, limited to a local part of the project.

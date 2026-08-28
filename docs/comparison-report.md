@@ -75,7 +75,6 @@
          │     └── coder-teammate (并行模式)
          ├── evaluatorX (质量审计，AC 交叉验证)
          │     └── evaluator-teammate (并行模式)
-         └── abstracterX (代码分析，结构化报告)
 ```
 
 **核心设计原则:**

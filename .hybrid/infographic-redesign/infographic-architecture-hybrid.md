@@ -26,7 +26,7 @@
 ## 7. Branch Features & Acceptance Criteria (Branch-Specific AC)
 
 ### Feature: System Architecture Infographic (01-architecture-zh.html)
-- **Description**: Redesign the system architecture diagram showing orchestratorX as the central orchestrator, 4 sub-agents (promptMasterX, coderX, evaluatorX, abstracterX), data layer (Hybrid Tree + MCP memory graph), 3 Payload types, and parallel mode (coder-teammate/evaluator-teammate).
+- **Description**: Redesign the system architecture diagram showing orchestratorX as the central orchestrator, 3 sub-agents (promptMasterX, coderX, evaluatorX), data layer (Hybrid Tree + MCP memory graph), 3 Payload types, and parallel mode (coder-teammate/evaluator-teammate).
 - **Implementation Requirements**:
   - 720px native width, vertical layout
   - All original elements preserved: orchestratorX header, 4 agent cards, data layer, payload badges, parallel mode section
@@ -35,7 +35,7 @@
 - **Acceptance Criteria (AC)**:
   - [ ] AC-1: File created at `docs/design/01-architecture-zh.html`, renders at 720px width
   - [ ] AC-2: orchestratorX card prominently displayed at top with "唯一编排者" label, title >= 28px
-  - [ ] AC-3: All 4 agent cards (promptMasterX, coderX, evaluatorX, abstracterX) visible with name + description, text >= 14px
+  - [ ] AC-3: All 3 agent cards (promptMasterX, coderX, evaluatorX) visible with name + description, text >= 14px
   - [ ] AC-4: Data layer section shows Hybrid Tree + MCP memory graph with descriptions, text >= 14px
   - [ ] AC-5: 3 Payload badges visible at bottom (变更摘要, 评估结果, 需求变更)
   - [ ] AC-6: Parallel mode section shows coder-teammate + evaluator-teammate cards
