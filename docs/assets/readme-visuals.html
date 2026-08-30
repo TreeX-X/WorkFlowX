@@ -2024,7 +2024,7 @@
         capTitle: "按影响范围选择工作流入口",
         capSub: "xunit、xlocal、xwhole、xwhole -parallel 共享同一套 Hybrid Tree 与 AC 验收模型，只改变规划深度和并行度。",
         workflowTitle: "一次 xwhole 从路由到需求全通过",
-        workflowSub: "RouteX 路由上下文、资源初始化、代码探索、苏格拉底式需求发现、Hybrid Tree、promptX、coderX、evaluatorX 与 razorX 修复闭环。",
+        workflowSub: "RouteX 路由上下文、资源初始化、代码探索、苏格拉底式需求发现、Hybrid Tree、coderX、evaluatorX 与 engineeringX 自审。",
         labelArch: "架构",
         labelToken: "Token 预算",
         labelCap: "能力矩阵",
@@ -2098,7 +2098,7 @@
         capTitle: "Choose the entry by blast radius",
         capSub: "xunit, xlocal, xwhole, and xwhole -parallel share Hybrid Tree and AC validation. Only planning depth and parallelism change.",
         workflowTitle: "One xwhole run from routing to all ACs passed",
-        workflowSub: "RouteX routing context, resource init, code scan, Socratic discovery, Hybrid Tree, promptX, coderX, evaluatorX, and razorX repair loop.",
+        workflowSub: "RouteX routing context, resource init, code scan, Socratic discovery, Hybrid Tree, coderX, evaluatorX, and engineeringX self-review.",
         labelArch: "Architecture",
         labelToken: "Token Budget",
         labelCap: "Capability Matrix",
@@ -2520,13 +2520,13 @@
         ? [
             ["coderX R1", "按 Child AC 生成第一版实现。", ["AC-01 touched", "AC-02 touched"]],
             ["evaluatorX", "独立验收，发现回滚测试和幂等缺口。", ["AC-01 PASS", "AC-02 FIX", "AC-03 FIX"]],
-            ["coderX R2", "融合 razorX skill：删重复分支，收敛 guard。", ["razorX skill", "AC-02 repaired"]],
+            ["coderX R2", "融合 engineeringX：删重复分支，收敛 guard。", ["engineeringX", "AC-02 repaired"]],
             ["evaluatorX R2", "复读 diff / code / tests，逐条核对 AC。", ["AC-01 PASS", "AC-02 PASS", "AC-03 PASS"]]
           ]
         : [
             ["coderX R1", "Builds the first implementation against Child AC.", ["AC-01 touched", "AC-02 touched"]],
             ["evaluatorX", "Finds rollback-test and idempotency gaps.", ["AC-01 PASS", "AC-02 FIX", "AC-03 FIX"]],
-            ["coderX R2", "Uses razorX skill: remove duplicate branches, converge guard.", ["razorX skill", "AC-02 repaired"]],
+            ["coderX R2", "Uses engineeringX: remove duplicate branches, converge guard.", ["engineeringX", "AC-02 repaired"]],
             ["evaluatorX R2", "Re-reads diff, code, and tests against every AC.", ["AC-01 PASS", "AC-02 PASS", "AC-03 PASS"]]
           ];
       return `<div class="iteration-flow">
@@ -2535,7 +2535,7 @@
           return `<div class="iter-step ${active}" style="--on:${on(i * 0.2)};--flow:${flow(i * 0.22)}">
             <b>${step[0]}</b><span>${step[1]}</span>
             <div class="iter-mini-list">${step[2].map((item) => {
-              const cls = item.includes("PASS") ? "pass" : item.includes("FIX") || item.includes("razorX") || item.includes("repaired") ? "hot" : "";
+              const cls = item.includes("PASS") ? "pass" : item.includes("FIX") || item.includes("engineeringX") || item.includes("repaired") ? "hot" : "";
               return `<i class="${cls}">${item}</i>`;
             }).join("")}</div>
           </div>`;

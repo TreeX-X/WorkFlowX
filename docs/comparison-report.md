@@ -229,7 +229,7 @@
 |------|---------------|-----------------|---------|
 | **代码过度工程** | Karpathy 指南: "只做被要求的" | YAGNI 原则 + writing-plans 精确规格 | executor: "最小可行 diff" |
 | **不必要的抽象** | Karpathy 指南: "单次使用不抽象" | DRY 但不提前抽象 | executor: "不为单次逻辑引入新抽象" |
-| **代码风格不一致** | razorX 代码美学框架 | 代码质量审查器 | code-simplifier 智能体 |
+| **代码风格不一致** | engineeringX 实现原则与自审 | 代码质量审查器 | code-simplifier 智能体 |
 | **需求理解偏差** | Hybrid Tree AC + 交叉验证 + Module 08 主动质疑 | brainstorming 苏格拉底提问 | deep-interview 维度化清晰度 |
 | **测试质量差** | evaluatorX 审查测试覆盖 | TDD 铁律 (先写失败测试) | test-engineer 专业智能体 |
 
@@ -310,7 +310,7 @@
 
 | 子维度 (子权重) | WorkflowX | Superpowers | OMC | 评分依据 |
 |----------------|-----------|-------------|-----|---------|
-| **代码质量** (30%) | 9 | 9 | 7 | W: Karpathy 指南 + razorX 美学；S: TDD 铁律 + YAGNI；O: code-simplifier |
+| **代码质量** (30%) | 9 | 9 | 7 | W: engineeringX 实现原则与自审；S: TDD 铁律 + YAGNI；O: code-simplifier |
 | **上下文管理** (25%) | 9 | 9 | 7 | W: Worktree + 增量传递 + 不信任声明；S: 每任务新子智能体 + 隔离；O: 状态外部化但 19 Agent 管理复杂 |
 | **测试支持** (25%) | 6 | 10 | 8 | W: 评估时检查覆盖，无 TDD 强制；S: TDD 铁律 + 行为测试；O: test-engineer + ultraQA |
 | **安全保障** (20%) | 7 | 6 | 9 | W: evaluatorX 安全维度；S: 代码质量审查器；O: security-reviewer (OWASP Top 10) + secrets 检测 |
@@ -395,7 +395,7 @@
 2. **Token 效率最高** — 系统化增量传递 + 压缩策略，多轮迭代节省 40-60%
 3. **质量控制最严** — AC 交叉验证 (不信任 coder 声明) + 跨分支检测
 4. **需求发现最深** — Module 08 苏格拉底式追问 + 加权清晰度 + 主动质疑
-6. **代码美学框架** — razorX 独特的代码审美标准
+6. **工程开发原则** — engineeringX 的最小改动与自审标准
 7. **迭代控制最精确** — 独立计数器 + 早退 + 上限，无无限循环风险
 8. **Plugin Marketplace 已就绪** — 支持 Claude / Codex 双平台一键安装
 
@@ -460,7 +460,7 @@
 | **Hybrid Tree 数据结构** | Parent + Child 的 MECE 组织方式，唯一将需求文档结构化的方案 | 需求可追溯、可验证、可增量更新 |
 | **AC 交叉验证** | evaluatorX 不信任 coderX 声明，独立验证每个验收标准 | 消除"自我验证"偏差，质量控制最严谨 |
 | **跨分支违规检测** | 文件所有权 + 共享文件兼容性检查 | 多分支并行开发不冲突 |
-| **razorX 代码美学** | "路径能否更短？认知负荷能否更低？" | 代码不仅正确，而且优雅 |
+| **engineeringX 工程原则** | 最小改动、简单实现、完成前自审 | 代码不仅正确，而且易维护 |
 | **苏格拉底式需求发现** | 加权清晰度评估 + 主动质疑 (Module 08) | 规划阶段暴露隐藏假设和边界条件 |
 | **Section-Level Caching** | 静态段在前、动态段在后，利用 LLM prompt caching | Token 效率最高 |
 | **迭代早退机制** | evaluatorX 返回 PASS 时立即终止迭代 | 避免不必要的 token 消耗 |

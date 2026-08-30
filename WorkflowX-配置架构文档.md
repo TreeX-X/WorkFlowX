@@ -1,513 +1,146 @@
-# WorkflowX 配置架构文档
+# WorkflowX 配置架构
 
-> **文档目标**：清晰描述 WorkflowX 的工作流设计、配置文件结构、流转机制及智能体-技能映射关系。
+> 本文档描述当前 WorkflowX 轻量工作流。历史版本中的 `xmain`、`xunit`、`xlocal`、`xwhole`、MCP、固定迭代循环和旧评估报告不再属于现行架构。
 
----
+## 1. 设计原则
 
-## 1. 核心概念
+- 主 Agent 使用原生能力负责理解、拆解、调度、合并和最终判断。
+- `engineeringX` 只提供实现原则和完成前 self-review，不承载路由或调度约束。
+- 只有用户明确要求并行时才启用并行 Agent。
+- Hybrid Tree、harness 和详细 Payload 按模式需要使用，不作为所有任务的强制前置条件。
+- 任何测试或检查结果都必须以实际执行为依据。
 
-### 1.1 设计理念
+## 2. 三种工作模式
 
-**WorkflowX** 是一个多智能体协作开发框架，通过 **Main Agent** 作为核心编排者，协调多个专业智能体完成从需求澄清到代码实现再到质量评估的完整闭环。
+| 模式 | 命令 | 主体行为 | Hybrid Tree | evaluatorX |
+|---|---|---|---|---|
+| direct | `xdo` | 主 Agent 直接实现；用户明确要求时可原生并行 | 可选 | 不默认触发 |
+| delegate | `xdel` | 基于 Parent/Child 派发 coderX 一次完成 | 必须 | 不触发 |
+| orchestrate | `xflow` | 需求发现、规划、Child 调度、逐 Child 测试审核 | 必须 | 每个 Child 后触发 |
 
-核心原则：
-- **职责分离**：orchestrator 编排流程、coder 实现代码、evaluator 审计质量、各司其职
-- **文档驱动**：通过 Hybrid Tree 文档传递上下文和规范
-- **结构化通信**：智能体间通过 Bus Payload 传递结构化信息
-- **单一写入者**：Main Agent 是唯一的文档写入者，其他智能体只读
+### 2.1 xdo
 
-### 1.2 工作模式
+1. 主 Agent 读取用户指定的 skill 并直接工作。
+2. 主 Agent 自行决定是否创建 Hybrid Tree、拆分任务或调用原生并行 Agent。
+3. 并行只有在用户明确要求时启用，所有并行 Agent 遵循 `engineeringX`。
+4. 完成前执行 self-review 和实际可行的验证。
 
-| 模式 | 指令 | 适用场景 | 特点 |
-|------|------|---------|------|
-| **Mode A (whole)** | `/xwhole` | 大规模、高影响力任务 | 完整规划-编码-评估循环，自动 worktree 隔离 |
-| **Mode B (local)** | `/xlocal` | 需求明确的局部模块 | PRD检测 + 迭代循环，自动 worktree 隔离 |
-| **Mode C (unit)** | `/xunit` | 最小单元任务 | 单文件/最小改动，无评估环节，无隔离 |
-| **Mode D (main)** | `/xmain` | 主智能体直接执行 | 每次需求先拆分；Claude 可按需并行，Codex 始终串行 |
+### 2.2 xdel
 
-**Mode A-parallel**: `/xwhole -parallel` 启用 Agent Teams 并行执行模式（需要 Claude Code 环境）
+1. 读取或创建轻量 Parent/Child 文档。
+2. 为指定 Child 派发一次 coderX。
+3. coderX 使用 `engineeringX` 和 `specX`，完成实现并自审。
+4. Main Agent 接收结果并决定是否完成，不自动启动 evaluatorX 或迭代循环。
 
----
+### 2.3 xflow
 
-## 2. 配置文件结构
+1. 先使用 `socratesX` 澄清需求、识别边界和比较方案。
+2. 用户确认后，由 Main Agent 根据结论创建或更新 Parent/Child。
+3. 按依赖顺序派发 coderX；依赖允许时可按用户要求并行。
+4. 每个 Child 完成后触发 evaluatorX 的测试驱动审核。
+5. Main Agent 对失败进行分级：
+   - 局部实现错误：同一 Child 最多一次最小 Repair Packet 修复；
+   - 跨 Child 集成问题：压缩为 Integration Note，传给受影响的后续 Child；
+   - 架构或范围问题：Main Agent 更新计划或直接处理。
+6. 不恢复原 Agent 实例，不把完整历史上下文传给后续 Child。
 
-### 2.1 目录布局
+`socratesX` 的提问按分析阶段批量进行：一次性询问该阶段所有会影响实现的未决问题，不强制一轮一个问题。只有存在真实方案取舍时才提供选项；事实确认或单一路径直接提问。需求已经足够明确时跳过探索性提问，改为一次 `Ready Summary` 确认；已确认的决策不重复确认，除非新证据产生实质冲突。
 
-```
+## 3. 配置目录
+
+```text
+.codex/
+├── config.toml                 # Codex 项目设置和 Agent 并发上限
+├── agents/
+│   ├── coderX.toml
+│   ├── evaluatorX.toml
+│   └── README.md
+└── skills/
+    ├── engineeringX/
+    ├── specX/
+    ├── auditX/
+    ├── socratesX/
+    └── orchestrateX/
+
 .claude/
-├── agents/                    # 智能体定义（Main Claude Agent 自身担任编排者，无独立编排者文件）
-│   ├── coderX.md              # 编码智能体
-│   ├── evaluatorX.md          # 评估智能体
-│   ├── coder-teammate.md      # 并行编码队友
-│   └── evaluator-teammate.md  # 并行评估队友
-│
-├── skills/                    # 技能模块
-│   ├── orchestrateX/
-│   │   ├── SKILL.md           # 编排手册主文件
-│   │   └── modules/           # 按需加载的模块
-│   │       ├── 01-environment-init.md
-│   │       ├── 02-bus-payload.md
-│   │       ├── 03-post-evaluation.md
-│   │       ├── 04-prompt-preprocess.md
-│   │       ├── 05-parallel-setup.md
-│   │       ├── 06-task-coordination.md
-│   │       ├── 07-status-report.md
-│   │       └── 08-requirements-discovery.md
-│   ├── specX/
-│   │   └── SKILL.md           # coderX 规范驱动实现流程
-│   ├── auditX/
-│   │   └── SKILL.md           # evaluatorX 审计工作流
-│   ├── guidelines/
-│   │   └── SKILL.md           # Karpathy 编码准则
-│   ├── prompt-master/
-│   │   └── SKILL.md           # 提示词优化规则
-│       └── SKILL.md           # 代码分析规范
-│
-└── settings.json              # 全局配置
+├── commands/                   # xdo/xdel/xflow/xstatus 入口
+├── agents/                     # Claude 侧 coder/evaluator 定义
+└── skills/                     # Claude 侧同步 skill
 
-.hybrid/                       # Hybrid Tree 文档存储
-└── [feature-name]/
-    ├── [feature]-hybrid.md    # Parent 文档
-    └── child-*-hybrid.md      # Child 文档们
+.hybrid/
+└── [feature]/                  # xdel/xflow 使用的 Parent/Child 文档
 ```
 
-### 2.2 智能体定义文件结构
-
-每个智能体定义（`.claude/agents/*.md`）包含：
-
-```yaml
----
-name: agentName                # 智能体标识
-description: "..."             # 功能描述
-tools: [...]                   # 可用工具列表
-model: opus/sonnet/haiku       # 可选：指定模型
-extends: baseAgent             # 可选：继承基础智能体
----
-
-[智能体行为规范和执行规则的详细说明]
-```
+两侧均由 `orchestrateX` 提供入口路由和模式执行规则。Codex 的 `AGENTS.md` 负责持久化项目入口指令；Claude 的命令文件负责显式命令入口。两侧的核心模式、skill 和 Agent 契约保持一致。
 
-### 2.3 技能定义文件结构
+## 4. Skill 与 Agent 职责
 
-每个技能（`.claude/skills/*/SKILL.md`）包含：
+| 组件 | 职责 |
+|---|---|
+| `engineeringX` | 最小改动、复用现有模式、范围控制、完成前 self-review |
+| `specX` | xdel/xflow 中读取和遵循 Child 规范 |
+| `orchestrateX` | xdo/xdel/xflow 路由、模式流程和 Hybrid Tree 规则 |
+| `auditX` | evaluatorX 的测试驱动审核规则 |
+| `socratesX` | xflow 前置需求澄清、方案比较和 Hybrid Tree 生成输入 |
+| `coderX` | 按交接范围实现代码并自审 |
+| `evaluatorX` | 只读，建立并执行针对 AC 的最小测试或检查 |
+| Main Agent | 唯一的流程决策者、调度者、文档更新者和最终验收者 |
 
-```yaml
----
-name: skill-name
-description: "触发条件和功能说明"
----
+## 5. Hybrid Tree
 
-[技能的执行逻辑、输入输出规范、约束条件]
-```
+> 说明：`.hybrid/` 中已有文档属于重构前旧版本。它们作为历史记录保留，不迁移、不回填新模板，也不作为当前运行状态依据；新的 `xdel`/`xflow` 任务按需创建新的 Parent/Child 文档。
 
----
-
-## 3. 智能体与技能映射
+### Parent
 
-### 3.1 核心智能体及其技能
+- 目标和范围
+- 约束与完成标准
+- Child Registry
+- 文件索引
+- 知识备注
+- 变更说明
+- 完成摘要
 
-| 智能体 | 职责 | 核心技能 | 可用工具 |
-|--------|------|----------|---------|
-| **Main Agent** | 流程编排、文档写入、子智能体调度 | `orchestrateX` | Bash, Read, Write, Edit, Agent, SendMessage, Team*, Task* |
-| **coderX** | 代码实现、最小化修改 | `guidelines`<br>`specX` | Bash, Read, Write, Edit, Glob, Grep |
-| **evaluatorX** | 代码审计、质量评估 | `auditX` | Bash, Read, Glob, Grep |
+### Child
 
-### 3.2 并行模式队友智能体
+- 任务范围和允许文件
+- Acceptance Criteria
+- 实现说明
+- 验证结果
+- Change Summary
 
-| 智能体 | 继承自 | 增量工具 | 特点 |
-|--------|--------|----------|------|
-| **coder-teammate** | coderX | SendMessage, Task* | Agent Teams 模式下的并行编码单元 |
-| **evaluator-teammate** | evaluatorX | SendMessage, Task* | Agent Teams 模式下的并行评估单元 |
+不再包含 MCP 状态、知识图谱、运行时迭代状态或独立 Evaluation Report。
 
-**继承规则**：队友智能体继承基础智能体的所有工具、技能和行为规范，额外增加团队协作工具。
-
-### 3.3 技能加载时机
+## 6. 交接契约
 
-| 技能 | 加载者 | 触发时机 |
-|------|--------|---------|
-| `orchestrateX` | Main Agent | 工作流启动时，作为核心逻辑手册 |
-| `guidelines` | coderX, coder-teammate | 每次编码任务开始时（Mode A/B/C 均需） |
-| `specX` | coderX, coder-teammate | Hybrid Tree 工作流（Mode A/B）时加载 |
-| `auditX` | evaluatorX, evaluator-teammate | 评估任务开始时 |
+`xdo` 不使用固定 Bus Payload。`xdel/xflow` 使用简洁交接字段：目标、Parent/Child 路径、AC、允许范围、所需 skill、验证方式和输出摘要。
 
----
+### Repair Packet
 
-## 4. Hybrid Tree 文档架构
+用于同一 Child 的局部错误，至少包含：失败测试和命令、预期/实际结果、可能原因、修复范围、对应 AC、回归风险、阻塞项和禁止修改范围。
 
-### 4.1 Parent-Child 分离原则
+### Integration Note
 
-**Parent 文档**（路由层）：
-- 全局规范、非功能需求、完成定义
-- 路由表（Child 索引）
-- 共享文件索引（8.1）
-- 跨分支依赖（8.3）
-- 聚合评估表（9）
+用于跨 Child 问题，至少包含：前一 Child、改变的接口契约、相关文件、观察到的问题、后续 Child 必须执行的动作和兼容性风险。
 
-**Child 文档**（需求层）：
-- 分支特定的验收标准（AC）
-- 私有文件索引（8.1）
-- 分支评估报告（9）
-
-### 4.2 文档结构（Section 映射）
-
-**Parent 文档结构**：
-```
-## 0. Environment Status       # 环境状态
-## 1. Project Overview          # 项目概览
-## 2. Boundaries                # 边界定义
-## 3. Technical Constraints     # 技术约束
-## 4. Non-Functional Requirements  # 非功能需求
-## 5. Definition of Done        # 完成定义
-## 6. Scope                     # 范围声明
-## 7. Routing Table             # Child 路由表
-## 8.1 Shared File Index        # 共享文件索引
-## 8.2 Knowledge Index         # 知识索引大纲
-## 8.3 Cross-Branch Dependencies  # 跨分支依赖
-## 9. Aggregation Table         # 聚合评估汇总
-```
-
-**Child 文档结构**：
-```
-## 7. Acceptance Criteria       # 分支验收标准
-## 8.1 Private File Index       # 私有文件索引
-## 8.2 Incremental References   # 增量引用
-## 9. Evaluation Report         # 评估报告（初始为空）
-```
-
-### 4.3 读写权限
-
-| 角色 | Parent 读 | Parent 写 | Child 读 | Child 写 |
-|------|-----------|-----------|----------|----------|
-| Main Agent | ✅ | ✅ 唯一写入者 | ✅ | ✅ 唯一写入者 |
-| coderX | ✅ 只读 8.1/8.3 | ❌ | ✅ | ❌ |
-| evaluatorX | ✅ 全部可读 | ❌ | ✅ | ❌ |
-
----
-
-## 5. Bus Payload 通信协议
-
-### 5.1 通信原则
-
-智能体间不直接写文档，通过结构化 Payload 传递信息：
-- **coderX** → Payload Type 1 → **Main Agent** → **evaluatorX**
-- **evaluatorX** → Payload Type 2 → **Main Agent** → 更新文档 → **coderX**
-
-### 5.2 Payload Type 1: Change Summary（coderX 输出）
-
-```markdown
-### Bus Payload: Change Summary
-- **Changed Files**:
-  - [file path] — [modification role/logic summary]
-- **Affected ACs (claimed)**:
-  - [AC identifier] — [change reason: new implementation / fix / adjustment]
-- **Directed Audit Points**: [highlight complex logic for evaluatorX]
-```
-
-### 5.3 Payload Type 2: Evaluation Result（evaluatorX 输出）
-
-```markdown
-### Bus Payload: Evaluation Result
-
-#### AC Status Table
-| AC | Status | Eval Method | Code Location | Basis / Gap |
-|----|--------|-------------|---------------|-------------|
-| ... | Pass/Partial/Fail/Unevaluable | this_round/inherited | file:line | ... |
-
-#### Issue List
-| # | Type | Severity | Location | Description |
-|---|------|----------|----------|-------------|
-| 1 | requirement deviation / logic defect | P0/P1/P2 | file:line | ... |
-
-#### Fix Instructions
-- [ ] [file:line] — [specific fix action] (Priority: P0/P1)
-
-#### Blocking Dependencies
-- [Child path] depends on [Child path] — [reason]
-
-#### Cross-Branch Violations
-- [description of file conflicts]
-```
-
----
-
-## 6. 工作流流转机制
-
-### 6.1 Mode A (whole) 流程
-
-```
-用户输入 → Main Agent 启动
-    ↓
-[Module 01] 环境初始化
-    ↓
-[Module 08] 需求发现 + 主动挑战
-    ↓
-Planning Phase 对话
-    ↓
-生成 Hybrid Tree (Parent + Children)
-    ↓
-[Core Iteration Loop - 串行模式]
-    ├→ 读取 Parent §7 路由表
-    ├→ 解析依赖关系（Parent §8.3）
-    ├→ 按拓扑序遍历 Children：
-    │   ├→ Agent(coderX, isolation="worktree")
-    │   │   ├→ 读取 Parent §0-6, §8.1-8.3
-    │   │   ├→ 读取 Child §7 (AC), §8.1, §9 (prior eval)
-    │   │   ├→ 实现代码
-    │   │   └→ 输出 Payload Type 1
-    │   ├→ Main Agent 验证 Payload
-    │   ├→ Agent(evaluatorX, isolation="worktree")
-    │   │   ├→ 读取 Parent + Child
-    │   │   ├→ 读取 git diff
-    │   │   ├→ 审计代码
-    │   │   └→ 输出 Payload Type 2
-    │   ├→ Main Agent [Module 03] 更新文档
-    │   │   ├→ 写入 Child §9
-    │   │   ├→ 更新 Parent §9 聚合表
-    │   │   └→ 判断迭代 / 继续 / 结束
-    │   └→ 若 Needs Fix → 组装 Fix 指令 → 重新调用 coderX
-    └→ 所有 Children 完成 → 工作流结束
-```
-
-### 6.2 Mode A-parallel 流程（Agent Teams）
-
-```
-用户输入 /xwhole -parallel → Main Agent 启动
-    ↓
-[Phase 1: Init]
-    ├→ 验证环境（CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1）
-    ├→ TeamCreate(team_name)
-    ├→ 读取 Parent §7 → 每个 Child 创建 Task
-    ├→ 读取 Parent §8.3 → 设置任务依赖（TaskUpdate addBlockedBy）
-    ├→ 根据就绪任务数量生成队友（1-3 coder + 1-3 evaluator）
-    │   ├→ Agent(subagent_type="coder-teammate", name="coder-1", team_name=...)
-    │   └→ Agent(subagent_type="evaluator-teammate", name="evaluator-1", team_name=...)
-    └→ 分配初始任务（TaskUpdate owner + status, SendMessage 通知）
-    ↓
-[Phase 2: Loop - 事件驱动]
-    等待队友消息（自动送达）：
-    ├→ coder 完成 → SendMessage 转发给 evaluator
-    ├→ evaluator PASS → TaskUpdate(completed) → 解锁依赖任务 → 分配下一个
-    ├→ evaluator Needs Fix → SendMessage fix 指令给 coder（受 -N 限制）
-    └→ 迭代次数耗尽 → TaskUpdate(failed) → 上报用户
-    ↓
-[Phase 3: Cleanup]
-    ├→ 验证所有任务 completed/failed
-    ├→ SendMessage({type: "shutdown_request"}) 给每个队友
-    ├→ TeamDelete()
-    └→ 输出最终总结
-```
-
-### 6.3 Mode B (local) 流程
-
-```
-用户输入 → Main Agent 启动
-    ↓
-[Module 01] 环境初始化
-    ↓
-[Module 08] 需求发现（clarity < 5.0 时触发 Socratic Discovery）
-    ↓
-PRD 检测（优先级顺序）：
-    1. .hybrid/[feature]/ 已存在 → 直接使用
-    2. 参数包含 PRD 文件路径 → 读取并包装为 Hybrid Tree
-    3. 无 PRD → 自动生成最小 Hybrid Tree
-    ↓
-    ↓
-[Core Iteration Loop]（同 Mode A）
-```
-
-### 6.4 Mode C (unit) 流程
-
-```
-用户输入 → Main Agent 启动
-    ↓
-    ↓
-Agent(coderX)（轻量模式）
-    ├→ 只加载 guidelines 技能
-    ├→ 不加载 specX
-    ├→ 无 Bus Payload 输出
-    └→ 最小化修改
-    ↓
-直接上报用户（除非用户明确要求评估）
-```
-
----
-
-## 7. 按需加载模块索引
-
-Main Agent 通过 `orchestrateX` 的模块系统实现按需加载：
-
-| 模块 | 触发时机 | 文件路径 |
-|------|---------|---------|
-| 01 | 首次进入 xwhole/xlocal/xunit | `modules/01-environment-init.md` |
-| 02 | 跨智能体交接时 | `modules/02-bus-payload.md` |
-| 03 | evaluatorX 返回后 | `modules/03-post-evaluation.md` |
-| 04 | 调用 coderX 前（非首轮规划） | `modules/04-prompt-preprocess.md` |
-| 05 | `/xwhole -parallel` 触发 | `modules/05-parallel-setup.md` |
-| 06 | Module 05 完成后持续运行 | `modules/06-task-coordination.md` |
-| 07 | `/xstatus` 指令 | `modules/07-status-report.md` |
-| 08 | Planning Phase 前（xwhole）或 PRD 检测前（xlocal） | `modules/08-requirements-discovery.md` |
-
-**加载优化**：模块首次读取后缓存在会话内存，后续访问直接读缓存。
-
----
-
-## 8. 特殊参数说明
-
-### 8.1 支持的参数
-
-| 参数 | 格式 | 作用域 | 默认值 | 说明 |
-|------|------|--------|--------|------|
-| `-N` | `-N [1-10]` | xwhole, xlocal | `2` | 每个 Child 的最大评估迭代轮数 |
-| `-box` | `-box [name]` | xwhole, xlocal | 无 | 沙箱分支名（物理隔离） |
-| `-parallel` | `-parallel` | xwhole | off | 启用 Agent Teams 并行模式 |
-| `-team` | `-team [name]` | xwhole (with -parallel) | `workflow-{timestamp}` | Agent Team 名称 |
-
-### 8.2 示例
-
-```bash
-# 基础 Mode A
-/xwhole Add user authentication
-
-# 限制迭代次数
-/xwhole -N 5 Refactor database layer
-
-# 沙箱隔离
-/xwhole -box feature-auth Implement OAuth
-
-# 并行执行
-/xwhole -parallel -team auth-team Multi-module auth system
-
-# 组合使用
-/xwhole -parallel -N 3 -box sandbox-test Complex feature
-```
-
----
-
-## 9. 文件访问规则（特殊约束）
-
-**本项目特殊性**：源文件经过加密编码处理。
-
-### 9.1 读取规则
-
-| 文件类型 | 正确方式 | 错误方式 |
-|---------|---------|---------|
-| 项目源文件 | `rg` via Bash | Read 工具（会显示乱码） |
-| `.claude/` 配置文件 | Read / Write / Edit | — |
-
-### 9.2 修改规则
-
-| 操作 | 正确方式 | 错误方式 |
-|------|---------|---------|
-| 精准修改源文件 | Edit 工具（字符串替换） | Write 工具（会破坏编码） |
-| 新增内容 | `echo`/`printf` via Bash | Write 工具 |
-| 配置文件修改 | Read + Write / Edit | — |
-
-**所有智能体必须遵守 CLAUDE.md 中的文件访问规则。**
-
----
-
-## 10. 快速索引
-
-### 10.1 想修改智能体行为
-→ 编辑 `.claude/agents/{agentName}.md`
-
-### 10.2 想修改工作流逻辑
-→ 编辑 `.claude/skills/orchestrateX/SKILL.md` 或对应 `modules/*.md`
-
-### 10.3 想修改编码规范
-→ 编辑 `.claude/skills/guidelines/SKILL.md`
-
-### 10.4 想修改评估标准
-→ 编辑 `.claude/skills/auditX/SKILL.md`
-
-### 10.5 想查看某次工作流的文档
-→ 查看 `.hybrid/{feature-name}/` 目录下的 Parent 和 Child 文档
-
-### 10.6 想生成状态报告
-→ 运行 `/xstatus` 或 `/xstatus --output path/to/report.html`
-
----
-
-## 11. 设计哲学
-
-### 11.1 为什么要 Hybrid Tree？
-
-- **上下文传递**：跨会话、跨智能体传递需求和实现上下文
-- **增量更新**：支持需求变更、迭代评估，文档持续演进
-- **可追溯性**：每个 AC、每个评估结果都有明确的文档位置
-
-### 11.2 为什么要 Bus Payload？
-
-- **结构化通信**：避免自然语言的歧义和信息丢失
-- **单一写入者**：Main Agent 统一管理文档更新，避免冲突
-- **模块化**：智能体职责清晰，coderX 不需要知道如何写评估报告
-
-### 11.3 为什么要分三种模式？
-
-- **Mode A**：大型任务需要完整规划和多轮迭代
-- **Mode B**：中型任务可以跳过规划对话，直接进入迭代
-- **Mode C**：小型任务避免过度设计，快速完成
-
-### 11.4 为什么要 Worktree 隔离？
-
-- **安全性**：避免破坏用户当前工作分支
-- **并行性**：Mode A-parallel 中多个 coder 可以同时工作在不同 worktree
-- **可回滚**：失败时可以轻松丢弃 worktree，不影响主分支
-
----
-
-## 12. 常见问题
-
-**Q: Main Agent 什么时候调用哪个智能体？**
-A: 根据模式和阶段：
-- Mode A: Planning -> (coderX -> evaluatorX) 循环
-- Mode B: PRD 检测 -> (coderX -> evaluatorX) 循环
-- Mode C: coderX（单次）
-
-**Q: 如果 evaluatorX 发现问题，怎么反馈给 coderX？**
-A: evaluatorX 输出 Payload Type 2 → Main Agent 读取 Fix Instructions → 组装成 fix prompt → 调用 coderX（带上 fix 指令）
-
-**Q: Parent 和 Child 文档的边界是什么？**
-A: Parent 存全局共享信息（NFR、全局索引、跨分支依赖），Child 存分支特定信息（AC、私有文件、分支评估）。
-
-**Q: 如何知道当前工作流进度？**
-A: 运行 `/xstatus` 生成 HTML 状态报告，显示所有 Children 的完成状态、评估结果、依赖关系。
-
-**Q: 可以手动修改 Hybrid Tree 文档吗？**
-A: 可以，但需要理解文档结构。修改后再次运行工作流时，Main Agent 会读取最新版本。
-
-**Q: 并行模式和串行模式的区别？**
-A: 串行模式中 Main Agent 依次调用 coderX/evaluatorX（一个智能体执行完再调下一个）。并行模式中多个 coder-teammate 和 evaluator-teammate 同时工作在不同任务上，通过 Task 系统协调依赖关系。
-
----
-
-## 附录：完整配置清单
-
-### A.1 智能体清单
-- Main Agent（编排核心）
-- coderX（编码）
-- evaluatorX（评估）
-- coder-teammate（并行编码）
-- evaluator-teammate（并行评估）
-
-### A.2 技能清单
-- orchestrateX（编排手册）
-- specX（规范实现流程）
-- auditX（审计流程）
-- guidelines（Karpathy 编码准则）
-- prompt-master（提示词优化）
-
-### A.3 关键文件路径
-```
-.claude/agents/          # 智能体定义
-.claude/skills/          # 技能定义
-.claude/settings.json    # 全局配置
-.hybrid/                 # 工作流文档
-CLAUDE.md                # 项目级指令
-```
-
----
-
-**文档版本**：v1.0  
-**最后更新**：2026-06-10  
-**维护者**：WorkflowX Team
+## 7. 并行规则
+
+- 并行不是默认行为，必须由用户明确要求。
+- `xdo`：主 Agent 自行拆分独立工作并调用原生并行 Agent。
+- `xdel`：默认一次委托，不因任务规模自动扩展为多轮并行。
+- `xflow`：依赖允许时可并行执行独立 Child；每个 Child 的审核和合并由 Main Agent 负责。
+- 并行 Agent 遵循相同的 `engineeringX` 实现原则，不能自行扩大文件范围。
+
+## 8. 配置与验证
+
+- 项目和用户级 Codex 配置均不启用 WorkflowX MCP。
+- 项目 MCP 模板已移除。
+- Agent 并发上限由 `.codex/config.toml` 的 `[agents]` 控制；它不是强制并行开关。
+- 验证以实际运行的测试、检查命令和 `git diff --check` 为准。
+- 当前 README、图片和 GIF 属于最后阶段的产品化文档，待流程最终确认后再更新。
+
+## 9. 已移除组件
+
+- 命令：`xmain`、`xunit`、`xlocal`、`xwhole`
+- skill：`guideX`、`razorX`、`promptX`、`abstracter-code-summary`
+- Agent：`promptMasterX`、`abstracterX`
+- 机制：MCP 记忆/顺序思考、固定多轮迭代、强制 harness、旧静态 P0/P1/P2 Evaluation Report

@@ -36,9 +36,9 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 > 最新架构中没有 `orchestratorX` 子代理。编排职责由 Main Agent 直接承担；执行代理只通过结构化 Payload 交接。
 
 <p align="center">
-  <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xwhole 工作流演示" width="880" />
+  <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xflow 工作流演示" width="880" />
   <br/>
-  <sub>一次完整 xwhole：RouteX 路由上下文 → 需求发现 → 用户确认 → Hybrid Tree → coderX → evaluatorX → 修复回流 → PASS 收口</sub>
+  <sub>一次完整 xflow：需求发现 → Hybrid Tree → coderX → evaluatorX → 最终收口</sub>
 </p>
 
 ---
@@ -52,7 +52,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 | **上下文越聊越乱** | Main Agent 维护状态，执行代理独立上下文工作，只通过 Payload 传递必要信息 |
 | **需求散落在聊天里** | 需求落到 Hybrid Tree，变更只改对应 Section，受影响 Child 重新进入循环 |
 | **AI 自称完成但没达标** | evaluatorX 不信任 coderX 自述，独立读代码、读 diff、逐条核对 AC |
-| **编码后才发现需求误解** | xwhole Phase 1 先做代码探索、苏格拉底式追问和主动质疑，再进入文档生成 |
+| **编码后才发现需求误解** | xflow 先做代码探索、苏格拉底式追问和主动质疑，再进入文档生成 |
 | **多轮迭代 Token 成本高** | 分区缓存、干叶分离、
 | **并行任务相互覆盖** | worktree 隔离 + Child 责任边界 + 跨分支违规检测 |
 
@@ -63,14 +63,14 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 ```text
 你
 │
-├─ xwhole / xlocal / xunit / xstatus / xprompt
+├─ xdo / xdel / xflow / xstatus
 │
 ▼
 Main Agent
 ├─ RouteX：结合完整输入和当前会话上下文决定继续、探索或启动工作流
-├─ Module 08：xwhole 需求发现、方案设计、Hard Gate 确认
-├─ Phase 2：生成或维护 Hybrid Tree（Main Agent 唯一文档写入者）
-└─ Core Loop：转发 Payload，驱动 coderX ↔ evaluatorX 迭代
+├─ xdo：主 Agent 直接工作，按需使用 engineeringX
+├─ xdel：基于 Hybrid Tree 委托 coderX 一次完成并自审
+└─ xflow：需求发现、Hybrid Tree、派发与独立评估
         │
         ├─ coderX：实现并输出 Change Summary
         └─ evaluatorX：独立验收并输出 Evaluation Result
@@ -79,10 +79,10 @@ Main Agent
 <p align="center">
   <img src="docs/assets/01-architecture-zh.png" alt="WorkflowX Main Agent 编排架构" width="880" />
   <br/>
-  <sub>Main Agent 集中编排与写文档；coderX / evaluatorX 作为执行或辅助单元进入循环</sub>
+<sub>Main Agent 默认直接工作；复杂模式按需使用 coderX / evaluatorX</sub>
 </p>
 
-一句话：**Main Agent 管流程和事实，coderX 写代码，evaluatorX 把关，Hybrid Tree 保持可追踪。**
+一句话：**Main Agent 默认直接工作，engineeringX 提供实现原则与自审，复杂任务再使用 Hybrid Tree 和评估链。**
 
 ---
 
@@ -90,11 +90,7 @@ Main Agent
 
 **环境要求**：Node.js v18+
 
-**```bash
-npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
-```
-
-**2. 安装 WorkflowX**
+**1. 安装 WorkflowX**
 
 | 平台 | 安装方式 |
 |---|---|
@@ -102,29 +98,27 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | **OpenAI Codex** | `/plugins` → 搜索 `workflowx` → Install Plugin |
 | **手动部署** | 把 `.claude/` 或 `.codex/` 拷进项目根目录 |
 
-**3. 跑第一条需求**
+**2. 跑第一条需求**
 
 ```bash
-xwhole 实现用户登录功能，支持邮箱密码和 OAuth
+xdo 实现用户登录功能，支持邮箱密码和 OAuth
 ```
 
-> Claude Code 可用斜杠命令；OpenAI Codex 使用自然语言前缀，例如直接以 `xwhole` 开头。
+> Claude Code 可用斜杠命令；OpenAI Codex 使用自然语言前缀，例如直接以 `xdo` 开头。
 
 ---
 
-## 五种模式
+## 三种模式
 
 按改动影响范围选择。拿不准时直接描述需求，RouteX 会结合状态推荐模式。
 
 | 模式 | 适用场景 | 规划方式 | 验收循环 | 示例 |
 |---|---|---|---|---|
-| **`xunit`** | 单文件、小改动、明确修复 | 直接调用 coderX | 默认不启用 evaluatorX | `xunit 给 Config 加超时配置` |
-| **`xlocal`** | 1-2 个模块内的修复或局部功能 | 复用/生成最小 Hybrid Tree | 自动，最多 N 轮 | `xlocal 修复订单列表分页 bug` |
-| **`xwhole`** | 新功能、跨模块重构、高影响任务 | Phase 1 需求发现 → Phase 2 文档生成 | 自动，最多 N 轮 | `xwhole 实现订单中心` |
-| **`xwhole -parallel`** | 多个独立子任务并行推进 | 生成 Hybrid Tree 后按 Child 并行 | 多 coder / evaluator 并行 | `/xwhole -parallel 实现用户、订单、商品模块` |
-| **`xmain`** | 主智能体直接执行的持续任务 | 每次输入先拆分，再直接执行；Claude 可按需并行 | 主智能体验证 | `xmain 实现订单中心` |
+| **`xdo`** | 主 Agent 直接工作 | engineeringX；用户明确要求时才并行 | 主 Agent 自审与验证 | `xdo 给 Config 加超时配置` |
+| **`xdel`** | Hybrid Tree-backed 局部委托 | coderX 一次实现并自审 | 不触发 evaluatorX | `xdel 修复订单列表分页 bug` |
+| **`xflow`** | 新功能、跨模块重构、高影响任务 | 需求发现 → Hybrid Tree | coderX + evaluatorX | `xflow 实现订单中心` |
 
-常用参数：`-N 3` 限制每个 Child 最多验收迭代 3 轮；`-box demo` 在沙箱分支隔离执行；`-parallel` 仅 Claude Code Agent Teams 支持。`xmain` 在 Codex 中始终串行且不派发子智能体。
+常用参数：`-box demo` 在沙箱分支隔离执行；并行必须由用户明确要求，具体调度由主 Agent 自主决定。
 
 <p align="center">
   <img src="docs/assets/05-capabilities-zh.png" alt="WorkflowX 模式与能力矩阵" width="880" />
@@ -132,19 +126,19 @@ xwhole 实现用户登录功能，支持邮箱密码和 OAuth
 
 ---
 
-## 一次 xwhole 会发生什么？
+## 一次 xflow 会发生什么？
 
-以 `xwhole 实现用户登录功能` 为例，完整流程分成 10 个动作：
+以 `xflow 实现用户登录功能` 为例，流程是：
 
 1. **入口路由**：Main Agent 根据命令、用户输入和当前会话上下文路由；Hybrid Tree 作为持久的工作流事实来源。
-2. **环境初始化**：解析 `-N` / `-box` / `-parallel`。。
+2. **环境初始化**：按需使用沙箱或明确请求的并行能力。
 3. **代码探索**：先搜索项目结构、相关模块和已有约束，形成文件索引。
 4. **需求发现**：用 socratesX 一次一题澄清边界，并主动挑战矛盾、遗漏和技术风险。
 5. **Hard Gate 确认**：用户确认方案后才允许进入文档生成。
 7. **生成 Hybrid Tree**：Main Agent 写 Parent / Child，包含范围、AC、依赖和文件索引。
 8. **coderX 实现**：按 Child AC 写代码，完成后输出 Change Summary Payload。
 9. **evaluatorX 验收**：独立读 diff 和代码，输出 AC 状态、问题等级和修复指令。
-10. **收口或回流**：PASS 则更新文档并结束；失败则 Main Agent 把修复指令传回 coderX，直到通过或达到 N 轮上限。
+10. **收口**：Main Agent 汇总评估、更新文档并处理最后 Child 的必要修复。
 
 ---
 
@@ -202,8 +196,8 @@ evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是：
 |---|---|---|
 | **Route 0** | 当前已有活跃工作流 | 把用户输入作为当前流程的一部分，支持需求增量变更 |
 | **Route 1** | 只读探索、搜索、git、配置操作 | 直接处理，不派 coderX |
-| **Route 2** | 有编码意图且无活跃工作流 | 分析范围，推荐 xwhole / xlocal / xunit，需用户确认 |
-| **Route 3** | 显式 `xwhole` / `xlocal` / `xunit` 等命令 | 按指定模式立即进入 |
+| **Route 2** | 有编码意图且无活跃工作流 | 分析范围，推荐 xdo / xdel / xflow |
+| **Route 3** | 显式 `xdo` / `xdel` / `xflow` 命令 | 按指定模式立即进入 |
 
 工作流连续性来自当前会话上下文和 Hybrid Tree 文档。
 
@@ -212,8 +206,7 @@ evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是：
 <details>
 <summary><b>其他内置能力</b></summary>
 
-- **razorX**：用“路径能否更短、认知负担能否更低”约束实现与 review。
-- **guideX**：约束 coderX 避免过度设计、虚假完成和无验证修改。
+- **engineeringX**：以最小改动、简单实现和完成前自审约束实现质量。
 - **xstatus**：生成高保真 HTML 工作流状态报告。
 
 ```bash
@@ -229,8 +222,8 @@ xstatus --output ./reports/today.html
 
 | 平台 | 配置目录 | 触发方式 | 并行模式 |
 |---|---|---|---|
-| **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xmain` `/xstatus` `/xprompt` | `xmain` 按需支持 Agent Teams 并行 |
-| **OpenAI Codex** | `.codex/` | 自然语言前缀：`xwhole` `xlocal` `xunit` `xmain` `xstatus` `xprompt` | `xmain` 始终主智能体串行执行 |
+| **Claude Code** | `.claude/` | `/xflow` `/xdel` `/xdo` `/xstatus` | `xdo` 仅在用户明确要求时并行 |
+| **OpenAI Codex** | `.codex/` | 自然语言前缀：`xflow` `xdel` `xdo` `xstatus` | `xdo` 默认主智能体直接执行 |
 
 两套配置共享同一套工作流思想，但会根据宿主工具能力调整触发语法、子代理调用方式和并行能力。
 

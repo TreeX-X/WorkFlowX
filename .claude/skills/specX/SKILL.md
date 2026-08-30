@@ -1,88 +1,28 @@
 ---
 name: specX
-description: Spec-driven coding workflow for coderX agents. Use this skill whenever implementing, fixing, refactoring, or iterating code from hybrid docs or specified requirements, especially when file index, knowledge index, or evaluator findings are present.
+description: Lightweight specification-reading rules for coderX in xdel and xflow.
 ---
 
-# coderX: Spec-Driven Implementation Skill
+# specX
 
-## Objectives
+Use only when coderX is dispatched by `xdel` or `xflow` with a Hybrid Tree task.
 
-Enable coderX to execute development following a unified process:
-- First read specifications and acceptance criteria
-- Then read engineering file index and knowledge index
-- Then read audit reports and fix by priority
-- Finally submit verifiable code changes
+## Before Editing
 
-## Input Document Conventions
+- Read the dispatch task first.
+- Read the assigned Child acceptance criteria and file scope.
+- Read only the Parent sections required for ownership, dependencies, or global constraints.
+- Treat the dispatch interpretation and Child acceptance criteria as authoritative. Stop on contradictions instead of guessing.
 
-Prioritize the Type 0 Dispatch Payload handed off by Main Agent. In xwhole/xlocal, the payload must include explicit Parent and Child paths. If either path is missing, stop and return `Dispatch Contract Missing` instead of auto-locating a Hybrid document.
+## During Implementation
 
-The payload's `Execution Brief` is the authoritative interpretation of the user requirement. coderX should not re-discover or re-argue the requirement from conversation history; it should implement the brief, then verify against the declared acceptance source. If the brief conflicts with current files or Child AC, stop and report the contradiction instead of guessing.
+- Follow `engineeringX` for implementation principles and self-review.
+- Stay within the assigned Child scope. Report required shared-file or scope changes to the Main Agent.
+- Do not write to Parent or Child documents.
+- Expand context only when a named dependency or API contract requires it.
 
-Auto-location of a `[Feature Module]-hybrid.md` document is allowed only as a direct-execution fallback when the user explicitly asks to skip WorkflowX orchestration. If there is no active reference and no document record in context, coderX may continue directly only for xunit-style tasks.
+## Completion
 
-### File Access Rules
-
-Follow CLAUDE.md §File Read/Write Rules.
-
-### Hybrid Tree: Reading Parent+Child Documents
-
-coderX receives (Parent, Child) paths, reads corresponding Sections per `.claude/skills/orchestrateX/SKILL.md` Hybrid Tree Section Map.
-
-**Document permissions**: coderX is a pure reader + implementer. **Does not write to any document.** If implementation involves new files, scope changes, or shared resource updates, mark in Change Summary's `Directed Audit Points` for Main Agent to decide whether to update.
-
-### Knowledge Index
-
-1. Read Parent §8.2 to collect the exact entity names and relation summaries (the "trunk").
-2. Retrieve detailed facts on demand from the knowledge files using the entry names.
-3. If an exact name is missing, search the knowledge files by keyword.
-
-
-## Execution Process
-
-### Step 1: Requirement Alignment
-
-1. **Hybrid Tree Mode**: Read the Type 0 Dispatch Payload first. Extract `Execution Brief`, `Context Manifest`, and `Context Budget` before loading documents. Then read the Child hybrid Section 7 for branch-specific AC. Read Parent Sections only as listed in the `Context Manifest` or required by the declared acceptance source.
-   **No Hybrid Tree**: Read `4/5/7`, extract the functional points, acceptance criteria, and non-functional constraints that must be satisfied in this round.
-2. Form the current round task list from the `Execution Brief` and acceptance source; avoid implementing beyond scope.
-
-### Step 2: Context-Oriented Loading
-
-1. Read `Context Manifest -> Read First` before any repo-wide search.
-2. Read `Context Manifest -> Read If Needed` only when the listed trigger applies.
-3. Use `Context Budget` to cap broad searches and document reads. Do not scan unrelated modules just to rebuild confidence.
-4. For knowledge retrieval, use exact entry names from the manifest or Parent 8.2 trunk.
-5. If additional files are required, record each expansion and reason in the Change Summary.
-
-### Step 3: Audit Feedback Handling (Combined with Bus Communication, Conditional Execution)
-
-1. **Read Pipeline Payload**: Prioritize reading the Evaluation Summary Bus Payload directly handed off by upstream evaluatorX in the conversation, quickly identifying the core issues and directions to fix in this round.
-2. **Align Detailed Report**: Read the `9` evaluation report section in the hybrid document to obtain specific line numbers and code-level issue details.
-3. If valid issues exist: Handle by severity and priority, in order of `P0/Red -> P1/Yellow -> P2/Green`.
-4. If no valid issues exist or empty: Skip the audit fix process and proceed directly to completing new implementation per specifications.
-
-### Step 4: Implementation & Verification
-
-1. Only modify the minimal file set related to the task; avoid unrelated refactoring.
-2. Map each change to acceptance criteria, ensuring verifiability.
-3. Execute necessary builds/tests/static checks and record results.
-
-### Step 5: Output Change Summary Payload
-
-In xwhole/xlocal Hybrid Tree workflows, after implementation, **proactively output a standardized Change Summary Payload**. Do not write to any document; only output Payload for Main Agent to validate and forward to evaluatorX.
-
-xunit does not load specX and does not output Bus Payload.
-
-Format follows `.claude/skills/orchestrateX/modules/02-bus-payload.md` (Payload Type 1). Core fields:
-- `Changed Files`: list of modified files this round with summaries
-- `Affected ACs (claimed)`: ACs claimed affected (evaluatorX will cross-validate via diff)
-- `Directed Audit Points`: highlight complex logic or shared resources for evaluatorX to focus on
-
-## Output Constraints
-
-1. Must not skip specification reading and directly code.
-2. Must not ignore the `Context Manifest`; read indexed sections such as `8.1/8.3` when the manifest or acceptance source requires them.
-3. Processing of `9` must be conditional: if content exists, prioritize fixes; if empty, skip.
-4. Must not fabricate test results or requirement completion status.
-5. Keep changes traceable: every change can be traced back to specification items or evaluation issues.
-6. **Do not write to any document**: coderX only outputs Change Summary Payload. All document writes are handled by Main Agent.
+- Perform the `engineeringX` self-review.
+- Run relevant checks when available and report what was actually run.
+- Return the mode-specific implementation summary or Bus Payload requested by the dispatch contract.

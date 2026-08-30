@@ -1,7 +1,7 @@
 # WorkflowX 工作流演进方案
 
 > 本文档记录 WorkflowX 工作流的轻量化重构方向、各项改动的落实方案，以及实施顺序。
-> 生成日期：2026-08-29。状态：设计记录阶段，部分待定。
+> 生成日期：2026-08-29。当前状态：核心重构已完成，进入文档收口与实际演练阶段。
 
 ---
 
@@ -72,7 +72,7 @@
   - 模式一（原 xmain + xunit 合并）：**direct**，命令 `xdo` — 直接开发，主 Agent 亲自动手
   - 模式二（原 xlocal）：**delegate**，命令 `xdel` — 委托执行，派发 coderX 一次完成，不触发 eval
   - 模式三（原 xwhole）：**orchestrate**，命令 `xflow` — 全流程编排，含规划 + 派发 + 逐个 eval + 问题移交 + 最后 Child 修复闭环
-- 命名确定后，同步更新 `AGENTS.md`、`CLAUDE.md`、`.claude/commands/*.md`、`orchestrateX` SKILL.md、`routeX` SKILL.md 中的模式名称和触发命令。
+- 命名确定后，同步更新 `AGENTS.md`、`CLAUDE.md`、`.claude/commands/*.md` 和两侧 `orchestrateX` SKILL.md 中的模式名称和触发命令。
 
 ### 2.5 原 xlocal 模式调整
 
@@ -98,13 +98,13 @@
 - **移除迭代流程**：不再有 coderX ↔ evaluatorX 的多轮迭代。
 - **保留 eval 流程**：evaluatorX 仍会执行审核。
 - **逐个触发 eval**：每个 Child 由 coderX 实现完成后，立即触发 evaluatorX 审核，不等待全部 Child 完成。
-- **问题移交**：eval 发现的问题不再回退给同一 coderX 迭代修复，而是移交给下一个流程的 coderX 在开发时一并解决。
-- **最后一个 Child 的修复**：最后一个功能点由 coderX 开发完成后触发 eval，如果测试发现问题，可以继续派发 coderX 修复，流程不结束，直到 eval 通过。
-- 此模式不再有多轮迭代循环，但最后一个 Child 保留了"eval -> 修复 -> 再 eval"的修复闭环。
+- **分级修复**：eval 后由 Main Agent 分类问题。局部实现错误只对同一 Child 重新派发一次最小修复包；跨 Child 集成问题压缩为 integration note 交给受影响的后续 Child；架构或范围问题由 Main Agent 更新计划或直接处理。
+- 不恢复原 coderX 实例，也不把完整历史上下文传给后续 Child；修复只携带失败测试、相关文件、接口约束和风险摘要。
+- 每个 Child 默认最多一次自动修复重派发；再次失败由 Main Agent 决定是否继续。
 
 **落实方案**：
 - 移除 `orchestrateX` SKILL.md 中 Mode A 的 Core Iteration Loop（Phase 1 Ready Queue Processing + Phase 2 Blocked Queue Resolution 的迭代逻辑）。
-- 替换为线性顺序流程：Hybrid Tree 生成 -> 按 Child 顺序逐个派发 coderX 实现 -> 每个 Child 实现后逐个触发 evaluatorX 审核 -> 问题移交给下一个 Child 的 coderX -> 最后一个 Child 保留 eval->修复->再 eval 的修复闭环。
+- 替换为线性顺序流程：Hybrid Tree 生成 -> 按 Child 顺序逐个派发 coderX 实现 -> 每个 Child 实现后逐个触发 evaluatorX 审核 -> Main Agent 按问题类型执行最小修复重派发、integration note 传递或架构处理。
 - 依赖图仍可用于确定 Child 执行顺序，但不再用于迭代调度。
 - `-N` 参数移除。
 
@@ -118,7 +118,7 @@
 - 删除 `.codex/skills/promptX/` 和 `.claude/skills/promptX/`。
 - 删除 `.codex/agents/promptMasterX.toml` 和 `.claude/agents/promptMasterX.md`。
 - 删除 `.claude/commands/xprompt.md`。
-- 清理 `orchestrateX` SKILL.md 和 `routeX` SKILL.md 中对 promptMasterX 的引用。
+- 清理两侧 `orchestrateX` SKILL.md 中对 promptMasterX 的引用。
 - 清理 `AGENTS.md`、`CLAUDE.md`、`.codex/agents/README.md` 中的 promptMasterX 提及。
 - 清理 module 04（prompt-preprocess）的调用点。
 
@@ -147,13 +147,15 @@
 - `razorX`：重写 SKILL.md，从"审查框架"改为"工程优雅品格定义"。核心从两个提问式判断改为对"工程优雅"的行为描述和内化标准。保留精简后的核心原则，移除 Review/Generate 模式区分。
 - `guideX`：待定。需要单独评估哪些条目仍有价值、哪些与 Agent 原生能力重叠。
 
-### 2.10 苏格拉底保留但修改
+**最新调整**：不再分别维护 `guideX` 与 `razorX` 的完整工作模式。两者的有效原则合并为轻量 `engineeringX` skill，仅保留实现原则与完成前自审清单；工作流、路由、并行和 Hybrid Tree 约束由命令与模式指令负责。
+
+### 2.10 苏格拉底保留并作为 xflow 前置
 
 **现状**：`socratesX` skill 实现苏格拉底式需求澄清，通过反诘、归纳、产婆术帮助用户把模糊想法变成清晰可执行的方案。`orchestrateX` module 08 也包含苏格拉底发现流程。
 
-**改动**：保留苏格拉底能力，但会修改（具体待定）。
+**改动**：保留 `socratesX`，将其固定为 `xflow` 的前置阶段，用于需求澄清、方案比较和生成 Hybrid Tree 所需的确认结论。
 
-**落实方案**：待定。当前保留 `socratesX` skill 和 module 08 的苏格拉底流程，后续结合 xwhole 模式的规划阶段重构一起调整。
+**落实方案**：`xflow` 先运行 `socratesX`，用户确认目标、范围、约束和方案后，Main Agent 再创建或更新 Hybrid Tree。`xdo/xdel` 不强制运行 `socratesX`，除非用户明确要求需求澄清。
 
 ### 2.11 Hybrid Tree 轻量化
 
@@ -198,64 +200,32 @@
 - 评估核心从"人工读代码判断"转向"测试案例驱动"（配合 2.13）。
 - 评估速度优先：eval 不做全量代码审查，而是针对 AC 建立精准的测试案例并执行，用测试结果作为评估依据。
 - 移除静态评估相关逻辑（读 diff 逐行对照 AC 的人工判断流程）。
-- Evaluation Result Payload 简化：从"AC 状态 + 问题列表 + 修复指令 + 阻塞依赖"精简为"测试结果 + 失败案例 + 失败原因"。
-- 具体 payload 格式和 auditX skill 重写方案待定。
+- Evaluation Result Payload 简化：从"AC 状态 + 问题列表 + 修复指令 + 阻塞依赖"精简为"测试结果 + 失败案例 + 观察结果 + 可能原因 + 修复范围 + 回归风险 + 阻塞项"。
+- `auditX` 只输出紧凑结果；Main Agent 将局部失败转换为 Repair Packet，将跨 Child 失败转换为 Integration Note。
 
 ---
 
 ## 3. 待扩展完善的项
 
-以下项在当前阶段仅记录方向，需要后续单独设计或等待用户决策：
+以下是当前真正未完成或需要用户决策的内容。已落地事项不再重复列入：
 
 | 项 | 说明 | 依赖 |
 |----|------|------|
-| 知识 wiki skill 设计 | 替代 server-memory 的轻量知识管理方案 | 依赖 Hybrid Tree 轻量化定稿（2.11） |
-| 三模式新命名 | 已提供候选方案（见第 6 节），待用户选定 | 无 |
-| 各模式并行调度方案 | 用户会详细设计三模式各自的并行调度方案 | 无 |
-| routeX 合并方案 | routeX 可考虑合并进 orchestrateX 以节省 token、加快流程，需设计合并方案 | 依赖模式重命名定稿（2.4） |
-| guideX 具体调整 | 需单独评估保留哪些条目 | 无 |
-| 苏格拉底具体修改 | 结合 xwhole 规划阶段重构一起设计 | 依赖 xwhole 流程定稿（2.6） |
-
-| evaluatorX 测试驱动审核的 payload 格式 | 测试结果如何结构化输出 | 依赖自审机制定稿（2.13） |
-| 合并后模式的 harness 流程 | xmain + xunit 合并后的执行流程细节 | 待用户说明 harness 改动方向 |
+| `routeX` 最终归属 | 已合并进两侧 `orchestrateX`，Claude 侧独立 `routeX` 已移除 | 已完成 |
+| `socratesX` 定位 | 作为 `xflow` 前置，负责需求澄清、方案设计和 Hybrid Tree 生成输入 | 已确认，后续只做必要精简 |
+| knowledge wiki | 当前由 Hybrid Tree Knowledge Notes 覆盖，暂不新增 skill | 未来出现复用需求时再设计 |
+| README 与媒体资源 | 更新 README、图片和 GIF，反映最终流程 | 等流程演练和路由决策完成 |
+| 三模式实际演练 | 协议级 dry-run 已完成；仍需真实工具任务验证派发和测试命令 | 当前文档契约已完成 |
 
 ---
 
-## 4. 实施顺序
+## 4. 当前执行顺序
 
-按依赖关系和风险程度排序，分四个阶段：
-
-### 阶段一：移除已确定的冗余组件
-低风险、无依赖，可立即执行。
-
-1. 移除 MCP 配置（`config.toml` 删除 `[mcp_servers]` 段，清理 skill 中所有 MCP 引用）
-2. 移除 `promptX` / `promptMasterX` / `xprompt`（删除文件 + 清理引用）
-3. 移除 `noiseX`（删除文件 + 清理引用）
-4. 删除已确认废弃的 `abstracterX`（上一轮已完成）
-
-### 阶段二：模式合并与流程调整
-中风险，涉及核心编排逻辑改动。
-
-5. 合并 `xmain` + `xunit` 为直接执行模式（移除 xunit 轻量派发逻辑）
-6. 调整原 xlocal：移除迭代循环，改为单次派发
-7. 调整原 xwhole：移除迭代循环，改为线性顺序 + eval + 问题移交
-8. 确定三模式新命名并全局更新
-
-### 阶段三：Agent 行为与审核机制改造
-中高风险，涉及 Agent 定义和审核逻辑重写。
-
-9. `razorX` 重写为工程优雅品格 skill
-10. `guideX` 轻量化调整
-11. coderX 增加自审机制
-12. evaluatorX 转向测试驱动审核（重写 evaluatorX 定义 + auditX skill）
-
-### 阶段四：Hybrid Tree 与知识管理重构
-高风险，涉及文档结构和知识管理范式变更。
-
-13. Hybrid Tree 模板轻量化（移除 MCP 相关 section，精简结构）
-14. 设计知识 wiki skill 替代记忆能力
-15. 苏格拉底流程调整（结合 xwhole 规划阶段重构）
-16. 合并后模式的 harness 流程定稿
+1. **文档收口**：完成本次架构文档重写，并清理本计划中的过期状态。
+2. **真实任务验证**：用小型任务验证 `xdo`、`xdel`、`xflow` 的实际入口、并行条件、Child 交接和分级修复。
+3. **流程验证**：在真实任务中验证 `socratesX -> Hybrid Tree -> coderX -> evaluatorX` 的 xflow 前置链路。
+4. **产品化文档**：流程稳定后再更新 README、图片和 GIF；本阶段不提前修改媒体内容。
+5. **可选扩展**：只有出现跨任务知识复用需求时，才设计 knowledge wiki skill。
 
 ---
 
@@ -265,13 +235,13 @@
 
 1. **xlocal 移除迭代后的 evaluatorX 定位** [已确认]：xlocal 移除迭代后，coderX 完成后 **不再触发 evaluatorX**。流程在 coderX 完成时即结束。
 
-2. **xwhole 的 eval 时机** [已确认]：逐个触发。每个 Child 由 coderX 实现后立即触发 eval，问题移交给下一个 Child 的 coderX。最后一个功能点开发后若 eval 测试有问题，可以继续派发 coderX 修复，流程不结束，直到 eval 通过。
+2. **xflow 的 eval 与修复时机** [已确认]：逐个触发。每个 Child 由 coderX 实现后立即触发 eval；由 Main Agent 按局部实现、跨 Child 集成、架构/范围三类问题分流。局部问题默认只对原 Child 新派发一次最小修复包，跨 Child 问题交给受影响的后续 Child，架构/范围问题由 Main Agent 处理。
 
 3. **coderX 自审与 evaluatorX 测试审核的边界** [已确认]：coderX 自审 = 自己读代码 review（不跑测试）；evaluatorX 审核 = 建立测试案例并执行测试。两者不重叠。
 
 4. **并行能力在新流程中的位置** [已确认]：三个模式均支持并行。用户会详细设计各模式的并行调度方案。
 
-5. **routeX 的去留** [已确认]：路由仍需要。考虑将 routeX 合并进 orchestrateX 以节省 token、加快流程。合并方案待设计（见第 3 节待扩展项）。
+5. **routeX 的去留** [已确认]：路由仍需要，已合并进两侧 `orchestrateX`；Claude 侧独立 `routeX` 已移除。
 ## 6. 三模式命名（已确定）
 
 用户选定混合方案：取方案 A 的 direct/orchestrate + 方案 C 的 delegate，命令取极简风格。
@@ -280,4 +250,55 @@
 |------|------|------|--------|------|
 | 模式一 | **direct** | xdo | xmain + xunit 合并 | 直接开发，主 Agent 亲自动手，不派发子智能体 |
 | 模式二 | **delegate** | xdel | xlocal | 委托执行，派发 coderX 一次完成，不触发 eval |
-| 模式三 | **orchestrate** | xflow | xwhole | 全流程编排，含规划 + 派发 + 逐个 eval + 问题移交 + 最后 Child 修复闭环 |
+| 模式三 | **orchestrate** | xflow | xwhole | 全流程编排，含规划 + 派发 + 逐个 eval + 分级修复交接 |
+
+## 7. 最新确认（2026-08-30）
+
+1. `xmain`、`xunit` 不保留，直接替换为 `xdo`，不提供兼容别名。
+2. `xdo` 默认由主 Agent 直接工作；只有用户明确要求时才启用并行 Agent。
+3. `xdo` 不强制使用 harness 或 Hybrid Tree。主 Agent 可按任务需要使用 Hybrid Tree，并通过原生能力自行调度和派发。
+4. `xdo` 与并行子 Agent 均遵循统一的工程开发 skill，并在工作阶段执行 review。
+5. `xdel` 暂按 Hybrid Tree + coderX 一次委托 + coderX 自审设计，不触发 evaluatorX；后续可继续调整。
+6. 当前 WorkflowX 重构由主 Agent 直接实施，不进行 coderX/evaluatorX 派发。
+7. 工程开发原则统一由 `engineeringX` skill 提供；该 skill 不承载工作流约束，只包含实现原则和 self-review 能力。
+8. Hybrid Tree 模板已轻量化：移除运行时状态、复杂元数据、知识图谱和独立评估报告；`xdel/xflow` 使用 Parent/Child，`xdo` 按需使用。
+9. `specX` 与 `orchestrateX` 的新模式契约已完成迁移：`xflow` 采用线性 Child 调度，`xdel` 单次委托，`xdo` 直接执行。
+10. 已完成一次三模式文档演练，未发现入口级阻断；`auditX` 与 evaluatorX 已改为 xflow 专用的测试驱动审核。
+11. `xflow` 采用分级修复：局部问题最多一次最小上下文修复重派发，跨 Child 问题使用 Integration Note，架构或范围问题由 Main Agent 处理；不恢复原 child 实例，不传递完整历史上下文。
+12. 项目级 `AGENTS.md` / `CLAUDE.md` 已统一为主 Agent 可直接执行的入口规则；仓库 MCP 模板已移除，用户级 Codex 配置与 WorkflowX skill/agent 已同步，用户级 Claude WorkflowX 入口也已同步。
+13. README、图片和 GIF 明确延后到流程最终确认后更新，本阶段不将其视为核心重构阻塞项。
+14. `routeX` 已合并进两侧 `orchestrateX`，不再维护独立路由 skill。
+15. `socratesX` 保留，并固定为 `xflow` 的前置需求澄清、方案设计和 Hybrid Tree 生成输入阶段；`xdo/xdel` 不强制调用。
+16. 已完成一次协议级三模式 dry-run；未执行真实代码变更或伪造 coderX/evaluatorX 结果，后续只需进行工具层验证。
+
+> **旧版 Hybrid Tree 记录（用户确认）**：仓库中已有 `.hybrid/` 文档属于重构前旧版本，作为历史记录保留；不迁移到轻量模板、不回填当前状态，也不作为新流程的运行状态依据。新的 `xdel`/`xflow` 任务按需创建新的 Parent/Child。
+
+## 8. 三模式流程演练（2026-08-30）
+
+演练场景：为现有服务新增认证 API。以下为协议级 dry-run，未执行真实代码变更或伪造子 Agent 测试结果。
+
+### xdo
+
+`xdo` 显式进入 direct；Main Agent 读取 `engineeringX`，直接拆解并实现，完成 self-review 和可行验证后结束。默认不调用 `socratesX`、Hybrid Tree、coderX 或 evaluatorX。只有用户明确要求并行时，才将独立工作拆给原生并行 Agent。
+
+### xdel
+
+`xdel` 显式进入 delegate；Main Agent 读取或创建 Parent/Child，组装 Child 范围和 AC，派发一次 coderX。coderX 使用 `engineeringX + specX` 并自审，返回 Change Summary；Main Agent 接收后结束，不触发 evaluatorX，不进入迭代循环。
+
+### xflow
+
+`xflow` 显式进入 orchestrate；先运行 `socratesX` 澄清认证方式、边界、非目标和方案取舍，等待确认后生成 Parent/Child。随后按依赖派发 coderX，每个 Child 完成后由 evaluatorX 执行最小测试审核；失败由 Main Agent 转为 Repair Packet、Integration Note 或架构处理。演练确认没有完整上下文回传或原 Agent 恢复规则。
+
+### 演练结论
+
+- 三个入口的边界清晰，没有发现模式互相越权。
+- `socratesX` 只位于 `xflow` 前置链路，不会污染 `xdo/xdel`。
+- 并行触发条件、Child 交接和分级修复规则均可执行。
+- 后续仍需在真实任务中验证工具层派发和测试命令，而不是继续增加流程约束。
+
+### socratesX 提问策略更新（2026-08-30）
+
+- 按分析阶段一次性提出该阶段全部未决问题，不再强制每轮只能问一个问题。
+- 只有存在真实且有取舍的多个方案时才提供选项；事实确认、约束确认或单一路径直接提问。
+- 确认采用自适应门槛：信息不足时分阶段批量澄清，信息充分时只提交一次 `Ready Summary`；已确认内容不重复确认，除非出现实质冲突。
+- `module 08` 负责仓库事实探索，`socratesX` 负责用户决策，`orchestrateX` 负责将确认结果投影为 Hybrid Tree，Claude 与 Codex 两侧规则保持一致。

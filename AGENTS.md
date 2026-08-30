@@ -2,7 +2,7 @@
 
 > This file is the Codex entry instruction for WorkflowX.
 
-Codex runtime truth lives in `AGENTS.md`, `.codex/config.toml`, `.codex/skills/`, and `.codex/agents/`.
+Codex runtime truth lives in this file, `.codex/config.toml`, `.codex/skills/`, and `.codex/agents/`.
 
 ---
 
@@ -10,7 +10,7 @@ Codex runtime truth lives in `AGENTS.md`, `.codex/config.toml`, `.codex/skills/`
 
 > **Full specification**: `.codex/skills/orchestrateX/SKILL.md`
 
-Codex uses project subagent definitions from `.codex/agents/`. The main Codex agent owns orchestration, but implementation and evaluation handoffs must be dispatched to the corresponding subagent (`coderX`, `evaluatorX`) instead of being simulated by main-agent roleplay.
+Codex uses project subagent definitions from `.codex/agents/`. The Main Agent owns direct execution and may use native parallel Agents when the user explicitly requests parallel work. `xdel`/`xflow` may use the corresponding workflow agents when their mode requires it.
 
 Subagent dispatch follows `.codex/skills/orchestrateX/modules/09-dispatch-adapter.md`: use a native Agent/subagent tool when one is exposed; otherwise use Codex prompt-spawn when the current surface supports prompt-triggered subagents; otherwise report dispatch as degraded. Do not silently pretend to be `coderX` / `evaluatorX` in the main-agent context.
 
@@ -24,24 +24,22 @@ For code development, feature implementation, refactoring, or bug fixes:
 
 - Follow the relevant `.codex/skills/` workflow.
 - Keep changes scoped to project code and Codex config.
-- `xmain` is the direct-execution exception: the Main Agent reads the relevant skills, decomposes each requirement, and implements it directly without dispatching subagents or enabling parallel execution.
+- `xdo` is the direct-execution mode: the Main Agent reads the requested engineering skill, decomposes the requirement, and works directly by default. Parallel Agents are used only when the user explicitly requests parallel development; their work follows the same engineering skill.
 
 Direct handling is allowed for read-only exploration, Codex config edits, git operations, and cases where the user explicitly asks to skip workflow handling.
 
 ---
 
-## Codex Aliases
+## Workflow Commands
 
 Treat these natural-language prefixes as workflow commands:
 
 | Prefix | Meaning |
 |--------|---------|
-| `xwhole` | Full-repo workflow: discovery -> implementation -> evaluation |
-| `xlocal` | Local/module workflow |
-| `xunit` | Minimal unit task |
-| `xmain` | Main Agent direct execution; re-decompose each new requirement; no subagents or parallelism |
+| `xflow` | Full-repo workflow: discovery -> implementation -> evaluation |
+| `xdel` | Hybrid Tree-backed delegated implementation; coderX self-reviews, no evaluatorX |
+| `xdo` | Main Agent direct execution; optional native parallelism only when explicitly requested |
 | `xstatus` | Generate workflow status report |
-| `xprompt` | Prompt optimization only |
 
 ---
 

@@ -36,9 +36,9 @@ WorkflowX is an **engineering workflow** that lives inside your AI coding tool. 
 > In the current architecture there is no `orchestratorX` sub-agent. The Main Agent owns orchestration directly; execution agents hand off through structured Payloads only.
 
 <p align="center">
-  <img src="docs/assets/06-workflow-animation-en.gif" alt="WorkflowX xwhole Workflow Demo" width="880" />
+  <img src="docs/assets/06-workflow-animation-en.gif" alt="WorkflowX xflow Workflow Demo" width="880" />
   <br/>
-  <sub>A complete xwhole workflow: RouteX routing context → discovery → user confirmation → Hybrid Tree → coderX → evaluatorX → fix loop → PASS close</sub>
+  <sub>A complete xflow workflow: discovery → Hybrid Tree → coderX → evaluatorX → final close</sub>
 </p>
 
 ---
@@ -52,7 +52,7 @@ The real problem with single-agent AI coding is not just model quality. It is th
 | **Context gets noisy and expensive** | Main Agent maintains state; execution agents work in isolated context and exchange only structured Payloads |
 | **Requirements disappear into chat history** | Requirements become a Hybrid Tree; changes update only the relevant Section and affected Children re-enter the loop |
 | **AI says "done" but misses the requirement** | evaluatorX distrusts coderX self-report and independently checks code, diff, and AC |
-| **Misread requirements surface after coding** | xwhole Phase 1 explores the codebase, asks Socratic questions, and proactively challenges assumptions |
+| **Misread requirements surface after coding** | xflow explores the codebase, asks Socratic questions, and proactively challenges assumptions |
 | **Multi-round iteration burns tokens** | Section caching, trunk/leaf split,  control context budget |
 | **Parallel work overwrites itself** | Worktree isolation, Child ownership boundaries, and cross-branch violation detection |
 
@@ -63,14 +63,14 @@ The real problem with single-agent AI coding is not just model quality. It is th
 ```text
 you
 │
-├─ xwhole / xlocal / xunit / xstatus / xprompt
+├─ xdo / xdel / xflow / xstatus
 │
 ▼
 Main Agent
 ├─ RouteX: route from user input plus active conversation context
-├─ Module 08: xwhole discovery, solution design, and Hard Gate confirmation
-├─ Phase 2: generate or maintain Hybrid Tree (Main Agent is the sole document writer)
-└─ Core Loop: forward Payloads and drive coderX ↔ evaluatorX iteration
+├─ xdo: Main Agent direct work with engineeringX
+├─ xdel: Hybrid Tree-backed one-shot coderX delegation with self-review
+└─ xflow: discovery, Hybrid Tree, delegation, and independent evaluation
         │
         ├─ coderX: implement and emit Change Summary
         └─ evaluatorX: verify independently and emit Evaluation Result
@@ -79,10 +79,10 @@ Main Agent
 <p align="center">
   <img src="docs/assets/01-architecture.png" alt="WorkflowX Main Agent orchestration architecture" width="880" />
   <br/>
-  <sub>Main Agent centralizes orchestration and document writes; coderX / evaluatorX enter as execution or helper units</sub>
+<sub>Main Agent works directly by default; complex modes use coderX / evaluatorX as needed</sub>
 </p>
 
-In one line: **Main Agent owns flow and facts, coderX writes code, evaluatorX gates quality, Hybrid Tree keeps everything traceable.**
+In one line: **Main Agent works directly by default; engineeringX provides implementation principles and self-review.**
 
 ---
 
@@ -90,11 +90,7 @@ In one line: **Main Agent owns flow and facts, coderX writes code, evaluatorX ga
 
 **Requirement**: Node.js v18+
 
-**```bash
-npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-sequential-thinking
-```
-
-**2. Install WorkflowX**
+**1. Install WorkflowX**
 
 | Platform | How to install |
 |---|---|
@@ -102,29 +98,27 @@ npm install -g @modelcontextprotocol/server-memory @modelcontextprotocol/server-
 | **OpenAI Codex** | `/plugins` → search `workflowx` → Install Plugin |
 | **Manual** | Copy `.claude/` or `.codex/` into the project root |
 
-**3. Run your first requirement**
+**2. Run your first requirement**
 
 ```bash
-xwhole implement user login with email/password and OAuth
+xdo implement user login with email/password and OAuth
 ```
 
-> Claude Code can use slash commands. OpenAI Codex uses natural-language prefixes, for example starting the message with `xwhole`.
+> Claude Code can use slash commands. OpenAI Codex uses natural-language prefixes, for example starting the message with `xdo`.
 
 ---
 
-## Five Modes
+## Three Modes
 
 Choose by blast radius. If unsure, describe the requirement and RouteX can recommend a mode based on current state.
 
 | Mode | Use case | Planning | Verify loop | Example |
 |---|---|---|---|---|
-| **`xunit`** | Single-file, small, clear change | Direct coderX | evaluatorX off by default | `xunit add timeout config to Config` |
-| **`xlocal`** | Bug fix or local feature within 1-2 modules | Reuse/create minimal Hybrid Tree | Auto, up to N rounds | `xlocal fix order list pagination bug` |
-| **`xwhole`** | New feature, cross-module refactor, high-impact work | Phase 1 discovery → Phase 2 docs | Auto, up to N rounds | `xwhole build the order center` |
-| **`xwhole -parallel`** | Multiple independent subtasks in parallel | Generate Hybrid Tree, then dispatch by Child | Parallel coder/evaluator teammates | `/xwhole -parallel build user, order, product modules` |
-| **`xmain`** | Persistent tasks owned directly by the Main Agent | Decompose each input, then execute directly; Claude may parallelize when justified | Main Agent verification | `xmain build the order center` |
+| **`xdo`** | Main Agent direct work | engineeringX; parallel only on explicit request | Main Agent self-review and verification | `xdo add timeout config to Config` |
+| **`xdel`** | Hybrid Tree-backed local delegation | One-shot coderX implementation with self-review | evaluatorX not triggered | `xdel fix order list pagination bug` |
+| **`xflow`** | New feature, cross-module refactor, high-impact work | Discovery → Hybrid Tree | coderX + evaluatorX | `xflow build the order center` |
 
-Common flags: `-N 3` caps verification rounds per Child; `-box demo` isolates work in a sandbox branch; `-parallel` requires Claude Code Agent Teams. In Codex, `xmain` is always serial and does not dispatch subagents.
+Common flag: `-box demo` isolates work in a sandbox branch. Parallel development must be explicitly requested; the Main Agent chooses the native scheduling approach.
 
 <p align="center">
   <img src="docs/assets/05-capabilities.png" alt="WorkflowX modes and capability matrix" width="880" />
@@ -132,19 +126,19 @@ Common flags: `-N 3` caps verification rounds per Child; `-box demo` isolates wo
 
 ---
 
-## What Happens In xwhole?
+## What Happens In xflow?
 
-For `xwhole implement user login`, the full workflow is:
+For `xflow implement user login`, the workflow is:
 
 1. **Entry routing**: Main Agent routes from the command, user input, and active conversation context; Hybrid Tree remains the durable workflow source of truth.
-2. **Environment init**: parse `-N` / `-box` / `-parallel`.
+2. **Environment init**: use sandbox or explicitly requested parallel work when needed.
 3. **Code exploration**: search project structure, related modules, and existing constraints to build a file index.
 4. **Requirement discovery**: socratesX asks one grounded question at a time and challenges contradictions, missing NFRs, and technical risks.
 5. **Hard Gate confirmation**: docs cannot be generated until the user confirms the plan.
 7. **Hybrid Tree generation**: Main Agent writes Parent / Child docs with scope, AC, dependencies, and file index.
 8. **coderX implementation**: implements against Child AC and returns a Change Summary Payload.
 9. **evaluatorX verification**: independently reads diff and code, then outputs AC status, severity-ranked issues, and fix instructions.
-10. **Close or loop**: PASS updates docs and closes; failure sends fix instructions back to coderX until PASS or the N-round cap.
+10. **Close**: Main Agent consolidates evaluation, updates documents, and handles necessary final-Child fixes.
 
 ---
 
@@ -190,7 +184,7 @@ This turns "the AI says it is done" into "an independent quality gate confirms i
 |---|---|---|
 | **L1 Section caching** | Stable sections at top, dynamic sections overwritten at bottom | Better Prompt Cache hit rate |
 | **L2 Trunk/leaf split** | Markdown keeps the requirement trunk; entity relations in knowledge files | Smaller docs |
-| **L3 Memory snapshot** | Hybrid Tree stores summaries and pointers; full nodes persist in server-memory | Cross-session fact reuse |
+| **L3 Memory snapshot** | Hybrid Tree stores concise project knowledge notes in Markdown | Cross-session fact reuse |
 </details>
 
 <details>
@@ -202,8 +196,8 @@ Every input is routed from the complete prompt and current conversation context:
 |---|---|---|
 | **Route 0** | Active workflow exists | Treat user input as part of the current workflow; support incremental requirement changes |
 | **Route 1** | Read-only exploration, search, git, config | Handle directly without dispatching coderX |
-| **Route 2** | Coding intent while idle | Analyze scope, recommend xwhole / xlocal / xunit, ask for confirmation |
-| **Route 3** | Explicit `xwhole` / `xlocal` / `xunit` command | Enter the requested mode immediately |
+| **Route 2** | Coding intent while idle | Analyze scope, recommend xdo / xdel / xflow |
+| **Route 3** | Explicit `xdo` / `xdel` / `xflow` command | Enter the requested mode immediately |
 
 Workflow continuity lives in the active conversation plus Hybrid Tree documents.
 
@@ -212,8 +206,7 @@ Workflow continuity lives in the active conversation plus Hybrid Tree documents.
 <details>
 <summary><b>Other Built-In Capabilities</b></summary>
 
-- **razorX**: uses "Can the path be shorter? Can cognitive load be lower?" to guide implementation and review.
-- **guideX**: keeps coderX away from overdesign, false completion, and unverified edits.
+- **engineeringX**: keeps implementation simple, scoped, and self-reviewed before completion.
 - **xstatus**: generates a high-fidelity HTML workflow status report.
 
 ```bash
@@ -229,8 +222,8 @@ xstatus --output ./reports/today.html
 
 | Platform | Config dir | Trigger style | Parallel mode |
 |---|---|---|---|
-| **Claude Code** | `.claude/` | `/xwhole` `/xlocal` `/xunit` `/xmain` `/xstatus` `/xprompt` | `xmain` may use Agent Teams when justified |
-| **OpenAI Codex** | `.codex/` | Natural-language prefix: `xwhole` `xlocal` `xunit` `xmain` `xstatus` `xprompt` | `xmain` is always direct and serial |
+| **Claude Code** | `.claude/` | `/xflow` `/xdel` `/xdo` `/xstatus` | `xdo` parallelizes only on explicit request |
+| **OpenAI Codex** | `.codex/` | Natural-language prefix: `xflow` `xdel` `xdo` `xstatus` | `xdo` is direct by default |
 
 Both configs share the same workflow model, with trigger syntax, sub-agent dispatch, and parallelism adapted to the host tool.
 

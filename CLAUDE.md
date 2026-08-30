@@ -1,25 +1,18 @@
 # CLAUDE.md - WorkflowX Instructions
 
-> You are the Main Agent. Responsibilities: routing, design, Hybrid Tree management, and execution-agent dispatch.
+> You are the Main Agent. Responsibilities: direct execution, optional native parallel coordination, routing, design, and Hybrid Tree management when required.
 
-Capabilities: long-term memory, Hybrid Tree management, incremental iteration.
+Capabilities: native reasoning, optional Hybrid Tree management, and native Agent coordination.
 
 ---
 
 ## Routing
 
-> **Full specification**: `.claude/skills/routeX/SKILL.md`
+> **Full specification**: `.claude/skills/orchestrateX/SKILL.md`
 >
-> **Hard constraint**: Main Agent owns orchestration directly. For requests in `xwhole`, `xlocal`, or `xunit` that involve writing or modifying code, dispatch coderX. `xmain` is the explicit exception: the Main Agent works directly from the relevant skills and does not dispatch subagents.
+> **Execution rule**: `xdo` is direct work by the Main Agent and does not require a dispatch harness. Native parallel Agents are used only when the user explicitly requests parallel development. `xdel` delegates one Hybrid Tree task to coderX with self-review and no evaluatorX; `xflow` uses module 08 repository discovery, stage-batched socratesX clarification, and one Ready Summary confirmation before the full planning/evaluation workflow.
 
-**Quick reference** (details in routeX skill):
-
-| Route | Trigger | Action |
-|-------|---------|--------|
-| Route 0 | Active workflow in current conversation | All inputs are part of current workflow |
-| Route 1 | Exploratory / git / browse | Handle directly, no agent dispatch |
-| Route 2 | Coding intent, no active workflow | 5-dimension analysis -> recommend mode -> AskUserQuestion |
-| Route 3 | `/x*` command | Execute immediately |
+Routing and mode recommendation are defined in `.claude/skills/orchestrateX/SKILL.md`.
 
 ---
 
@@ -29,10 +22,9 @@ Capabilities: long-term memory, Hybrid Tree management, incremental iteration.
 
 | Mode | Command | Behavior |
 |------|---------|----------|
-| Mode A (xwhole) | `/xwhole [-N] [-box] [-parallel] [-team]` | Full planning: explore -> design -> Hybrid Tree -> iterate |
-| Mode B (xlocal) | `/xlocal [-N] [-box]` | PRD detection -> auto-generate Hybrid Tree -> iterate |
-| Mode C (xunit) | `/xunit` | Minimal single-file change, no evaluator |
-| Mode D (xmain) | `/xmain` | Main Agent direct execution; re-decompose each requirement; Claude may auto-enable Agent Teams for independent work packages |
+| `xflow` | `/xflow [-box] [-parallel] [-team]` | Full planning -> Hybrid Tree -> implementation -> evaluation |
+| `xdel` | `/xdel <requirement or Hybrid Tree>` | Hybrid Tree-backed one-shot coderX delegation with self-review |
+| `xdo` | `/xdo [--parallel] <requirement>` | Main Agent direct work; parallel only when explicitly requested |
 
 **Agent dispatch**:
 ```js
@@ -48,9 +40,11 @@ Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload:
 
 ## Constraints
 
-- **Main Agent orchestration**: Main Agent never writes project code. All code changes go through coderX dispatch.
+- **Main Agent execution**: Main Agent may write project code directly. `xdo` is direct work by default.
+- Native parallel Agents are used only when the user explicitly requests parallel development.
+- `xdel` and `xflow` may dispatch `coderX` / `evaluatorX` according to their mode rules; `xdo` does not require dispatch.
+- No fixed iteration loop or mandatory harness is imposed by the base workflow.
 - No `EnterPlanMode` during active workflow.
-- `/x*` workflows are executed by Main Agent directly; dispatch only execution agents such as `coderX` and `evaluatorX`.
 - WorkflowX components: agents (`.claude/agents/`), skills (`.claude/skills/`).
 
 ---

@@ -22,9 +22,9 @@ Arguments: $ARGUMENTS
 Generate huashu-styled HTML status report:
 
 1. Parse arguments: --output <path> (default: ./status-report.html)
-2. Scan .hybrid/ for Hybrid Trees → classify by Mode A/B/A-parallel
-3. Parse sections: Parent §7 (routing), §9 (aggregation), Child §7 (AC), §9 (eval)
-4. Git log for xunit activities (last 7 days, commits outside .hybrid/)
+2. Scan .hybrid/ for Parent and Child documents
+3. Parse the lightweight registry, scope, dependencies, status, and verification notes
+4. Classify active work as xdo, xdel, or xflow when the mode is recorded
 5. Render huashu-styled HTML: hero, Children progress, issue heatmap, dependency graph
 6. Write to output path + auto-open in browser
 
