@@ -53,4 +53,6 @@ For a clarification phase, return a concise `Confirmed`, `Evidence`, `Open quest
 
 For a confirmed handoff, return a `socratesX :: Ready Summary` with goal and scope, confirmed decisions, non-goals and boundaries, Child and acceptance direction, verification and risks, and the next step to create or update the new Hybrid Tree.
 
+Directions deferred to later ("not this round, worth keeping") land as `exploring` Proposal Pool entries per `noteX/templates/proposal.md` without blocking the Ready Summary. Genuine trade-offs confirmed here may also drop a `proposed/` Note draft.
+
 `xdo` and `xdel` do not invoke this skill automatically.

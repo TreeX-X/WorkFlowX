@@ -14,8 +14,13 @@ Use only when `xflow` requests an independent evaluatorX review.
 3. Run the smallest useful test set.
 4. Record passed tests, failed cases, failure causes, and blocking dependencies.
 5. Inspect code manually only to explain a failed test or a named integration risk; do not perform a full static review by default.
+6. Match verification to change size: for small reversible changes, do not write tests that merely restate the implementation. Run the tests that fit the change; once they pass, expand or re-run scope only on new changes, failures, or unresolved issues.
 
 If the project has no runnable test path, report `Unevaluable` with the reason and the checks attempted. Never claim a test passed unless it was run.
+
+## Note light check (no tests needed)
+
+If the review covers an `implemented/` Note body: Parent/Child identifiers or PR-process nouns (`follow-up PR`, `round N`) as process leakage, or a missing `## Alternatives considered`, fails the Note on the spot, without running tests.
 
 ## Result Contract
 

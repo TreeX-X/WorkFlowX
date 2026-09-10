@@ -34,7 +34,7 @@ For direct `xdo` work, no coderX Bus Payload is used.
 
 - `Workflow Mode=xdel|xflow`: load `engineeringX` and `specX`; read the Parent and Child paths from the payload; use Child Section 7 as the acceptance criteria source unless the payload is a fix round with explicit evaluator Fix Instructions.
 - `Dispatch Type=fix`: prioritize payload Fix Instructions, but do not change behavior outside Child Section 7 acceptance criteria unless the payload explicitly allows it.
-- `Output Contract=Bus Payload Type 1`: finish with the Change Summary payload required by orchestrateX module 02.
+- `Output Contract=Bus Payload Type 1`: finish with the Change Summary payload required by orchestrateX module 02, plus a Note draft (new `implemented/` or in-place sync of the owning Note).
 
 ## Parent Document Access (Read-Only)
 

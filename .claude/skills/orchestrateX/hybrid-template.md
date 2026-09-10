@@ -28,9 +28,10 @@ Use a Parent and one or more Children for `xdel` and `xflow`. `xdo` may use thes
 
 ## 5. Knowledge Notes
 - [short project facts needed by Children, or N/A]
+- [`.agents/notes/...` relative link + one-line summary per governing decision, never inlined prose]
 
 ## 6. Change Notes
-- [decisions and important updates]
+- [decisions and important updates; lasting trade-offs live in Notes, linked here, not copied]
 
 ## 7. Completion Summary
 - [overall status and verification summary]
@@ -53,7 +54,7 @@ Use a Parent and one or more Children for `xdel` and `xflow`. `xdo` may use thes
 - [ ] [criterion]
 
 ## 3. Implementation Notes
-- [constraints or decisions specific to this Child]
+- [constraints or decisions specific to this Child; lasting ones link `.agents/notes/...`, derivation history belongs in the Proposal Pool]
 
 ## 4. Verification
 - [checks run and results]

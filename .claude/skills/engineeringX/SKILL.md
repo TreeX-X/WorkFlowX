@@ -27,5 +27,7 @@ Before reporting completion, inspect the result and ask:
 - Are obvious boundaries and failures handled?
 - Are stale imports, references, or configuration entries left behind?
 - What verification was actually performed?
+- If this change carries a lasting trade-off: are cost, limits, and revisit signals written into the Note (new or in-place sync)?
+- Is verification pinned to a path, a magnitude, and a command, not "looks fine"?
 
 Report unresolved concerns explicitly.
