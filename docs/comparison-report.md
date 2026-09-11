@@ -1,6 +1,6 @@
 # WorkflowX vs Superpowers vs oh-my-claudecode 对比分析报告
 
-> 历史快照（2026-06-04），仅供参考。其中 `xwhole/xlocal/xunit`、多轮迭代循环、Karpathy 指南等描述属于重构前架构，已被 `xdo/xdel/xflow` 轻量流程取代。现行架构以 `WorkflowX-配置架构文档.md` 与两侧 `orchestrateX/SKILL.md` 为准。
+> 历史快照（2026-06-04），仅供参考。其中 `xwhole/xlocal/xunit`、多轮迭代循环、Karpathy 指南等描述属于重构前架构，已被 `xdo/xdel/xflow` 轻量流程取代。现行架构以两侧 `orchestrateX/SKILL.md` 为准。
 
 > 版本: v2.0 | 更新日期: 2026-06-04
 > 分析对象: WorkflowX v1.0.0 | Superpowers v5.1.0 | oh-my-claudecode v4.14.4
