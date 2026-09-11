@@ -3,7 +3,6 @@
   "model": "opus",
   "effort": "medium",
   "permissions": {
-    "defaultMode": "bypassPermissions",
     "allow": [
       "Bash(npm *)"
     ]

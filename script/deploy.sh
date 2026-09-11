@@ -24,7 +24,7 @@ warn()  { echo -e "\033[33m  !\033[0m $*"; }
 fail()  { echo -e "\033[31m  ✗\033[0m $*"; }
 header(){ echo -e "\n\033[1;36m━━━ $* ━━━\033[0m"; }
 
-# ── 复制目录（排除 __pycache__） ──────────────────────────
+# ── 复制目录（排除 __pycache__，不删除目标目录中的其他文件） ──
 
 copy_tree() {
     local src="$1" dst="$2"
@@ -159,11 +159,20 @@ verify_deploy() {
             check "agents"
             check "skills"
             check "commands"
+            check "commands/xdo.md"
+            check "commands/xdel.md"
+            check "commands/xflow.md"
+            check "skills/engineeringX/SKILL.md"
+            check "skills/socratesX/SKILL.md"
             ;;
         codex)
             check "config.toml"
             check "agents"
             check "skills"
+            check "skills/engineeringX/SKILL.md"
+            check "skills/socratesX/SKILL.md"
+            check "agents/coderX.toml"
+            check "agents/evaluatorX.toml"
             ;;
     esac
 
