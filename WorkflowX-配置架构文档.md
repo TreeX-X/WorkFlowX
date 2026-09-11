@@ -15,8 +15,10 @@
 | 模式 | 命令 | 主体行为 | Hybrid Tree | evaluatorX |
 |---|---|---|---|---|
 | direct | `xdo` | 主 Agent 直接实现；用户明确要求时可原生并行 | 可选 | 不默认触发 |
-| delegate | `xdel` | 基于 Parent/Child 派发 coderX 一次完成 | 必须 | 不触发 |
+| delegate | `xdel` | 可追溯的单次委托（无规划与评审成本）；要速度用 `xdo`，要独立质量门用 `xflow` | 必须 | 不触发（仅用户明确要求时做独立评审） |
 | orchestrate | `xflow` | 需求发现、规划、Child 调度、逐 Child 测试审核 | 必须 | 每个 Child 后触发 |
+
+模式执行细节以两侧 `orchestrateX/SKILL.md` 为准，本表只做索引。
 
 ### 2.1 xdo
 
@@ -37,7 +39,7 @@
 1. 先使用 `socratesX` 澄清需求、识别边界和比较方案。
 2. 用户确认后，由 Main Agent 根据结论创建或更新 Parent/Child。
 3. 按依赖顺序派发 coderX；依赖允许时可按用户要求并行。
-4. 每个 Child 完成后触发 evaluatorX 的测试驱动审核。
+4. 每个 Child 完成后触发 evaluatorX 的测试驱动审核；`UNEVALUABLE`（无可运行测试路径）时由 Main Agent 决定缩小范围、补充检查或显式记录风险后接受，不静默重试或静默通过。
 5. Main Agent 对失败进行分级：
    - 局部实现错误：同一 Child 最多一次最小 Repair Packet 修复；
    - 跨 Child 集成问题：压缩为 Integration Note，传给受影响的后续 Child；
@@ -71,7 +73,7 @@
 └── [feature]/                  # xdel/xflow 使用的 Parent/Child 文档
 ```
 
-两侧均由 `orchestrateX` 提供入口路由和模式执行规则。Codex 的 `AGENTS.md` 负责持久化项目入口指令；Claude 的命令文件负责显式命令入口。两侧的核心模式、skill 和 Agent 契约保持一致。
+两侧均由 `orchestrateX` 提供入口路由和模式执行规则。Codex 的 `AGENTS.md` 负责持久化项目入口指令；Claude 的命令文件负责显式命令入口。两侧的核心模式、skill 和 Agent 契约保持一致：两份 `orchestrateX` 逻辑相同，仅 skill 路径（`.claude/...` 与 `.codex/...`）不同，每次修改必须双端同步。
 
 ## 4. Skill 与 Agent 职责
 
@@ -88,7 +90,7 @@
 
 ## 5. Hybrid Tree
 
-> 说明：`.hybrid/` 中已有文档属于重构前旧版本。它们作为历史记录保留，不迁移、不回填新模板，也不作为当前运行状态依据；新的 `xdel`/`xflow` 任务按需创建新的 Parent/Child 文档。
+> 说明：`.hybrid/` 只存放现行轻量模板的 Parent/Child。旧版本文档（`Section 0/7/8.x`、旧 `*-hybrid.md` 命名）视为历史记录，不迁移、不回填，也不作为运行状态依据；`xstatus` 默认忽略它们。新的 `xdel`/`xflow` 任务按需创建新的 Parent/Child 文档。
 
 ### Parent
 
@@ -112,7 +114,7 @@
 
 ## 6. 交接契约
 
-`xdo` 不使用固定 Bus Payload。`xdel/xflow` 使用简洁交接字段：目标、Parent/Child 路径、AC、允许范围、所需 skill、验证方式和输出摘要。
+字段定义以两侧 `orchestrateX/modules/02-bus-payload.md` 为准。`xdo` 不使用固定 Bus Payload。`xdel/xflow` 使用简洁交接字段：目标、Parent/Child 路径、AC、允许范围、所需 skill、验证方式和输出摘要。无全局 workflow 锁；旧 `.hybrid/.workflow-lock` 如存在则删除后继续。
 
 ### Repair Packet
 

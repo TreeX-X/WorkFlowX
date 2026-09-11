@@ -45,6 +45,7 @@ Every Note requires `## Alternatives considered` with an explicit do-nothing/reu
 - New direction -> `proposed/` first, then `implemented/` with the code in one commit, plus one reverse comment at the code entry.
 - Declined in review -> `rejected/` or delete. Superseded fully -> new Note absorbs surviving reasons, old Note `git mv` to `archived/` plus inbound-link repair. Partially superseded -> both live, linked both ways.
 - Exempt (`not applicable`, no Note): pure formatting, unambiguous renames, typos, release tags, behavior-preserving dependency patches.
+- `xdo` lightweight path: small reversible changes with no lasting trade-off may land as an in-place sync of the owning Note (a short paragraph, not a new file) or as a Parent/Child Change Notes entry that links the commit. A full new `implemented/` Note is still required for lasting trade-offs, architecture choices, and non-obvious behavior.
 - When unsure whether to write, write.
 
 ## 4. Binding and linking

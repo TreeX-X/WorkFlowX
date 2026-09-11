@@ -32,9 +32,9 @@ Agent({ subagent_type: "coderX", isolation: "worktree", prompt: "<Dispatch Paylo
 Agent({ subagent_type: "evaluatorX", isolation: "worktree", prompt: "..." })
 ```
 
-Before dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Execution Brief, Context Manifest, and Context Budget. Do not send vague implementation prompts to `coderX`.
+Before dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Workflow Mode, Objective, Parent/Child paths, Acceptance Source, Allowed Scope, Required Skills, Verification, and Output. Do not send vague implementation prompts to `coderX`.
 
-Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Review Brief, Review Context Manifest, and Review Context Budget. Do not send vague review prompts to `evaluatorX`.
+Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Child Path, Changed Files, Acceptance Source, Review Focus, and Output (test results plus a compact Failure Record on `NEEDS_FIX`). Do not send vague review prompts to `evaluatorX`.
 
 ---
 

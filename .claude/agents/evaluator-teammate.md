@@ -12,8 +12,8 @@ model: sonnet
 - All evaluatorX base read/audit tools
 - Core skill (auditX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
-- Bus Payload output (Payload Type 2)
-- Review Brief + Review Context Manifest-gated Hybrid Tree reading. Do not read full Parent/Child documents by default.
+- Output: Evaluation Result per auditX (Status, Tests Run, Passed, Failed, Blockers); read-only, no Note linting
+- Scoped Hybrid Tree reading: Child §2 Acceptance Criteria and changed files first; manual code inspection only to explain a failed test or named integration risk
 
 **Incremental Diff** (teammate-specific):
 
@@ -35,4 +35,4 @@ model: sonnet
 ## Document Updates
 
 - evaluator-teammate does NOT write to documents
-- Main Agent handles all document updates (Module 03)
+- Main Agent handles all document updates

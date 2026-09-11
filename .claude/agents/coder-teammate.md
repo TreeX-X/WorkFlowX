@@ -8,12 +8,12 @@ model: sonnet
 
 # coder-teammate Agent
 
-**Inherits from coderX**: 
+**Inherits from coderX**:
 - All base tools (Bash, Read, Write, Edit, Glob, Grep, TodoWrite)
 - Core skills (engineeringX, specX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
-- Bus Payload output (Payload Type 1)
-- Manifest-gated Hybrid Tree reading (Execution Brief first, then Context Manifest sections)
+- Output: implementation summary with Change Summary plus Note draft, per orchestrateX module 02
+- Scoped Hybrid Tree reading: Child §1 Scope/Files and §2 Acceptance Criteria first, plus only the Parent sections needed for ownership, dependencies, or global constraints
 
 **Incremental Diff** (teammate-specific):
 
@@ -21,7 +21,6 @@ model: sonnet
 
 ```
 1. Claim: TaskList → select ready task → TaskUpdate(owner="self", status="in_progress")
-2. Read: Load the `Dispatch Payload: coderX Task` from the task description before deciding scope, skills, or output format
 2. Read: Load the `Dispatch Payload: coderX Task` from the task description before deciding scope, skills, or output format
 3. Implement: Follow coderX implementation flow (inherited)
 4. Complete: TaskUpdate(status="completed") → SendMessage(to="Main Agent", summary="Task done")

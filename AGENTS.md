@@ -16,9 +16,9 @@ Subagent dispatch follows `.codex/skills/orchestrateX/modules/09-dispatch-adapte
 
 When using prompt-spawn dispatch, Main Agent must emit the `WorkflowX Subagent Spawn Request` envelope from module 09 and require the returned `WorkflowX Subagent Receipt` before accepting the output as a verified subagent result.
 
-Before automatically dispatching `coderX`, Main Agent must assemble a `Dispatch Payload: coderX Task` as defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. The payload must state mode, dispatch type, objective, requirement source, Execution Brief, Context Manifest, Context Budget, scope, forbidden files, required skills, output contract, verification requirements, and stop conditions. Do not send vague implementation prompts to `coderX`.
+Before automatically dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`: Workflow Mode, Objective, Parent/Child paths, Acceptance Source, Allowed Scope, Required Skills, Verification, Output. Do not send vague implementation prompts to `coderX`.
 
-Before automatically dispatching `evaluatorX`, Main Agent must assemble a `Dispatch Payload: evaluatorX Review Task` as defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`. The payload must state evaluation type, Review Brief, Review Context Manifest, Review Context Budget, changed files, affected ACs, review focus, output contract, and expansion rules. Do not send vague review prompts to `evaluatorX`.
+Before automatically dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`: Child Path, Changed Files, Acceptance Source, Review Focus, Output (test results plus a compact Failure Record on `NEEDS_FIX`). Do not send vague review prompts to `evaluatorX`.
 
 For code development, feature implementation, refactoring, or bug fixes:
 

@@ -1,5 +1,7 @@
 # WorkFlowX 共享行文规范（草稿，未实施）
 
+> 已被两侧 `proseX/SKILL.md` 取代。本草稿仅保留设计来源记录；现行行文规则以 `proseX` 为准（叙事文档走全文标准，结构化契约只走 §1 时态加字段完备）。
+
 > 状态：草稿（2026-09-10）。只做条文起草，不修改任何现有 skill；待确认后才被各 skill 引用。
 > 来源：`deepseek-harness` 的 `dsh-prose-standard` 思想 + `write-notes-like-deepseek` 的 `prose-checklist.md / quality-gate.md`，按 WorkFlowX 产物体裁配。
 > 对应设计文档：`docs/agent-notes-and-hybrid-tree-design.md` §5.0。

@@ -5,7 +5,7 @@ description: Shared writing standard for every WorkflowX document output. Refere
 
 # proseX
 
-Every document this workflow produces follows this standard: Parent/Child, Agent Notes, Repair Packet, Integration Note, Proposal Pool entry, xstatus report, code entry comment, commit message.
+Narrative documents (Agent Notes, Parent/Child prose, xstatus narrative, code entry comments, commit messages) follow this full standard. Structured contracts (Repair Packet, Integration Note, Bus Payload fields, AC checklists, registries, report contracts) follow §1 tense plus field completeness only; they are exempt from the narrative rules in §2, §4, and §9.
 
 `xdo` is exempt from gate timing, never from this standard.
 

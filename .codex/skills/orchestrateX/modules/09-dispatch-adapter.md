@@ -41,7 +41,7 @@ When using `prompt_spawn`, Main Agent emits a subagent request in this exact sha
 - **Target Agent**: [coderX | evaluatorX | worker | explorer | default]
 - **Dispatch Mode**: prompt_spawn
 - **Isolation Request**: [worktree | shared | readonly | N/A]
-- **Return Contract**: [concise summary | Bus Payload Type 1 | Bus Payload Type 2 | structured prompt]
+- **Return Contract**: [concise summary | coderX implementation summary + Note draft | evaluatorX Evaluation Result | structured prompt]
 
 Spawn a Codex subagent using the custom agent named above. Give the spawned agent only the Dispatch Payload below as its task. The spawned agent must not reinterpret this parent conversation.
 
@@ -51,7 +51,7 @@ The spawned agent must begin its response with:
 ### WorkflowX Subagent Receipt
 - **Agent Identity**: [same as Target Agent]
 - **Dispatch Mode Observed**: prompt_spawn
-- **Payload Type Received**: [coderX Task | evaluatorX Review Task | prompt preprocessing]
+- **Payload Type Received**: [coderX Task | evaluatorX Review Task | repair task]
 ```
 
 [Full Dispatch Payload follows]
@@ -76,7 +76,7 @@ If the native tool returns metadata, Main Agent records agent name, thread id, s
 When `degraded`:
 
 1. Report: `subagent dispatch degraded: no native Agent tool and no verified prompt-spawn support in this surface`.
-2. Do not silently execute implementation, evaluation, prompt preprocessing as Main Agent roleplay.
+2. Do not silently execute implementation or evaluation as Main Agent roleplay.
 3. Continue only for direct-handling tasks allowed by `AGENTS.md`, or when the user explicitly approves a direct-execution fallback.
 
 ## Output Validation
@@ -86,7 +86,7 @@ For all dispatch modes:
 1. Validate the returned content against the expected output contract.
 2. For `prompt_spawn`, require the `WorkflowX Subagent Receipt` before accepting the output as a subagent result.
 3. If the receipt is missing, mark the dispatch result as `unverified` and do not forward it downstream without user approval.
-4. If a Bus Payload is malformed, follow module 02 correction/retry rules.
+4. If a payload is malformed, Main Agent corrects the dispatch fields and retries once with minimal context, then hands to the user on repeated failure.
 
 ## Dispatch Result Record
 

@@ -8,4 +8,4 @@
 - Verification or evaluation notes
 - Active mode: `xdo`, `xdel`, or `xflow` when known
 
-If `.hybrid/` is absent, report that no Hybrid Tree is active. Do not infer a legacy unit mode from git history. Write the report to `./status-report.html` or the requested `--output` path; open it unless `--no-open` is set.
+If `.hybrid/` is absent or empty, report that no Hybrid Tree is active. Ignore legacy-format documents (pre-lightweight `Section 0/7/8.x` or old `*-hybrid.md` naming) unless the user explicitly asks for a legacy review; never migrate them. Do not infer a legacy unit mode from git history. `xdo` work without a Tree leaves no record to scan. Write the report to `./status-report.html` or the requested `--output` path; open it unless `--no-open` is set.

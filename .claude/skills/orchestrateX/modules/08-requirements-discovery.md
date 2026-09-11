@@ -1,6 +1,6 @@
 # Module 08: xflow Requirement Discovery
 
-Used only by `xflow` before `socratesX` clarification and before creating or updating a Hybrid Tree.
+Used only by `xflow` before `socratesX` clarification and before creating or updating a Hybrid Tree. The canonical sequence lives in the `orchestrateX` SKILL; this module defines the repository-facts phase only.
 
 ## Responsibility
 

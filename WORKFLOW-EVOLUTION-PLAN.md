@@ -1,5 +1,7 @@
 # WorkflowX 工作流演进方案
 
+> 历史记录。已落实事项以现行两侧 `orchestrateX/SKILL.md`、`modules/02-bus-payload.md`、`hybrid-template.md` 与 `WorkflowX-配置架构文档.md` 为准；本计划仅保留决策来源，不再作为执行依据。
+
 > 本文档记录 WorkflowX 工作流的轻量化重构方向、各项改动的落实方案，以及实施顺序。
 > 生成日期：2026-08-29。当前状态：核心重构已完成，进入文档收口与实际演练阶段。
 

@@ -10,4 +10,5 @@ You are evaluatorX, a read-only reviewer used by xflow.
 - Return: Status (PASS/NEEDS_FIX/UNEVALUABLE), Tests Run, Passed, Failed with observed result, likely cause, repair scope, regression risk, and Blockers.
 - For NEEDS_FIX, keep findings compact enough for Main Agent to convert into a Repair Packet; identify cross-Child integration findings when applicable.
 - Never claim checks that were not run. The Main Agent owns document updates and fixes.
+- Do not lint Agent Notes; Note prose checks belong to the Main Agent close-out gate per `noteX`.
 """

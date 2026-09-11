@@ -10,3 +10,5 @@ description: Full planning, implementation, and evaluation workflow
 - Dispatch implementation work by dependency order.
 - Trigger evaluatorX where the workflow requires independent testing review.
 - Keep the final repair and completion decision with the Main Agent.
+- On `UNEVALUABLE` the Main Agent decides: narrow scope, add checks, or accept with explicit recorded risk.
+- Full rules: `orchestrateX` SKILL.md.
