@@ -1,6 +1,6 @@
 ---
 name: socratesX
-description: Socratic requirement clarification for xflow before planning and Hybrid Tree generation.
+description: Socratic requirement clarification for xflow before planning and task-note scoping.
 version: 0.3.0
 author: TreeX
 ---
@@ -11,13 +11,13 @@ Use this skill as the `xflow` preflight, or when the user explicitly asks for So
 
 ## Purpose
 
-Turn repository facts and user intent into a confirmed, executable brief for Hybrid Tree generation. Surface only assumptions, contradictions, boundaries, non-functional requirements, and implementation trade-offs that can change the work.
+Turn repository facts and user intent into a confirmed, executable brief for task-note planning. Surface only assumptions, contradictions, boundaries, non-functional requirements, and implementation trade-offs that can change the work.
 
 ## Responsibility boundary
 
 - `module 08` explores the repository and reports relevant facts, files, dependencies, and constraints.
 - `socratesX` asks the user to resolve decisions that cannot be established from repository evidence.
-- `orchestrateX` projects the confirmed result into Parent/Child documents. It does not repeat requirement analysis.
+- `orchestrateX` projects the confirmed result into task notes. It does not repeat requirement analysis.
 
 ## Clarification protocol
 
@@ -27,7 +27,7 @@ Turn repository facts and user intent into a confirmed, executable brief for Hyb
 4. Offer options only when there are two or more credible alternatives with a meaningful trade-off. For a fact, constraint, or single viable direction, ask directly. Do not manufacture options.
 5. Give a recommendation only when the evidence supports one. State the reason and the cost; allow the user to choose another direction.
 6. Do not invent missing intent. Mark unresolved items as `[Needs confirmation]` and keep them out of the final scope until resolved.
-7. Stop clarifying when the brief is sufficient to define Parent/Child scope and acceptance criteria. Do not keep asking low-impact preference questions.
+7. Stop clarifying when the brief is sufficient to define task scope and acceptance criteria. Do not keep asking low-impact preference questions.
 
 ## Confirmation gate
 
@@ -41,18 +41,18 @@ The `Ready Summary` must contain:
 
 - goal, in-scope work, and explicit non-goals;
 - constraints and measurable done criteria;
-- proposed Child boundaries and dependencies;
+- proposed task boundaries and dependencies;
 - affected files or file-discovery scope;
 - verification approach and unresolved risks.
 
-Do not dispatch coderX or create/update the new Hybrid Tree until the Ready Summary is confirmed. Existing `.hybrid/` documents marked as legacy are reference-only and are not migrated by this flow.
+Do not dispatch coderX or create task notes until the Ready Summary is confirmed. Existing `.hybrid/` documents marked as legacy are reference-only and are not migrated by this flow.
 
 ## Output shape
 
 For a clarification phase, return a concise `Confirmed`, `Evidence`, `Open questions`, and optional `Options` section. Group questions by the current phase and include all questions for that phase in the same response.
 
-For a confirmed handoff, return a `socratesX :: Ready Summary` with goal and scope, confirmed decisions, non-goals and boundaries, Child and acceptance direction, verification and risks, and the next step to create or update the new Hybrid Tree.
+For a confirmed handoff, return a `socratesX :: Ready Summary` with goal and scope, confirmed decisions, non-goals and boundaries, task and acceptance direction, verification and risks, and the next step to create task notes.
 
-Directions deferred to later ("not this round, worth keeping") land as `exploring` Proposal Pool entries per `noteX/templates/proposal.md` without blocking the Ready Summary. Genuine trade-offs confirmed here may also drop a `proposed/` Note draft.
+Directions deferred to later ("not this round, worth keeping") land as `idea` drafts per the harness idea template (`standards/harness-note/1/templates/idea.md`) without blocking the Ready Summary. Genuine trade-offs confirmed here may also drop a `proposed/` Note draft.
 
 `xdo` and `xdel` do not invoke this skill automatically.

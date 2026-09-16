@@ -1,0 +1,4 @@
+# Harness rule sync repos: one root per line, relative to the WorkFlowX root.
+# Absent checkouts are skipped with a notice; at least one must be present.
+# S7 scope is the owning repo only; S9 appends adopter checkouts at cutover.
+.

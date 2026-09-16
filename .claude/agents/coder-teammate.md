@@ -13,7 +13,7 @@ model: sonnet
 - Core skills (engineeringX, specX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
 - Output: implementation summary with Change Summary plus Note draft, per orchestrateX module 02
-- Scoped Hybrid Tree reading: Child §1 Scope/Files and §2 Acceptance Criteria first, plus only the Parent sections needed for ownership, dependencies, or global constraints
+- Scoped task reading: task work scope and fixed acceptance refs first, plus only the referenced requirement/decision notes needed for ownership, dependencies, or constraints
 
 **Incremental Diff** (teammate-specific):
 

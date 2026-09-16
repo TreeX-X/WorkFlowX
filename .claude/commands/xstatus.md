@@ -22,11 +22,11 @@ Arguments: $ARGUMENTS
 Generate huashu-styled HTML status report:
 
 1. Parse arguments: --output <path> (default: ./status-report.html)
-2. Scan .hybrid/ for current Parent and Child documents; if absent or empty, report no active Hybrid Tree
+2. Scan `.agents/notes/` for task notes with lifecycle and execution state; if none, report no tracked work
 3. Ignore legacy-format documents unless the user explicitly asks for a legacy review; never migrate them
-4. Parse the lightweight registry, scope, dependencies, status, and verification notes
-5. Classify active work as xdo, xdel, or xflow when the mode is recorded (`xdo` without a Tree leaves no record)
-6. Render huashu-styled HTML: hero, Children progress, issue heatmap, dependency graph
+4. Parse the task scope, dependencies, status, and verification notes
+5. Classify active work as xdo, xdel, or xflow when the mode is recorded (`xdo` without a task note leaves no record)
+6. Render huashu-styled HTML: hero, task progress, issue heatmap, dependency graph
 7. Write to output path + auto-open in browser
 
 Constraints:

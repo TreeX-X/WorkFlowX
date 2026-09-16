@@ -1,7 +1,7 @@
 {
   "name": "workflowx",
   "version": "1.0.0",
-  "description": "Multi-agent orchestration framework with Socratic requirements discovery, Hybrid Tree PRD management, and structured quality evaluation",
+  "description": "Multi-agent orchestration framework with Socratic requirements discovery, task notes PRD management, and structured quality evaluation",
   "author": {
     "name": "TreeX"
   },
@@ -18,8 +18,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "WorkflowX",
-    "shortDescription": "Multi-agent orchestration with Socratic discovery and Hybrid Tree evaluation",
-    "longDescription": "WorkflowX orchestrates planning, coding, and evaluation agents through structured workflows. Features Socratic requirements discovery, Hybrid Tree PRD management, AC cross-validation, and token-optimized iteration loops.",
+    "shortDescription": "Multi-agent orchestration with Socratic discovery and task notes evaluation",
+    "longDescription": "WorkflowX orchestrates planning, coding, and evaluation agents through structured workflows. Features Socratic requirements discovery, task notes PRD management, AC cross-validation, and token-optimized iteration loops.",
     "developerName": "TreeX",
     "category": "Coding",
     "capabilities": [

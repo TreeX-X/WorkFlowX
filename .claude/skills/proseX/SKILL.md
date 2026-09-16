@@ -5,15 +5,15 @@ description: Shared writing standard for every WorkflowX document output. Refere
 
 # proseX
 
-Narrative documents (Agent Notes, Parent/Child prose, xstatus narrative, code entry comments, commit messages) follow this full standard. Structured contracts (Repair Packet, Integration Note, Bus Payload fields, AC checklists, registries, report contracts) follow §1 tense plus field completeness only; they are exempt from the narrative rules in §2, §4, and §9.
+Narrative documents (Agent Notes, task result notes, xstatus narrative, code entry comments, commit messages) follow this full standard. Structured contracts (Repair Packet, Integration Note, Bus Payload fields, AC checklists, registries, report contracts) follow §1 tense plus field completeness only; they are exempt from the narrative rules in §2, §4, and §9.
 
 `xdo` is exempt from gate timing, never from this standard.
 
 ## 1. Tense by artifact
 
 - `implemented/` Note: present tense, landed facts only. No `Proposal/Plan/Acceptance criteria`, no change narrative (`used to`/`no longer`/`now`). Regressions use present-tense counterfactuals: "without X, Y".
-- `proposed/` entry, Child AC, Repair Packet: future tense / imperative.
-- Parent/Child Change Notes, xstatus: present tense with date stamps, no process ledger (`round N`, `v3 history`).
+- `proposed/` entry, task AC, Repair Packet: future tense / imperative.
+- Task notes, xstatus: present tense with date stamps, no process ledger (`round N`, `v3 history`).
 - Commit message: imperative + Note path index. Rationale lives in the Note, never in the message.
 
 ## 2. Complete propositions
@@ -33,7 +33,7 @@ For each suspicious passage ask: **is this verifiable by a HEAD reader without t
 7. Vague placeholders: `should be fine` -> `TODO/FIXME` or an explicit boundary.
 8. Mixed working-language fragments -> translate or delete.
 
-Cross-artifact numbering ban: `implemented/` body must not reference Parent/Child identifiers or PR-process nouns (`follow-up PR`, `round N`). Provenance is answered by the atomic git commit, not the prose. `proposed/` drafts may note origin temporarily; strip on promotion.
+Cross-artifact numbering ban: `implemented/` body must not reference dispatch identifiers or PR-process nouns (`follow-up PR`, `round N`). Provenance is answered by the atomic git commit, not the prose. `proposed/` drafts may note origin temporarily; strip on promotion.
 
 Kept: issue refs, `TODO(name):`, merged-PR refs, suppression reasons, present-tense counterfactuals, measured bounds, runtime old/new states, committed doc numbers.
 
@@ -47,11 +47,11 @@ Kept: issue refs, `TODO(name):`, merged-PR refs, suppression reasons, present-te
 
 ## 5. One home per fact
 
-One fact lives in one place; everything else links there. Cross-Note refs use relative Markdown links, never bare numbers. Tree -> Notes by relative link plus one-line summary, never inlined prose. Code entry comment shape: `// Note: <one-line reason> — see <relative Note path>`, placed at public interfaces/type definitions/module tops/state-machine entries only.
+One fact lives in one place; everything else links there. Cross-Note refs use relative Markdown links, never bare numbers. Task notes link related notes by URI plus a one-line summary, never inlined prose. Code entry comment shape: `// Note: <one-line reason> — see <relative Note path>`, placed at public interfaces/type definitions/module tops/state-machine entries only.
 
 ## 6. Length principle
 
-No numeric budgets. A Note may be long or short; size follows the fact. Smell, not gate: one Note holding two decisions should split by judgment. Structural gates only: Parent §5/§6 and Child §3 allow links, not inlined decisions; Child derivation history belongs in the Proposal Pool.
+No numeric budgets. A Note may be long or short; size follows the fact. Smell, not gate: one Note holding two decisions should split by judgment. Structural gates only: task scope/acceptance/verification sections allow links, not inlined decisions; derivation history belongs in idea drafts.
 
 ## 7. Report shape
 

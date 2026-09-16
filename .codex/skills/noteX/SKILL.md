@@ -5,58 +5,48 @@ description: Repository-level decision assets for AI agents. Use when making a n
 
 # noteX
 
-Hybrid Tree plans the task. Notes keep the decision. Write the `why` and the `why-not` into the repo, in the same commit as the code, for the next agent that touches it.
+Task notes plan and track the work. Decision notes keep the reasoning. Write the `why` and the `why-not` into the repo, in the same commit as the code, for the next agent that touches it.
+
+Normative source is `standards/harness-note/1/` (schema, five kind templates, valid/invalid fixtures). This skill summarizes; the standard decides on conflict. Check the bundle with `node scripts/verify-harness-standard.mjs`; check dual-surface parity with `node scripts/sync-harness-rules.mjs --check --repos scripts/sync-repos.list`.
 
 Writing follows `proseX`. Prose quality is a human nod; structure below is checkable.
 
-## 1. Path is identity
+## 1. One asset, five kinds
 
-`.agents/notes/{lifecycle}/{class}/yyyy-mm-dd-topic.md`
+`.agents/notes/**/*.md`, one note per file. Identity is the frontmatter `id` (UUID), addressed as `note://<repo-id>/<note-id>`. Paths, titles, and states may move; identity never does.
 
-- Lifecycle: `proposed/` (idea, unbuilt) / `implemented/` (landed, atomic with code) / `rejected/` (declined, kept only to prevent repeats, else delete) / `archived/` (superseded, frozen read-only).
-- Date is first-proposed day; status carries no date. Status must match the folder.
-- Closed classes (6, never extend without updating checks): `feature` (user/agent-visible capability or non-obvious behavior choice) / `bug-fix` / `architecture` (shipped source structure, module boundaries, package links) / `process` (toolchain, gates, release around the code) / `testing` / `simplification` (removal only; behavior-preserving refactors live here, no separate `refactor`).
-- No `INDEX.md`. Paths are the index; a central index invites merge conflicts under parallel agents.
+- `idea`: hunches, questions, raw intent. Drafts stay light with unknowns explicit. Replaces the old Proposal Pool: park directions here, never in a second pool format.
+- `initiative`: product direction spanning repos, only when aggregation earns it.
+- `requirement`: needed behavior with stable `AC-n` acceptance clauses.
+- `decision`: trade-offs with options, cost, and revisit signals. Adoption and landing stay separate states.
+- `task`: bounded delivery with scope, acceptance refs, verification, dependencies, and the single `execution` state. No separate plan files exist.
+
+`class` (feature/bug-fix/architecture/process/testing/simplification) names the engineering area and never substitutes for kind. No `INDEX.md`. Paths are the index; a central index invites merge conflicts under parallel agents. Pre-S7 lifecycle-folder files still on disk are legacy: readable, never extended; new notes use flat layout with frontmatter lifecycle.
 
 ## 2. File shape
 
-First three lines are fixed:
-
-```markdown
-# Agent Note: <title>
-
-Status: <state>
-```
-
-`proposed` -> `Status: proposed`; `implemented` -> `Status: implemented`; `rejected` -> `Status: rejected — <one-line reason>`.
-
-Body skeletons (see `templates/`):
-
-- `proposed`: `## Problem` -> `## Proposal` -> `## Alternatives considered` -> `## Acceptance criteria` -> `## Risks`.
-- `implemented`: `## Problem` -> `## Decision` (present tense) -> `## Alternatives considered` -> `## Consequences`.
-- `rejected`: frozen proposal shape; verdict lives in the `Status:` line.
-
-Every Note requires `## Alternatives considered` with an explicit do-nothing/reuse option. `implemented/` forbids `Proposal/Plan/Acceptance criteria` sections.
+Frontmatter carries `schema: harness-note/1`, `id`, `kind`, `lifecycle`, `created`, plus kind-appropriate relations, scope, and execution fields per the standard. The body carries exactly one H1 title and the kind's English section names from `standards/harness-note/1/templates/`. Unknown top-level keys are preserved verbatim and reported, never executed.
 
 ## 3. When to write, update, or delete
 
 - If half a year from now someone asks "why not the simpler way", write.
 - Rename/move/default-value change on guarded code -> update the owning Note in place (facts, not a changelog appendix). 80% of maintenance is in-place sync, not new files.
-- New direction -> `proposed/` first, then `implemented/` with the code in one commit, plus one reverse comment at the code entry.
-- Declined in review -> `rejected/` or delete. Superseded fully -> new Note absorbs surviving reasons, old Note `git mv` to `archived/` plus inbound-link repair. Partially superseded -> both live, linked both ways.
+- New direction -> `idea`/`requirement`/`decision` draft first, then land with the code in one commit, plus one reverse comment at the code entry.
+- Execution state lives only in task notes. Small reversible changes with no lasting trade-off may land without a task note; lasting trade-offs, architecture choices, and non-obvious behavior always get one.
+- Declined in review -> `rejected` with a reason, or delete. Fully superseded -> the new Note absorbs surviving reasons and links both ways; partial overlap keeps both alive and linked.
 - Exempt (`not applicable`, no Note): pure formatting, unambiguous renames, typos, release tags, behavior-preserving dependency patches.
-- `xdo` lightweight path: small reversible changes with no lasting trade-off may land as an in-place sync of the owning Note (a short paragraph, not a new file) or as a Parent/Child Change Notes entry that links the commit. A full new `implemented/` Note is still required for lasting trade-offs, architecture choices, and non-obvious behavior.
 - When unsure whether to write, write.
 
 ## 4. Binding and linking
 
-- Each `implemented/` Note leaves one reverse comment at the core entry (public interface, type definition, module top, state-machine entry): `// Note: <reason> — see .agents/notes/...`. Never per-line.
-- Tree -> Notes by relative link plus one-line summary, never inlined prose. Notes never link to Parent/Child numbers; provenance lives in the atomic commit.
-- Same-commit rule: code + Note + entry comment + Tree update land together. Commit message carries the Note path.
+- Each `implemented/` decision leaves one reverse comment at the core entry (public interface, type definition, module top, state-machine entry): `// Note: <reason> — see .agents/notes/...`. Never per-line.
+- Notes link related notes by URI plus a one-line summary, never inlined prose. Provenance lives in the atomic commit.
+- Same-commit rule: code + Note + entry comment land together. Commit message carries the Note path.
 
-## 5. Mechanical checklist (until verify scripts land, the Main Agent checks by hand)
+## 5. Mechanical checklist (the verify script checks by hand until it lands, then it checks)
 
-- Path depth, lifecycle/class closed sets, filename date, no `INDEX.md`.
-- Header three lines, status matches folder, single status line, `## Problem` first.
-- Per-lifecycle required/forbidden sections, `Alternatives considered` present.
-- Relative Markdown links resolve; no `implemented/` body matches `parent|child|PR|v<digit>`.
+- Frontmatter schema/kind/lifecycle closed sets, single H1, required kind sections present.
+- `Alternatives considered` present with an explicit do-nothing/reuse option.
+- Stable `AC-n` ids, never renumbered; task refs point at note URI + AC id, never copied prose.
+- No second plan store (no Parent/Child files, no plans directory, no plan URIs).
+- Relative Markdown links resolve; `implemented/` bodies carry no dispatch identifiers or PR-process nouns.

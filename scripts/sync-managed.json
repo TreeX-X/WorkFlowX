@@ -1,0 +1,31 @@
+{
+  "$comment": "S7 managed rule pairs. Whole files must match after surface-token normalization; blocks compare marked sections only. Forbidden paths must be absent in the owning repo.",
+  "standard": { "manifest": "standards/harness-note/1/manifest.json", "version": "1.0.0-s1" },
+  "tokens": [".codex/", ".claude/"],
+  "pairs": [
+    { "id": "orchestrateX", "a": ".codex/skills/orchestrateX/SKILL.md", "b": ".claude/skills/orchestrateX/SKILL.md", "mode": "whole" },
+    { "id": "noteX", "a": ".codex/skills/noteX/SKILL.md", "b": ".claude/skills/noteX/SKILL.md", "mode": "whole" },
+    { "id": "proseX", "a": ".codex/skills/proseX/SKILL.md", "b": ".claude/skills/proseX/SKILL.md", "mode": "whole" },
+    { "id": "specX", "a": ".codex/skills/specX/SKILL.md", "b": ".claude/skills/specX/SKILL.md", "mode": "whole" },
+    { "id": "engineeringX", "a": ".codex/skills/engineeringX/SKILL.md", "b": ".claude/skills/engineeringX/SKILL.md", "mode": "whole" },
+    { "id": "auditX", "a": ".codex/skills/auditX/SKILL.md", "b": ".claude/skills/auditX/SKILL.md", "mode": "whole" },
+    { "id": "socratesX", "a": ".codex/skills/socratesX/SKILL.md", "b": ".claude/skills/socratesX/SKILL.md", "mode": "whole" },
+    { "id": "bus-payload", "a": ".codex/skills/orchestrateX/modules/02-bus-payload.md", "b": ".claude/skills/orchestrateX/modules/02-bus-payload.md", "mode": "whole" },
+    { "id": "req-discovery", "a": ".codex/skills/orchestrateX/modules/08-requirements-discovery.md", "b": ".claude/skills/orchestrateX/modules/08-requirements-discovery.md", "mode": "whole" },
+    { "id": "status-report", "a": ".codex/skills/orchestrateX/modules/07-status-report.md", "b": ".claude/skills/orchestrateX/modules/07-status-report.md", "mode": "whole" },
+    { "id": "coderX", "a": ".codex/agents/coderX.toml", "b": ".claude/agents/coderX.md", "mode": "blocks" },
+    { "id": "evaluatorX", "a": ".codex/agents/evaluatorX.toml", "b": ".claude/agents/evaluatorX.md", "mode": "blocks" }
+  ],
+  "forbidden": [
+    ".codex/skills/orchestrateX/hybrid-template.md",
+    ".claude/skills/orchestrateX/hybrid-template.md",
+    ".codex/skills/noteX/templates/proposal.md",
+    ".claude/skills/noteX/templates/proposal.md",
+    ".codex/skills/noteX/templates/proposed.md",
+    ".claude/skills/noteX/templates/proposed.md",
+    ".codex/skills/noteX/templates/implemented.md",
+    ".claude/skills/noteX/templates/implemented.md",
+    ".codex/skills/noteX/templates/rejected.md",
+    ".claude/skills/noteX/templates/rejected.md"
+  ]
+}

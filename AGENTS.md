@@ -16,9 +16,9 @@ Subagent dispatch follows `.codex/skills/orchestrateX/modules/09-dispatch-adapte
 
 When using prompt-spawn dispatch, Main Agent must emit the `WorkflowX Subagent Spawn Request` envelope from module 09 and require the returned `WorkflowX Subagent Receipt` before accepting the output as a verified subagent result.
 
-Before automatically dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`: Workflow Mode, Objective, Parent/Child paths, Acceptance Source, Allowed Scope, Required Skills, Verification, Output. Do not send vague implementation prompts to `coderX`.
+Before automatically dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`: Workflow Mode, Task URI, Objective, Goal Refs, Acceptance Refs, Allowed Scope, Applicable Decisions, Dependency Tasks, Standard Version, Required Skills, Verification, Output. Do not send vague implementation prompts to `coderX`.
 
-Before automatically dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`: Child Path, Changed Files, Acceptance Source, Review Focus, Output (test results plus a compact Failure Record on `NEEDS_FIX`). Do not send vague review prompts to `evaluatorX`.
+Before automatically dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.codex/skills/orchestrateX/modules/02-bus-payload.md`: Task URI, Changed Files, Acceptance Source, Review Focus, Output (test results plus a compact Failure Record on `NEEDS_FIX`). Do not send vague review prompts to `evaluatorX`.
 
 For code development, feature implementation, refactoring, or bug fixes:
 
@@ -39,7 +39,7 @@ Treat these natural-language prefixes as workflow commands:
 | Prefix | Meaning |
 |--------|---------|
 | `xflow` | Full-repo workflow: discovery -> implementation -> evaluation |
-| `xdel` | Hybrid Tree-backed delegated implementation; coderX self-reviews, no evaluatorX |
+| `xdel` | Task-note-backed delegated implementation; coderX self-reviews, no evaluatorX |
 | `xdo` | Main Agent direct execution; optional native parallelism only when explicitly requested |
 | `xstatus` | Generate workflow status report |
 
@@ -63,3 +63,14 @@ Automatically use the encrypted-source fallback when a file cannot be edited dir
 - Codex config: `.codex/config.toml`
 - Codex subagent definitions: `.codex/agents/`
 - Codex skills: `.codex/skills/`
+- Harness standard (normative): `standards/harness-note/1/`
+
+---
+
+## Project Assets
+
+- Identity lives in `.agents/harness.json` (repo id + pinned standard version).
+- Notes live in `.agents/notes/**/*.md`, one note per file, addressed by `note://<repo-id>/<note-id>`.
+- Locate work with host search (`rg`) over titles, ids, and code refs first; no persistent index or desktop is required.
+- Optional tooling (note checker, desktop canvas, built-in engine) never gates base work; a missing tool means the document flow, and a failed machine check never becomes a pass by downgrade.
+- This file is self-sufficient: never assume the reader also loads `CLAUDE.md`.

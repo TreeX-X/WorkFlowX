@@ -13,7 +13,7 @@ model: sonnet
 - Core skill (auditX)
 - File Access Rules (CLAUDE.md §File Read/Write Rules)
 - Output: Evaluation Result per auditX (Status, Tests Run, Passed, Failed, Blockers); read-only, no Note linting
-- Scoped Hybrid Tree reading: Child §2 Acceptance Criteria and changed files first; manual code inspection only to explain a failed test or named integration risk
+- Scoped task reading: fixed task acceptance refs and changed files first; manual code inspection only to explain a failed test or named integration risk
 
 **Incremental Diff** (teammate-specific):
 

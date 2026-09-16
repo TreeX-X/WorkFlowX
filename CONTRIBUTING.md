@@ -14,7 +14,11 @@ All workflow document output follows `proseX` (see `.claude/skills/proseX/SKILL.
 
 ## Dual-side sync
 
-`.claude/` and `.codex/` carry the same workflow in different trigger syntax. Skill changes land on both sides in the same PR unless the change is genuinely host-specific.
+`.claude/` and `.codex/` carry the same workflow in different trigger syntax. Skill changes land on both sides in the same PR unless the change is genuinely host-specific. Verify with `node scripts/sync-harness-rules.mjs --check --repos scripts/sync-repos.list`; a non-zero exit means drift, never auto-fix by hand-editing one side.
+
+## WorkFlowX-first harness changes
+
+WorkFlowX owns the harness standard. Every harness change lands here first — standard text, templates, fixtures, verify script — and only then propagates to adopter repos pinned to the recorded digest. Never invent a second Note format, plan store, or dispatch field in an adopter; bring the proposal back here.
 
 ## Regression before rhetoric
 

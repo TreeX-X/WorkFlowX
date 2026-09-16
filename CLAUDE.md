@@ -1,8 +1,8 @@
 # CLAUDE.md - WorkflowX Instructions
 
-> You are the Main Agent. Responsibilities: direct execution, optional native parallel coordination, routing, design, and Hybrid Tree management when required.
+> You are the Main Agent. Responsibilities: direct execution, optional native parallel coordination, routing, design, and task-note management when required.
 
-Capabilities: native reasoning, optional Hybrid Tree management, and native Agent coordination.
+Capabilities: native reasoning, optional task tracking, and native Agent coordination.
 
 ---
 
@@ -10,7 +10,7 @@ Capabilities: native reasoning, optional Hybrid Tree management, and native Agen
 
 > **Full specification**: `.claude/skills/orchestrateX/SKILL.md`
 >
-> **Execution rule**: `xdo` is direct work by the Main Agent and does not require a dispatch harness. Native parallel Agents are used only when the user explicitly requests parallel development. `xdel` delegates one Hybrid Tree task to coderX with self-review and no evaluatorX; `xflow` uses module 08 repository discovery, stage-batched socratesX clarification, and one Ready Summary confirmation before the full planning/evaluation workflow.
+> **Execution rule**: `xdo` is direct work by the Main Agent and does not require a dispatch harness. Native parallel Agents are used only when the user explicitly requests parallel development. `xdel` delegates one task note to coderX with self-review and no evaluatorX; `xflow` uses module 08 repository discovery, stage-batched socratesX clarification, and one Ready Summary confirmation before the full planning/evaluation workflow.
 
 Routing and mode recommendation are defined in `.claude/skills/orchestrateX/SKILL.md`.
 
@@ -22,8 +22,8 @@ Routing and mode recommendation are defined in `.claude/skills/orchestrateX/SKIL
 
 | Mode | Command | Behavior |
 |------|---------|----------|
-| `xflow` | `/xflow [-box] [-parallel] [-team]` | Full planning -> Hybrid Tree -> implementation -> evaluation |
-| `xdel` | `/xdel <requirement or Hybrid Tree>` | Hybrid Tree-backed one-shot coderX delegation with self-review |
+| `xflow` | `/xflow [-box] [-parallel] [-team]` | Full planning -> task notes -> implementation -> evaluation |
+| `xdel` | `/xdel <requirement or task note>` | Task-note-backed one-shot coderX delegation with self-review |
 | `xdo` | `/xdo [--parallel] <requirement>` | Main Agent direct work; parallel only when explicitly requested |
 
 **Agent dispatch**:
@@ -32,9 +32,9 @@ Agent({ subagent_type: "coderX", isolation: "worktree", prompt: "<Dispatch Paylo
 Agent({ subagent_type: "evaluatorX", isolation: "worktree", prompt: "..." })
 ```
 
-Before dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Workflow Mode, Objective, Parent/Child paths, Acceptance Source, Allowed Scope, Required Skills, Verification, and Output. Do not send vague implementation prompts to `coderX`.
+Before dispatching `coderX`, Main Agent must assemble the `Dispatch Payload: coderX Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Workflow Mode, Task URI, Objective, Goal Refs, Acceptance Refs, Allowed Scope, Applicable Decisions, Dependency Tasks, Standard Version, Required Skills, Verification, and Output. Do not send vague implementation prompts to `coderX`.
 
-Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Child Path, Changed Files, Acceptance Source, Review Focus, and Output (test results plus a compact Failure Record on `NEEDS_FIX`). Do not send vague review prompts to `evaluatorX`.
+Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload: evaluatorX Review Task` defined in `.claude/skills/orchestrateX/modules/02-bus-payload.md`, including Task URI, Changed Files, Acceptance Source, Review Focus, and Output (test results plus a compact Failure Record on `NEEDS_FIX`). Do not send vague review prompts to `evaluatorX`.
 
 ---
 
@@ -47,7 +47,17 @@ Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload:
 - `xdel` and `xflow` may dispatch `coderX` / `evaluatorX` according to their mode rules; `xdo` does not require dispatch.
 - No fixed iteration loop or mandatory harness is imposed by the base workflow.
 - No `EnterPlanMode` during active workflow.
-- WorkflowX components: agents (`.claude/agents/`), skills (`.claude/skills/`).
+- WorkflowX components: agents (`.claude/agents/`), skills (`.claude/skills/`), standard (`standards/harness-note/1/`).
+
+---
+
+## Project Assets
+
+- Identity lives in `.agents/harness.json` (repo id + pinned standard version).
+- Notes live in `.agents/notes/**/*.md`, one note per file, addressed by `note://<repo-id>/<note-id>`.
+- Locate work with host search (`rg`) over titles, ids, and code refs first; no persistent index or desktop is required.
+- Optional tooling (note checker, desktop canvas, built-in engine) never gates base work; a missing tool means the document flow, and a failed machine check never becomes a pass by downgrade.
+- This file is self-sufficient: never assume the reader also loads `AGENTS.md`.
 
 ---
 
