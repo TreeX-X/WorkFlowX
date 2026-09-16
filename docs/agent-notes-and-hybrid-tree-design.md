@@ -1,6 +1,7 @@
 # Hybrid Tree 与 Agent Notes 分工及改造设计
 
 > 状态：理解沉淀 + 改造预告（未实施）。记录日期：2026-09-10。
+> S1 注：本文为历史设计存档，非运行规范；运行以 skills 与 `standards/harness-note/1/` 为准，新规则在 S9 切流前不生效。
 > 来源：`czm15053/write-notes-like-deepseek`（萃取自 `deepseek-ai/deepseek-harness` 的 `.agents/notes/` 体系）与本仓库现有 `orchestrateX / engineeringX / auditX / socratesX / hybrid-template.md`、`WORKFLOW-EVOLUTION-PLAN.md` 的对照讨论。
 > 配套细则分别见 JanusX 侧 `docs/idea/DeepSeek-Agent-Notes方法论提纯与来源记录.md` 与 `docs/idea/JanusX工程理解与工作流分析.md`。
 

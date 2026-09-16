@@ -1,0 +1,7 @@
+{
+  "hashFixture": {
+    "fixture": "fixtures/valid-task.md",
+    "algorithm": "taskContractHash v1 (S1 candidate): input {schema,id,kind,title,repositories,relations,work,sections}; relations keep implements/depends-on/governed-by only; sections keep Scope/Acceptance criteria/Verification verbatim; recursive key sort; set-arrays sorted by canonical JSON; verification order preserved; CRLF->LF; AC checkbox normalized to [ ]; UTF-8 compact JSON -> SHA-256 hex. execution/tags/parent/Results/provenance excluded.",
+    "taskContractHash": "73e315502bb2e0678461ba859f4d16d73c101bdd55d2c167ecbee36eae1b8ae6"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://workflowx.local/standards/harness-note/1/bundle.schema.json",
+  "title": "harness-bundle/1",
+  "description": "S1 candidate transcription of contract C6. Artifacts reference operationId only; no forked prose.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "id", "revision", "producer", "artifacts", "changeSet", "coverage", "unresolved"],
+  "properties": {
+    "schema": { "const": "harness-bundle/1" },
+    "id": { "type": "string" },
+    "revision": { "type": "integer", "minimum": 1 },
+    "producer": {
+      "type": "object",
+      "required": ["type", "id", "revision"],
+      "properties": {
+        "type": { "enum": ["roundtable", "chat", "harness", "manual"] },
+        "id": { "type": "string" },
+        "revision": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["artifactId", "operationId", "sourceRefs"],
+        "properties": {
+          "artifactId": { "type": "string" },
+          "operationId": { "type": "string" },
+          "sourceRefs": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "changeSet": { "type": "object" },
+    "coverage": { "type": "object" },
+    "unresolved": { "type": "array", "items": { "type": "string" } }
+  }
+}
