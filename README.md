@@ -13,9 +13,9 @@
 **一个纯文件驱动的多智能体协作框架 —— 把"和 AI 聊天写代码"升级为"有规划、有验收、可追踪"的工程流程**
 
 [![License](https://img.shields.io/badge/License-MIT-2A211B?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-8-FF5A1F?style=for-the-badge)](#深入设计)
-[![Agents](https://img.shields.io/badge/Agents-7-FF8A24?style=for-the-badge)](#深入设计)
-[![Modules](https://img.shields.io/badge/Modules-8-4A4038?style=for-the-badge)](#深入设计)
+[![Skills](https://img.shields.io/badge/Skills-7-FF5A1F?style=for-the-badge)](#深入设计)
+[![Agents](https://img.shields.io/badge/Agents-2-FF8A24?style=for-the-badge)](#深入设计)
+[![Modules](https://img.shields.io/badge/Modules-6-4A4038?style=for-the-badge)](#深入设计)
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-FF5A1F?style=flat-square&logo=anthropic&logoColor=white)
 ![Codex](https://img.shields.io/badge/Codex-Skill-2A211B?style=flat-square&logo=openai&logoColor=white)
@@ -28,17 +28,17 @@
 
 WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍然只和一个主代理对话，但它不再“边聊边写”：
 
-- **Main Agent 直接编排**：负责路由、需求发现、方案确认、Hybrid Tree 文档写入和任务派发。
-- **coderX 只负责实现**：读取需求文档和执行指令，写代码，返回结构化 Change Summary。
-- **evaluatorX 独立验收**：读取真实代码与 diff，对照验收标准逐条核验，失败就生成修复指令。
-- **Hybrid Tree 记账**：Parent + Child 文档树沉淀范围、AC、文件索引、依赖、评估结果和状态。
+- **Main Agent 直接编排**：负责路由、需求发现、方案确认、task note 写入（`.agents/notes/`）、调度、文档更新和最终验证。
+- **coderX 只负责实现**：读取派发 Task、固定验收引用和允许范围，遵循 `engineeringX + specX` 写代码，自审后返回 Change Summary 与 Note 草稿。
+- **evaluatorX 独立验收（仅 xflow）**：测试驱动，只读不改，按固定 AC 建最小可执行测试集并运行，输出 `PASS / NEEDS_FIX / UNEVALUABLE`。
+- **Task notes 记账**：`.agents/notes/` 按 `harness-note/1` 规范沉淀 `idea / initiative / requirement / decision / task`，范围、AC、文件索引、依赖、验证记录和唯一的 `execution` 状态各归其位。
 
-> 最新架构中没有 `orchestratorX` 子代理。编排职责由 Main Agent 直接承担；执行代理只通过结构化 Payload 交接。
+> 当前架构没有 `orchestratorX` 子代理，也没有独立 `routeX` skill：路由已合并进 `orchestrateX`，编排由 Main Agent 直接承担；`xdel / xflow` 只通过结构化 Payload 交接。旧 `.hybrid/` 文档与 MCP / `promptX` / `noiseX` 属于重构前历史，不再作为运行依据。
 
 <p align="center">
   <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xflow 工作流演示" width="880" />
   <br/>
-  <sub>一次完整 xflow：需求发现 → Hybrid Tree → coderX → evaluatorX → 最终收口</sub>
+  <sub>一次完整 xflow：仓库发现 → socratesX → Ready Summary → task notes → coderX → evaluatorX → 分级修复 → 原子收口</sub>
 </p>
 
 ---
@@ -49,12 +49,12 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 
 | 痛点 | WorkflowX 的处理方式 |
 |---|---|
-| **上下文越聊越乱** | Main Agent 维护状态，执行代理独立上下文工作，只通过 Payload 传递必要信息 |
-| **需求散落在聊天里** | 需求落到 Hybrid Tree，变更只改对应 Section，受影响 Child 重新进入循环 |
-| **AI 自称完成但没达标** | evaluatorX 不信任 coderX 自述，独立读代码、读 diff、逐条核对 AC |
-| **编码后才发现需求误解** | xflow 先做代码探索、苏格拉底式追问和主动质疑，再进入文档生成 |
-| **多轮迭代 Token 成本高** | 分区缓存、干叶分离、
-| **并行任务相互覆盖** | worktree 隔离 + Child 责任边界 + 跨分支违规检测 |
+| **上下文越聊越乱** | Main Agent 维护状态，执行代理独立上下文工作，只通过 Payload 传递必要信息；后续 task 只传相关契约、文件、失败与风险，不回传完整历史 |
+| **需求散落在聊天里** | 需求落到 5 类 task notes（一事一文件，URI 寻址），变更只改对应 note，受影响 task 按依赖重新调度 |
+| **AI 自称完成但没达标** | evaluatorX 不信任 coderX 自述，独立建测试并运行，逐条核对固定 AC，输出测试结果与失败记录 |
+| **编码后才发现需求误解** | xflow 先做仓库事实探索（module 08）、按阶段批量澄清的 socratesX 追问和主动质疑，经 Ready Summary 确认后才建 note |
+| **多轮迭代 Token 成本高** | 单文件承载范围/验收/验证、关联笔记只用 URI + 一行摘要链接、派发与修复包只带最小上下文 |
+| **并行任务相互覆盖** | 无全局锁，派发前只做同目标冲突检查；worktree 隔离（宿主支持时）+ task 责任边界 |
 
 ---
 
@@ -67,22 +67,22 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 │
 ▼
 Main Agent
-├─ RouteX：结合完整输入和当前会话上下文决定继续、探索或启动工作流
-├─ xdo：主 Agent 直接工作，按需使用 engineeringX
-├─ xdel：基于 Hybrid Tree 委托 coderX 一次完成并自审
-└─ xflow：需求发现、Hybrid Tree、派发与独立评估
+├─ orchestrateX 路由：显式命令优先，否则按影响范围推荐；模糊时摆出三选一，进入模式后不再悄悄切换
+├─ xdo：主 Agent 直接工作，engineeringX + 自审；原子落盘（代码 + Note + 入口反向注释，一次 commit）
+├─ xdel：基于已验收 task note 单次委托 coderX（engineeringX + specX + 自审），带回 Note 草稿，不触发 evaluatorX
+└─ xflow：仓库发现 → socratesX → Ready Summary → task notes → 按依赖派发与独立评估
         │
-        ├─ coderX：实现并输出 Change Summary
-        └─ evaluatorX：独立验收并输出 Evaluation Result
+        ├─ coderX：单 task 实现并输出 Change Summary + Note 草稿
+        └─ evaluatorX：按固定 AC 建最小测试集并运行，输出 Evaluation Result
 ```
 
 <p align="center">
   <img src="docs/assets/01-architecture-zh.png" alt="WorkflowX Main Agent 编排架构" width="880" />
   <br/>
-<sub>Main Agent 默认直接工作；复杂模式按需使用 coderX / evaluatorX</sub>
+<sub>Main Agent 默认直接工作；复杂模式按需使用 coderX / evaluatorX（evaluatorX 仅 xflow）</sub>
 </p>
 
-一句话：**Main Agent 默认直接工作，engineeringX 提供实现原则与自审，复杂任务再使用 Hybrid Tree 和评估链。**
+一句话：**Main Agent 默认直接工作，engineeringX 提供实现原则与自审，复杂任务再使用 task notes、派发契约和测试驱动的评估链。原子落盘与 proseX 写作规范对三模式通用（门控时机为例外，标准本身无例外）。**
 
 ---
 
@@ -110,15 +110,15 @@ xdo 实现用户登录功能，支持邮箱密码和 OAuth
 
 ## 三种模式
 
-按改动影响范围选择。拿不准时直接描述需求，RouteX 会结合状态推荐模式。
+按改动影响范围选择。拿不准时直接描述需求，Main Agent 会结合状态推荐模式。
 
 | 模式 | 适用场景 | 规划方式 | 验收循环 | 示例 |
 |---|---|---|---|---|
-| **`xdo`** | 主 Agent 直接工作 | engineeringX；用户明确要求时才并行 | 主 Agent 自审与验证 | `xdo 给 Config 加超时配置` |
-| **`xdel`** | Hybrid Tree-backed 局部委托 | coderX 一次实现并自审 | 不触发 evaluatorX | `xdel 修复订单列表分页 bug` |
-| **`xflow`** | 新功能、跨模块重构、高影响任务 | 需求发现 → Hybrid Tree | coderX + evaluatorX | `xflow 实现订单中心` |
+| **`xdo`** | 主 Agent 直接工作 | engineeringX；task note 与 harness 可选；并行仅在用户明确要求时 | 主 Agent 自审与验证；原子落盘 | `xdo 给 Config 加超时配置` |
+| **`xdel`** | 单 task 可追溯委托 | 使用已验收 task note（无则新建）；coderX 一次实现并自审，带回 Note 草稿 | 不触发 evaluatorX；独立复核只在明确要求时单开 | `xdel 修复订单列表分页 bug` |
+| **`xflow`** | 新功能、跨模块重构、高影响任务 | 仓库发现 → socratesX → Ready Summary → task notes，按依赖执行 | 每个 task 后触发 evaluatorX；局部缺陷默认最多一次最小修复重派发 | `xflow 实现订单中心` |
 
-常用参数：`-box demo` 在沙箱分支隔离执行；并行必须由用户明确要求，具体调度由主 Agent 自主决定。
+常用参数：`-box demo` 在沙箱分支隔离执行；并行必须由用户明确要求，具体调度、共享文件协调与集成收口由 Main Agent 负责。已无 `-N` 轮数与 `-team` 参数，不存在固定迭代循环。
 
 <p align="center">
   <img src="docs/assets/05-capabilities-zh.png" alt="WorkflowX 模式与能力矩阵" width="880" />
@@ -130,46 +130,49 @@ xdo 实现用户登录功能，支持邮箱密码和 OAuth
 
 以 `xflow 实现用户登录功能` 为例，流程是：
 
-1. **入口路由**：Main Agent 根据命令、用户输入和当前会话上下文路由；Hybrid Tree 作为持久的工作流事实来源。
-2. **环境初始化**：按需使用沙箱或明确请求的并行能力。
-3. **代码探索**：先搜索项目结构、相关模块和已有约束，形成文件索引。
-4. **需求发现**：用 socratesX 一次一题澄清边界，并主动挑战矛盾、遗漏和技术风险。
-5. **Hard Gate 确认**：用户确认方案后才允许进入文档生成。
-7. **生成 Hybrid Tree**：Main Agent 写 Parent / Child，包含范围、AC、依赖和文件索引。
-8. **coderX 实现**：按 Child AC 写代码，完成后输出 Change Summary Payload。
-9. **evaluatorX 验收**：独立读 diff 和代码，输出 AC 状态、问题等级和修复指令。
-10. **收口**：Main Agent 汇总评估、更新文档并处理最后 Child 的必要修复。
+1. **入口路由**：Main Agent 按显式命令、完整输入和当前会话上下文路由；task notes（`.agents/notes/`）是持久的工作流事实来源，进入模式后不再悄悄切换。
+2. **环境初始化**：轻量自检，无全局锁；遗留 `.hybrid/.workflow-lock` 存在则删除后继续；派发前只做同目标冲突检查，按需使用沙箱或明确请求的并行能力。
+3. **仓库事实探索（module 08）**：搜索项目结构、相关模块、依赖、约束与既有约定，区分已证事实与未知项，形成文件索引，不做第二遍用户访谈。
+4. **需求澄清（socratesX，仅 xflow）**：按目标范围、行为边界、实现方向、验证上线分阶段批量提问，只问能改变范围/架构/行为/AC/依赖/风险的问题；有真实取舍才给选项，否则直接问。
+5. **Ready Summary 确认门**：信息充分时只提交一次 Ready Summary（目标、范围、非目标、约束、任务边界、影响文件、验证方式与风险），确认后才允许建 note；已确认事项不重复确认。
+6. **生成 task notes**：Main Agent 写 `requirement / task / decision`（另有 `idea / initiative` 承载方向），包含范围、稳定 `AC-n`、依赖、文件索引与验证方向；派发依赖的事实必须先落字，口头约定不进派发。
+7. **coderX 实现**：按 task 固定验收引用与允许范围写代码，遵循 `engineeringX + specX`，自审后输出 Change Summary 与 Note 草稿（新建 `implemented/` 或原位同步）。
+8. **evaluatorX 验收**：按固定 AC 建最小可执行测试集并运行，输出 `PASS / NEEDS_FIX / UNEVALUABLE`、测试命令、失败用例、观察结果、可能原因、修复范围与回归风险；只读不改。
+9. **收口**：Main Agent 分级修复（局部缺陷用 Repair Packet 同 task 最多自动重派发一次；跨 task 用 Integration Note 交给后续 task；架构/范围问题直修或改 note），`UNEVALUABLE` 缩小范围、补检查或显式记风险承接，预算耗尽则停下交还用户；代码 + Note + 入口反向注释一次 commit，写作遵循 `proseX`。
 
 ---
 
 ## 深入设计
 
 <details>
-<summary><b>Hybrid Tree：结构化需求文档树</b></summary>
+<summary><b>Task notes：结构化任务资产</b></summary>
 
-Hybrid Tree 是 WorkflowX 的事实来源：
+Task notes（`.agents/notes/`，规范见 `standards/harness-note/1/`）是 WorkflowX 的事实来源，一事一文件，以 frontmatter `id`（UUID）寻址为 `note://<repo-id>/<note-id>`：
 
 | 文档 | 作用 |
 |---|---|
-| **Parent** | 全局范围、NFR、DoD、路由表、共享文件索引、知识图谱概要、Child 状态聚合 |
-| **Child** | 子任务范围、验收标准 AC、私有文件索引、实现摘要、评估结果和迭代记录 |
+| **idea** | 直觉、问题与 raw intent；方向先停车，不阻塞 Ready Summary |
+| **initiative** | 跨仓产品方向，聚合有收益时才建 |
+| **requirement** | 所需行为与稳定的 `AC-n` 验收条款（永不重编号） |
+| **task** | 有界交付：范围、验收引用、验证记录、依赖与唯一的 `execution` 状态 |
+| **decision** | 取舍：选项、成本与重访信号；`Alternatives` 必含什么都不做/复用项 |
 
-Main Agent 是唯一文档写入者。coderX 和 evaluatorX 只读文档、输出 Payload，避免多个代理同时改同一份事实来源。
+Main Agent 拥有路由、调度、文档更新与最终验证。coderX 只读派发与验收引用并自审输出 Change Summary + Note 草稿；evaluatorX 只读并跑测试，不改代码与文档。无中央索引、无 Parent/Child 文件、无 plans 目录；关联笔记用 URI + 一行摘要链接，不内联长文。每个 `implemented/` 决策在核心入口留一条反向注释，代码 + Note + 注释同 commit 落盘，提交信息携带 Note 路径。旧 `.hybrid/` 与旧命名一律只读参考，不迁移。
 
 </details>
 
 <details>
-<summary><b>AC 交叉验证：评估员不信任程序员</b></summary>
+<summary><b>AC 交叉验证：评估员不信任程序员（测试驱动）</b></summary>
 
-evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是：
+evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是（`auditX`，仅 xflow，只读）：
 
-1. 读取 Child 的验收标准；
-2. 读取 git diff 和相关源码；
-3. 对每条 AC 标记 `pass / partial / fail / unevaluable`；
-4. 输出 P0/P1/P2 问题和可执行修复指令；
-5. 由 Main Agent 更新文档并决定是否回流。
+1. 读取 task 的固定验收引用（固定版本）；
+2. 为每条适用 AC 建可执行测试并运行最小有用集合；
+3. 对结果标记 `PASS / NEEDS_FIX / UNEVALUABLE`；
+4. 输出测试命令、失败用例、观察结果、可能原因、修复范围、回归风险与阻塞项；
+5. 由 Main Agent 分级修复并更新文档。
 
-这让“AI 说完成了”变成“独立质量门确认完成”。
+这让“AI 说完成了”变成“独立质量门确认完成”。无可运行测试路径时报 `UNEVALUABLE`，绝不谎称通过。
 
 </details>
 
@@ -182,32 +185,35 @@ evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是：
 
 | 层 | 策略 | 作用 |
 |---|---|---|
-| **L1 分区缓存** | 稳定区置顶，动态区置底覆写 | 提高 Prompt Cache 命中率 |
-| **L2 干叶分离** | Markdown 只保留需求树干，实体关系存于知识文件 | 减少文档体积 |
-| **L3 记忆快照** | Hybrid Tree 存摘要和指针，完整节点持久化到知识文件 | 跨会话复用事实 |
+| **L1 单文件归位** | 范围、验收、验证同处一文件；`xdo` 无 Payload，不为小事建契约 | 一处事实只读一处，不反复翻文档 |
+| **L2 链接代替内联** | 关联笔记只用 URI + 一行摘要链接，不贴长文 | 文档更薄，跨会话可复用 |
+| **L3 最小派发** | 派发与 Repair Packet 只带失败测试、相关文件、接口约束与风险摘要；后续 task 不回传完整历史 | 修复只带必要上下文，默认最多一次自动重派发 |
 </details>
 
 <details>
-<summary><b>RouteX 与工作流上下文</b></summary>
+<summary><b>orchestrateX 路由与工作流上下文</b></summary>
 
-所有输入根据完整提示词和当前会话上下文路由：
+路由已合并进 `orchestrateX`，无独立 skill。所有输入按完整提示词和当前会话上下文路由：
 
-| 路由 | 触发条件 | 处理方式 |
-|---|---|---|
-| **Route 0** | 当前已有活跃工作流 | 把用户输入作为当前流程的一部分，支持需求增量变更 |
-| **Route 1** | 只读探索、搜索、git、配置操作 | 直接处理，不派 coderX |
-| **Route 2** | 有编码意图且无活跃工作流 | 分析范围，推荐 xdo / xdel / xflow |
-| **Route 3** | 显式 `xdo` / `xdel` / `xflow` 命令 | 按指定模式立即进入 |
+| 显式命令 | `xdo / xdel / xflow / xstatus` 优先 | 按指定模式立即进入 |
+| 无显式命令 | 高影响、跨模块或不确定 | 推荐 `xflow`；本地清晰工作推荐 `xdel`，否则 `xdo` |
+| 拿不准 | 模式模糊 | 摆出三选一，不悄悄代选 |
+| 进行中 | 已有活跃工作流 | 后续输入留在当前模式，支持需求增量变更 |
 
-工作流连续性来自当前会话上下文和 Hybrid Tree 文档。
+默认即行动：“能不能 / 我想 / 帮我”类意图就是执行令，做完可评审结果再问；审批是最后一步，不为只读、可逆与已授权工作加前置确认。并行永远不隐式触发。
+
+工作流连续性来自当前会话上下文和 task notes 文档。
 
 </details>
 
 <details>
 <summary><b>其他内置能力</b></summary>
 
-- **engineeringX**：以最小改动、简单实现和完成前自审约束实现质量。
-- **xstatus**：生成高保真 HTML 工作流状态报告。
+- **engineeringX**：最小改动、简单实现、完成前自审；未跑过的检查标未跑，不谎称通过。
+- **specX**：coderX 专用契约阅读规则（`xdel / xflow` 才加载），越界回 scope-change request。
+- **socratesX**：仅 `xflow` 前置澄清与 Ready Summary，用户不点名时 `xdo / xdel` 不调用。
+- **noteX + proseX**：决策资产与写作标准；`xdo` 免门控时机，不免写作标准。
+- **xstatus**：只读扫描 `.agents/notes/` 生成高保真 HTML 状态报告，忽略遗留格式。
 
 ```bash
 xstatus
@@ -222,24 +228,24 @@ xstatus --output ./reports/today.html
 
 | 平台 | 配置目录 | 触发方式 | 并行模式 |
 |---|---|---|---|
-| **Claude Code** | `.claude/` | `/xflow` `/xdel` `/xdo` `/xstatus` | `xdo` 仅在用户明确要求时并行 |
-| **OpenAI Codex** | `.codex/` | 自然语言前缀：`xflow` `xdel` `xdo` `xstatus` | `xdo` 默认主智能体直接执行 |
+| **Claude Code** | `.claude/` | `/xflow` `/xdel` `/xdo` `/xstatus` | 并行仅在用户明确要求时；`Agent()` 原生派发，支持时用 worktree，否则记录后共享执行 |
+| **OpenAI Codex** | `.codex/` | 自然语言前缀：`xflow` `xdel` `xdo` `xstatus` | `xdo` 默认主智能体直接执行；原生工具可用则直调，否则用 prompt-spawn 信封 + 回执，缺工具时报 degraded 不伪装执行 |
 
-两套配置共享同一套工作流思想，但会根据宿主工具能力调整触发语法、子代理调用方式和并行能力。
+两套配置逻辑同源（路由、三模式、分级修复一致），仅 skill 路径、触发语法与派发适配器不同。核心 skill：`orchestrateX / socratesX / engineeringX / specX / auditX / noteX / proseX`；执行代理：`coderX / evaluatorX`；`orchestrateX` 模块：`01 / 02 / 05 / 07 / 08 / 09`。
 
 ---
 
 ## 框架对比
 
-完整对比见 [comparison-report.md](docs/comparison-report.md)。
+完整对比见 [comparison-report.md](docs/comparison-report.md)（历史快照，部分旧模式与评分不再反映现行 `xdo / xdel / xflow` 架构）。
 
 | 能力 | WorkflowX | Superpowers | OMC |
 |---|:---:|:---:|:---:|
-| Hybrid Tree 需求追踪 | 独有 | 不支持 | 不支持 |
-| AC 交叉验证 | 独有 | 不支持 | 不支持 |
-| Phase 1 需求发现 + 主动质疑 | 强 | 基础 | 基础 |
-| Token 增量优化 | 系统化 | 部分 | 部分 |
-| Worktree 隔离与跨分支检测 | 支持 | 部分 | 部分 |
+| Task note 需求追踪（5 类 + harness 规范） | 独有 | 不支持 | 不支持 |
+| 测试驱动的 AC 独立验收 | 独有 | 不支持 | 不支持 |
+| 仓库发现 + socratesX + Ready Summary | 强 | 基础 | 基础 |
+| 最小上下文派发与修复包 | 系统化 | 部分 | 部分 |
+| 同目标冲突检查 + worktree 隔离 | 支持 | 部分 | 部分 |
 | 状态报告可视化 | 内置 xstatus | 不同实现 | 不同实现 |
 
 ---

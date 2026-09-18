@@ -2018,150 +2018,144 @@
     const i18n = {
       zh: {
         archTitle: "Main Agent 拥有流程与事实",
-        archSub: "WorkflowX 的核心不是多代理堆叠，而是单一编排者、单一文档写入者，以及通过 Payload 连接的实现与验收闭环。",
+        archSub: "WorkflowX 的核心不是多代理堆叠，而是单一编排者、单一事实源，以及通过 Payload 连接的实现与验收闭环。",
         tokenTitle: "把长对话拆成可控预算",
-        tokenSub: "稳定区缓存、干叶分离、记忆快照与 noiseX 降噪，让多轮迭代不再把上下文反复塞满。",
+        tokenSub: "单文件归位、链接代替内联、最小派发，让多轮迭代不再把上下文反复塞满。",
         capTitle: "按影响范围选择工作流入口",
-        capSub: "xunit、xlocal、xwhole、xwhole -parallel 共享同一套 Hybrid Tree 与 AC 验收模型，只改变规划深度和并行度。",
-        workflowTitle: "一次 xwhole 从路由到需求全通过",
-        workflowSub: "RouteX 路由上下文、资源初始化、代码探索、苏格拉底式需求发现、Hybrid Tree、coderX、evaluatorX 与 engineeringX 自审。",
+        capSub: "xdo、xdel、xflow 共享同一套 task notes 与 AC 验收模型，只改变规划深度和评估强度。",
+        workflowTitle: "一次 xflow 从路由到全部 AC 通过",
+        workflowSub: "orchestrateX 路由、仓库发现、socratesX 澄清、Ready Summary、task notes、coderX、evaluatorX 与分级修复。",
         labelArch: "架构",
         labelToken: "Token 预算",
         labelCap: "能力矩阵",
         labelFlow: "工作流演示",
-        chips: ["RouteX", "Module 08", "Hybrid Tree", "coderX", "evaluatorX"],
+        chips: ["orchestrateX", "Module 08", "task notes", "coderX", "evaluatorX"],
         nodes: {
-          command: ["用户 / 指令", "xwhole / xlocal / xunit", "进入路由上下文，不直接写代码"],
-          status: ["路由上下文", "Conversation + Hybrid Tree", "active workflow / direct / command"],
-          coder: ["实现代理", "coderX", "读取 Child AC，写代码，返回 Change Summary"],
-          evaluator: ["验收代理", "evaluatorX", "不信任自述，读 diff 与代码逐条核对 AC"],
-          prompt: ["辅助技能", "promptX / noiseX", "把粗需求与规划噪声转成可执行信号"]
+          command: ["用户 / 指令", "xdo / xdel / xflow", "进入路由，不直接写代码"],
+          status: ["路由", "orchestrateX 内置", "显式优先 / 模糊三选一 / 进行中不切换"],
+          coder: ["实现代理", "coderX", "读固定 AC，写代码，自审后返回 Change Summary + Note 草稿"],
+          evaluator: ["验收代理", "evaluatorX · 仅 xflow", "测试驱动，不改代码，只输出 PASS / NEEDS_FIX / UNEVALUABLE"],
+          prompt: ["前置与契约", "socratesX / Payload", "xflow 才澄清；派发只带最小上下文"]
         },
         core: {
           title: "Main Agent",
-          sub: "唯一编排者，唯一 Hybrid Tree 文档写入者",
+          sub: "唯一编排者，task notes 唯一写入者",
           orbit: [
-            ["RouteX", "路由上下文"],
-            ["Module 08", "读代码 / 澄清"],
-            ["Phase 2", "写 Parent / Child"],
-            ["Core Loop", "派发 / 验收 / 记账"]
+            ["路由", "显式优先"],
+            ["发现", "module 08 + socratesX"],
+            ["记账", "写 task notes"],
+            ["闭环", "派发 / 验收 / 分级修复"]
           ],
           data: [
-            ["Hybrid Tree", "范围、AC、依赖、文件索引、迭代状态"],
-            ["MCP Memory", "跨会话事实与知识图谱摘要"],
-            ["Worktree", "隔离执行，降低并行污染"]
+            ["task notes", "范围、AC、依赖、文件索引、验证记录"],
+            ["harness-note/1", "5 类文档 + UUID 寻址"],
+            ["同目标检查", "无全局锁，worktree 隔离"]
           ]
         },
         token: {
-          big: "40-60%",
-          body: "多轮工作流从重复塞满上下文，变成稳定区缓存、动态区刷新、记忆按需取回。",
+          big: "更少上下文",
+          body: "多轮工作流从重复塞满上下文，变成一处事实只读一处、关联只留链接、修复只带必要信息。",
           layers: [
-            ["L1", "分区缓存", "稳定区置顶，动态区置底覆写，提高 Prompt Cache 命中率。", "首轮后节省"],
-            ["L2", "干叶分离", "Markdown 保留需求树干，实体关系交给 MCP 知识图谱。", "更薄文档"],
-            ["L3", "记忆快照", "Hybrid Tree 存摘要和指针，完整节点持久化到 server-memory。", "跨会话复用"]
+            ["L1", "单文件归位", "范围、验收、验证同处一文件；xdo 无 Payload，不为小事建契约。", "一处一读"],
+            ["L2", "链接代替内联", "关联笔记只用 URI + 一行摘要链接，不贴长文。", "更薄文档"],
+            ["L3", "最小派发", "派发与修复包只带失败测试、相关文件、接口约束与风险摘要。", "按需修复"]
           ]
         },
         modes: [
-          ["xunit", "单元任务", "单文件、小改动；promptX 到 coderX，默认不评估。", "最快"],
-          ["xlocal", "局部任务", "1-2 个模块，复用或生成最小 Hybrid Tree。", "局部"],
-          ["xwhole", "全局任务", "需求发现、方案确认、文档生成、编码验收循环。", "完整"],
-          ["xwhole -parallel", "并行团队", "按 Child 拆分，多 coder / evaluator 并行推进。", "并行"]
+          ["xdo", "直接执行", "主 Agent 直接工作，engineeringX + 自审，原子落盘。", "最快"],
+          ["xdel", "单次委托", "凭已验收 task note 单次派发 coderX，不触发评估。", "可追溯"],
+          ["xflow", "全流程编排", "发现、确认、文档、逐个实现与独立评估、分级修复。", "完整"]
         ],
         caps: [
-          ["Hybrid Tree", "Parent + Child 文档承载范围、AC、依赖、文件索引和状态。"],
-          ["AC 交叉验证", "evaluatorX 独立读代码和 diff，不采信 coderX 的完成声明。"],
-          ["上下文降噪", "noiseX 在 Phase 1 到 Phase 2 之间提取干净信号。"],
-          ["提示预处理", "promptX / promptMasterX 把粗需求转成 coderX 可执行输入。"],
-          ["Worktree 隔离", "执行代理在独立目录工作，降低覆盖和跨分支污染。"],
-          ["xstatus 可视化", "从 Hybrid Tree 与 git 活动生成高保真状态报告。"]
+          ["task notes", "idea / initiative / requirement / decision / task 各归其位，URI 寻址。"],
+          ["AC 独立验收", "evaluatorX 测试驱动，不采信 coderX 的完成声明。"],
+          ["socratesX 前置", "仅 xflow 分阶段批量澄清，经 Ready Summary 才建 note。"],
+          ["engineeringX + specX", "最小改动、简单实现、完成前自审；越界回 scope-change。"],
+          ["同目标检查", "无全局锁，派发前只查同文件同 note 冲突，支持时 worktree 隔离。"],
+          ["xstatus 可视化", "只读扫描 task notes，生成高保真 HTML 状态报告。"]
         ],
         steps: [
-          ["RouteX 路由", "命令进入状态门，选择 xwhole 路径"],
-          ["环境初始化", "加载 MCP / worktree / 参数"],
-          ["工程索引", "扫描文件与约束"],
-          ["需求发现", "问答、质疑与代码搜索联动"],
-          ["方案确认", "Hard Gate 通过"],
-          ["生成 Hybrid Tree", "Parent / Child / AC 文档树"],
-          ["noiseX 去噪", "剔除噪声，只保留信号"],
-          ["promptX", "生成可派发执行指令"],
-          ["迭代闭环", "coderX 生成，evaluatorX 找缺口"],
-          ["迭代收敛", "同一闭环进入修复与复验"],
-          ["验收回写", "Main Agent 更新 Hybrid Tree"],
-          ["需求全通过", "文档树全部 PASS 后结束"]
+          ["路由", "显式 xflow 进入，不悄悄切换"],
+          ["仓库发现", "module 08 + 同目标检查"],
+          ["文件索引", "结构、依赖、约束落图"],
+          ["socratesX 澄清", "分阶段批量问 + 主动质疑"],
+          ["Ready Summary", "确认后才允许建 note"],
+          ["task notes", "requirement / task / decision 落字"],
+          ["coderX 实现", "固定 AC + 自审 + Note 草稿"],
+          ["evaluatorX 验收", "最小测试集，输出 PASS / FIX"],
+          ["分级修复", "Repair Packet / Integration Note / 直修"],
+          ["全部通过", "Scope、AC 与 Note 全部关闭"]
         ]
       },
       en: {
         archTitle: "The Main Agent owns flow and facts",
-        archSub: "WorkflowX is not a pile of agents. It is one orchestrator, one document writer, and an implementation-verification loop connected by Payloads.",
+        archSub: "WorkflowX is not a pile of agents. It is one orchestrator, one fact source, and an implementation-verification loop connected by Payloads.",
         tokenTitle: "Make long iterations budgetable",
-        tokenSub: "Section caching, trunk-leaf split, memory snapshots, and noiseX denoising keep repeated rounds from flooding context.",
+        tokenSub: "One file per fact, links instead of inline prose, and minimal dispatch keep repeated rounds from flooding context.",
         capTitle: "Choose the entry by blast radius",
-        capSub: "xunit, xlocal, xwhole, and xwhole -parallel share Hybrid Tree and AC validation. Only planning depth and parallelism change.",
-        workflowTitle: "One xwhole run from routing to all ACs passed",
-        workflowSub: "RouteX routing context, resource init, code scan, Socratic discovery, Hybrid Tree, coderX, evaluatorX, and engineeringX self-review.",
+        capSub: "xdo, xdel, and xflow share task notes and AC validation. Only planning depth and evaluation change.",
+        workflowTitle: "One xflow run from routing to all ACs passed",
+        workflowSub: "orchestrateX routing, repo discovery, socratesX clarification, Ready Summary, task notes, coderX, evaluatorX, and tiered fixes.",
         labelArch: "Architecture",
         labelToken: "Token Budget",
         labelCap: "Capability Matrix",
         labelFlow: "Workflow Demo",
-        chips: ["RouteX", "Module 08", "Hybrid Tree", "coderX", "evaluatorX"],
+        chips: ["orchestrateX", "Module 08", "task notes", "coderX", "evaluatorX"],
         nodes: {
-          command: ["User / Command", "xwhole / xlocal / xunit", "Enters the routing context instead of writing code directly"],
-          status: ["Routing Context", "Conversation + Hybrid Tree", "active workflow / direct / command"],
-          coder: ["Implementation Agent", "coderX", "Reads Child AC, writes code, returns Change Summary"],
-          evaluator: ["Verification Agent", "evaluatorX", "Distrusts self-report and checks diff plus code against AC"],
-          prompt: ["Helper Skills", "promptX / noiseX", "Turns rough intent and planning noise into executable signal"]
+          command: ["User / Command", "xdo / xdel / xflow", "Enters routing instead of writing code directly"],
+          status: ["Routing", "orchestrateX built-in", "explicit wins / ambiguous choice / stay in mode"],
+          coder: ["Implementation Agent", "coderX", "Reads fixed AC, writes code, self-reviews, returns Change Summary + Note draft"],
+          evaluator: ["Verification Agent", "evaluatorX · xflow only", "Test-driven, read-only, emits PASS / NEEDS_FIX / UNEVALUABLE"],
+          prompt: ["Preflight & Contract", "socratesX / Payload", "Clarify in xflow only; dispatch carries minimal context"]
         },
         core: {
           title: "Main Agent",
-          sub: "The only orchestrator and Hybrid Tree document writer",
+          sub: "The only orchestrator and task-note writer",
           orbit: [
-            ["RouteX", "Routing context"],
-            ["Module 08", "Read code / clarify"],
-            ["Phase 2", "Write Parent / Child"],
-            ["Core Loop", "Dispatch / verify / ledger"]
+            ["Routing", "Explicit wins"],
+            ["Discovery", "module 08 + socratesX"],
+            ["Ledger", "Write task notes"],
+            ["Loop", "Dispatch / verify / tiered fix"]
           ],
           data: [
-            ["Hybrid Tree", "Scope, AC, dependencies, file index, iteration state"],
-            ["MCP Memory", "Cross-session facts and graph summaries"],
-            ["Worktree", "Isolated execution to reduce parallel contamination"]
+            ["task notes", "Scope, AC, dependencies, file index, verification"],
+            ["harness-note/1", "Five kinds plus UUID addressing"],
+            ["Same-target check", "No global lock, worktree isolation"]
           ]
         },
         token: {
-          big: "40-60%",
-          body: "Multi-round workflows move from repeated full context to cached stable sections, refreshed dynamic sections, and on-demand memory.",
+          big: "Less context",
+          body: "Multi-round workflows move from repeated full context to one home per fact, links for relations, and minimal repair context.",
           layers: [
-            ["L1", "Section caching", "Stable sections stay high; dynamic sections overwrite at the bottom.", "after first round"],
-            ["L2", "Trunk-leaf split", "Markdown keeps the requirement trunk; entity relations live in MCP memory.", "thinner docs"],
-            ["L3", "Memory snapshot", "Hybrid Tree stores summaries and pointers; full nodes persist in server-memory.", "cross-session reuse"]
+            ["L1", "One file per fact", "Scope, acceptance, and verification live together; xdo uses no Payload.", "one read"],
+            ["L2", "Link instead of inline", "Related notes link by URI plus a one-line summary, never pasted prose.", "thinner docs"],
+            ["L3", "Minimal dispatch", "Dispatch and repair packets carry only failing tests, files, contracts, and risks.", "fix on demand"]
           ]
         },
         modes: [
-          ["xunit", "Unit task", "Single-file or small edit; promptX to coderX, evaluator off by default.", "fastest"],
-          ["xlocal", "Local task", "One or two modules; reuse or create a minimal Hybrid Tree.", "scoped"],
-          ["xwhole", "Global task", "Discovery, plan confirmation, docs, code and verify loop.", "complete"],
-          ["xwhole -parallel", "Parallel team", "Split by Child; multiple coder/evaluator teammates progress in parallel.", "parallel"]
+          ["xdo", "Direct work", "Main Agent builds directly with engineeringX plus self-review.", "fastest"],
+          ["xdel", "One-shot delegate", "Single coderX dispatch against an accepted task note, no evaluation.", "traceable"],
+          ["xflow", "Full orchestration", "Discovery, confirmation, docs, per-task build, verify, and tiered fix.", "complete"]
         ],
         caps: [
-          ["Hybrid Tree", "Parent + Child docs carry scope, AC, dependencies, file index, and state."],
-          ["AC cross-validation", "evaluatorX reads code and diff instead of trusting coderX self-report."],
-          ["Context denoising", "noiseX extracts clean signal between Phase 1 and Phase 2."],
-          ["Prompt preprocessing", "promptX / promptMasterX turn rough intent into executable input."],
-          ["Worktree isolation", "Agents work in isolated directories to reduce overwrites and branch contamination."],
-          ["xstatus visualization", "Generate a high-fidelity status report from Hybrid Tree and git activity."]
+          ["task notes", "idea / initiative / requirement / decision / task each in its home, URI-addressed."],
+          ["AC independent check", "evaluatorX is test-driven and distrusts coderX self-report."],
+          ["socratesX preflight", "xflow-only batched clarification; notes start after Ready Summary."],
+          ["engineeringX + specX", "Minimal diffs, simple builds, self-review; scope escapes become change requests."],
+          ["Same-target check", "No global lock; check same files and notes before dispatch, isolate in worktrees."],
+          ["xstatus visualization", "Read-only scan of task notes into a high-fidelity HTML report."]
         ],
         steps: [
-          ["RouteX routing", "Command enters routing context and chooses xwhole"],
-          ["Environment init", "Load MCP / worktree / params"],
-          ["Project index", "Scan files and constraints"],
-          ["Discovery", "Q&A, challenge, and code search together"],
-          ["Plan confirmation", "Hard Gate passed"],
-          ["Hybrid Tree", "Parent / Child / AC document tree"],
-          ["noiseX denoise", "Remove noise and keep signals"],
-          ["promptX", "Create dispatchable prompt"],
-          ["Iteration loop", "coderX builds, evaluatorX finds gaps"],
-          ["Iteration convergence", "The same loop repairs and rechecks"],
-          ["Validation writeback", "Main Agent updates Hybrid Tree"],
-          ["All ACs passed", "End only after the document tree passes"]
+          ["Routing", "Explicit xflow enters without silent switching"],
+          ["Repo discovery", "module 08 plus same-target check"],
+          ["File index", "Structure, deps, and constraints mapped"],
+          ["socratesX", "Batched questions plus challenge"],
+          ["Ready Summary", "Notes start only after confirmation"],
+          ["task notes", "requirement / task / decision written down"],
+          ["coderX build", "Fixed AC plus self-review plus Note draft"],
+          ["evaluatorX check", "Smallest test set emits PASS / FIX"],
+          ["Tiered fix", "Repair Packet / Integration Note / direct"],
+          ["All passed", "Scope, ACs, and notes all closed"]
         ]
       }
     };
@@ -2277,7 +2271,7 @@
       layout(`
         <div class="product capabilities">
           <div class="mode-stack panel">
-            <div class="mode-stack-title"><span>${lang === "zh" ? "Blast Radius" : "Blast Radius"}</span><span>-N / -box / -parallel</span></div>
+            <div class="mode-stack-title"><span>${lang === "zh" ? "Blast Radius" : "Blast Radius"}</span><span>-box / --parallel</span></div>
             ${C.modes.map((mode, i) => `
               <div class="mode ${i === 2 ? "primary" : ""}">
                 <div class="cmd">${mode[0]}</div>
@@ -2302,7 +2296,7 @@
     function workflow(t) {
       const clamp = (v) => Math.max(0, Math.min(1, v));
       const expo = (v) => v >= 1 ? 1 : 1 - Math.pow(2, -8 * v);
-      const weights = [1.0, 1.0, 1.15, 1.35, 0.85, 1.15, 1.45, 1.1, 1.25, 1.45, 2.05, 1.45];
+      const weights = [1.0, 1.05, 1.25, 0.95, 1.15, 1.35, 1.45, 1.35, 1.25, 1.6];
       const total = weights.reduce((sum, v) => sum + v, 0);
       const raw = clamp(t || 0) * total;
       let cursor = raw;
@@ -2311,7 +2305,7 @@
       const local = clamp(cursor / weights[idx]);
       const enter = expo(clamp(local * 1.6));
       const card = C.steps[idx];
-      const status = idx < 4 ? "DISCOVER" : idx < 8 ? "SPEC" : idx < 9 ? "BUILD" : idx < 11 ? "VERIFY" : "CLOSED";
+      const status = idx < 4 ? "DISCOVER" : idx < 5 ? "SPEC" : idx < 6 ? "BUILD" : idx < 7 ? "VERIFY" : idx < 8 ? "FIX" : "CLOSED";
       const view = activeView(idx, local, enter, expo, clamp);
       const style = [
         `--scene-x:${((1 - enter) * 14).toFixed(1)}px`,
@@ -2342,7 +2336,7 @@
                 <div class="scene-area">${view}</div>
               </main>
               <aside class="ledger">
-                <div class="ledger-title">Hybrid Tree Ledger</div>
+                <div class="ledger-title">Task Notes Ledger</div>
                 ${ledgerView(idx, local)}
               </aside>
             </div>
@@ -2362,11 +2356,11 @@
         return [cls, status];
       };
       const rows = [
-        ["Scope", lang === "zh" ? "范围与非功能要求" : "Scope and NFRs", ...statusFor("scope", 4, 5)],
-        ["AC-01", lang === "zh" ? "路由与状态恢复" : "Routing and state recovery", ...statusFor("ac1", 5, 9)],
-        ["AC-02", lang === "zh" ? "实现符合 Child 需求" : "Implementation matches Child", ...statusFor("ac2", 5, 10, 8)],
-        ["AC-03", lang === "zh" ? "质量验收与回流" : "Verification and fix loop", ...statusFor("ac3", 5, 10, 8)],
-        ["Memory", lang === "zh" ? "稳定事实回写" : "Stable facts persisted", ...statusFor("mem", 10, 11)]
+        ["Scope", lang === "zh" ? "范围与非目标" : "Scope and non-goals", ...statusFor("scope", 3, 4)],
+        ["AC-01", lang === "zh" ? "路由与状态恢复" : "Routing and state recovery", ...statusFor("ac1", 4, 6)],
+        ["AC-02", lang === "zh" ? "实现符合 task 范围" : "Implementation matches task", ...statusFor("ac2", 4, 8, 6)],
+        ["AC-03", lang === "zh" ? "测试验收与分级修复" : "Test check and tiered fix", ...statusFor("ac3", 4, 8, 6)],
+        ["Note", lang === "zh" ? "原子落盘与反向注释" : "Atomic landing plus reverse comment", ...statusFor("note", 8, 9)]
       ];
       return `<div class="tree-ledger">${rows.map(([name, body, cls, status]) => `
         <div class="tree-row ${cls}">
@@ -2381,16 +2375,16 @@
         const routeProgress = expo(clamp(local * 1.28)).toFixed(3);
         const pop = (n) => expo(clamp(local * 2.4 - n * 0.16)).toFixed(3);
         return `<div class="route-map">
-          <div class="route-command">xwhole ${lang === "zh" ? "实现订单中心，支持并行验收" : "build order center with parallel verification"}</div>
+          <div class="route-command">xflow ${lang === "zh" ? "实现订单中心" : "build the order center"}</div>
           <div class="route-topology" style="--route-progress:${routeProgress}">
             <div class="route-wire"></div><div class="route-token"></div>
-            <div class="route-source"><b>${lang === "zh" ? "入口命令" : "Entry"}</b><span>xwhole / new workflow intent</span></div>
-            <div class="route-gate"><b>RouteX</b><span>${lang === "zh" ? "读取完整输入、命令前缀与会话上下文" : "Reads full input, command prefix, and conversation context"}</span></div>
+            <div class="route-source"><b>${lang === "zh" ? "入口命令" : "Entry"}</b><span>xflow / explicit command wins</span></div>
+            <div class="route-gate"><b>orchestrateX</b><span>${lang === "zh" ? "读完整输入与会话上下文，不悄悄切换" : "Reads full input and conversation context"}</span></div>
             <div class="route-lanes">
-              <div class="route-branch" style="--pop:${pop(0)}"><b>Route 0</b><span>${lang === "zh" ? "已有工作流：接入" : "Active workflow: attach"}</span></div>
-              <div class="route-branch" style="--pop:${pop(1)}"><b>Route 1</b><span>${lang === "zh" ? "只读探索：不编码" : "Read-only exploration"}</span></div>
-              <div class="route-branch active" style="--pop:${pop(2)}"><b>Route 3 / xwhole</b><span>${lang === "zh" ? "完整流程：发现、文档、实现、验收" : "Full flow: discover, document, build, verify"}</span></div>
-              <div class="route-branch" style="--pop:${pop(3)}"><b>Route 2</b><span>${lang === "zh" ? "空闲编码意图：推荐模式" : "Idle coding intent"}</span></div>
+              <div class="route-branch active" style="--pop:${pop(0)}"><b>xflow</b><span>${lang === "zh" ? "显式命令：立即进入" : "Explicit command: enter now"}</span></div>
+              <div class="route-branch" style="--pop:${pop(1)}"><b>xdel</b><span>${lang === "zh" ? "本地清晰工作" : "Clear local work"}</span></div>
+              <div class="route-branch" style="--pop:${pop(2)}"><b>xdo</b><span>${lang === "zh" ? "直接执行" : "Direct work"}</span></div>
+              <div class="route-branch" style="--pop:${pop(3)}"><b>${lang === "zh" ? "模糊三选一" : "Ambiguous"}</b><span>${lang === "zh" ? "不代选，摆出选择" : "Present all three"}</span></div>
             </div>
           </div>
         </div>`;
@@ -2398,17 +2392,17 @@
       if (idx === 1) {
         const fill = (offset) => expo(clamp(local * 1.5 - offset)).toFixed(3);
         const items = [
-          ["MCP Memory", lang === "zh" ? "连接知识图谱与跨会话事实" : "Connect graph memory and cross-session facts"],
-          ["Worktree", lang === "zh" ? "准备隔离执行目录" : "Prepare isolated execution dir"],
-          ["Flags", "-N 3 / -box demo / fallback"],
-          ["Tooling", lang === "zh" ? "探测可用工具与降级路径" : "Probe tools and degradation path"]
+          ["module 08", lang === "zh" ? "搜结构、依赖、约束与约定" : "Search structure, deps, constraints"],
+          ["Same-target", lang === "zh" ? "只查同文件同 note 冲突" : "Check same files and notes only"],
+          ["-box demo", lang === "zh" ? "沙箱分支隔离执行" : "Isolated sandbox branch"],
+          ["Worktree", lang === "zh" ? "支持时隔离，否则记录" : "Isolate when supported"]
         ];
         return `<div class="resource-load">${items.map((item, i) => `
           <div class="resource-card"><b>${item[0]}</b><span>${item[1]}</span><div class="load-bar"><i style="--fill:${fill(i * 0.16)}"></i></div></div>`).join("")}</div>`;
       }
       if (idx === 2) {
         const scan = expo(clamp(local * 1.35)).toFixed(3);
-        const files = ["src/routes/order.ts", "src/services/auth.ts", "src/payments/callback.ts", "tests/order.spec.ts", ".hybrid/feature/parent-hybrid.md"];
+        const files = ["src/routes/order.ts", "src/services/auth.ts", "src/payments/callback.ts", "tests/order.spec.ts", ".agents/notes/order-task.md"];
         const lines = [92, 72, 64, 88, 56, 76, 68].map((w, i) => `<i class="code-line ${i === 2 || i === 5 ? "hot" : ""}" style="--w:${w}%;--scan:${scan}"></i>`).join("");
         return `<div class="code-scan">
           <div class="file-tree">${files.map((file, i) => `<div class="file-node ${i < local * files.length ? "active" : ""}">${file}</div>`).join("")}</div>
@@ -2426,12 +2420,12 @@
           ["src/services/auth.ts", "auth"],
           ["src/payments/callback.ts", "risk"],
           ["tests/order.spec.ts", "test"],
-          [".hybrid/feature/parent-hybrid.md", "workflow"]
+          [".agents/notes/order-task.md", "notes"]
         ];
         return `<div class="discovery-search">
           <div class="dialogue-stream">${turns.map((turn, i) => `<div class="turn ${i === 1 ? "answer" : ""} ${i === 2 ? "challenge" : ""}" style="--reveal:${reveal(i)}"><b>${turn[0]}</b><span>${turn[1]}</span></div>`).join("")}</div>
           <div class="live-search">
-            <div class="search-query">rg -n "rollback|payment|auth|parallel" src tests .hybrid</div>
+            <div class="search-query">rg -n "rollback|payment|auth|parallel" src tests .agents/notes</div>
             <div class="search-results">${results.map((r, i) => `<div class="result-row ${i === 2 ? "hot" : ""}" style="--hit:${hit(i)}"><span>${r[0]}</span><em>${r[1]}</em></div>`).join("")}</div>
             <div class="index-note" style="--index-ready:${reveal(2)}">${lang === "zh" ? "搜索结果收束成 AC：回滚、权限、幂等与恢复路径。" : "Search results become ACs: rollback, permission, idempotency, and recovery."}</div>
           </div>
@@ -2443,72 +2437,71 @@
           ? [["范围", "订单中心覆盖创建、支付回调与状态流转。"], ["风险", "并行验收必须处理共享状态与幂等。"], ["AC", "回滚、权限、恢复路径、测试入口已明确。"]]
           : [["Scope", "Order center covers creation, callbacks, and state flow."], ["Risk", "Parallel verification must handle shared state and idempotency."], ["AC", "Rollback, permission, recovery path, and test entry are explicit."]];
         return `<div class="confirm-action" style="--click:${click}">
-          <div class="confirm-summary"><h3>${lang === "zh" ? "先确认，再写树" : "Confirm before tree"}</h3>${items.map((item) => `<div class="confirm-item"><b>${item[0]}</b>${item[1]}</div>`).join("")}</div>
-          <div class="confirm-button">${lang === "zh" ? "点击确认" : "Confirm"}<span>${lang === "zh" ? "Hard Gate 通过后才允许生成 Hybrid Tree" : "Hybrid Tree is generated only after the Hard Gate passes"}</span></div>
+          <div class="confirm-summary"><h3>${lang === "zh" ? "先确认，再建 note" : "Confirm before notes"}</h3>${items.map((item) => `<div class="confirm-item"><b>${item[0]}</b>${item[1]}</div>`).join("")}</div>
+          <div class="confirm-button">${lang === "zh" ? "点击确认" : "Confirm"}<span>${lang === "zh" ? "Ready Summary 通过后才允许建 task notes" : "Task notes start only after Ready Summary"}</span></div>
         </div>`;
       }
       if (idx === 5) {
         const treePop = expo(clamp(local * 1.55)).toFixed(3);
-        const gateText = lang === "zh" ? "确认完成，开始生成 Parent / Child / AC 文档树。" : "Confirmed; generate the Parent / Child / AC document tree.";
+        const gateText = lang === "zh" ? "确认完成，开始写 requirement / task / decision。" : "Confirmed; write requirement / task / decision notes.";
         return `<div class="confirm-tree">
           <div class="confirm-card"><div><b>${lang === "zh" ? "已确认" : "Confirmed"}</b><span>${gateText}</span></div></div>
           <div class="doc-tree-build" style="--tree-pop:${treePop}">
-            <div class="tree-root"><b>Parent.md</b><span>${lang === "zh" ? "范围 / NFR / DoD / 路由表" : "Scope / NFR / DoD / routes"}</span></div>
+            <div class="tree-root"><b>requirement.md</b><span>${lang === "zh" ? "范围 / 非目标 / AC-n" : "Scope / non-goals / AC-n"}</span></div>
             <div class="tree-branches">
-              <div class="tree-child"><b>Child-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-01</b><span>${lang === "zh" ? "路由恢复可验收" : "Route recovery is verifiable"}</span></div><div class="tree-ac"><b>AC-02</b><span>${lang === "zh" ? "回滚记录操作者" : "Rollback records operator"}</span></div></div></div>
-              <div class="tree-child"><b>Child-02.md</b><span>${lang === "zh" ? "支付回调与并行风险" : "Payment callback and parallel risk"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-03</b><span>${lang === "zh" ? "幂等和测试覆盖" : "Idempotency and test coverage"}</span></div><div class="tree-ac"><b>Memory</b><span>${lang === "zh" ? "稳定事实回写" : "Stable facts persisted"}</span></div></div></div>
+              <div class="tree-child"><b>task-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-01</b><span>${lang === "zh" ? "路由恢复可验收" : "Route recovery is verifiable"}</span></div><div class="tree-ac"><b>AC-02</b><span>${lang === "zh" ? "回滚记录操作者" : "Rollback records operator"}</span></div></div></div>
+              <div class="tree-child"><b>task-02.md</b><span>${lang === "zh" ? "支付回调与幂等" : "Payment callback and idempotency"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-03</b><span>${lang === "zh" ? "幂等和测试覆盖" : "Idempotency and test coverage"}</span></div><div class="tree-ac"><b>decision</b><span>${lang === "zh" ? "取舍与重访信号" : "Trade-off and revisit"}</span></div></div></div>
             </div>
           </div>
         </div>`;
       }
       if (idx === 6) {
-        const clean = expo(clamp(local * 1.35));
-        const noise = lang === "zh"
-          ? [["旧讨论", false, 34], ["回滚必须审计", true, 58], ["重复日志", false, 42], ["闲聊", false, 28], ["支付回调共享状态", true, 64], ["过期假设", false, 38], ["权限边界", true, 46], ["无关栈报错", false, 52], ["测试入口", true, 36], ["历史偏好", false, 44]]
-          : [["old thread", false, 34], ["rollback must audit", true, 58], ["duplicate logs", false, 42], ["small talk", false, 28], ["callback shared state", true, 64], ["stale assumption", false, 38], ["permission boundary", true, 46], ["unrelated stack", false, 52], ["test entry", true, 36], ["old preference", false, 44]];
-        const chips = noise.map(([label, keep, w], i) => {
-          const drop = keep ? 0.38 + clean * 0.58 : 0.82 - clean * 0.74;
-          const scale = keep ? 1 : 1 - clean * 0.38;
-          return `<i class="noise-chip ${keep ? "keep" : "drop"}" style="--w:${w}%;--drop:${drop.toFixed(2)};--scale:${scale.toFixed(2)};--dy:${(clean * (keep ? -3 : 18)).toFixed(1)}px">${label}</i>`;
-        }).join("");
-        const facts = lang === "zh"
-          ? [["Scope", "订单中心只覆盖创建、支付回调与状态流转"], ["AC", "权限、回滚、重试与状态恢复必须可验收"], ["Memory", "稳定事实写回 Hybrid Tree 与 MCP 摘要"]]
-          : [["Scope", "Order center covers creation, callback, and state flow"], ["AC", "Permission, rollback, retry, and recovery are verifiable"], ["Memory", "Stable facts go to Hybrid Tree and MCP summary"]];
-        return `<div class="denoise-lab" style="--pulse:${(0.5 + Math.sin(local * Math.PI * 4) * 0.5).toFixed(3)}">
-          <div class="context-cloud">${chips}</div>
-          <div class="signal-funnel">noiseX<br>${lang === "zh" ? "去噪" : "denoise"}</div>
-          <div class="distilled-stack">${facts.map((f, i) => `<div class="distilled-fact" style="--reveal:${Math.max(0.12, clean - i * 0.18).toFixed(2)}"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("")}</div>
+        const write = expo(clamp(local * 1.4)).toFixed(3);
+        const dims = ["Task URI", "AC refs", "Scope", "Decisions", "Checks"];
+        const diffs = [92, 64, 78, 54].map((w) => `<i class="diff-line add" style="--w:${w}%;--write:${write}"></i>`).join("");
+        return `<div class="prompt-dispatch">
+          <div class="payload-card"><b>coderX</b><span>${lang === "zh" ? "按固定 AC 与允许范围实现，自审后返回。" : "Implements fixed AC in scope, then self-reviews."}</span><div class="dim-list">${dims.map((d, i) => `<i class="${i < local * dims.length ? "hot" : ""}">${d}</i>`).join("")}</div></div>
+          <div class="diff-card"><b>${lang === "zh" ? "实现 + 自审" : "Build + self-review"}</b><span>engineeringX + specX</span>${diffs}<div class="razor">${lang === "zh" ? "最小改动，只做被要求的；Note 草稿随实现返回。" : "Smallest change only; Note draft returns with code."}</div></div>
         </div>`;
       }
       if (idx === 7) {
-        const dims = ["Intent", "Files", "AC", "Risk", "Tests", "Limits", "Context", "Fix-ready"];
-        return `<div class="prompt-dispatch">
-          <div class="payload-card"><b>promptX</b><span>${lang === "zh" ? "把粗需求转成 coderX 可执行输入。" : "Turns rough intent into coderX-ready input."}</span><div class="dim-list">${dims.map((d, i) => `<i class="${i < local * dims.length ? "hot" : ""}">${d}</i>`).join("")}</div></div>
-          <div class="payload-card"><b>Bus Payload</b><span>${lang === "zh" ? "只携带 Child AC、文件索引、约束和验证重点。" : "Carries only Child AC, file index, constraints, and audit focus."}</span>${bars}</div>
-        </div>`;
+        const cols = lang === "zh"
+          ? [["AC-01", ["下单路由 200", "回滚记录审计"], "PASS"], ["AC-02", ["幂等缺 key", "并发重试冲突"], "FIX"], ["AC-03", ["恢复路径可测", "测试已运行"], "PASS"]]
+          : [["AC-01", ["route 200", "rollback audited"], "PASS"], ["AC-02", ["missing idempotency key", "retry conflict"], "FIX"], ["AC-03", ["recovery path tested", "tests run"], "PASS"]];
+        return `<div class="eval-board">${cols.map((col, i) => `
+          <div class="eval-col ${i === 1 ? "active" : ""}"><b>${col[0]} · ${col[2]}</b><div class="ac-list">${col[1].map((c) => `<i class="${col[2] === "PASS" ? "" : "hot"}">${c}</i>`).join("")}</div></div>`).join("")}</div>`;
       }
       if (idx === 8) {
-        return iterationLoop(local * 0.52, expo, clamp);
-      }
-      if (idx === 9) {
-        return iterationLoop(0.52 + local * 0.48, expo, clamp);
+        return tieredFix(local, expo, clamp);
       }
       if (idx === 10) {
-        const treePop = expo(clamp(local * 1.35)).toFixed(3);
+        const treePop = expo(1);
         return `<div class="confirm-tree">
-          <div class="confirm-card"><div><b>${lang === "zh" ? "回写" : "Writeback"}</b><span>${lang === "zh" ? "主智能体把复验结果写回 Hybrid Tree，而不是只显示 PASS。" : "The Main Agent writes verification results back to Hybrid Tree, not just a PASS label."}</span></div></div>
+          <div class="confirm-card"><div><b>${lang === "zh" ? "回写" : "Writeback"}</b><span>${lang === "zh" ? "主智能体把复验结果写回 task notes，而不是只显示 PASS。" : "The Main Agent writes verification results back to task notes, not just a PASS label."}</span></div></div>
           <div class="doc-tree-build" style="--tree-pop:${treePop}">
-            <div class="tree-root"><b>Parent.md</b><span>${lang === "zh" ? "DoD / 需求状态 / 迭代记录" : "DoD / requirement state / iteration log"}</span></div>
+            <div class="tree-root"><b>requirement.md</b><span>${lang === "zh" ? "DoD / 需求状态 / 验证记录" : "DoD / requirement state / verification"}</span></div>
             <div class="tree-branches">
-              <div class="tree-child"><b>Child-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复已验收" : "Route recovery verified"}</span></div><div class="tree-ac pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "回滚审计已覆盖" : "Rollback audit covered"}</span></div></div></div>
-              <div class="tree-child"><b>Child-02.md</b><span>${lang === "zh" ? "支付回调与并行风险" : "Payment callback and parallel risk"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "幂等测试已通过" : "Idempotency tests passed"}</span></div><div class="tree-ac"><b>Memory</b><span>${lang === "zh" ? "等待稳定事实回写" : "Stable facts pending"}</span></div></div></div>
+              <div class="tree-child"><b>task-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复已验收" : "Route recovery verified"}</span></div><div class="tree-ac pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "回滚审计已覆盖" : "Rollback audit covered"}</span></div></div></div>
+              <div class="tree-child"><b>task-02.md</b><span>${lang === "zh" ? "支付回调与幂等" : "Payment callback and idempotency"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "幂等测试已通过" : "Idempotency tests passed"}</span></div><div class="tree-ac"><b>Note</b><span>${lang === "zh" ? "等待原子落盘" : "Atomic landing pending"}</span></div></div></div>
             </div>
           </div>
         </div>`;
       }
       return `<div class="final-board tree-close">
-        <div class="final-tree"><h3>Hybrid Tree</h3><div class="tree-root"><b>Parent.md</b><span>${lang === "zh" ? "Scope / DoD / Memory 全部关闭" : "Scope / DoD / Memory all closed"}</span></div><div class="final-pass-grid"><div class="final-pass"><b>Scope PASS</b><span>${lang === "zh" ? "边界锁定" : "boundaries locked"}</span></div><div class="final-pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复" : "route recovery"}</span></div><div class="final-pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "Child 符合" : "child matched"}</span></div><div class="final-pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "测试覆盖" : "tests covered"}</span></div><div class="final-pass"><b>Memory updated</b><span>${lang === "zh" ? "事实回写" : "facts persisted"}</span></div><div class="final-pass"><b>Closed</b><span>${lang === "zh" ? "流程关闭" : "flow closed"}</span></div></div></div>
-        <div class="close-card"><b>${lang === "zh" ? "工作流结束条件" : "Workflow exit condition"}</b><span>${lang === "zh" ? "结束画面绑定文档树：只有 Hybrid Tree 中的 Scope、AC 与 Memory 全部通过，流程才关闭。" : "The ending is bound to the document tree: the workflow closes only after Scope, ACs, and Memory all pass in Hybrid Tree."}</span></div>
+        <div class="final-tree"><h3>task notes</h3><div class="tree-root"><b>requirement.md</b><span>${lang === "zh" ? "Scope / AC / Note 全部关闭" : "Scope / ACs / notes all closed"}</span></div><div class="final-pass-grid"><div class="final-pass"><b>Scope PASS</b><span>${lang === "zh" ? "边界锁定" : "boundaries locked"}</span></div><div class="final-pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复" : "route recovery"}</span></div><div class="final-pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "范围符合" : "scope matched"}</span></div><div class="final-pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "测试覆盖" : "tests covered"}</span></div><div class="final-pass"><b>Note landed</b><span>${lang === "zh" ? "原子落盘" : "atomically landed"}</span></div><div class="final-pass"><b>Closed</b><span>${lang === "zh" ? "流程关闭" : "flow closed"}</span></div></div></div>
+        <div class="close-card"><b>${lang === "zh" ? "工作流结束条件" : "Workflow exit condition"}</b><span>${lang === "zh" ? "结束画面绑定 task notes：Scope、AC 与 Note 全部通过，代码 + Note + 反向注释同 commit，写作遵循 proseX。" : "The ending is bound to task notes: the workflow closes only after Scope, ACs, and notes all pass; code + Note + comment land together per proseX."}</span></div>
+      </div>`;
+    }
+
+    function tieredFix(progress, expo, clamp, closing = false) {
+      const p = clamp(progress);
+      const on = (n) => expo(clamp(p * 1.6 - n * 0.3)).toFixed(3);
+      const cards = lang === "zh"
+        ? [["Repair Packet", "局部缺陷：同 task 最多自动重派发一次，只带失败测试与相关文件。"], ["Integration Note", "跨 task 问题：压缩成后续 task 的适配要求，不回传全文。"], ["直接处理", "架构或范围问题：Main Agent 改 note 或直修。"]]
+        : [["Repair Packet", "Local defect: at most one auto re-dispatch with failing tests only."], ["Integration Note", "Cross-task issue: compressed for a later task, no full history."], ["Direct fix", "Architecture or scope: Main Agent updates notes or fixes directly."]];
+      return `<div class="route-options" style="padding:18px">
+        ${cards.map((c, i) => `<div class="route-card ${i === 0 ? "active" : ""}" style="--pop:${on(i)}"><b>${c[0]}</b><span>${c[1]}</span></div>`).join("")}
+        <div class="route-decision" style="--pop:${on(2)}">${closing ? (lang === "zh" ? "修复关闭 → 原子收口：代码 + Note + 反向注释同 commit" : "Fix closed → atomic landing: code + Note + comment in one commit") : (lang === "zh" ? "默认最多一次自动重派发，预算耗尽停下交还用户" : "At most one auto retry by default; stop on exhausted budget")}</div>
       </div>`;
     }
 
@@ -2518,13 +2511,13 @@
       const flow = (start) => expo(clamp((p - start) * 4)).toFixed(3);
       const steps = lang === "zh"
         ? [
-            ["coderX R1", "按 Child AC 生成第一版实现。", ["AC-01 touched", "AC-02 touched"]],
+            ["coderX R1", "按 task AC 生成第一版实现。", ["AC-01 touched", "AC-02 touched"]],
             ["evaluatorX", "独立验收，发现回滚测试和幂等缺口。", ["AC-01 PASS", "AC-02 FIX", "AC-03 FIX"]],
             ["coderX R2", "融合 engineeringX：删重复分支，收敛 guard。", ["engineeringX", "AC-02 repaired"]],
             ["evaluatorX R2", "复读 diff / code / tests，逐条核对 AC。", ["AC-01 PASS", "AC-02 PASS", "AC-03 PASS"]]
           ]
         : [
-            ["coderX R1", "Builds the first implementation against Child AC.", ["AC-01 touched", "AC-02 touched"]],
+            ["coderX R1", "Builds the first implementation against task AC.", ["AC-01 touched", "AC-02 touched"]],
             ["evaluatorX", "Finds rollback-test and idempotency gaps.", ["AC-01 PASS", "AC-02 FIX", "AC-03 FIX"]],
             ["coderX R2", "Uses engineeringX: remove duplicate branches, converge guard.", ["engineeringX", "AC-02 repaired"]],
             ["evaluatorX R2", "Re-reads diff, code, and tests against every AC.", ["AC-01 PASS", "AC-02 PASS", "AC-03 PASS"]]
