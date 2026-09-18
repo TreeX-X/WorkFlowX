@@ -382,5 +382,15 @@ try {
   ok("F02 execution-excluded hashing by construction (execution/tags/parent outside input)");
 } catch (e) { fail(`hash fixture: ${e.message}`); }
 
+// Note: portable evidence identity - see .agents/notes/2026-09-18-portable-execution-evidence--28f1238b.md
+try {
+  const fixture = JSON.parse(readFileSync(join(STD, "fixtures", "receipt-content-hash.json"), "utf8"));
+  const sort = (v) => Array.isArray(v) ? v.map(sort) : v !== null && typeof v === "object"
+    ? Object.fromEntries(Object.keys(v).sort().map((key) => [key, sort(v[key])])) : v;
+  const digest = createHash("sha256").update(JSON.stringify(sort(fixture.receipt))).digest("hex");
+  if (digest !== fixture.expectedHash) fail(`receipt content hash drift: ${digest}`);
+  else ok(`receipt content hash locked ${digest.slice(0, 12)}`);
+} catch (error) { fail(`receipt fixture: ${error.message}`); }
+
 console.log(failures === 0 ? "\nPASS" : `\n${failures} FAILURES`);
 process.exit(failures === 0 ? 0 : 1);
