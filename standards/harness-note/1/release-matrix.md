@@ -9,19 +9,19 @@ switches.
 
 | Slot | Locked value | Status |
 |---|---|---|
-| Standard bundle | `workflowx-harness-note` `1.0.0-s1.1` (`candidate`), manifest digest `62e2ae8b674dd5510c9e7b8a2526e4b81710c1b6ad8d075837673708eb3c4a7a` | `TBD` final signature |
+| Standard bundle | `workflowx-harness-note` `1.0.0-s1.1` (final 2026-09-19), manifest digest `b8440b011556dd61c7f14914497d667b1fa3af5f5e53c4bc84fb7e177d1e0aa9` | done 2026-09-19 |
 | WorkFlowX checkout | `1dc92104cb58b928fecbab15285ce4240c8b39fd` | recorded |
 | janus-agentX checkout | `0d510f6db760de55f04c1ed8028e5078a2334977` | recorded |
 | janus-agentX packages | `@janus-agent/*` `0.1.0`, distributed as sibling checkouts (no registry; revisit on multi-machine or CI consumption) | decided 2026-09-19 |
 | JanusX checkout | `468b7d6ab118124ff47f056d0878d6e2e3d91975` (`0.8.6`) | recorded |
 | JanusX consumption | `file:../janus-agentX/packages/...` dev links; versions are the recorded checkout SHAs in this matrix | decided 2026-09-19 |
-| JanusX profile pin | `workflowx` `1.0.0-s1.1` / `62e2ae8b…` | recorded |
+| JanusX profile pin | `workflowx` `1.0.0-s1.1` / `b8440b01…` | recorded |
 | F01–F12 joint run | JanusX slice pinned; owning fixtures and adopter managed pairs pass 2026-09-19; full cross-host equivalence open | `TBD` joint run |
 | Entry switch | all three checkouts run managed rules since 2026-09-19 (owning S7 plus adopter redeploy, dual-surface sync PASS in every checkout) | done 2026-09-19 |
 
 ## Exit checklist
 
-- [ ] Standard bundle leaves `candidate` with a final version and frozen digest.
+- [x] Standard bundle leaves `candidate` with a final version and frozen digest (sealed 2026-09-19).
 - [x] Distribution decided 2026-09-19: sibling checkouts, no registry (registry path reopens only on multi-machine or CI consumption).
 - [ ] The same fixtures pass on roundtable, Chat, CLI, and built-in hosts plus cross-checkout partial apply.
 - [ ] Real-model desktop acceptance and packaged runtime validation pass.
