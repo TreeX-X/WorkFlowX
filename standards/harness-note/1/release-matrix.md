@@ -17,7 +17,7 @@ switches.
 | JanusX consumption | `file:../janus-agentX/packages/...` dev links | `TBD` locked versions |
 | JanusX profile pin | `workflowx` `1.0.0-s1.1` / `62e2ae8b…` | recorded |
 | F01–F12 joint run | JanusX slice pinned; owning fixtures and adopter managed pairs pass 2026-09-19; full cross-host equivalence open | `TBD` joint run |
-| Entry switch | old noteX rules still run everywhere | `TBD` same-batch switch |
+| Entry switch | all three checkouts run managed rules since 2026-09-19 (owning S7 plus adopter redeploy, dual-surface sync PASS in every checkout) | done 2026-09-19 |
 
 ## Exit checklist
 
@@ -25,7 +25,7 @@ switches.
 - [ ] janus-agentX publishes versioned packages; no consumer keeps `file:` links.
 - [ ] The same fixtures pass on roundtable, Chat, CLI, and built-in hosts plus cross-checkout partial apply.
 - [ ] Real-model desktop acceptance and packaged runtime validation pass.
-- [ ] `AGENTS.md`, `CLAUDE.md`, skills, agents, and commands switch in all three repositories in one batch.
+- [x] `AGENTS.md`, `CLAUDE.md`, skills, agents, and commands switch in all three repositories in one batch (2026-09-19).
 - [ ] Old-asset handling (retain as foreign namespace; hand-rewrite live constraints only) is recorded per repository.
 
 ## Consumer pin rule
