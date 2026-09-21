@@ -32,9 +32,10 @@ Frontmatter carries `schema: harness-note/1`, `id`, `kind`, `lifecycle`, `create
 - If half a year from now someone asks "why not the simpler way", write.
 - Rename/move/default-value change on guarded code -> update the owning Note in place (facts, not a changelog appendix). 80% of maintenance is in-place sync, not new files.
 - New direction -> `idea`/`requirement`/`decision` draft first, then land with the code in one commit, plus one reverse comment at the code entry.
-- Execution state lives only in task notes. Small reversible changes with no lasting trade-off may land without a task note; lasting trade-offs, architecture choices, and non-obvious behavior always get one.
+- Execution state lives only in task notes. Outside `xdo`, small reversible changes with no lasting trade-off may land without a task note; lasting trade-offs, architecture choices, and non-obvious behavior always get one.
 - Declined in review -> `rejected` with a reason, or delete. Fully superseded -> the new Note absorbs surviving reasons and links both ways; partial overlap keeps both alive and linked.
-- Exempt (`not applicable`, no Note): pure formatting, unambiguous renames, typos, release tags, behavior-preserving dependency patches.
+- Exempt (`not applicable`, no Note) applies outside `xdo` only: pure formatting, unambiguous renames, typos, release tags, behavior-preserving dependency patches.
+- `xdo` mandatory archiving: every `xdo` lands a Note — search existing Notes first (`rg` over titles, ids, code refs); update the owning Note in place when one fits, otherwise create a new `implemented/` Note. No `not applicable` in `xdo`.
 - When unsure whether to write, write.
 
 ## 4. Binding and linking

@@ -6,6 +6,7 @@ description: Lightweight routing and execution rules for xdo, xdel, and xflow.
 # orchestrateX
 
 <!-- Note: dispatch vocabulary cleanup — see .agents/notes/implemented/process/2026-09-11-workflow-redundancy-cleanup.md -->
+<!-- Note: xdo mandatory archiving — see .agents/notes/2026-09-21-xdo-mandatory-note--e92790eb.md -->
 
 ## Routing
 
@@ -25,9 +26,9 @@ Read the complete request and active context before selecting a mode.
 - Main Agent works directly using the requested skills.
 - Do not dispatch by default.
 - Parallel Agents are allowed only when the user explicitly requests parallel development.
-- Task notes and the harness are optional.
+- Task notes are mandatory at landing: search existing Notes with host search (`rg` over titles, ids, code refs) first; update the owning Note in place when one fits, otherwise create a new `implemented/` Note. No `not applicable` in `xdo`.
 - Use `engineeringX` and perform self-review before reporting completion.
-- Atomic landing: code + Note (new `implemented/` or in-place sync) + entry reverse comment land in one commit; message carries the Note path. Format-only/typo/unambiguous-rename/tag work is `not applicable`, code only. Supersession surgery goes to `xflow`, never `xdo`.
+- Atomic landing: code + Note (new `implemented/` when no owning Note fits, otherwise in-place sync) + entry reverse comment land in one commit; message carries the Note path. Even format-only/typo/unambiguous-rename/tag/small work lands a Note. Supersession surgery goes to `xflow`, never `xdo`.
 - Writing follows `proseX` (gate timing exempt, standard never exempt).
 
 ### xdel - delegate
@@ -56,7 +57,7 @@ Read the complete request and active context before selecting a mode.
 
 ## Shared Rules
 
-- `xdel` and `xflow` require a task note URI; `xdo` does not.
+- `xdel` and `xflow` require a task note URI upfront; `xdo` does not require one upfront but must produce one at landing (in-place sync preferred, new `implemented/` otherwise).
 - Decision keeping follows `noteX`; writing follows `proseX`.
 - User instructions outrank skill guidance. On conflict, follow the user.
 - When a skill makes you pause, ask for confirmation, leave work undone, or deviate from user intent, cite the exact SKILL.md file and the rule that caused it, explain how it applies, and separate what the skill states from what you inferred.

@@ -41,7 +41,7 @@ Before dispatching `evaluatorX`, Main Agent must assemble the `Dispatch Payload:
 ## Constraints
 
 - **Main Agent execution**: Main Agent may write project code directly. `xdo` is direct work by default.
-- `xdo` lands atomically: code + Note (new `implemented/` or in-place sync per `noteX`) + entry reverse comment in one commit; the message carries the Note path. Format-only/typo/unambiguous-rename/tag work is `not applicable`, code only.
+- `xdo` lands atomically: code + Note (search first; in-place sync when an owning Note fits, otherwise new `implemented/` per `noteX`) + entry reverse comment in one commit; the message carries the Note path. No `not applicable` in `xdo`: even small/format-only work lands a Note.
 - All workflow document output follows `proseX`.
 - Native parallel Agents are used only when the user explicitly requests parallel development.
 - `xdel` and `xflow` may dispatch `coderX` / `evaluatorX` according to their mode rules; `xdo` does not require dispatch.
