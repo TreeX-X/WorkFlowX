@@ -32,4 +32,4 @@ The candidate standard defines task execution and formal evidence as portable as
 
 ## Consequences
 
-The standard version is `1.0.0-s1.1` with candidate status. The owning repository profile and synchronization gate pin that version; adopter runtime rules remain on their existing policy until full cutover acceptance. `node scripts/verify-harness-standard.mjs` checks the new receipt fixture, and `node scripts/sync-harness-rules.mjs --check --repos scripts/sync-repos.list` verifies dual-surface parity. Runtime crash, Git and GUI behavior still require the implementation repositories' tests.
+The standard version is currently `1.0.0-s1.2` with candidate status. The owning repository profile and synchronization gate pin that candidate; adopter runtime rules remain on their existing profile until full cutover acceptance. `node scripts/verify-harness-standard.mjs` checks the receipt fixture and the S1.2 interface fixtures, and `node scripts/sync-harness-rules.mjs --check --repos scripts/sync-repos.list` verifies dual-surface parity. Runtime crash, Git and GUI behavior still require the implementation repositories' tests.
