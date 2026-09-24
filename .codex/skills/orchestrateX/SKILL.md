@@ -1,6 +1,6 @@
 ---
 name: orchestrateX
-description: Lightweight routing and execution rules for xdo, xdel, and xflow.
+description: Lightweight routing and execution rules for xdo, xdel, xflow, and xarch.
 ---
 
 # orchestrateX
@@ -12,7 +12,7 @@ description: Lightweight routing and execution rules for xdo, xdel, and xflow.
 
 Read the complete request and active context before selecting a mode.
 
-- Explicit `xdo`, `xdel`, `xflow`, or `xstatus` commands take precedence.
+- Explicit `xdo`, `xdel`, `xflow`, `xarch`, or `xstatus` commands take precedence.
 - Without an explicit mode, recommend `xflow` for high-impact, cross-module, or uncertain work; recommend `xdel` for clear local work with an existing or requested task note; otherwise recommend `xdo`.
 - When the mode is ambiguous, present the three choices instead of silently selecting one.
 - Once a mode is active, keep subsequent messages in that mode until completion.
@@ -30,6 +30,13 @@ Read the complete request and active context before selecting a mode.
 - Use `engineeringX` and perform self-review before reporting completion.
 - Atomic landing: code + Note (new `implemented/` when no owning Note fits, otherwise in-place sync) + entry reverse comment land in one commit; message carries the Note path. Even format-only/typo/unambiguous-rename/tag/small work lands a Note. Supersession surgery goes to `xflow`, never `xdo`.
 - Writing follows `proseX` (gate timing exempt, standard never exempt).
+
+### xarch - scaffold
+- Main Agent scaffolds an architect workspace directly with deterministic steps; fail fast, never guess.
+- Do not dispatch. No parallel Agents. No task note URI, no fixed Payload.
+- Steps: git init (reuse an existing repo, stop on a dirty tree) -> write `.agents/harness.json` (schemaVersion 1 + fresh UUID repoId + frozen workflowx profile digest; verify-only if present) -> write `notes/planning/` templates (`project.md` + one `module-example.md`, kind initiative, P1-frozen shape, no views/) -> CODEOWNERS (with `--with-codeowners`) + README -> register through the existing workspace.create chain -> verify the projection (projectView readable, invalid not increased).
+- Do not decide module splits, interface names, or primary bindings; those stay in chat with changeset two-layer approval. After handoff, note edits go through harness transactions + expectedHash + approval.
+- P1-frozen scope: no new kinds, fields, or views. Atomic landing; writing follows `proseX`.
 
 ### xdel - delegate
 - Purpose: a traceable single delegation against one accepted task note, without paying xflow planning and evaluation. For speed use `xdo`; for an independent quality gate use `xflow`.
@@ -77,3 +84,4 @@ Read the complete request and active context before selecting a mode.
 | `xdo [--parallel] <requirement>` | Direct work; parallel only when explicitly requested |
 | `xdel <requirement or task note>` | One-shot delegated work |
 | `xflow [-box] <requirement>` | Full planning and evaluation |
+| `xarch <dir> [--name <name>] [--with-codeowners]` | Scaffold architect workspace; deterministic, no dispatch, no task note |

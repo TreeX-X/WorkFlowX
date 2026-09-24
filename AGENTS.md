@@ -41,6 +41,7 @@ Treat these natural-language prefixes as workflow commands:
 | `xflow` | Full-repo workflow: discovery -> implementation -> evaluation |
 | `xdel` | Task-note-backed delegated implementation; coderX self-reviews, no evaluatorX |
 | `xdo` | Main Agent direct execution; optional native parallelism only when explicitly requested |
+| `xarch` | Scaffold an architect workspace: git repo + `.agents` + planning templates + registry + projection check |
 | `xstatus` | Generate workflow status report |
 
 ---
