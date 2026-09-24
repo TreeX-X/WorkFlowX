@@ -32,6 +32,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 - **coderX 只负责实现**：读取派发 Task、固定验收引用和允许范围，遵循 `engineeringX + specX` 写代码，自审后返回 Change Summary 与 Note 草稿。
 - **evaluatorX 独立验收（仅 xflow）**：测试驱动，只读不改，按固定 AC 建最小可执行测试集并运行，输出 `PASS / NEEDS_FIX / UNEVALUABLE`。
 - **Task notes 记账**：`.agents/notes/` 按 `harness-note/1` 规范沉淀 `idea / initiative / requirement / decision / task`，范围、AC、文件索引、依赖、验证记录和唯一的 `execution` 状态各归其位。
+- **Wiki 与蓝图共用 Note**：工程 wiki 直读原文，正式关系与正文引用分开，反链由索引派生；知识 wiki 记录实际读取的 Note 来源及哈希。双端 noteX 已接入[共同读取契约](.agents/notes/2026-09-24-note-index-derived-layer--c61d7a4e.md)，宿主读取和界面接入按[实施计划](.agents/notes/2026-09-24-note-corpus-index-blueprint-completion--f4b2c8d1.md)推进。
 
 > 当前架构没有 `orchestratorX` 子代理，也没有独立 `routeX` skill：路由已合并进 `orchestrateX`，编排由 Main Agent 直接承担；`xdel / xflow` 只通过结构化 Payload 交接。旧 `.hybrid/` 文档与 MCP / `promptX` / `noiseX` 属于重构前历史，不再作为运行依据。
 
