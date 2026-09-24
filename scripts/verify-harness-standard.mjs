@@ -17,7 +17,7 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const URI = /^note:\/\/[0-9a-f-]{36}\/[0-9a-f-]{36}$/;
 const HEX64 = /^[0-9a-f]{64}$/;
 const ACID = /^AC-\d+$/;
-const TOP_KEYS = new Set(["schema","id","kind","lifecycle","created","class","tags","parent","relations","repositories","codeRefs","work","execution","disposition","extensions"]);
+const TOP_KEYS = new Set(["schema","id","kind","lifecycle","created","class","tags","parent","relations","repositories","codeRefs","interfaces","work","execution","disposition","extensions"]);
 const KINDS = ["idea","initiative","requirement","decision","task"];
 const LIFECYCLES = ["draft","proposed","accepted","rejected","archived","implemented"];
 const CLASSES = ["feature","bug-fix","architecture","process","testing","simplification"];
@@ -217,6 +217,20 @@ function validateNote(file, { allowPlaceholderBaseline = true } = {}) {
     }
   }
   const isTask = fm.kind === "task";
+  if ("interfaces" in fm && fm.interfaces != null) {
+    if (fm.kind !== "initiative") throw err("SCHEMA_INVALID", "interfaces only for initiative");
+    if (!Array.isArray(fm.interfaces)) throw err("SCHEMA_INVALID", "interfaces must be array");
+    const seenIf = new Set();
+    for (const x of fm.interfaces) {
+      if (typeof x.name !== "string" || !/^[A-Z][A-Za-z0-9_]*$/.test(x.name)) throw err("SCHEMA_INVALID", `bad interface name ${x.name}`);
+      if (x.direction !== "provides" && x.direction !== "needs") throw err("SCHEMA_INVALID", `bad interface direction ${x.direction}`);
+      for (const k of Object.keys(x)) if (!["name", "direction", "provider"].includes(k)) throw err("SCHEMA_INVALID", `unknown interface key '${k}'`);
+      if (x.provider != null && !URI.test(x.provider)) throw err("SCHEMA_INVALID", `bad interface provider ${x.provider}`);
+      const key = `${x.direction}:${x.name}`;
+      if (seenIf.has(key)) throw err("SCHEMA_INVALID", `duplicate interface ${key}`);
+      seenIf.add(key);
+    }
+  }
   if ("work" in fm && fm.work != null && !isTask) throw err("SCHEMA_INVALID", "work only for task");
   if ("execution" in fm && fm.execution != null && !isTask) throw err("SCHEMA_INVALID", "execution only for task");
   if (isTask && fm.lifecycle === "draft" && fm.execution != null) throw err("SCHEMA_INVALID", "draft must not carry execution");
@@ -347,7 +361,7 @@ for (const t of ["idea","initiative","requirement","decision","task"]) {
   try { const r = validateNote(p); if (r.fm.kind !== t) throw err("SCHEMA_INVALID", "template kind mismatch"); ok(`template ${t}.md`); }
   catch (e) { fail(`template ${t}.md: [${e.code ?? "?"}] ${e.message}`); }
 }
-for (const v of ["valid-idea","valid-initiative","valid-requirement","valid-decision","valid-decision-implemented","valid-task"]) {
+for (const v of ["valid-idea","valid-initiative","valid-initiative-interfaces","valid-requirement","valid-decision","valid-decision-implemented","valid-task"]) {
   const p = join(STD, "fixtures", `${v}.md`);
   try { currentFile = p; validateNote(p); ok(`fixture ${v}.md`); }
   catch (e) { fail(`fixture ${v}.md: [${e.code ?? "?"}] ${e.message}`); }

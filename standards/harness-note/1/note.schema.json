@@ -70,6 +70,20 @@
         }
       }
     },
+    "interfaces": {
+      "type": "array",
+      "description": "Initiative-only (S1.2). Module interface declarations; soft-matched by the assembler, never enters taskContractHash. A needs entry without provider renders as dangling demand.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "direction"],
+        "properties": {
+          "name": { "type": "string", "pattern": "^[A-Z][A-Za-z0-9_]*$" },
+          "direction": { "enum": ["provides", "needs"] },
+          "provider": { "type": "string", "pattern": "^note://[0-9a-f-]{36}/[0-9a-f-]{36}$" }
+        }
+      }
+    },
     "work": {
       "type": "object",
       "description": "Task-only (C3). Machine contract; prose never substitutes.",

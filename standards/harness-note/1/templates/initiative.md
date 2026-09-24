@@ -6,6 +6,9 @@ lifecycle: proposed
 created: 2026-09-16
 class: feature
 tags: []
+# interfaces:                      # optional, initiative-only; soft-matched, never enters taskContractHash
+#   - name: IBusinessEngine
+#     direction: needs
 ---
 
 # Title (single H1)

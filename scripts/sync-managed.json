@@ -1,6 +1,6 @@
 {
   "$comment": "S7 managed rule pairs. Whole files must match after surface-token normalization; blocks compare marked sections only. Forbidden paths must be absent in the owning repo.",
-  "standard": { "manifest": "standards/harness-note/1/manifest.json", "version": "1.0.0-s1.1" },
+  "standard": { "manifest": "standards/harness-note/1/manifest.json", "version": "1.0.0-s1.2" },
   "tokens": [".codex/", ".claude/"],
   "pairs": [
     { "id": "orchestrateX", "a": ".codex/skills/orchestrateX/SKILL.md", "b": ".claude/skills/orchestrateX/SKILL.md", "mode": "whole" },

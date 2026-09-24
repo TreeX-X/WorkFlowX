@@ -10,6 +10,7 @@ switches.
 | Slot | Locked value | Status |
 |---|---|---|
 | Standard bundle | `workflowx-harness-note` `1.0.0-s1.1` (final 2026-09-19), manifest digest `b8440b011556dd61c7f14914497d667b1fa3af5f5e53c4bc84fb7e177d1e0aa9` | done 2026-09-19 |
+| Standard bundle (candidate) | `workflowx-harness-note` `1.0.0-s1.2` (candidate 2026-09-25, initiative interfaces), manifest digest `5e107a605cf0b13b53a4b8c63479f4163ac39d9d40c3fade6e43112163b16d01` | candidate, pending user review |
 | WorkFlowX checkout | `1dc92104cb58b928fecbab15285ce4240c8b39fd` | recorded |
 | janus-agentX checkout | `0d510f6db760de55f04c1ed8028e5078a2334977` | recorded |
 | janus-agentX packages | `@janus-agent/*` `0.1.0`, distributed as sibling checkouts (no registry; revisit on multi-machine or CI consumption) | decided 2026-09-19 |
