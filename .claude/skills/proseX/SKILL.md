@@ -47,7 +47,9 @@ Kept: issue refs, `TODO(name):`, merged-PR refs, suppression reasons, present-te
 
 ## 5. One home per fact
 
-One fact lives in one place; everything else links there. Cross-Note refs use relative Markdown links, never bare numbers. Task notes link related notes by URI plus a one-line summary, never inlined prose. Code entry comment shape: `// Note: <one-line reason> — see <relative Note path>`, placed at public interfaces/type definitions/module tops/state-machine entries only.
+<!-- Note: shared Note reference rules — see .agents/notes/2026-09-24-note-index-derived-layer--c61d7a4e.md -->
+
+One fact lives in one place; everything else links there. Cross-Note references follow noteX: use standard Markdown links, with full Note URIs across repositories and optional relative paths within the same checkout. Add a one-line summary instead of inlining the source. Bare numbers or plain URI text do not create indexed references. Code entry comment shape: `// Note: <one-line reason> — see <relative Note path>`, placed at public interfaces/type definitions/module tops/state-machine entries only.
 
 ## 6. Length principle
 

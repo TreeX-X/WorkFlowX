@@ -30,7 +30,7 @@ The common read boundary provides the following data without prescribing a new t
 | Data | Consumer contract |
 |---|---|
 | Note metadata | Full URI, title, kind, lifecycle, class/tags, parent, repositories, codeRefs, and profile-supported interfaces; preserve execution separately when present |
-| Source | Owning checkout, source path, reader-provided content hash, section headings, bounded excerpt, and original body on demand |
+| Source | Owning checkout, source path, raw-file `sha256` from the shared reader, section headings, bounded excerpt, and original body on demand |
 | Formal relations | Original type, direction, complete target URI, and attached criteria/scope/reason; preserve unresolved declarations |
 | Derived references | Source URI, original Markdown destination, resolved target URI when known, optional section anchor, and resolution diagnostic |
 | Query context | Searched checkouts, source revisions/hashes, diagnostics, and any paging or result limit; backlinks state their coverage |
@@ -43,11 +43,17 @@ Preserve `parent / depends-on / implements / governed-by / derived-from / supers
 
 Extract standard Markdown links, including inline, reference-style, and URI autolinks. Ignore fenced, indented, and inline code. Resolve Note URIs directly; resolve relative paths from the source file only against scanned Notes within the same checkout. A section fragment is a locator, not part of Note identity; a fragment-only link targets the source Note. Non-Note files and external URLs remain ordinary links. `[[wikilinks]]`, bare URI text, and guessed title matches do not create indexed edges. Unresolved declarations remain visible.
 
+Authors use standard Markdown links to full Note URIs across repositories; relative paths are allowed within the same checkout. noteX and proseX apply this same rule. Existing bare URI text remains readable, but a consumer does not silently convert it into an indexed reference.
+
 Collapse repeated mentions to the same source/target/anchor for display, preserving original destinations for diagnostics. A mention and a formal relation to the same Note remain distinguishable. A missing section is a locator diagnostic and does not erase a resolved Note.
 
 ### Knowledge wiki provenance
 
-Engineering wiki opens the original Note; it does not create one WikiPage per Note. Knowledge wiki may add optional host-owned `sourceNoteRefs: [{ uri, sourceHash }]`, retaining its existing `sourceFactIds`. Each reference records a Note actually read when generating or reviewing the page; `sourceHash` is that reader's content hash, never a model-generated value or taskContractHash. The page keeps its existing workspace and identity, so source matching never merges pages by slug across workspaces. Note-to-wiki backlinks are derived from these references.
+Engineering wiki opens the original Note; it does not create one WikiPage per Note. Knowledge wiki may add optional host-owned `sourceNoteRefs: [{ uri, sourceHash }]`, retaining its existing `sourceFactIds`. Each reference records a Note actually read when generating or reviewing the page. The page keeps its existing workspace and identity, so source matching never merges pages by slug across workspaces. Note-to-wiki backlinks are derived from these references.
+
+`sourceHash` is exactly the `sha256` returned by harness-node's `readNoteFile` for the content used: SHA-256 of the complete raw file bytes, encoded as 64 lowercase hexadecimal characters. Storage and freshness comparison use that same algorithm without line-ending, whitespace, frontmatter, or Unicode normalization. The source text and hash come from the same read. A later body read returns its own hash and reports any mismatch with the requested snapshot; it must not pair fresh text with an older hash. `contentDigest`, `taskContractHash`, receipt hashes, and model-generated values do not substitute for this file hash.
+
+This definition reuses the existing reader. Formatting, metadata, and LF/CRLF changes can mark a source changed even when its wording remains the same; the hint reports snapshot inequality, not a proven change in meaning. A path-only rename with identical bytes keeps the hash. Existing concurrency and task/receipt hashing algorithms retain their own semantics.
 
 Deduplicate identical URI/hash pairs. Conflicting hashes for one URI require review: keep existing provenance and the conflict visible rather than silently selecting the latest hash. Only review or rewrite of all page content based on that Note, followed by the host's existing wiki approval, can replace its stored reference. Reading a newer Note or refreshing an index alone never updates provenance. Pages without recorded sources remain readable with unknown freshness. These fields and derived summaries/backlinks do not enter Note frontmatter or change task/receipt hash rules.
 
@@ -59,7 +65,7 @@ Deduplicate identical URI/hash pairs. Conflicting hashes for one URI require rev
 | Repository unbound or unreadable, or scan incomplete | Unavailable or incomplete coverage; preserve the reference and do not infer deletion |
 | Repository completely scanned but target absent | Missing target diagnostic |
 | Duplicate target IDs or checkout selection ambiguous | Ambiguous target diagnostic; no guessed navigation or edge |
-| Recorded source hash differs from the current content hash | Changed source; show current content without updating the saved hash |
+| Recorded source hash differs from the current raw-file `sha256` | Changed source; show current content without updating the saved hash |
 | Page has no recorded source hash | Unknown freshness; never claim current |
 
 Resolution and freshness are independent: an unavailable source has unknown current freshness, while the saved snapshot remains intact. Lifecycle, task execution, and source freshness never substitute for each other. A changed page source does not revoke a task receipt; existing receipt rules continue to decide evidence validity.
@@ -84,6 +90,8 @@ These are required downstream behaviors, not claims that consumer implementation
 | Two checkouts share repoId and Note ID | Read only the explicitly selected checkout and report that scope |
 | A referenced repository is unavailable | Keep the reference with unavailable status; do not report a deleted Note |
 | A reviewed knowledge page records hash A; current source is hash B | Mark changed source, preserve A, and require content review before replacing it |
+| A Note changes only LF/CRLF or formatting | Raw-file hashes differ; show changed source and preserve saved provenance |
+| A lazy body read differs from the indexed snapshot | Return the new text with its own hash and signal the mismatch |
 | A legacy page has no sourceNoteRefs | Read the page with unknown freshness; invent no historical hashes |
 | A parent cycle or duplicate ID occurs | Surface the diagnostic without selecting a fabricated hierarchy |
 
@@ -94,6 +102,7 @@ The [delivery initiative](./2026-09-24-note-corpus-index-blueprint-completion--f
 - Keep path and `byId` lookup only - strongest case is minimal code and no cache format, but blueprint and wiki consumers repeatedly rescan files and cannot answer backlinks or semantic relation queries; rejected for the target capability.
 - Commit a shared `INDEX.md` - strongest case is easy inspection in Git, but concurrent agents would create merge conflicts and the index would become a second source of truth; rejected.
 - Put summaries and search fields into every Note - strongest case is fast reads, but derived text would drift from the body and increase the sealed schema surface; rejected in favor of a rebuildable local index.
+- Use a semantic digest for wiki sources - strongest case is fewer formatting-only alerts, but selected-section hashing needs additional rules to cover arbitrary cited content across all five kinds; the existing reader's raw-file hash provides one exact snapshot boundary.
 - Copy every Note into knowledge wiki - strongest case is immediate reuse of page CRUD, but duplicated bodies, identities, and review state drift; direct engineering views and small source references preserve ownership.
 - Infer dependencies from prose links or matching titles - strongest case is less authoring work, but mentions do not declare dependency and names collide across repositories; typed relations and visible unresolved references retain intent.
 - Do nothing / reuse - keeps S1.1 compatibility pressure low, but leaves the current candidate mismatch and makes legacy omissions invisible; rejected because the blueprint migration depends on complete graph visibility.

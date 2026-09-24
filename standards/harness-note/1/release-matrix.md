@@ -29,6 +29,19 @@ switches.
 - [x] `AGENTS.md`, `CLAUDE.md`, skills, agents, and commands switch in all three repositories in one batch (2026-09-19).
 - [ ] Old-asset handling (retain as foreign namespace; hand-rewrite live constraints only) is recorded per repository.
 
+## S1.2 adoption gate
+
+<!-- Note: wiki rules and consumer activation have separate boundaries — see .agents/notes/2026-09-24-note-index-derived-layer--c61d7a4e.md -->
+
+The S1.2 candidate row identifies the input for the next joint release. The completed S1.1 checklist entries above record that earlier release; they do not activate S1.2. A rule or documentation change does not approve the candidate or satisfy these gates.
+
+- [ ] WorkFlowX approves and seals the final bundle, records its exact version and manifest digest here, and aligns the owning harness profile and managed-rule version.
+- [ ] janus-agentX supports the initiative interface declarations and passes the owning valid/invalid fixtures; the taskContractHash fixture remains unchanged.
+- [ ] All three repositories pin that same final version/digest, receive the applicable managed rules, and record their actual checkout SHAs as one release combination in this matrix.
+- [ ] Consumer-path compatibility checks pass for that recorded combination before writers or assemblers enable S1.2 declarations; incomplete evidence remains an open gate.
+
+Prepare the bundle and consumer support together, then activate the recorded combination after every gate passes. While the candidate gate is open, inventory and read-only work may use the currently supported profile; candidate-only fields do not gain write authority. The wiki source-hash rule uses the existing file reader and requires no core schema or hash-algorithm change. Runtime implementation and product acceptance remain separately tracked consumer work.
+
 ## Consumer pin rule
 
 Each consuming checkout records this matrix in its own ledger: `harness.json`
