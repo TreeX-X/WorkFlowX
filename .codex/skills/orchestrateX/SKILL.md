@@ -34,9 +34,9 @@ Read the complete request and active context before selecting a mode.
 ### xarch - scaffold
 - Main Agent scaffolds an architect workspace directly with deterministic steps; fail fast, never guess.
 - Do not dispatch. No parallel Agents. No task note URI, no fixed Payload.
-- Steps: git init (reuse an existing repo, stop on a dirty tree) -> write `.agents/harness.json` (schemaVersion 1 + fresh UUID repoId + frozen workflowx profile digest; verify-only if present) -> write `notes/planning/` templates (`project.md` + one `module-example.md`, kind initiative, P1-frozen shape, no views/) -> CODEOWNERS (with `--with-codeowners`) + README -> register through the existing workspace.create chain -> verify the projection (projectView readable, invalid not increased).
+- Steps: git init (reuse an existing repo, stop on a dirty tree) -> write `.agents/harness.json` (schemaVersion 1 + fresh UUID repoId + frozen workflowx profile digest; verify-only if present) -> write flat `.agents/notes/` templates (`project.md` + one `module-example.md`, kind initiative, current pinned S1.2 profile, explicit parent URI, no views/) -> CODEOWNERS (with `--with-codeowners`) + README -> register through the existing workspace.create chain -> verify the projection (projectView readable, invalid not increased).
 - Do not decide module splits, interface names, or primary bindings; those stay in chat with changeset two-layer approval. After handoff, note edits go through harness transactions + expectedHash + approval.
-- P1-frozen scope: no new kinds, fields, or views. Atomic landing; writing follows `proseX`.
+- Templates follow the pinned S1.2 initiative shape (Goal, Scope, Acceptance criteria); omit unknown repositories/interfaces instead of placeholders. Registration must return a workspace identity; unavailable registration stays pending. Composition uses explicit repoId/checkoutId/path/selected records in .agents/.local/workspace-map.json; no checkout inference by name. Atomic landing; writing follows `proseX`.
 
 ### xdel - delegate
 - Purpose: a traceable single delegation against one accepted task note, without paying xflow planning and evaluation. For speed use `xdo`; for an independent quality gate use `xflow`.
