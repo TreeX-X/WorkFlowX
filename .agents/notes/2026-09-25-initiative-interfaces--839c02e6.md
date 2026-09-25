@@ -8,7 +8,7 @@ class: architecture
 tags: [harness-note, interfaces]
 ---
 
-# Optional initiative interfaces in S1.2 candidate
+# Optional initiative interfaces in S1.2
 
 ## Problem
 
@@ -16,7 +16,9 @@ Module notes declare provided and needed interfaces only as prose tables, so the
 
 ## Decision
 
-S1.2 candidate adds optional `interfaces[]` (name `^[A-Z][A-Za-z0-9_]*$`, direction provides or needs, optional provider note URI, no duplicate direction-plus-name pairs, no unknown keys) restricted to `initiative`; any other kind carrying it fails `SCHEMA_INVALID`. A needs entry without provider is legal and renders as dangling demand. The field is structurally excluded from `taskContractHash` (the hash input reads a fixed field list that does not contain it), so architect edits to module interfaces never invalidate downstream receipts; the S1.1 hash lock is byte-identical under S1.2. Sealed set: `note.schema.json`, `verify-harness-standard.mjs`, `templates/initiative.md` (commented example only), one valid plus two invalid fixtures, manifest `1.0.0-s1.2` candidate, release-matrix candidate row with recomputed digest. Status stays candidate pending user review; no consumer adopts it before the flip to final.
+S1.2 adds optional `interfaces[]` (name `^[A-Z][A-Za-z0-9_]*$`, direction provides or needs, optional provider note URI, no duplicate direction-plus-name pairs, no unknown keys) restricted to `initiative`; any other kind carrying it fails `SCHEMA_INVALID`. A needs entry without provider is legal and renders as dangling demand. Null/non-object declarations and non-string providers are rejected with schema diagnostics. The field is structurally excluded from `taskContractHash` (the hash input reads a fixed field list that does not contain it), so architect edits to module interfaces never invalidate downstream receipts; the S1.1 hash lock is byte-identical under S1.2.
+
+[R1 adoption](note://972afef3-2fc7-49de-a3ee-7e041225d28c/81fc137e-9c56-4d3a-88e4-10f175852c97) aligns the standard, shared runtime and JanusX's installed dependencies. The final manifest digest is `1b9500b1ea5101231650f04f2e5e2c480001ccf9512ec173b8e5d737bf2d6923`. The release matrix records activation only after independent review; the user's continuous implementation authorization covers this cutover. Standard validation and the unchanged task/receipt hash locks pass. Core, CLI and JanusX consume the same interface fixtures.
 
 ## Alternatives considered
 

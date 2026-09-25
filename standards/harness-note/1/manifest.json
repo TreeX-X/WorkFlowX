@@ -1,9 +1,9 @@
 {
-  "$comment": "Harness Note Standard 1 (S1.2 candidate 2026-09-25: adds optional initiative interfaces; taskContractHash input unchanged). Normative source for note/receipt/changeset/bundle shapes. Sealed: content changes require a new version and digest.",
+  "$comment": "Harness Note Standard 1 (S1.2 final 2026-09-25: adds optional initiative interfaces; taskContractHash input unchanged). Normative source for note/receipt/changeset/bundle shapes. Sealed: content changes require a new version and digest.",
   "schema": "harness-note/1",
   "standard": "workflowx-harness-note",
   "version": "1.0.0-s1.2",
-  "status": "candidate",
+  "status": "final",
   "contract": "JanusX/.agents/notes/proposed/architecture/2026-09-16-note-harness-implementation-contract.md (C1-C6)",
   "kinds": ["idea", "initiative", "requirement", "decision", "task"],
   "lifecycle": ["draft", "proposed", "accepted", "rejected", "archived", "implemented"],

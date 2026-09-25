@@ -1,3 +1,4 @@
+<!-- wfx-managed: workflowx-entry -->
 # AGENTS.md - WorkflowX Codex Instructions
 
 > This file is the Codex entry instruction for WorkflowX.
@@ -75,3 +76,4 @@ Automatically use the encrypted-source fallback when a file cannot be edited dir
 - Locate work with host search (`rg`) over titles, ids, and code refs first; no persistent index or desktop is required.
 - Optional tooling (note checker, desktop canvas, built-in engine) never gates base work; a missing tool means the document flow, and a failed machine check never becomes a pass by downgrade.
 - This file is self-sufficient: never assume the reader also loads `CLAUDE.md`.
+<!-- wfx-managed-end -->

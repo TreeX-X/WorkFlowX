@@ -17,6 +17,7 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 const URI = /^note:\/\/[0-9a-f-]{36}\/[0-9a-f-]{36}$/;
 const HEX64 = /^[0-9a-f]{64}$/;
 const ACID = /^AC-\d+$/;
+// Note: .agents/notes/2026-09-25-initiative-interfaces--839c02e6.md
 const TOP_KEYS = new Set(["schema","id","kind","lifecycle","created","class","tags","parent","relations","repositories","codeRefs","interfaces","work","execution","disposition","extensions"]);
 const KINDS = ["idea","initiative","requirement","decision","task"];
 const LIFECYCLES = ["draft","proposed","accepted","rejected","archived","implemented"];
@@ -217,15 +218,16 @@ function validateNote(file, { allowPlaceholderBaseline = true } = {}) {
     }
   }
   const isTask = fm.kind === "task";
-  if ("interfaces" in fm && fm.interfaces != null) {
+  if ("interfaces" in fm) {
     if (fm.kind !== "initiative") throw err("SCHEMA_INVALID", "interfaces only for initiative");
     if (!Array.isArray(fm.interfaces)) throw err("SCHEMA_INVALID", "interfaces must be array");
     const seenIf = new Set();
     for (const x of fm.interfaces) {
+      if (!x || typeof x !== "object" || Array.isArray(x)) throw err("SCHEMA_INVALID", "interface must be object");
       if (typeof x.name !== "string" || !/^[A-Z][A-Za-z0-9_]*$/.test(x.name)) throw err("SCHEMA_INVALID", `bad interface name ${x.name}`);
       if (x.direction !== "provides" && x.direction !== "needs") throw err("SCHEMA_INVALID", `bad interface direction ${x.direction}`);
       for (const k of Object.keys(x)) if (!["name", "direction", "provider"].includes(k)) throw err("SCHEMA_INVALID", `unknown interface key '${k}'`);
-      if (x.provider != null && !URI.test(x.provider)) throw err("SCHEMA_INVALID", `bad interface provider ${x.provider}`);
+      if ("provider" in x && (typeof x.provider !== "string" || !URI.test(x.provider))) throw err("SCHEMA_INVALID", `bad interface provider ${x.provider}`);
       const key = `${x.direction}:${x.name}`;
       if (seenIf.has(key)) throw err("SCHEMA_INVALID", `duplicate interface ${key}`);
       seenIf.add(key);

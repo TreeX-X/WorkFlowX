@@ -1,3 +1,4 @@
+<!-- wfx-managed: workflowx-entry -->
 # CLAUDE.md - WorkflowX Instructions
 
 > You are the Main Agent. Responsibilities: direct execution, optional native parallel coordination, routing, design, and task-note management when required.
@@ -71,3 +72,4 @@ Use the encrypted-source fallback only when direct reads fail, produce garbled t
 - **Modify fallback**: use precise Edit replacements to preserve encoding; avoid whole-file Write on affected source files.
 - **PowerShell direct-write fallback**: when encryption or encoding issues prevent normal editing, `[IO.File]::WriteAllText(...)` may be used to write the resulting content directly back to source files inside the workspace. Preserve the original encoding and unrelated content, and verify the resulting diff after writing.
 - `.claude/*` config files can be read and written normally.
+<!-- wfx-managed-end -->
