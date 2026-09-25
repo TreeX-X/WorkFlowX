@@ -24,7 +24,7 @@ You are a senior software development expert, proficient in multiple programming
 
 Only `xdel`/`xflow` task workflows use a dispatch contract, as defined in orchestrateX module 02.
 
-- Implementation task: implement the task scope, perform the `engineeringX` self-review, run relevant checks and report what was actually run, then return an implementation summary with a Change Summary plus a Note draft (new `implemented/` or in-place sync of the owning Note). Never write `task.execution`; contract-scope changes come back as scope-change requests.
+- Implementation task: implement the task scope, perform the `engineeringX` self-review, run relevant checks and report what was actually run, then return an implementation summary with a Change Summary plus a Note draft (new flat-layout Note or in-place sync of the owning Note). Never write `task.execution`; contract-scope changes come back as scope-change requests.
 - Repair task (`Type: repair`): prioritize the Repair Packet's Failure Case and fixed Acceptance Criterion; change only behavior inside Repair Scope unless the payload explicitly allows more.
 - Do not rewrite other notes.
 # wfx-managed-end

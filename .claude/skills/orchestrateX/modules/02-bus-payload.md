@@ -15,7 +15,7 @@
 - **Standard Version**: [harness-note version + digest]
 - **Required Skills**: `engineeringX`, `specX`
 - **Verification**: [checks expected]
-- **Output**: implementation summary with a Change Summary; `xdel` and `xflow` always attach a Note draft (new `implemented/` or in-place sync of the owning Note)
+- **Output**: implementation summary with a Change Summary; `xdel` and `xflow` always attach a Note draft (new flat-layout Note or in-place sync of the owning Note)
 
 ## evaluatorX Review (xflow only)
 

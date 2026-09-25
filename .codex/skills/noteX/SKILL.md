@@ -23,7 +23,7 @@ Writing follows `proseX`. Prose quality is a human nod; structure below is check
 - `decision`: trade-offs with options, cost, and revisit signals. Adoption and landing stay separate states.
 - `task`: bounded delivery with scope, acceptance refs, verification, dependencies, and the single `execution` state. No separate plan files exist.
 
-`class` (feature/bug-fix/architecture/process/testing/simplification) names the engineering area and never substitutes for kind. Locate source files with host search; consumers may build a disposable index from them. Never commit a central `INDEX.md` or maintain a second relation store. Pre-S7 lifecycle-folder files still on disk are legacy: readable, never extended; new notes use flat layout with frontmatter lifecycle.
+`class` (feature/bug-fix/architecture/process/testing/simplification) names the engineering area and never substitutes for kind. Locate source files with host search; consumers may build a disposable index from them. Never commit a central `INDEX.md` or maintain a second relation store. Pre-S7 lifecycle-folder files still on disk are legacy: readable, never extended. New Notes live directly in `.agents/notes/`; frontmatter kind and lifecycle carry their meaning. In-place updates preserve UUID. Moving legacy files requires updating relative links and code reverse references; keep source provenance when normalizing historical content.
 
 ## 2. File shape
 
@@ -37,12 +37,12 @@ Frontmatter carries `schema: harness-note/1`, `id`, `kind`, `lifecycle`, `create
 - Execution state lives only in task notes. Outside `xdo`, small reversible changes with no lasting trade-off may land without a task note; lasting trade-offs, architecture choices, and non-obvious behavior always get one.
 - Declined in review -> `rejected` with a reason, or delete. Fully superseded -> the new Note absorbs surviving reasons and links both ways; partial overlap keeps both alive and linked.
 - Exempt (`not applicable`, no Note) applies outside `xdo` only: pure formatting, unambiguous renames, typos, release tags, behavior-preserving dependency patches.
-- `xdo` mandatory archiving: every `xdo` lands a Note — search existing Notes first (`rg` over titles, ids, code refs); update the owning Note in place when one fits, otherwise create a new `implemented/` Note. No `not applicable` in `xdo`.
+- `xdo` mandatory archiving: every `xdo` lands a Note — search existing Notes first (`rg` over titles, ids, code refs); update the owning Note in place when one fits, otherwise create a new Note directly in `.agents/notes/` with frontmatter lifecycle. No `not applicable` in `xdo`.
 - When unsure whether to write, write.
 
 ## 4. Binding and linking
 
-- Each `implemented/` decision leaves one reverse comment at the core entry (public interface, type definition, module top, state-machine entry): `// Note: <reason> — see .agents/notes/...`. Never per-line.
+- Each implemented decision leaves one reverse comment at the core entry (public interface, type definition, module top, state-machine entry): `// Note: <reason> — see .agents/notes/...`. Never per-line.
 - Link related Notes with standard Markdown links and a one-line summary, never inlined prose. Use Note URIs across repositories; same-checkout relative links are allowed. Bare URI text does not create an indexed reference. Provenance lives in the atomic commit.
 - Same-commit rule: code + Note + entry comment land together. Commit message carries the Note path.
 
@@ -52,7 +52,7 @@ Frontmatter carries `schema: harness-note/1`, `id`, `kind`, `lifecycle`, `create
 - `Alternatives considered` present with an explicit do-nothing/reuse option.
 - Stable `AC-n` ids, never renumbered; task refs point at note URI + AC id, never copied prose.
 - No second plan store (no Parent/Child files, no plans directory, no plan URIs).
-- Relative Markdown links resolve; `implemented/` bodies carry no dispatch identifiers or PR-process nouns.
+- Relative Markdown links resolve; Implemented decision bodies carry no dispatch identifiers or PR-process nouns.
 
 ## 6. Wiki and blueprint reads
 

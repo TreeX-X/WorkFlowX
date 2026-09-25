@@ -11,8 +11,8 @@ Narrative documents (Agent Notes, task result notes, xstatus narrative, code ent
 
 ## 1. Tense by artifact
 
-- `implemented/` Note: present tense, landed facts only. No `Proposal/Plan/Acceptance criteria`, no change narrative (`used to`/`no longer`/`now`). Regressions use present-tense counterfactuals: "without X, Y".
-- `proposed/` entry, task AC, Repair Packet: future tense / imperative.
+- Implemented decision Note (`lifecycle: implemented`): present tense, landed facts only. No `Proposal/Plan/Acceptance criteria`, no change narrative (`used to`/`no longer`/`now`). Regressions use present-tense counterfactuals: "without X, Y".
+- Draft Note, task AC, Repair Packet: future tense / imperative.
 - Task notes, xstatus: present tense with date stamps, no process ledger (`round N`, `v3 history`).
 - Commit message: imperative + Note path index. Rationale lives in the Note, never in the message.
 
@@ -33,7 +33,7 @@ For each suspicious passage ask: **is this verifiable by a HEAD reader without t
 7. Vague placeholders: `should be fine` -> `TODO/FIXME` or an explicit boundary.
 8. Mixed working-language fragments -> translate or delete.
 
-Cross-artifact numbering ban: `implemented/` body must not reference dispatch identifiers or PR-process nouns (`follow-up PR`, `round N`). Provenance is answered by the atomic git commit, not the prose. `proposed/` drafts may note origin temporarily; strip on promotion.
+Cross-artifact numbering ban: implemented decision body must not reference dispatch identifiers or PR-process nouns (`follow-up PR`, `round N`). Provenance is answered by the atomic git commit, not the prose. Draft Notes may note origin temporarily; strip on promotion.
 
 Kept: issue refs, `TODO(name):`, merged-PR refs, suppression reasons, present-tense counterfactuals, measured bounds, runtime old/new states, committed doc numbers.
 

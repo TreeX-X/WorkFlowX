@@ -5,7 +5,6 @@ description: Lightweight routing and execution rules for xdo, xdel, xflow, and x
 
 # orchestrateX
 
-<!-- Note: dispatch vocabulary cleanup — see .agents/notes/implemented/process/2026-09-11-workflow-redundancy-cleanup.md -->
 <!-- Note: xdo mandatory archiving — see .agents/notes/2026-09-21-xdo-mandatory-note--e92790eb.md -->
 
 ## Routing
@@ -26,9 +25,9 @@ Read the complete request and active context before selecting a mode.
 - Main Agent works directly using the requested skills.
 - Do not dispatch by default.
 - Parallel Agents are allowed only when the user explicitly requests parallel development.
-- Task notes are mandatory at landing: search existing Notes with host search (`rg` over titles, ids, code refs) first; update the owning Note in place when one fits, otherwise create a new `implemented/` Note. No `not applicable` in `xdo`.
+- Task notes are mandatory at landing: search existing Notes with host search (`rg` over titles, ids, code refs) first; update the owning Note in place when one fits, otherwise create a new Note directly in `.agents/notes/` with frontmatter lifecycle. No `not applicable` in `xdo`.
 - Use `engineeringX` and perform self-review before reporting completion.
-- Atomic landing: code + Note (new `implemented/` when no owning Note fits, otherwise in-place sync) + entry reverse comment land in one commit; message carries the Note path. Even format-only/typo/unambiguous-rename/tag/small work lands a Note. Supersession surgery goes to `xflow`, never `xdo`.
+- Atomic landing: code + Note (new flat-layout Note when no owning Note fits, otherwise in-place sync) + entry reverse comment land in one commit; message carries the Note path. Even format-only/typo/unambiguous-rename/tag/small work lands a Note. Supersession surgery goes to `xflow`, never `xdo`.
 - Writing follows `proseX` (gate timing exempt, standard never exempt).
 
 ### xarch - scaffold
@@ -43,7 +42,7 @@ Read the complete request and active context before selecting a mode.
 - Use the task note; create one (accepted, scoped, verifiable) when none fits.
 - Dispatch coderX once for the assigned task.
 - coderX reads `engineeringX` and `specX`, then self-reviews.
-- coderX returns a Note draft with the Change Summary (new `implemented/` or in-place sync of the owning Note).
+- coderX returns a Note draft with the Change Summary (new flat-layout Note or in-place sync of the owning Note).
 - Note finalization is owned by the Main Agent close-out gate (mechanical checklist, then <=5-line semantic gaps, then user nod). coderX self-review never approves Notes.
 - Do not trigger evaluatorX or an iteration loop. An independent review happens only on explicit user request, and then as a separate review task, not as an automatic loop.
 
@@ -64,7 +63,7 @@ Read the complete request and active context before selecting a mode.
 
 ## Shared Rules
 
-- `xdel` and `xflow` require a task note URI upfront; `xdo` does not require one upfront but must produce one at landing (in-place sync preferred, new `implemented/` otherwise).
+- `xdel` and `xflow` require a task note URI upfront; `xdo` does not require one upfront but must produce one at landing (in-place sync preferred, new flat-layout Note otherwise).
 - Decision keeping follows `noteX`; writing follows `proseX`.
 - User instructions outrank skill guidance. On conflict, follow the user.
 - When a skill makes you pause, ask for confirmation, leave work undone, or deviate from user intent, cite the exact SKILL.md file and the rule that caused it, explain how it applies, and separate what the skill states from what you inferred.

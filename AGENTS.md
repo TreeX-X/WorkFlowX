@@ -26,7 +26,7 @@ For code development, feature implementation, refactoring, or bug fixes:
 - Follow the relevant `.codex/skills/` workflow.
 - Keep changes scoped to project code and Codex config.
 - `xdo` is the direct-execution mode: the Main Agent reads the requested engineering skill, decomposes the requirement, and works directly by default. Parallel Agents are used only when the user explicitly requests parallel development; their work follows the same engineering skill.
-- `xdo` lands atomically: code + Note (search first; in-place sync when an owning Note fits, otherwise new `implemented/` per `noteX`) + entry reverse comment in one commit; the message carries the Note path. No `not applicable` in `xdo`: even small/format-only work lands a Note.
+- `xdo` lands atomically: code + Note (search first; in-place sync when an owning Note fits, otherwise new flat-layout Note per `noteX`) + entry reverse comment in one commit; the message carries the Note path. No `not applicable` in `xdo`: even small/format-only work lands a Note.
 - All workflow document output follows `proseX`.
 
 Direct handling is allowed for read-only exploration, Codex config edits, git operations, and cases where the user explicitly asks to skip workflow handling.

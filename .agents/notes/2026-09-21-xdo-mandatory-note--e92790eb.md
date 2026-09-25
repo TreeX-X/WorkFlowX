@@ -23,7 +23,9 @@ codeRefs:
 
 ## Decision
 
-Every `xdo` lands a Note: search existing Notes first with host search over titles, ids, and code refs; update the owning Note in place when one fits, otherwise create a new `implemented/` Note. The `not applicable` exemption now applies outside `xdo` only. Code, Note, and entry reverse comment land in one commit whose message carries the Note path.
+Every `xdo` lands a Note: search existing Notes first with host search over titles, ids, and code refs; update the owning Note in place when one fits, otherwise create a new Note directly in `.agents/notes/` with frontmatter lifecycle. The `not applicable` exemption now applies outside `xdo` only. Code, Note, and entry reverse comment land in one commit whose message carries the Note path.
+
+Flat paths keep lifecycle transitions from changing Note locations. The frontmatter carries lifecycle; a historical file move preserves its UUID and updates relative links and code reverse references. New lifecycle directories would reintroduce a second status representation, so creation rules across entry files, skills and coder instructions use the same flat layout.
 
 ## Alternatives considered
 
