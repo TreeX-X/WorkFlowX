@@ -47,11 +47,11 @@ Single-repository declarations may live with code. Cross-repository declarations
 
 ## Acceptance criteria
 
-- [ ] AC-1: Document the existing-field convention, current versus planned structure, stable identity, explicit provider matching, and one owning location per declaration. Templates parse under the unchanged S1.2 schema and use no invented kinds or keys.
-- [ ] AC-2: xarch generates an identified project and only confirmed modules; optional examples carry architecture:example and cannot appear as real components. Unknown interfaces/bindings are omitted. Existing identity, explicit checkout selection and transaction rules remain intact.
-- [ ] AC-3: xdo/xdel/xflow read relevant boundaries and synchronize module declarations only on changes to existence, responsibility, public interfaces, explicit dependencies or recorded entrypoints. No obligatory per-task module binding, extra approval phase, second relation store or module maintenance report. Existing Note obligations remain.
-- [ ] AC-4: Hard interface constraints appear in existing task scope/acceptance and fixed references; ordinary module context is bounded. xstatus may derive structural gaps without manufacturing task completion. Canonical rules and changed adopter files match on both surfaces.
-- [ ] AC-5: The sealed standard and Task contract remain byte-compatible. Existing-source deletions and unrelated edits are preserved. Run standard and sync checks and report any pre-existing failures precisely.
+- [x] AC-1: Document the existing-field convention, current versus planned structure, stable identity, explicit provider matching, and one owning location per declaration. Templates parse under the unchanged S1.2 schema and use no invented kinds or keys.
+- [x] AC-2: xarch generates an identified project and only confirmed modules; optional examples carry architecture:example and cannot appear as real components. Unknown interfaces/bindings are omitted. Existing identity, explicit checkout selection and transaction rules remain intact.
+- [x] AC-3: xdo/xdel/xflow read relevant boundaries and synchronize module declarations only on changes to existence, responsibility, public interfaces, explicit dependencies or recorded entrypoints. No obligatory per-task module binding, extra approval phase, second relation store or module maintenance report. Existing Note obligations remain.
+- [x] AC-4: Hard interface constraints appear in existing task scope/acceptance and fixed references; ordinary module context is bounded. xstatus may derive structural gaps without manufacturing task completion. Canonical rules and changed adopter files match on both surfaces.
+- [x] AC-5: The sealed standard and Task contract remain byte-compatible. Existing-source deletions and unrelated edits are preserved. Run standard and sync checks and report any pre-existing failures precisely.
 
 ## Verification
 
@@ -60,5 +60,7 @@ V-1 and V-2 verify the unchanged standard and managed rule parity. Parse authori
 ## Results
 
 2026-10-03: Canonical noteX/orchestrateX rules, module authoring guide, project/module templates and xarch command are synchronized to WorkflowX, janus-agentX and JanusX on both agent surfaces. The owning xarch decision is updated in place. The sealed S1.2 standard, digest and Task contract input remain unchanged.
+
+WorkflowX records the convention in commit `82e844f`. janus-agentX intentionally ignores `.codex/` and `.claude/` as local runtime configuration; its synchronized rules remain local and are not force-added. Shared parser changes are unnecessary because this convention uses existing fields.
 
 Independent evaluatorX verification passes V-1 and V-2, parses and roundtrips all 12 template copies through the installed harness-core, and checks the changed skill mirrors and three xarch command copies. Task contract at acceptance is `63be89e9a5da6b355df7c088645261d2278682417cb339e39dff38a847144830`. No package sources are changed or restored; the agentX workspace still reports 148 pre-existing package deletions. The initial deletion set was not saved as a machine-comparable hash, so this record does not claim bytewise proof of that set. JanusX rendering and execution-compatibility fixtures are verified by the dependent implementation task.
