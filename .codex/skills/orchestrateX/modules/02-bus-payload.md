@@ -17,6 +17,8 @@
 - **Verification**: [checks expected]
 - **Output**: implementation summary with a Change Summary; `xdel` and `xflow` always attach a Note draft (new flat-layout Note or in-place sync of the owning Note)
 
+Relevant module boundaries may use Goal Refs and Allowed Scope. Before dispatch, hard interface constraints must appear in task scope/acceptance with fixed references (URI and source hash or commit). Applicable Decisions carries the decisions imposing them. Module context adds no required payload field or per-task module binding.
+
 ## evaluatorX Review (xflow only)
 
 - **Task URI**: [note:// URI at a fixed revision]

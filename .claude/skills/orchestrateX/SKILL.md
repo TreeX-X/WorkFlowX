@@ -33,8 +33,8 @@ Read the complete request and active context before selecting a mode.
 ### xarch - scaffold
 - Main Agent scaffolds an architect workspace directly with deterministic steps; fail fast, never guess.
 - Do not dispatch. No parallel Agents. No task note URI, no fixed Payload.
-- Steps: git init (reuse an existing repo, stop on a dirty tree) -> write `.agents/harness.json` (schemaVersion 1 + fresh UUID repoId + frozen workflowx profile digest; verify-only if present) -> write flat `.agents/notes/` templates (`project.md` + one `module-example.md`, kind initiative, current pinned S1.2 profile, explicit parent URI, no views/) -> CODEOWNERS (with `--with-codeowners`) + README -> register through the existing workspace.create chain -> verify the projection (projectView readable, invalid not increased).
-- Do not decide module splits, interface names, or primary bindings; those stay in chat with changeset two-layer approval. After handoff, note edits go through harness transactions + expectedHash + approval.
+- Steps: git init (reuse an existing repo, stop on a dirty tree) -> write `.agents/harness.json` (schemaVersion 1 + fresh UUID repoId + frozen workflowx profile digest; verify-only if present) -> write flat `.agents/notes/` declarations (identified project tagged architecture:project + only confirmed modules tagged architecture:module, kind initiative, current pinned S1.2 profile, explicit module parent URI, no views/) -> CODEOWNERS (with `--with-codeowners`) + README -> register through the existing workspace.create chain -> verify the projection (projectView readable, invalid not increased).
+- Use confirmed project identity and module boundaries from the active conversation; do not invent module splits, interface names or primary bindings. With no confirmed modules, create only the project. Optional instructional modules also carry architecture:example and stay out of the current graph. Existing user authorization applies; unresolved choices follow the existing changeset two-layer approval. After handoff, note edits go through harness transactions + expectedHash + approval.
 - Templates follow the pinned S1.2 initiative shape (Goal, Scope, Acceptance criteria); omit unknown repositories/interfaces instead of placeholders. Registration must return a workspace identity; unavailable registration stays pending. Composition uses explicit repoId/checkoutId/path/selected records in .agents/.local/workspace-map.json; no checkout inference by name. Atomic landing; writing follows `proseX`.
 
 ### xdel - delegate
@@ -63,6 +63,10 @@ Read the complete request and active context before selecting a mode.
 
 ## Shared Rules
 
+- Module authoring follows `../noteX/module-structure.md`. In xdo/xdel/xflow, read only relevant declared boundaries. During existing impact analysis and self-review, synchronize declarations when module existence, responsibility, public interfaces, explicit dependencies or recorded entrypoints change. Internal changes need no module update; existing Note and atomic landing obligations still apply.
+- Put hard interface constraints into existing task scope/acceptance and fixed source references; carry bounded module context in existing payload fields. Do not require a module binding on every Task, a new approval phase, a second relation store or a module maintenance report.
+- A declaration has one owner. If its architect repository is unavailable or outside authorized scope, record concrete pending synchronization in the existing result/Task; do not copy the declaration or expand write scope. Authorized cross-repository changes use separate associated commits, never a claimed cross-repository atomic commit.
+
 - `xdel` and `xflow` require a task note URI upfront; `xdo` does not require one upfront but must produce one at landing (in-place sync preferred, new flat-layout Note otherwise).
 - Decision keeping follows `noteX`; writing follows `proseX`.
 - User instructions outrank skill guidance. On conflict, follow the user.
@@ -74,7 +78,7 @@ Read the complete request and active context before selecting a mode.
 - Use `modules/09-dispatch-adapter.md` for xdel/xflow handoffs.
 - Use `modules/02-bus-payload.md` only for xdel/xflow contracts.
 - Use `modules/08-requirements-discovery.md` only during xflow planning.
-- Sync contract: the `.claude` and `.codex` copies of this skill carry identical logic; only skill paths (`.claude/...` vs `.codex/...`) differ. Keep them in sync on every change.
+- Sync contract: the `.claude` and `.codex` copies of this skill carry identical logic; only skill paths (`.claude/...` vs `.claude/...`) differ. Keep them in sync on every change.
 
 ## Commands
 

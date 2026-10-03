@@ -1,5 +1,7 @@
 # Module 07: Status Report
 
+When module declarations are present, xstatus may derive missing or ambiguous ownership, unresolved interfaces and pending synchronization from inspected sources. State checkout coverage; absent declarations are an adoption gap, not a Task failure. Keep lifecycle, execution evidence and source freshness separate. Never infer completion or write module state from graph membership, task counts or acceptance of a decision.
+
 `xstatus` is read-only. Scan task notes (`.agents/notes/`) and report:
 
 - Task titles and kinds

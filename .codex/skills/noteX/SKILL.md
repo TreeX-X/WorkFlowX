@@ -18,7 +18,7 @@ Writing follows `proseX`. Prose quality is a human nod; structure below is check
 `.agents/notes/**/*.md`, one note per file. Identity is the frontmatter `id` (UUID), addressed as `note://<repo-id>/<note-id>`. Paths, titles, and states may move; identity never does.
 
 - `idea`: hunches, questions, raw intent. Drafts stay light with unknowns explicit. Replaces the old Proposal Pool: park directions here, never in a second pool format.
-- `initiative`: product direction spanning repos, only when aggregation earns it.
+- `initiative`: product direction or enduring project/module structure, only when aggregation earns it. Module authoring follows `module-structure.md` in this skill.
 - `requirement`: needed behavior with stable `AC-n` acceptance clauses.
 - `decision`: trade-offs with options, cost, and revisit signals. Adoption and landing stay separate states.
 - `task`: bounded delivery with scope, acceptance refs, verification, dependencies, and the single `execution` state. No separate plan files exist.
@@ -26,6 +26,8 @@ Writing follows `proseX`. Prose quality is a human nod; structure below is check
 `class` (feature/bug-fix/architecture/process/testing/simplification) names the engineering area and never substitutes for kind. Locate source files with host search; consumers may build a disposable index from them. Never commit a central `INDEX.md` or maintain a second relation store. Pre-S7 lifecycle-folder files still on disk are legacy: readable, never extended. New Notes live directly in `.agents/notes/`; frontmatter kind and lifecycle carry their meaning. In-place updates preserve UUID. Moving legacy files requires updating relative links and code reverse references; keep source provenance when normalizing historical content.
 
 ## 2. File shape
+
+Project and module initiatives follow [the module convention](module-structure.md). Keep decisions and Tasks independent: a module describes current structure, a decision preserves reasons, and a Task fixes delivery scope and evidence. Search existing declarations before creating one and preserve the owning UUID. Synchronize declarations only when module existence, responsibility, public interfaces, explicit dependencies or recorded entrypoints change. Internal implementation work follows existing Note obligations without extra module binding or reports.
 
 Frontmatter carries `schema: harness-note/1`, `id`, `kind`, `lifecycle`, `created`, plus kind-appropriate relations, scope, and execution fields per the standard. The body carries exactly one H1 title and the kind's English section names from `standards/harness-note/1/templates/`. Unknown top-level keys are preserved verbatim and reported, never executed.
 
