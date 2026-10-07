@@ -24,3 +24,7 @@ The generic skill-creator `quick_validate.py` rejects the pre-existing public na
 Main Agent maintains [the migration Task](../../.agents/notes/workflow/tasks/note-corpus-migration.md). It records the current result and next phase. Its offline evidence does not manufacture a runtime receipt or mark a historical run valid under a new contract.
 
 Before agentX writes v2, implement the supported parser/writer/index and verify actual transaction recovery, execution baselines, review obligations and fresh-session continuation. JanusX then adopts the common boundary and verifies planned/current module navigation and engineering Chat tools. The generic source checks do not establish those runtime behaviors.
+
+## Readiness qualification
+
+The subsequent [source review](../reviews/workflowx-v2.md) finds five blocking issues and reproduces five failing assertions. The checks above remain historical evidence at the reviewed revision, not a final readiness verdict. Repair and re-review before downstream distribution.

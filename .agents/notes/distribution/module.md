@@ -5,8 +5,8 @@
   "kind": "module",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-07T16:06:22.322Z",
-  "moduleState": "implemented",
+  "updated": "2026-10-07T16:29:33.592Z",
+  "moduleState": "partial",
   "parent": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/6be08bc0-2ac5-4638-8263-cf9883c7cdae"
 }
 ---
@@ -22,3 +22,5 @@ Keep Codex and Claude instructions equivalent while preserving host-local settin
 Managed skill files and marked entry/agent blocks are synchronized. Commands point to their owning skill rather than duplicate policy. [Rule synchronization](rule-sync.md) describes the version guard. Adopters are upgraded sequentially; applying rules to an old profile must fail before any write.
 
 Use scripts/sync-harness-rules.mjs with an explicit repository list. This stage checks only WorkflowX; agentX and JanusX are separate adoption phases.
+
+[Readiness review](../../../docs/reviews/workflowx-v2.md) found incomplete teammate-rule distribution. Repair and finalize the source before the [agentX then JanusX adoption Task](tasks/sync-adopters.md).
