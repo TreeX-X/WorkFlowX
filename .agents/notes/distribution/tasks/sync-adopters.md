@@ -5,7 +5,7 @@
     "kind":  "task",
     "lifecycle":  "draft",
     "created":  "2026-10-07",
-    "updated":  "2026-10-07T16:45:28.210Z",
+    "updated": "2026-10-07T17:26:06.799Z",
     "module":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
     "work":  {
                  "scope":  [
@@ -127,15 +127,18 @@ V-1 passes after source repair. Local integration can proceed after mapping targ
 
 ## Progress
 
-Recorded at user request; no downstream files have been synchronized. Both adopters were observed on profile 1.0.0-s1.2 during review. WorkflowX revision 324f20518dcb021d3c27451ff107edd46c9ff5bd is reviewed but not finalized. The five source findings are now repaired and self-reviewed with 12 unit tests and 8 regression assertions passing. The user authorizes progressing to downstream integration and defers release/push until after debugging. Candidate baseline: 82d5b3d (source fixes); resolve its full revision and pin the actual selected candidate at dispatch. Target scope mapping and candidate pinning remain required before accepting this draft. Independent finalization remains a release gate.
+AgentX implementation and local integration are complete at main revision 3765178e2ede9337f9ae945231ea24d7b6177274 (implementation a801a806420b31faa9fe7281a4b3f799497f693f). Shared parser/writer/wiki and Task execution support the WorkflowX v2 profile; old v1 handling and receipt semantics remain supported. Sixty tracked Notes were migrated into 69 module-owned documents before final validation. An unrelated untracked main-checkout Note remains an exact-hash exclusion.
 
+Workspace build and 319 relevant tests pass. The broad run's single CLI automatic-repair timeout passed in the isolated 20-test harness-mode rerun; agent-core retains one existing skipped test. After merging, main passed build, 13 targeted v2/profile/handoff tests, both corpus validators and managed-rule parity. These use controlled model/reviewer ports, not live-model or JanusX UI acceptance.
+
+Main's pre-existing deletions are retained in stash f8a48c8e58490f9a865a2cc059d366aaf89620c8; original untracked Notes/plans were restored. No remote push or final release was performed. JanusX integration, README demonstrations, independent final review and final release remain pending, so the cross-repository acceptance boxes remain open.
 ## Evidence
 
-[Source readiness review](../../../../docs/reviews/workflowx-v2.md) records blockers and requirement coverage. [Source verification](../../../../docs/migrations/verification.md) records limited existing checks. [Maintained document requirements](../../harness/requirements/maintained-notes.md) distinguish WorkflowX contracts from later runtime adoption. No target receipts or successful adoption are claimed.
+[Source readiness review](../../../../docs/reviews/workflowx-v2.md) records blockers and requirement coverage. [Source verification](../../../../docs/migrations/verification.md) records limited existing checks. [Maintained document requirements](../../harness/requirements/maintained-notes.md) distinguish WorkflowX contracts from later runtime adoption. AgentX evidence: note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19 and its docs/migrations/note-v2.json. No JanusX adoption or live-model result is claimed.
 
 ## Handoff
 
-Main Agent owns this shared Task and updates it before every handoff with current source/target revisions, fixed references, narrowed scope, unresolved issues, next action and verification evidence. Next inspect agentX runtime adoption and migration needs, narrow scope and pin the integration candidate. Finalize and push only after integration debugging and review. Complete agentX acceptance before JanusX. New agents read this Task and linked source documents without relying on earlier conversation.
+Main Agent owns this shared Task and updates it before every handoff with current source/target revisions, fixed references, narrowed scope, unresolved issues, next action and verification evidence. Next inspect JanusX consumers and narrow its integration scope against agentX revision 3765178e2ede9337f9ae945231ea24d7b6177274. Reuse the common tools and module metadata; implement module-only navigation and type grouping. Finalize and push only after integration debugging and review. AgentX local acceptance is recorded above; JanusX remains the next phase. New agents read this Task and linked source documents without relying on earlier conversation.
 
 ## Additional release requirements
 
