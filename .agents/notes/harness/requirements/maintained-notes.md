@@ -5,7 +5,7 @@
   "kind": "requirement",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-07T16:29:33.592Z",
+  "updated": "2026-10-07T16:35:48.608Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/b20315aa-3881-4651-8052-f33a85215583"
 }
 ---
@@ -20,13 +20,13 @@ WorkflowX defines a compact, module-oriented document and handoff contract. Orig
 
 - [x] AC-1: One module entry, planned/partial states, stable identity and maintenance timestamps validate under v2.
 - [x] AC-2: Ordinary xdo creates no Task; selected Tasks retain acceptance/review and Main Agent updates the shared Task before handoff.
-- [ ] AC-3: Task progress/time changes preserve its contract; scope, acceptance and review changes affect execution grounds.
+- [x] AC-3: Task progress/time changes preserve its contract; scope, acceptance and review changes affect execution grounds.
 - [x] AC-4: Wiki reads preserve source identity, typed references, coverage and freshness without copying engineering content.
 - [x] AC-5: All tracked WorkflowX legacy Notes are accounted for and migrated before final corpus validation; protected unrelated sources remain explicit exclusions.
-- [ ] AC-6: Managed rule synchronization preserves local configuration and refuses unsupported adopter profiles before mutation.
-- [ ] AC-7: Typical runtime instruction paths import less text than the prior revision without omitting required task constraints.
+- [x] AC-6: Managed rule synchronization preserves local configuration and refuses unsupported adopter profiles before mutation.
+- [x] AC-7: Typical runtime instruction paths import less text than the prior revision without omitting required task constraints.
 - [ ] AC-8: agentX and JanusX prove supported runtime adoption and fresh-session execution in their own later phases.
 
 ## Review qualification
 
-[Readiness review](../../../../docs/reviews/workflowx-v2.md) reopens AC-3 (contract hashing), AC-6 (complete managed distribution) and AC-7 (missing Task readiness transition). AC-2 and AC-4 describe preserved contracts; actual host handoffs and wiki runtime behavior still require AC-8 evidence. Passing source checks do not establish downstream runtime completion.
+[Source review](../../../../docs/reviews/workflowx-v2.md) findings are repaired: executable literals and inline titles affect hashes, Unicode ordering matches the contract, links retain balanced destinations, teammate blocks participate in distribution, and dispatch has an accepted-contract readiness gate. AC-3/6/7 are restored on passing regression evidence. AC-2/4 remain contract-level coverage; actual host handoffs and wiki runtime behavior still require AC-8 evidence.

@@ -10,7 +10,7 @@
     "harness",
     "s7"
   ],
-  "updated": "2026-10-07T16:12:56.085Z",
+  "updated": "2026-10-07T16:35:48.608Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "extensions": {
     "migration": {
@@ -32,7 +32,7 @@ Duplicated instructions and unguarded adopter updates can make hosts write incom
 
 ## Decision
 
-The source repository owns managed skill trees and entry/agent blocks. Synchronization preserves local settings and unmarked content, checks normalized host parity, and refuses writes when the adopter profile does not match the source standard. WorkflowX upgrades first, then agentX and JanusX separately.
+The source repository owns managed skill trees and entry/agent blocks, including both Claude teammate wrappers. Existing wrappers without the expected marker require explicit merging; synchronization reports failure and preserves them. Marked wrappers preserve local frontmatter and unmarked text. Synchronization preserves local settings and unmarked content, checks normalized host parity, and refuses writes when the adopter profile does not match the source standard. WorkflowX upgrades first, then agentX and JanusX separately.
 
 ## Alternatives considered
 

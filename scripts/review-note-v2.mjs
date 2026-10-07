@@ -1,5 +1,5 @@
 // Review regressions: expected behavior, not the implementation's current output.
-// See docs/reviews/workflowx-v2.md. This command fails until the findings are fixed.
+// See docs/reviews/workflowx-v2.md. Keep these probes as a source release gate.
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve, sep, basename } from 'node:path';
@@ -27,10 +27,21 @@ try{
  writeFileSync(join(dir,'.agents/harness.json'),readFileSync(join(root,'.agents/harness.json')));
  writeFileSync(join(dir,'.claude/agents/coder-teammate.md'),'OLD TEAM RULE: subagent writes Task completion');
  const list=join(dir,'repos.list');writeFileSync(list,dir);
- const result=spawnSync(process.execPath,['scripts/sync-harness-rules.mjs','--apply','--repos',list],{cwd:root,encoding:'utf8'});
+ const run=mode=>spawnSync(process.execPath,['scripts/sync-harness-rules.mjs',mode,'--repos',list],{cwd:root,encoding:'utf8'});
+ const refused=run('--apply');
+ check('unmarked teammate requires merge',refused.status!==0&&readFileSync(join(dir,'.claude/agents/coder-teammate.md'),'utf8')==='OLD TEAM RULE: subagent writes Task completion','unmarked custom rules cannot survive a successful sync or be overwritten');
+ for(const role of ['coder','evaluator']) {
+   const source=readFileSync(join(root,`.claude/agents/${role}-teammate.md`),'utf8').replace(/\r\n/g,'\n');
+   writeFileSync(join(dir,`.claude/agents/${role}-teammate.md`),source.replace('model: sonnet','model: local-model').replace('Main Agent','STALE OWNER')+'\nLOCAL_SENTINEL\n');
+ }
+ check('teammate drift is detected',run('--check').status!==0,'both teammate files participate in checking');
+ const result=run('--apply');
  const actual=readFileSync(join(dir,'.claude/agents/coder-teammate.md'),'utf8').replace(/\r\n/g,'\n');
- const expected=readFileSync(join(root,'.claude/agents/coder-teammate.md'),'utf8').replace(/\r\n/g,'\n');
- check('teammate rule joins managed distribution',result.status===0&&actual===expected,`sync exit ${result.status}; stale teammate rules must not survive successful sync`);
+ const expected=readFileSync(join(root,'.claude/agents/coder-teammate.md'),'utf8').replace(/\r\n/g,'\n').replace('model: sonnet','model: local-model')+'\nLOCAL_SENTINEL\n';
+ const evaluator=readFileSync(join(dir,'.claude/agents/evaluator-teammate.md'),'utf8');
+ check('teammate rule joins managed distribution',result.status===0&&actual===expected&&!evaluator.includes('STALE OWNER')&&evaluator.includes('model: local-model')&&evaluator.includes('LOCAL_SENTINEL'),`sync exit ${result.status}; update managed rules while retaining local settings`);
+ const repeated=run('--apply');
+ check('teammate synchronization is idempotent',run('--check').status===0&&repeated.status===0&&!repeated.stdout.includes('synced ['),'repeat apply makes no changes');
 }finally{
  const target=resolve(dir),base=resolve(tmpdir());
  if(!target.startsWith(base+sep)||!basename(target).startsWith('wfx-review-sync-'))throw new Error('unsafe temporary cleanup');

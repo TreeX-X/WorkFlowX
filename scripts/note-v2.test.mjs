@@ -16,6 +16,27 @@ test('input digest separates raw freshness from time and checkbox changes',()=>{
  assert.notEqual(sha256(raw),sha256(next));assert.equal(inputDigest(parseNote(raw)),inputDigest(parseNote(next)));
  assert.notEqual(inputDigest(parseNote(raw)),inputDigest(parseNote(raw.replace('verifiable outcome','different outcome'))));
 });
+test('only visible AC markers normalize; executable literals and inline content remain significant',()=>{
+ const raw=read('task');
+ const hash=body=>taskContractHash(parseNote(raw.replace('## Acceptance criteria',body+'\n\n## Acceptance criteria')));
+ assert.equal(hash('- [x] AC-9: outcome'),hash('- [ ] AC-9: outcome'));
+ for(const wrap of [s=>'```txt\n'+s+'\n```',s=>'    '+s,s=>'`'+s+'`',s=>'Literal '+s]) {
+   assert.notEqual(hash(wrap('- [x] AC-9: literal')),hash(wrap('- [ ] AC-9: literal')));
+ }
+ const a=parseNote(raw),b=parseNote(raw);
+ a.meta.work.verification[0].args=['- [x] AC-9: literal'];
+ b.meta.work.verification[0].args=['- [ ] AC-9: literal'];
+ assert.notEqual(inputDigest(a),inputDigest(b));
+ assert.notEqual(taskContractHash(a),taskContractHash(b));
+ const requirement=read('requirement');
+ const inline=source=>parseNote(requirement.replace('verifiable outcome',source));
+ assert.notDeepEqual(inline('`alpha`').acs,inline('`beta`').acs);
+});
+test('balanced, escaped, angled and titled link destinations resolve without code examples',()=>{
+ assert.deepEqual(markdownLinks('[a](guide(v2(nested)).md) [b](guide\\(v2\\).md) [c](<guide(v2).md> "label")'),['guide(v2(nested)).md','guide(v2).md']);
+ assert.deepEqual(markdownLinks('[a](guide(v2).md \'label\') [b][ref]\n[ref]: guide(v2).md'),['guide(v2).md']);
+ assert.deepEqual(markdownLinks('`[a](code(v2).md)`\n```\n[b](bad.md)\n```\n[a](unbalanced(.md)'),[]);
+});
 test('malformed shape, impossible time, wrong kind fields and duplicate clauses fail',()=>{
  const module=read('module');
  for(const raw of [module.replace('2026-10-07T00:00:00Z','2026-02-30T00:00:00Z'),module.replace('"planned"','"invented"'),module.replace('"moduleState"','"unknown"'),read('task').replace('"review": "independent"','"review": "skip"'),read('requirement')+'\n- [ ] AC-1: Duplicate\n'])assert.ok(validateNote(raw).errors.length,raw);

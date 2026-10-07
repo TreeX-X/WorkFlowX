@@ -8,9 +8,14 @@ import { parseFrontmatter } from './frontmatter.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export const schema = JSON.parse(readFileSync(join(ROOT, 'standards/harness-note/2/note.schema.json'), 'utf8'));
 export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+const codePointOrder = (a, b) => {
+  const left = Array.from(a, c => c.codePointAt(0)), right = Array.from(b, c => c.codePointAt(0));
+  for (let i = 0; i < Math.min(left.length, right.length); i++) if (left[i] !== right[i]) return left[i] - right[i];
+  return left.length - right.length;
+};
 export function canonical(value) {
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
-  if (value && typeof value === 'object') return '{' + Object.keys(value).sort().map(k => JSON.stringify(k) + ':' + canonical(value[k])).join(',') + '}';
+  if (value && typeof value === 'object') return '{' + Object.keys(value).sort(codePointOrder).map(k => JSON.stringify(k) + ':' + canonical(value[k])).join(',') + '}';
   return JSON.stringify(value);
 }
 
@@ -45,7 +50,7 @@ export function validateSchema(value, rule, at = '$') {
   return errors;
 }
 
-export function withoutCode(body) {
+export function withoutCode(body, { keepInline = false } = {}) {
   let fence = null;
   return body.replace(/\r\n/g, '\n').split('\n').map(line => {
     const m = /^ {0,3}(`{3,}|~{3,})/.exec(line);
@@ -55,8 +60,8 @@ export function withoutCode(body) {
     }
     if (m) { fence = m[1]; return ''; }
     if (/^(?: {4}|\t)/.test(line)) return '';
-    return line.replace(/(`+)([\s\S]*?)\1/g, '');
-  }).join('\n').replace(/<!--[\s\S]*?-->/g, '');
+    return keepInline ? line : line.replace(/(`+)([\s\S]*?)\1/g, '');
+  }).join('\n').replace(/<!--[\s\S]*?-->/g, comment => comment.replace(/[^\n]/g, ' '));
 }
 export function sections(body) {
   const result = {};
@@ -76,7 +81,7 @@ export function sections(body) {
 }
 export function parseNote(raw) {
   const parsed = parseFrontmatter(raw);
-  const visible = withoutCode(parsed.body);
+  const visible = withoutCode(parsed.body, { keepInline: true });
   return { meta: parsed.data, body: parsed.body, title: [...visible.matchAll(/^# (.+)$/gm)].map(m => m[1]), sections: sections(parsed.body), acs: [...visible.matchAll(/^\s*- \[[ xX]\] (AC-\d+):\s*(.*)$/gm)].map(m => ({ id: m[1], text: m[2] })) };
 }
 const requiredSections = { idea: ['Intent'], requirement: ['Expected behavior', 'Acceptance criteria'], decision: ['Problem', 'Decision', 'Alternatives considered', 'Consequences'], task: ['Scope', 'Acceptance criteria', 'Verification', 'Progress', 'Evidence', 'Handoff'] };
@@ -119,30 +124,60 @@ export function validateNote(raw) {
   return { note, errors };
 }
 
-const normalized = value => typeof value === 'string' ? value.replace(/\r\n/g, '\n').replace(/- \[[xX]\]/g, '- [ ]') : Array.isArray(value) ? value.map(normalized) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, normalized(v)])) : value;
-const sorted = rows => [...rows].sort((a,b) => canonical(a) < canonical(b) ? -1 : canonical(a) > canonical(b) ? 1 : 0);
+const normalized = value => typeof value === 'string' ? value.replace(/\r\n/g, '\n') : Array.isArray(value) ? value.map(normalized) : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([k, v]) => [k, normalized(v)])) : value;
+// Only visible AC list markers are observations. Code and executable metadata are content.
+function normalizeAC(body) {
+  const lines = body.replace(/\r\n/g, '\n').split('\n');
+  const visible = withoutCode(body, { keepInline: true }).split('\n');
+  return lines.map((line, i) => /^ {0,3}- \[[xX]\] AC-\d+:/.test(visible[i] ?? '')
+    ? line.replace(/^( {0,3}- )\[[xX]\]/, '$1[ ]') : line).join('\n');
+}
+const sorted = rows => [...rows].sort((a,b) => codePointOrder(canonical(a), canonical(b)));
 export function taskContractHash(note) {
   const m = note.meta;
   if (m.kind !== 'task' || !m.work) throw new Error('not a task contract');
-  const work = { ...m.work, scope: sorted(m.work.scope.map(s => ({ ...s, paths: [...s.paths].sort() }))), acceptanceRefs: sorted(m.work.acceptanceRefs) };
-  const relations = sorted((m.relations ?? []).filter(r => ['implements', 'depends-on', 'governed-by'].includes(r.type)).map(r => ({ ...r, ...(r.criteria ? { criteria: [...r.criteria].sort() } : {}) })));
-  return sha256(canonical(normalized({ schema: m.schema, id: m.id, kind: m.kind, title: note.title[0], ...(m.repositories ? { repositories: m.repositories } : {}), relations, work, sections: Object.fromEntries(['Scope','Acceptance criteria','Verification'].map(k => [k, note.sections[k] ?? ''])) })));
+  const work = { ...m.work, scope: sorted(m.work.scope.map(s => ({ ...s, paths: [...s.paths].sort(codePointOrder) }))), acceptanceRefs: sorted(m.work.acceptanceRefs) };
+  const relations = sorted((m.relations ?? []).filter(r => ['implements', 'depends-on', 'governed-by'].includes(r.type)).map(r => ({ ...r, ...(r.criteria ? { criteria: [...r.criteria].sort(codePointOrder) } : {}) })));
+  return sha256(canonical(normalized({ schema: m.schema, id: m.id, kind: m.kind, title: note.title[0], ...(m.repositories ? { repositories: m.repositories } : {}), relations, work, sections: Object.fromEntries(['Scope','Acceptance criteria','Verification'].map(k => [k, normalizeAC(note.sections[k] ?? '')])) })));
 }
 export function inputDigest(note) {
   const { created, updated, ...meta } = note.meta;
-  return sha256(canonical(normalized({ meta, body: note.body })));
+  return sha256(canonical(normalized({ meta, body: normalizeAC(note.body) })));
 }
 
 export function markdownLinks(body) {
   const text = withoutCode(body), definitions = new Map();
   for (const m of text.matchAll(/^ {0,3}\[([^\]]+)\]:\s*(?:<([^>]+)>|(\S+))/gm)) definitions.set(m[1].toLowerCase(), m[2] ?? m[3]);
   const links = [];
-  const inline = /\[[^\]\n]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+"[^"]*")?\s*\)/g;
-  for (const m of text.matchAll(inline)) links.push(m[1] ?? m[2]);
+  const spans = [];
+  for (const m of text.matchAll(/\[[^\]\n]*\]\(\s*/g)) {
+    let i = m.index + m[0].length, depth = 0, target = '';
+    const angle = text[i] === '<';
+    if (angle) i++;
+    for (; i < text.length; i++) {
+      const c = text[i];
+      if (c === '\\' && /[!"#$%&'()*+,\-./:;<=>?@[\]\\^_`{|}~]/.test(text[i + 1] ?? '')) { target += text[++i]; continue; }
+      if (angle) { if (c === '>' || c === '\n' || c === '<') break; }
+      else {
+        if (/\s/.test(c) || (c === ')' && depth === 0)) break;
+        if (c === '(') depth++;
+        if (c === ')') depth--;
+      }
+      target += c;
+    }
+    if (angle && text[i++] !== '>') continue;
+    if (depth !== 0) continue;
+    const tail = /^(?:\s+(?:"[^"\n]*"|'[^'\n]*'|\([^()\n]*\)))?\s*\)/.exec(text.slice(i));
+    if (!tail) continue;
+    links.push(target);
+    spans.push([m.index, i + tail[0].length]);
+  }
   for (const m of text.matchAll(/\[([^\]\n]+)\]\[([^\]\n]*)\]/g)) { const target = definitions.get((m[2] || m[1]).toLowerCase()); if (target) links.push(target); }
   for (const m of text.matchAll(/<(note:\/\/[^>]+)>/g)) links.push(m[1]);
   // Shortcut references, excluding definitions and links already handled.
-  for (const m of text.replace(inline, '').replace(/^ {0,3}\[[^\]]+\]:.*$/gm, '').matchAll(/\[([^\]\n]+)\](?![([])/g)) { const target=definitions.get(m[1].toLowerCase()); if(target) links.push(target); }
+  let remaining = text;
+  for (const [start, end] of spans.reverse()) remaining = remaining.slice(0, start) + ' '.repeat(end - start) + remaining.slice(end);
+  for (const m of remaining.replace(/^ {0,3}\[[^\]]+\]:.*$/gm, '').matchAll(/\[([^\]\n]+)\](?![([])/g)) { const target=definitions.get(m[1].toLowerCase()); if(target) links.push(target); }
   return [...new Set(links)];
 }
 

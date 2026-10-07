@@ -4,6 +4,8 @@ Main Agent updates the shared Task before every handoff. The Task holds durable 
 
 ## coderX Task
 
+Before execution, validate Task scope, acceptance sources and dependencies; resolve blockers and retain the mode-required review obligation. Using already-confirmed user intent, Main Agent accepts the agreed contract (`lifecycle: accepted`) before pinning its snapshot and dispatching. Draft/proposed Tasks are not executable; unclear or changed execution grounds require resolution, never an automatic rebaseline.
+
 Required: Workflow Mode; Task URI and snapshot (commit or source hash); current Objective; Allowed Scope; fixed Acceptance Refs; Applicable Decisions; Dependency Tasks and relevant results; Standard Version; Required Skills (engineeringX, specX); Verification; Output.
 
 Fields already explicit in the pinned Task may be supplied as precise section/field references. Include only necessary Goal Refs/module context. Verify referenced snapshots are readable; a hash alone does not supply missing content.

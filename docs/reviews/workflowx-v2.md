@@ -1,8 +1,8 @@
 # WorkflowX v2 readiness review
 
-Reviewed implementation: `324f20518dcb021d3c27451ff107edd46c9ff5bd`. Result: **NEEDS_FIX before source finalization and downstream distribution**. The compact skills preserve the main intended design, but the existing test suite does not establish complete execution readiness.
+Reviewed implementation: `324f20518dcb021d3c27451ff107edd46c9ff5bd`. Original result: **NEEDS_FIX**. Current status: **all five findings repaired and self-reviewed; independent finalization and downstream adoption remain pending**. The compact skills preserve the main intended design, but the existing test suite does not establish complete execution readiness.
 
-## Findings
+## Findings at the reviewed revision
 
 1. **P1 — Task contract can miss real execution changes.** `scripts/lib/note-v2.mjs:122` normalizes checkbox-like strings recursively, including verification command arguments. Changing an argument from `- [x] expected literal` to `- [ ] expected literal` leaves the hash unchanged. At line 80, title extraction removes inline code, so titles containing `alpha` and `beta` in code spans also hash identically. Normalize actual acceptance observations only; preserve executable metadata and the full meaningful title. Add regression tests before aligning downstream hashing.
 
@@ -16,7 +16,7 @@ Reviewed implementation: `324f20518dcb021d3c27451ff107edd46c9ff5bd`. Result: **N
 
 The new gate should remain short and live in the handoff contract. These findings do not justify reintroducing the full old prose or default-loading the standard.
 
-## Requirement coverage
+## Requirement coverage at the reviewed revision
 
 | Confirmed requirement | Current assessment |
 |---|---|
@@ -37,10 +37,21 @@ The new gate should remain short and live in the handoff contract. These finding
 
 `node --test scripts/note-v2.test.mjs scripts/sync-harness-rules.test.mjs` passes all 10 existing tests. The standard/corpus and skill-resource checks also pass at the reviewed revision. Those results are retained as limited evidence, not overridden or described as exhaustive.
 
-`node scripts/review-note-v2.mjs` reproduces five failing behavioral assertions covering findings 1–4. It uses an isolated temporary adopter and does not update agentX or JanusX. The script is an executable regression target for the next repair; it intentionally exits nonzero while defects remain.
+`node scripts/review-note-v2.mjs` reproduces five failing behavioral assertions covering findings 1–4. That was the original failing evidence. The repaired regression gate now covers eight assertions and uses an isolated temporary adopter without updating agentX or JanusX.
 
 The readiness issue is established by following the current template and dispatch text. Actual model behavior, lease recovery, writer time updates, live wiki queries and blueprint interaction are not proved by these offline checks.
 
+## Repair verification
+
+All five findings are repaired. Hash normalization preserves executable literals and inline title content; canonical keys and set-like lists use Unicode code-point ordering. Markdown parsing preserves balanced/escaped destinations. Both teammate wrappers are distributed as managed blocks, preserving local settings; an existing unmarked wrapper fails with a merge diagnostic instead of being overwritten or silently skipped. The shared handoff contract now validates and accepts agreed execution grounds before pinning/dispatch, without repeating algorithm details in skills.
+
+- `node --test scripts/note-v2.test.mjs scripts/sync-harness-rules.test.mjs`: 12 tests pass, including AC observation versus code/metadata changes and balanced/escaped links.
+- `node scripts/review-note-v2.mjs`: 8 assertions pass, including both teammate roles, local-setting preservation, unmarked-file refusal, drift detection and idempotence.
+- Standard/corpus validation: passes for 20 v2 documents; one protected source excluded and two historical external targets remain unchecked.
+- Skill resources and source managed parity: pass. Manual walkthrough verifies the template -> accepted contract -> fixed snapshot -> dispatch sequence. No independent agent review or downstream runtime execution is claimed.
+
+Existing v1/v2 format and hash locks are unchanged: these are implementation corrections to the existing contract. Hashes previously calculated with the defective edge-case behavior require reassessment. The ordinary xdo reading path remains unchanged; updated UTF-8 reductions are 70.1% for document-maintaining xdo, 64.8% for existing-Task xdo, 64.2% for xdel, 60.8% for full xflow and 7.8% for the standalone repair reference. These are byte measurements, not exact tokens.
+
 ## Follow-up
 
-Repair these source findings, extend the regression suite and reassess any affected version/hash fixtures under the version policy. Then Main Agent can finalize and pin the source revision for [the downstream synchronization Task](../../.agents/notes/distribution/tasks/sync-adopters.md). Keep existing skill names such as noteX; the uppercase X convention is intentional and unrelated to the execution defects.
+Independently finalize and pin the repaired source revision before [the downstream synchronization Task](../../.agents/notes/distribution/tasks/sync-adopters.md). Keep existing uppercase-X skill names. agentX runtime adoption and JanusX blueprint/Chat behavior remain separate acceptance phases.

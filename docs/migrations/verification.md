@@ -15,7 +15,7 @@ The generic skill-creator `quick_validate.py` rejects the pre-existing public na
 
 ## Reading cost
 
-[Instruction-load report](instruction-load.json) compares LF-normalized UTF-8 bytes for declared unique reading paths against the recorded source revision. Maintained-document xdo drops 70.1%, existing-Task xdo 66.0%, xdel dispatch 65.1%, full xflow discovery/dispatch/review 61.6%, and the repair contract reference 22.0%. These are text-size proxies, not exact tokenizer counts or measured host telemetry; project/Task content and repeated imports across agents are outside the measurement.
+[Instruction-load report](instruction-load.json) compares LF-normalized UTF-8 bytes for declared unique reading paths against the recorded source revision. Maintained-document xdo drops 70.1%, existing-Task xdo 64.8%, xdel dispatch 64.2%, full xflow discovery/dispatch/review 60.8%, and the repair contract reference 7.8%. These are text-size proxies, not exact tokenizer counts or measured host telemetry; project/Task content and repeated imports across agents are outside the measurement.
 
 ## Migration and handoff
 
@@ -27,4 +27,4 @@ Before agentX writes v2, implement the supported parser/writer/index and verify 
 
 ## Readiness qualification
 
-The subsequent [source review](../reviews/workflowx-v2.md) finds five blocking issues and reproduces five failing assertions. The checks above remain historical evidence at the reviewed revision, not a final readiness verdict. Repair and re-review before downstream distribution.
+The subsequent [source review](../reviews/workflowx-v2.md) found five issues, now repaired. Current verification passes 12 unit tests, 8 review regression assertions, standard/corpus validation for 20 documents, skill-resource checks and source managed parity. Original checks above remain historical evidence. Independent finalization and downstream runtime adoption are still pending; source fixes do not establish host execution or blueprint acceptance.

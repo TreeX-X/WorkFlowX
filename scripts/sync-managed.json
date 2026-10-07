@@ -10,7 +10,9 @@
   ],
   "entries": [
     "AGENTS.md",
-    "CLAUDE.md"
+    "CLAUDE.md",
+    ".claude/agents/coder-teammate.md",
+    ".claude/agents/evaluator-teammate.md"
   ],
   "pairs": [
     {

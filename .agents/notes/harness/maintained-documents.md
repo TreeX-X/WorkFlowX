@@ -5,7 +5,7 @@
   "kind": "decision",
   "lifecycle": "implemented",
   "created": "2026-10-07",
-  "updated": "2026-10-07T16:06:22.322Z",
+  "updated": "2026-10-07T16:35:48.608Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/b20315aa-3881-4651-8052-f33a85215583"
 }
 ---
@@ -20,7 +20,7 @@ Flat date-prefixed Notes obscure module structure and invite duplicate work reco
 
 The v2 standard gives each module one entry and stable topic files, with complete planned structure and explicit state. Authors maintain the owning subject; Idea conversion and scoped restructuring preserve useful identity. Main Agent maintains a common Task before handoff, while ordinary xdo needs no Task.
 
-Skills provide small action-specific instructions; standard details and templates are read only when needed. Existing fixed acceptance, independent evaluation and portable evidence remain explicit contracts. Runtime adoption proceeds WorkflowX, agentX, JanusX.
+Skills provide small action-specific instructions; standard details and templates are read only when needed. Existing fixed acceptance, independent evaluation and portable evidence remain explicit contracts. Runtime adoption proceeds WorkflowX, agentX, JanusX. Shared tooling owns hash computation: the Task contract detects changed execution grounds, while raw-file SHA-256 identifies source bytes. Only visible AC completion markers normalize; executable metadata and code literals remain significant. Hashes do not judge document quality or authorize changes. Main Agent validates and accepts an agreed Task before pinning and dispatch, using existing user authorization.
 
 ## Alternatives considered
 
@@ -29,3 +29,6 @@ Keeping the flat layout avoids migration but leaves the navigation and accumulat
 ## Consequences
 
 Schema changes require an explicit new profile and downstream tool work. Corpus migration repairs references and accounts for protected files. Offline conformance covers format and contract examples; it cannot claim live host recovery or blueprint acceptance. Validation and source inventory are in docs/migrations and the corpus migration Task.
+
+
+[Source review](../../../docs/reviews/workflowx-v2.md) records repaired implementation defects and regression evidence. These fixes align the reference implementation with the existing v2 contract; sealed standards, profile identity and existing hash fixtures are unchanged. Previously computed hashes for affected edge cases must be reassessed, never silently adopted.

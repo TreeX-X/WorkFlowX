@@ -26,8 +26,8 @@
         ".codex/skills/orchestrateX/modules/02-bus-payload.md"
       ],
       "beforeUtf8Bytes": 33950,
-      "afterUtf8Bytes": 11541,
-      "reductionPercent": 66
+      "afterUtf8Bytes": 11957,
+      "reductionPercent": 64.8
     },
     {
       "scenario": "xdel-dispatch",
@@ -43,8 +43,8 @@
         ".codex/skills/orchestrateX/modules/09-dispatch-adapter.md"
       ],
       "beforeUtf8Bytes": 42706,
-      "afterUtf8Bytes": 14891,
-      "reductionPercent": 65.1
+      "afterUtf8Bytes": 15307,
+      "reductionPercent": 64.2
     },
     {
       "scenario": "xflow-discovery-dispatch-review",
@@ -64,8 +64,8 @@
         ".codex/skills/auditX/SKILL.md"
       ],
       "beforeUtf8Bytes": 50846,
-      "afterUtf8Bytes": 19515,
-      "reductionPercent": 61.6
+      "afterUtf8Bytes": 19931,
+      "reductionPercent": 60.8
     },
     {
       "scenario": "repair-payload-reference",
@@ -73,8 +73,8 @@
         ".codex/skills/orchestrateX/modules/02-bus-payload.md"
       ],
       "beforeUtf8Bytes": 2917,
-      "afterUtf8Bytes": 2274,
-      "reductionPercent": 22
+      "afterUtf8Bytes": 2690,
+      "reductionPercent": 7.8
     }
   ]
 }
