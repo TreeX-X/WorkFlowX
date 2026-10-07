@@ -1,7 +1,7 @@
-# Module structure from Notes
+# Maintained module documents
 
-Project and module declarations follow the [module authoring convention](../.codex/skills/noteX/module-structure.md). The same convention and its parseable [project](../.codex/skills/noteX/templates/project.md) and [module](../.codex/skills/noteX/templates/module.md) templates ship on both agent surfaces through the existing managed skill synchronization.
+Each module has one module.md entry explaining the whole, with topic Notes and submodules beside it. Planned modules use the same structure and remain visible in blueprint navigation. Agent maintenance follows responsibility and the user's change scope.
 
-Start with a confirmed project and a few enduring modules. Reuse an existing initiative when its identity and purpose already match the module. Keep decision Notes and Tasks intact; add explicit links only where they carry useful facts. Blueprint consumers derive current structure from accepted declarations and leave planned and historical material accessible in all Notes. Consumers without this view continue reading the same S1.2 documents.
+Authoring rules live in [noteX](../.codex/skills/noteX/SKILL.md); use its conditional references for structural changes, wiki reads and reorganization. The [v2 standard](../standards/harness-note/2/standard.md) defines metadata and validation. [Migration](../standards/harness-note/2/migration.md) describes staged WorkflowX → agentX → JanusX adoption.
 
-Workflow maintenance is conditional: structural changes synchronize the owning declaration during existing impact analysis and close-out. Ordinary internal changes retain their existing Note requirements. The sealed standard, task hashing and execution evidence stay under their existing contracts.
+Task execution is separate from module state. Main Agent updates the same Task before each handoff; ordinary xdo needs no Task. A selected existing Task retains its review obligations when executed directly.

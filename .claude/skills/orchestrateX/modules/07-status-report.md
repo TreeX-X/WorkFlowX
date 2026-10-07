@@ -1,13 +1,7 @@
-# Module 07: Status Report
+# Status
 
-When module declarations are present, xstatus may derive missing or ambiguous ownership, unresolved interfaces and pending synchronization from inspected sources. State checkout coverage; absent declarations are an adoption gap, not a Task failure. Keep lifecycle, execution evidence and source freshness separate. Never infer completion or write module state from graph membership, task counts or acceptance of a decision.
+Read the shared index or bounded repository search. Report coverage and unresolved targets.
 
-`xstatus` is read-only. Scan task notes (`.agents/notes/`) and report:
+Show modules (including planned and partial), active Tasks, dependencies, verified results and blockers. Task execution, document lifecycle and moduleState are separate. Ordinary xdo leaves no Task; absence of a Task does not imply no work or failure.
 
-- Task titles and kinds
-- Scope and dependencies
-- Lifecycle and execution state
-- Verification or evaluation notes
-- Active mode: `xdo`, `xdel`, or `xflow` when known
-
-If no task notes exist, report that no tracked work is active. Ignore legacy-format documents (pre-lightweight `Section 0/7/8.x`, old `*-hybrid.md` naming, or `.hybrid/` leftovers) unless the user explicitly asks for a legacy review; never migrate them. Do not infer a legacy unit mode from git history. `xdo` work without a task note leaves no record to scan. Write the report to `./status-report.html` or the requested `--output` path; open it unless `--no-open` is set.
+Use Task references and formal evidence for completion. Distinguish claims, stale evidence and actual checks. Keep the report concise; use a visual only when useful or requested, not as mandatory output. Never create a parallel status store.

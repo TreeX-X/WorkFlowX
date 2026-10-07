@@ -1,0 +1,12 @@
+[
+  {
+    "path": "fixtures/valid-task.md",
+    "kind": "task",
+    "sha256": "87e5f4600e1db1b85eef28f69fef7cb71b9bf4f9da683a1f385a0576df75ef91"
+  },
+  {
+    "path": "fixtures/valid-requirement.md",
+    "kind": "input",
+    "sha256": "6ae338d7e59815ea83908e073ac759fa5245bceb83b4764bd7f556246e780849"
+  }
+]

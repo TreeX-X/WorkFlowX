@@ -1,29 +1,12 @@
 ---
 name: specX
-description: Lightweight specification-reading rules for coderX in xdel and xflow.
+description: Read pinned task scope and acceptance before delegated implementation.
 ---
 
 # specX
 
-Use only when coderX is dispatched by `xdel` or `xflow` with a task note.
+Read the dispatch action and referenced Task snapshot first, then its fixed acceptance/decision sources and relevant module boundaries. Expand only for named dependencies. Missing or contradictory execution grounds go to Main Agent; never guess scope.
 
-## Before Editing
+Stay within Allowed Scope. Do not edit Task state, acceptance or another agent's documents. Return required contract changes to Main Agent. Use engineeringX; report actual implementation, checks, evidence and unresolved issues so Main Agent can update the shared Task before the next handoff.
 
-- Read the dispatch task first.
-- Read the assigned task's acceptance refs (fixed revision) and work scope.
-- Read only the referenced requirement/decision notes needed for ownership, dependencies, or constraints.
-- Treat the dispatch interpretation and fixed acceptance refs as authoritative. Stop on contradictions instead of guessing.
-
-## During Implementation
-
-- Follow `engineeringX` for implementation principles and self-review.
-- Stay within the assigned task scope. Report required shared-file or scope changes to the Main Agent as a scope-change request.
-- Do not rewrite other notes; update only files inside the allowed scope.
-- `task.execution` is owned by the Main Agent and the state service. coderX never writes it; only an explicit contract-scope grant lets coderX propose work/AC changes, otherwise return a scope-change request.
-- Expand context only when a named dependency or API contract requires it.
-
-## Completion
-
-- Perform the `engineeringX` self-review.
-- Run relevant checks when available and report what was actually run.
-- Return the mode-specific implementation summary or Bus Payload requested by the dispatch contract.
+The prior conversation is optional. If the Task cannot support a fresh-session handoff, report the concrete missing reference or state.

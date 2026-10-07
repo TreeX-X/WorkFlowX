@@ -1,11 +1,11 @@
 ---
 name: auditX
-description: Test-driven implementation review for evaluatorX in xflow.
+description: Test-driven independent review for xflow or an existing Task's review obligation.
 ---
 
 # auditX
 
-Use only when `xflow` requests an independent evaluatorX review.
+Use when xflow or the Task's retained review obligation requires independent evaluation.
 
 ## Review
 

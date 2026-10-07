@@ -4,7 +4,7 @@
   "name": "WorkFlowX",
   "profile": {
     "id": "workflowx",
-    "version": "1.0.0-s1.2",
-    "digest": "1b9500b1ea5101231650f04f2e5e2c480001ccf9512ec173b8e5d737bf2d6923"
+    "version": "2.0.0",
+    "digest": "b76f1d5e98fce7a8fa56f5f60b023b457640e7036c32096e430a8481ef83c5e8"
   }
 }

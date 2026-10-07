@@ -14,9 +14,8 @@ Use these principles when implementing or modifying code.
 - Prefer the simplest clear solution; avoid speculative abstractions, state, configuration, and dependencies.
 - Follow existing project patterns, naming, and tools.
 - Keep every change traceable to the requirement or a necessary constraint.
-- Cite the task contract hash and fixed acceptance revisions in the Change Summary; hand the Main Agent fixed evidence, never floating claims.
+- For Task-bound work, cite the contract hash and fixed acceptance revisions; ordinary xdo does not create a contract merely to report results.
 - Record unrun checks as not-run and label manual vs machine evidence; never mark a check passed unless it ran.
-- Never claim checks or tests that were not run.
 
 ## Self-Review
 

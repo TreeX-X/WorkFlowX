@@ -1,23 +1,26 @@
 ---
-schema: harness-note/1
-id: 00000000-0000-4000-8000-000000000001
-kind: initiative
-lifecycle: proposed
-created: 2026-10-03
-class: architecture
-tags: [architecture:project, architecture:example]
+{
+  "schema": "harness-note/2",
+  "id": "22222222-2222-4222-8222-222222222222",
+  "kind": "module",
+  "lifecycle": "accepted",
+  "created": "2026-10-07",
+  "updated": "2026-10-07T00:00:00Z",
+  "role": "project",
+  "moduleState": "planned"
+}
 ---
 
-# Project declaration example
+# Module name
 
-## Goal
+## Responsibility
 
-Describe the confirmed product purpose. Generate a fresh UUID for the real project.
+Describe the boundary and overall purpose.
 
-## Scope
+## Design
 
-Describe the system boundary. Replace sample facts; omit unknown repository bindings. Remove architecture:example for a real declaration and accept only confirmed current structure.
+Explain the whole and its important interfaces. Mark planned parts and unknowns explicitly.
 
-## Acceptance criteria
+## Related documents
 
-- [ ] AC-1: The project boundary and responsibilities are explicit.
+Link independently maintained detail when needed.

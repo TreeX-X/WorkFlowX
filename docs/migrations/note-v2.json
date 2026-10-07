@@ -1,0 +1,116 @@
+{
+  "schema": "workflowx-corpus-migration/1",
+  "revision": "abffe283d8de7f7772f8e66b31cb7c37a3b7f4e7",
+  "updated": "2026-10-07T16:12:56.085Z",
+  "sources": [
+    {
+      "source": ".agents/notes/2026-09-16-harness-s7-workflowx-rules--7d3f9a21.md",
+      "target": ".agents/notes/distribution/rule-sync.md",
+      "id": "7d3f9a21-4b6e-4c8a-9f1d-2e5a6b7c8d9e",
+      "sha256": "ac64e75f686f397ebf5885cd6c84eff5e7e4c3f70feff6880fe76c1ea82ecc6f",
+      "action": "rewrite",
+      "reason": "Maintain owning subject in module directory",
+      "gitBlobSha256": "ac64e75f686f397ebf5885cd6c84eff5e7e4c3f70feff6880fe76c1ea82ecc6f"
+    },
+    {
+      "source": ".agents/notes/2026-09-18-portable-execution-evidence--28f1238b.md",
+      "target": ".agents/notes/harness/portable-evidence.md",
+      "id": "28f1238b-2678-45d0-889a-6982e5b3ad2f",
+      "sha256": "28b156e8d084f9b7f580d8b2991524da266c148f3072e375e2d8d9008c3e8cab",
+      "action": "rewrite",
+      "reason": "Maintain owning subject in module directory",
+      "gitBlobSha256": "28b156e8d084f9b7f580d8b2991524da266c148f3072e375e2d8d9008c3e8cab"
+    },
+    {
+      "source": ".agents/notes/2026-09-21-xdo-mandatory-note--e92790eb.md",
+      "target": ".agents/notes/workflow/history/mandatory-note.md",
+      "id": "e92790eb-30e0-4eb6-8296-5162d3fd1f03",
+      "sha256": "94bd95cde4cbdfc400ca00784d5d37c0afda03c989c6d3410b910c44074a3f21",
+      "action": "archive",
+      "reason": "Retain historical evidence separately from current structure",
+      "gitBlobSha256": "94bd95cde4cbdfc400ca00784d5d37c0afda03c989c6d3410b910c44074a3f21"
+    },
+    {
+      "source": ".agents/notes/2026-09-24-note-corpus-index-blueprint-completion--f4b2c8d1.md",
+      "target": ".agents/notes/harness/requirements/corpus-readiness.md",
+      "id": "f4b2c8d1-9e07-4a63-b51c-2d8f6e0a7c39",
+      "sha256": "4c38b6a870aa655788ce8fa68e12411ac3b022e18a159d71ee0b3ee3c0137471",
+      "action": "convert",
+      "reason": "Maintain owning subject in module directory",
+      "gitBlobSha256": "4c38b6a870aa655788ce8fa68e12411ac3b022e18a159d71ee0b3ee3c0137471"
+    },
+    {
+      "source": ".agents/notes/2026-09-24-note-index-derived-layer--c61d7a4e.md",
+      "target": ".agents/notes/harness/wiki/shared-index.md",
+      "id": "c61d7a4e-6f8b-4a2e-9d31-5c7e8b0f2a14",
+      "sha256": "84fc3bfc188ce0aee19950bf40b528fb5deeb228686394a8d04e35e50b9e7814",
+      "action": "rewrite",
+      "reason": "Maintain owning subject in module directory",
+      "gitBlobSha256": "84fc3bfc188ce0aee19950bf40b528fb5deeb228686394a8d04e35e50b9e7814"
+    },
+    {
+      "source": ".agents/notes/2026-09-25-initiative-interfaces--839c02e6.md",
+      "target": ".agents/notes/harness/history/initiative-interfaces.md",
+      "id": "839c02e6-5215-4611-a11c-39981aa16069",
+      "sha256": "3c71ba43334d08e65aafb98c5c7a6d4196a73818e8ef049ad706f4a2fd713e48",
+      "action": "archive",
+      "reason": "Retain historical evidence separately from current structure",
+      "gitBlobSha256": "3c71ba43334d08e65aafb98c5c7a6d4196a73818e8ef049ad706f4a2fd713e48"
+    },
+    {
+      "source": ".agents/notes/2026-09-25-xarch-command--0700e5e2.md",
+      "target": ".agents/notes/workflow/scaffold.md",
+      "id": "0700e5e2-50f4-4265-a2d8-59f5d52a8c5c",
+      "sha256": "2b00d4640b7bad3f61fd4626b20082169286047f2371a05262c04d85e0302dab",
+      "action": "rewrite",
+      "reason": "Maintain owning subject in module directory",
+      "gitBlobSha256": "2b00d4640b7bad3f61fd4626b20082169286047f2371a05262c04d85e0302dab"
+    },
+    {
+      "source": ".agents/notes/2026-10-03-module-view-conventions--5f4f7a62.md",
+      "target": ".agents/notes/workflow/tasks/module-view-conventions.md",
+      "id": "5f4f7a62-f209-47ce-9ea5-58cdbf34c480",
+      "sha256": "aa94e4595a51e4a3f3c1d7fa5b23cb175e0c64291765bac8cc538d3adeebc77c",
+      "action": "archive",
+      "reason": "Retain historical evidence separately from current structure",
+      "gitBlobSha256": "aa94e4595a51e4a3f3c1d7fa5b23cb175e0c64291765bac8cc538d3adeebc77c"
+    },
+    {
+      "source": ".agents/notes/implemented/architecture/2026-09-16-harness-note-standard-s1.md",
+      "target": ".agents/notes/harness/history/standard-v1.md",
+      "id": "5b298c37-09e6-46bf-8b4f-084138acde9a",
+      "identityAssigned": true,
+      "sha256": "702d08aff067dfd267eca30ab3a74ab12cb884e3e0eab49ab21ccf823ba4932b",
+      "action": "archive",
+      "reason": "Retain historical evidence separately from current structure",
+      "gitBlobSha256": "702d08aff067dfd267eca30ab3a74ab12cb884e3e0eab49ab21ccf823ba4932b"
+    },
+    {
+      "source": ".agents/notes/implemented/process/2026-09-11-workflow-redundancy-cleanup.md",
+      "target": ".agents/notes/workflow/history/redundancy-cleanup.md",
+      "id": "68156bd0-fdd6-4d9d-82a5-30c61097e656",
+      "identityAssigned": true,
+      "sha256": "ebc6885014afe6da63e99b0a5b1040963414ab69e7b151e0e8eaaabfc4a7959f",
+      "action": "archive",
+      "reason": "Retain historical evidence separately from current structure",
+      "gitBlobSha256": "ebc6885014afe6da63e99b0a5b1040963414ab69e7b151e0e8eaaabfc4a7959f"
+    },
+    {
+      "source": ".agents/notes/implemented/process/2026-09-17-harness-repo-identity-s7.md",
+      "target": ".agents/notes/distribution/repository-identity.md",
+      "id": "3240a01d-34e0-4a7e-8682-7213200fd5e2",
+      "identityAssigned": true,
+      "sha256": "c719a415dd9a6c249c7a1baaf400fb238c184b096eb4df6094602d203004126a",
+      "action": "rewrite",
+      "reason": "Maintain owning subject in module directory",
+      "gitBlobSha256": "c719a415dd9a6c249c7a1baaf400fb238c184b096eb4df6094602d203004126a"
+    }
+  ],
+  "deferred": [
+    {
+      "path": ".agents/notes/2026-09-19-hol-scanner-351-remediation--97ee510c.md",
+      "sha256": "5bf9130c8575183ac72b3b7d19cd98d2ba4cda4a7660fb65ec0fe79c97784999",
+      "reason": "Pre-existing untracked user Task outside this refactor; preserved byte-for-byte."
+    }
+  ]
+}

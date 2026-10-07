@@ -1,21 +1,120 @@
 {
   "$comment": "S7 managed rule pairs. Whole files must match after surface-token normalization; blocks compare marked sections only. Forbidden paths must be absent in the owning repo.",
-  "standard": { "manifest": "standards/harness-note/1/manifest.json", "version": "1.0.0-s1.2" },
-  "tokens": [".codex/", ".claude/"],
-  "entries": ["AGENTS.md", "CLAUDE.md"],
+  "standard": {
+    "manifest": "standards/harness-note/2/manifest.json",
+    "version": "2.0.0"
+  },
+  "tokens": [
+    ".codex/",
+    ".claude/"
+  ],
+  "entries": [
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
   "pairs": [
-    { "id": "orchestrateX", "a": ".codex/skills/orchestrateX/SKILL.md", "b": ".claude/skills/orchestrateX/SKILL.md", "mode": "whole" },
-    { "id": "noteX", "a": ".codex/skills/noteX/SKILL.md", "b": ".claude/skills/noteX/SKILL.md", "mode": "whole" },
-    { "id": "proseX", "a": ".codex/skills/proseX/SKILL.md", "b": ".claude/skills/proseX/SKILL.md", "mode": "whole" },
-    { "id": "specX", "a": ".codex/skills/specX/SKILL.md", "b": ".claude/skills/specX/SKILL.md", "mode": "whole" },
-    { "id": "engineeringX", "a": ".codex/skills/engineeringX/SKILL.md", "b": ".claude/skills/engineeringX/SKILL.md", "mode": "whole" },
-    { "id": "auditX", "a": ".codex/skills/auditX/SKILL.md", "b": ".claude/skills/auditX/SKILL.md", "mode": "whole" },
-    { "id": "socratesX", "a": ".codex/skills/socratesX/SKILL.md", "b": ".claude/skills/socratesX/SKILL.md", "mode": "whole" },
-    { "id": "bus-payload", "a": ".codex/skills/orchestrateX/modules/02-bus-payload.md", "b": ".claude/skills/orchestrateX/modules/02-bus-payload.md", "mode": "whole" },
-    { "id": "req-discovery", "a": ".codex/skills/orchestrateX/modules/08-requirements-discovery.md", "b": ".claude/skills/orchestrateX/modules/08-requirements-discovery.md", "mode": "whole" },
-    { "id": "status-report", "a": ".codex/skills/orchestrateX/modules/07-status-report.md", "b": ".claude/skills/orchestrateX/modules/07-status-report.md", "mode": "whole" },
-    { "id": "coderX", "a": ".codex/agents/coderX.toml", "b": ".claude/agents/coderX.md", "mode": "blocks" },
-    { "id": "evaluatorX", "a": ".codex/agents/evaluatorX.toml", "b": ".claude/agents/evaluatorX.md", "mode": "blocks" }
+    {
+      "id": "orchestrateX",
+      "a": ".codex/skills/orchestrateX/SKILL.md",
+      "b": ".claude/skills/orchestrateX/SKILL.md",
+      "mode": "whole"
+    },
+    {
+      "id": "noteX",
+      "a": ".codex/skills/noteX/SKILL.md",
+      "b": ".claude/skills/noteX/SKILL.md",
+      "mode": "whole"
+    },
+    {
+      "id": "proseX",
+      "a": ".codex/skills/proseX/SKILL.md",
+      "b": ".claude/skills/proseX/SKILL.md",
+      "mode": "whole"
+    },
+    {
+      "id": "specX",
+      "a": ".codex/skills/specX/SKILL.md",
+      "b": ".claude/skills/specX/SKILL.md",
+      "mode": "whole"
+    },
+    {
+      "id": "engineeringX",
+      "a": ".codex/skills/engineeringX/SKILL.md",
+      "b": ".claude/skills/engineeringX/SKILL.md",
+      "mode": "whole"
+    },
+    {
+      "id": "auditX",
+      "a": ".codex/skills/auditX/SKILL.md",
+      "b": ".claude/skills/auditX/SKILL.md",
+      "mode": "whole"
+    },
+    {
+      "id": "socratesX",
+      "a": ".codex/skills/socratesX/SKILL.md",
+      "b": ".claude/skills/socratesX/SKILL.md",
+      "mode": "whole"
+    },
+    {
+      "id": "bus-payload",
+      "a": ".codex/skills/orchestrateX/modules/02-bus-payload.md",
+      "b": ".claude/skills/orchestrateX/modules/02-bus-payload.md",
+      "mode": "whole"
+    },
+    {
+      "id": "req-discovery",
+      "a": ".codex/skills/orchestrateX/modules/08-requirements-discovery.md",
+      "b": ".claude/skills/orchestrateX/modules/08-requirements-discovery.md",
+      "mode": "whole"
+    },
+    {
+      "id": "status-report",
+      "a": ".codex/skills/orchestrateX/modules/07-status-report.md",
+      "b": ".claude/skills/orchestrateX/modules/07-status-report.md",
+      "mode": "whole"
+    },
+    {
+      "id": "coderX",
+      "a": ".codex/agents/coderX.toml",
+      "b": ".claude/agents/coderX.md",
+      "mode": "blocks"
+    },
+    {
+      "id": "evaluatorX",
+      "a": ".codex/agents/evaluatorX.toml",
+      "b": ".claude/agents/evaluatorX.md",
+      "mode": "blocks"
+    },
+    {
+      "id": "module-structure",
+      "a": ".codex/skills/noteX/module-structure.md",
+      "b": ".claude/skills/noteX/module-structure.md",
+      "mode": "whole"
+    },
+    {
+      "id": "note-reorganization",
+      "a": ".codex/skills/noteX/reorganization.md",
+      "b": ".claude/skills/noteX/reorganization.md",
+      "mode": "whole"
+    },
+    {
+      "id": "wiki-read",
+      "a": ".codex/skills/noteX/wiki.md",
+      "b": ".claude/skills/noteX/wiki.md",
+      "mode": "whole"
+    },
+    {
+      "id": "scaffold",
+      "a": ".codex/skills/orchestrateX/modules/03-scaffold.md",
+      "b": ".claude/skills/orchestrateX/modules/03-scaffold.md",
+      "mode": "whole"
+    },
+    {
+      "id": "dispatch-adapter",
+      "a": ".codex/skills/orchestrateX/modules/09-dispatch-adapter.md",
+      "b": ".claude/skills/orchestrateX/modules/09-dispatch-adapter.md",
+      "mode": "whole"
+    }
   ],
   "forbidden": [
     ".codex/skills/orchestrateX/hybrid-template.md",

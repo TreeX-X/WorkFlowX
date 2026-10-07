@@ -31,7 +31,7 @@ WorkflowX is an **engineering workflow** that lives inside your AI coding tool. 
 - **The Main Agent orchestrates directly**: routing, discovery, plan confirmation, task note writes (`.agents/notes/`), scheduling, document updates, and final verification.
 - **coderX implements only**: reads the dispatch Task, fixed acceptance refs, and allowed scope, follows `engineeringX + specX`, self-reviews, then returns a Change Summary plus a Note draft.
 - **evaluatorX verifies independently (xflow only)**: test-driven and read-only. It builds the smallest useful executable test set from the fixed AC and emits `PASS / NEEDS_FIX / UNEVALUABLE`.
-- **Task notes keep the ledger**: `.agents/notes/` stores `idea / initiative / requirement / decision / task` per the `harness-note/1` standard — scope, AC, file index, dependencies, verification records, and the single `execution` state each in its home.
+- **Maintain module documents**: `.agents/notes/` uses `harness-note/2` for modules, ordinary Notes, ideas, requirements, decisions and tasks. Each module has one entry; Main Agent updates shared Tasks before handoff, while ordinary `xdo` creates none.
 
 > There is no `orchestratorX` sub-agent and no standalone `routeX` skill: routing is merged into `orchestrateX` and the Main Agent owns orchestration directly; `xdel` / `xflow` hand off through structured Payloads only. Legacy `.hybrid/` docs, MCP, `promptX`, and `noiseX` are pre-refactor history, not runtime sources.
 
@@ -50,7 +50,7 @@ The real problem with single-agent AI coding is not just model quality. It is th
 | Failure mode | WorkflowX mechanism |
 |---|---|
 | **Context gets noisy and expensive** | Main Agent maintains state; execution agents work in isolated context and exchange only structured Payloads; later tasks receive only relevant contracts, files, failures, and risks |
-| **Requirements disappear into chat history** | Requirements become five kinds of task notes (one file per note, URI-addressed); changes update only the relevant note and affected tasks are rescheduled by dependency |
+| **Requirements disappear into chat history** | Requirements live in maintained module documents and URI-addressed Notes; affected work follows shared Task dependencies |
 | **AI says "done" but misses the requirement** | evaluatorX distrusts coderX self-report, builds and runs its own tests, and checks every fixed AC independently |
 | **Misread requirements surface after coding** | xflow runs repository-facts exploration (module 08), phase-batched socratesX questions with proactive challenges, and creates notes only after a Ready Summary is confirmed |
 | **Multi-round iteration burns tokens** | One file carries scope/acceptance/verification, related notes link by URI plus a one-line summary, and dispatch plus repair packets carry minimal context |
@@ -130,34 +130,24 @@ Common flag: `-box demo` isolates work in a sandbox branch. Parallelism must be 
 
 For `xflow implement user login`, the workflow is:
 
-1. **Entry routing**: Main Agent routes from the command, complete input, and active conversation context; task notes (`.agents/notes/`) remain the durable workflow source of truth, and later input stays in the active mode.
-2. **Environment init**: lightweight self-check with no global lock; delete a legacy `.hybrid/.workflow-lock` when present, check same-target conflicts before dispatch, and use sandbox or explicitly requested parallelism when needed.
-3. **Repository-facts exploration (module 08)**: search structure, modules, dependencies, constraints, and conventions, separate proven facts from unknowns, and build a file index without running a second user interview.
-4. **Requirement clarification (socratesX, xflow only)**: phase-batched questions across goal/scope, behavior/boundaries, implementation direction, and verification/rollout; ask only what can change scope, architecture, behavior, AC, dependencies, or risk, and offer options only for real trade-offs.
-5. **Ready Summary gate**: when the request is already specified, present one Ready Summary (goal, scope, non-goals, constraints, task boundaries, affected files, verification, risks) and create notes only after confirmation.
-6. **Task note generation**: Main Agent writes `requirement / task / decision` notes (plus `idea / initiative` for directions) with scope, stable `AC-n`, dependencies, file index, and verification direction; spoken agreements never enter a dispatch.
-7. **coderX implementation**: implements against fixed acceptance refs and allowed scope with `engineeringX + specX`, self-reviews, then returns a Change Summary plus a Note draft (new `implemented/` or in-place sync).
-8. **evaluatorX verification**: builds the smallest useful executable test set from fixed AC, runs it, and emits `PASS / NEEDS_FIX / UNEVALUABLE` with commands, failures, causes, repair scope, regression risks, and blockers; read-only, never edits code or notes.
-9. **Close**: Main Agent applies tiered fixes (local defects via Repair Packet with at most one automatic re-dispatch; cross-task issues via Integration Note; architecture/scope fixed directly), narrows scope, adds checks, or records explicit risk on `UNEVALUABLE`, stops and hands to the user on exhausted budget; code + Note + entry reverse comment land in one commit following `proseX`.
+1. Main Agent selects the workflow. Ordinary xdo creates no Task; an explicitly selected existing Task keeps its acceptance and review obligations.
+2. Read the module entry and necessary references. xflow clarifies only unresolved decisions before scoped Task planning.
+3. Main Agent updates the same Task before each handoff. coderX returns implementation facts; evaluatorX independently checks evidence; repairs reuse the Task.
+4. Maintain affected modules and Notes, refreshing updated on actual maintenance. Work that changes no documented fact needs no forced Note edit.
+5. Verify results, references and handoff context. Another Agent can continue from repository assets without the original conversation.
 
 ---
 
 ## Deep Dive
 
 <details>
-<summary><b>Task notes: Structured Task Assets</b></summary>
+<summary><b>Module documents and shared Tasks</b></summary>
 
-Task notes (`.agents/notes/`, specified by `standards/harness-note/1/`) are WorkflowX's source of truth — one file per note, addressed by frontmatter `id` (UUID) as `note://<repo-id>/<note-id>`:
+Notes live in module/submodule directories. Each module has one module.md entry beside independent topic documents. Planned modules use the same complete structure with explicit state. UUIDs identify documents; subject filenames stay stable, created is preserved and updated changes on maintenance.
 
-| Document | Purpose |
-|---|---|
-| **idea** | Hunches, questions, raw intent; park directions without blocking the Ready Summary |
-| **initiative** | Cross-repo product direction, only when aggregation earns it |
-| **requirement** | Needed behavior with stable `AC-n` acceptance clauses (never renumbered) |
-| **task** | Bounded delivery: scope, acceptance refs, verification records, dependencies, and the single `execution` state |
-| **decision** | Trade-offs: options, cost, and revisit signals; `Alternatives` always includes a do-nothing/reuse option |
+Kinds are module, note, idea, requirement, decision and task. Ideas can change type. Main Agent maintains the shared Task for implementation, iteration and handoff, and reorganizes documents with reference repair.
 
-The Main Agent owns routing, scheduling, document updates, and final verification. coderX reads only the dispatch plus acceptance refs and returns a self-reviewed Change Summary plus a Note draft; evaluatorX is read-only and verifies by running tests. No central index, no Parent/Child files, no plans directory; related notes link by URI plus a one-line summary. Each `implemented/` decision leaves one reverse comment at the core entry, and code + Note + comment land together with the Note path in the commit message. Legacy `.hybrid/` files are reference-only.
+See [module structure](docs/module-structure.md) and [harness-note/2](standards/harness-note/2/standard.md). Wiki reads originals through a rebuildable index. WorkflowX owns the contract, agentX the tools/execution, and JanusX blueprint/engineering Chat integration; each phase has separate acceptance.
 
 </details>
 
@@ -196,7 +186,7 @@ This turns "the AI says it is done" into "an independent quality gate confirms i
 Routing is merged into `orchestrateX`; there is no standalone skill. Every input is routed from the complete prompt and current conversation context:
 
 | Explicit command | `xdo / xdel / xflow` wins | Enter the requested mode immediately |
-| No explicit command | High-impact, cross-module, or uncertain work | Recommend `xflow`; clear local work gets `xdel`, otherwise `xdo` |
+| No explicit command | Use the complete request and context | Direct work uses `xdo`; requested delegation uses `xdel`; full orchestration uses `xflow` |
 | Ambiguous | Mode unclear | Present all three instead of silently choosing |
 | In progress | Active workflow exists | Keep later input in the current mode; support incremental changes |
 

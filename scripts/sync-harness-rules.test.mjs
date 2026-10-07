@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -52,5 +52,23 @@ test('adopter sync preserves local settings and agent text, detects source drift
     for (const entry of ['AGENTS.md', 'CLAUDE.md']) writeFileSync(join(root, entry), '# existing unmarked entry\n');
     assert.equal(run('--apply').status, 1);
     for (const entry of ['AGENTS.md', 'CLAUDE.md']) assert.equal(readFileSync(join(root, entry), 'utf8'), '# existing unmarked entry\n');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+test('unsupported adopter profile is rejected before any managed write', () => {
+  const root = mkdtempSync(join(tmpdir(), 'wfx-old-profile-'));
+  try {
+    mkdirSync(join(root, '.codex/skills/noteX'), { recursive: true });
+    mkdirSync(join(root, '.agents'));
+    writeFileSync(join(root, '.agents/harness.json'), JSON.stringify({ profile: { id: 'workflowx', version: '1.0.0-s1.2', digest: 'old' } }));
+    const target = join(root, '.codex/skills/noteX/SKILL.md');
+    writeFileSync(target, 'old rules must survive\n');
+    const list = join(root, 'repos.list'); writeFileSync(list, root);
+    const result = spawnSync(process.execPath, ['scripts/sync-harness-rules.mjs', '--apply', '--repos', list], { encoding: 'utf8' });
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /no files written/);
+    assert.equal(readFileSync(target, 'utf8'), 'old rules must survive\n');
+    assert.equal(existsSync(join(root, 'AGENTS.md')), false);
+    assert.equal(existsSync(join(root, 'standards')), false);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

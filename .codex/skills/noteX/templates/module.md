@@ -1,24 +1,26 @@
 ---
-schema: harness-note/1
-id: 00000000-0000-4000-8000-000000000002
-kind: initiative
-lifecycle: proposed
-created: 2026-10-03
-class: architecture
-tags: [architecture:module, architecture:example]
-parent: note://00000000-0000-4000-8000-000000000000/00000000-0000-4000-8000-000000000001
+{
+  "schema": "harness-note/2",
+  "id": "22222222-2222-4222-8222-222222222222",
+  "kind": "module",
+  "lifecycle": "accepted",
+  "created": "2026-10-07",
+  "updated": "2026-10-07T00:00:00Z",
+  "parent": "note://11111111-1111-4111-8111-111111111111/88888888-8888-4888-8888-888888888888",
+  "moduleState": "planned"
+}
 ---
 
-# Module declaration example
+# Module name
 
-## Goal
+## Responsibility
 
-Describe one confirmed subsystem responsibility. Generate a fresh UUID for the real module.
+Describe the boundary and overall purpose.
 
-## Scope
+## Design
 
-Describe boundaries and non-goals. Replace the sample parent with the real project or module URI. Declare only known repositories, codeRefs and interfaces using S1.2 fields. Remove architecture:example for a real declaration and accept only confirmed current structure.
+Explain the whole and its important interfaces. Mark planned parts and unknowns explicitly.
 
-## Acceptance criteria
+## Related documents
 
-- [ ] AC-1: Responsibility, parent and important boundaries are explicit.
+Link independently maintained detail when needed.

@@ -1,15 +1,9 @@
 ---
-description: Direct development by the Main Agent
+description: xdo WorkflowX workflow
 ---
 
-# /xdo - Direct Work
+# /xdo
 
-The Main Agent performs the work directly using the requested engineering skill.
+Main Agent performs direct work. No Task is created; explicitly selected existing Tasks retain acceptance and review obligations. Maintain Notes only when relevant facts change.
 
-- Do not dispatch by default.
-- Use native parallel Agents only when the user explicitly requests parallel development.
-- Parallel Agents follow the same engineering skill and basic development principles.
-- Task notes are optional and used only when the user or task requires them.
-- Apply staged review during the work and verify the final result.
-- Land atomically: code + Note (new flat-layout Note or in-place sync per `noteX`) + entry reverse comment in one commit; the message carries the Note path. Writing follows `proseX`.
-- Full rules: `orchestrateX` SKILL.md.
+Use .claude/skills/orchestrateX/SKILL.md and only its applicable references.

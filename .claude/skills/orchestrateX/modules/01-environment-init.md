@@ -1,7 +1,5 @@
-# 1. Environment Initialization
+# Environment
 
-When entering a workflow for the first time, perform a light self-check. There is no global workflow lock; parallel work is allowed under the mode rules.
+Inspect the selected checkout and existing edits before writing. Preserve unrelated work. Before dispatch, check same-target ownership; only Main Agent maintains the shared Task. Independent agents run in parallel only when requested.
 
-1. If a legacy `.hybrid/.workflow-lock` file exists (pre-lightweight versions), delete it and continue. It no longer blocks execution.
-2. Before dispatching, check for same-target conflicts only: do not dispatch two agents to write the same task-note path or the same files concurrently. Independent tasks may run in parallel when dependencies allow and the user requested parallel work.
-3. Proceed to workflow execution.
+Do not infer execution ownership from missing local logs or remove another run's lease. Use the host's explicit recovery/takeover mechanism when needed.

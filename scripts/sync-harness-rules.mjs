@@ -1,4 +1,4 @@
-// Note: managed rule sync lives here — see .agents/notes/2026-09-16-harness-s7-workflowx-rules--7d3f9a21.md
+// Note: managed rule sync lives here — see .agents/notes/distribution/rule-sync.md
 // Checks dual-surface rule parity (.codex vs .claude) without fixing.
 // Usage: node scripts/sync-harness-rules.mjs --check --repos scripts/sync-repos.list
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync } from 'node:fs';
@@ -43,6 +43,9 @@ for (const name of ['xdo', 'xdel', 'xflow', 'xarch', 'xstatus']) {
   if (existsSync(join(OWN_ROOT, rel))) managedFiles.set(rel, 'whole');
 }
 for (const rel of managed.entries ?? []) managedFiles.set(rel, 'blocks');
+// Ship the referenced formats with the rules, only after the adopter pin is checked.
+includeTree('standards/harness-note/1');
+includeTree('standards/harness-note/2');
 function blockPattern(rel) {
   return rel.endsWith('.toml')
     ? /^# wfx-managed: (\S+)[^\n]*\n[\s\S]*?^# wfx-managed-end[^\n]*/gm
@@ -117,6 +120,13 @@ for (const rel of repos) {
     continue;
   }
   checkedRepos += 1;
+  const identityFile = join(root, '.agents/harness.json');
+  const profile = existsSync(identityFile) ? JSON.parse(readFileSync(identityFile, 'utf8')).profile : undefined;
+  const digest = createHash('sha256').update(readFileSync(join(OWN_ROOT, managed.standard.manifest), 'utf8').replace(/\r\n/g, '\n')).digest('hex');
+  if (profile?.id !== 'workflowx' || profile?.version !== manifest.version || profile?.digest !== digest) {
+    fail('[' + rel + '] harness profile does not match source manifest; no files written to this repo');
+    continue;
+  }
   if (root !== OWN_ROOT) for (const [file, mode] of managedFiles) {
     const source = readFileSync(join(OWN_ROOT, file), 'utf8');
     const path = join(root, file);
@@ -136,12 +146,6 @@ for (const rel of repos) {
       if (apply) { mkdirSync(dirname(path), { recursive: true }); writeFileSync(path, next); ok('synced [' + rel + '] ' + file); }
       else fail('[' + rel + '] source drift: ' + file);
     }
-  }
-  const identityFile = join(root, '.agents/harness.json');
-  const profile = existsSync(identityFile) ? JSON.parse(readFileSync(identityFile, 'utf8')).profile : undefined;
-  const digest = createHash('sha256').update(readFileSync(join(OWN_ROOT, managed.standard.manifest), 'utf8').replace(/\r\n/g, '\n')).digest('hex');
-  if (profile?.id !== 'workflowx' || profile?.version !== manifest.version || profile?.digest !== digest) {
-    fail('[' + rel + '] harness profile does not match source manifest');
   }
   for (const pair of managed.pairs) {
     const fa = join(root, pair.a);

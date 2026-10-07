@@ -1,0 +1,44 @@
+{
+  "standard": "workflowx-harness-note",
+  "schema": "harness-note/2",
+  "version": "2.0.0",
+  "status": "final",
+  "runtimeActivation": "Per-repository supported-reader/writer cutover; downstream acceptance is separate.",
+  "kinds": [
+    "module",
+    "note",
+    "idea",
+    "requirement",
+    "decision",
+    "task"
+  ],
+  "evidenceSchema": "harness-receipt/1",
+  "files": [
+    "execution.md",
+    "fixtures/expected-hashes.json",
+    "fixtures/invalid-kind.md",
+    "fixtures/invalid-module-state.md",
+    "fixtures/invalid-task-owner.md",
+    "fixtures/invalid-time.md",
+    "fixtures/valid-decision.md",
+    "fixtures/valid-idea.md",
+    "fixtures/valid-module.md",
+    "fixtures/valid-note.md",
+    "fixtures/valid-requirement.md",
+    "fixtures/valid-task.md",
+    "manifest.json",
+    "migration.md",
+    "note.schema.json",
+    "standard.md",
+    "templates/decision.md",
+    "templates/idea.md",
+    "templates/module.md",
+    "templates/note.md",
+    "templates/requirement.md",
+    "templates/task.md",
+    "wiki.md"
+  ],
+  "validators": [
+    "scripts/verify-note-v2.mjs"
+  ]
+}

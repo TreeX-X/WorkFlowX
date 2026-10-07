@@ -1,14 +1,9 @@
 ---
-description: Full planning, implementation, and evaluation workflow
+description: xflow WorkflowX workflow
 ---
 
-# /xflow - Orchestrated Work
+# /xflow
 
-- Use orchestrateX module 08 to explore repository facts, then run socratesX for unresolved user decisions.
-- Ask all unresolved questions from the current analysis phase in one batch; offer options only for real trade-offs.
-- Present one Ready Summary confirmation gate, then create task notes.
-- Dispatch implementation work by dependency order.
-- Trigger evaluatorX where the workflow requires independent testing review.
-- Keep the final repair and completion decision with the Main Agent.
-- On `UNEVALUABLE` the Main Agent decides: narrow scope, add checks, or accept with explicit recorded risk.
-- Full rules: `orchestrateX` SKILL.md.
+Discover unresolved requirements, then implement/evaluate dependency-ordered Tasks. Main Agent maintains each Task before handoff, repair and recovery.
+
+Use .claude/skills/orchestrateX/SKILL.md and only its applicable references.

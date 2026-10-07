@@ -1,0 +1,80 @@
+{
+  "baseline": "abffe283d8de7f7772f8e66b31cb7c37a3b7f4e7",
+  "measurement": "LF-normalized UTF-8 bytes of unique declared instruction files; excludes task/project content, platform system prompts and repeat imports across agents. Not measured runtime telemetry or exact token counts.",
+  "rows": [
+    {
+      "scenario": "xdo-with-document-maintenance",
+      "files": [
+        "AGENTS.md",
+        ".codex/skills/orchestrateX/SKILL.md",
+        ".codex/skills/engineeringX/SKILL.md",
+        ".codex/skills/noteX/SKILL.md",
+        ".codex/skills/proseX/SKILL.md"
+      ],
+      "beforeUtf8Bytes": 31033,
+      "afterUtf8Bytes": 9267,
+      "reductionPercent": 70.1
+    },
+    {
+      "scenario": "xdo-existing-task",
+      "files": [
+        "AGENTS.md",
+        ".codex/skills/orchestrateX/SKILL.md",
+        ".codex/skills/engineeringX/SKILL.md",
+        ".codex/skills/noteX/SKILL.md",
+        ".codex/skills/proseX/SKILL.md",
+        ".codex/skills/orchestrateX/modules/02-bus-payload.md"
+      ],
+      "beforeUtf8Bytes": 33950,
+      "afterUtf8Bytes": 11541,
+      "reductionPercent": 66
+    },
+    {
+      "scenario": "xdel-dispatch",
+      "files": [
+        "AGENTS.md",
+        ".codex/skills/orchestrateX/SKILL.md",
+        ".codex/skills/engineeringX/SKILL.md",
+        ".codex/skills/noteX/SKILL.md",
+        ".codex/skills/proseX/SKILL.md",
+        ".codex/agents/coderX.toml",
+        ".codex/skills/specX/SKILL.md",
+        ".codex/skills/orchestrateX/modules/02-bus-payload.md",
+        ".codex/skills/orchestrateX/modules/09-dispatch-adapter.md"
+      ],
+      "beforeUtf8Bytes": 42706,
+      "afterUtf8Bytes": 14891,
+      "reductionPercent": 65.1
+    },
+    {
+      "scenario": "xflow-discovery-dispatch-review",
+      "files": [
+        "AGENTS.md",
+        ".codex/skills/orchestrateX/SKILL.md",
+        ".codex/skills/engineeringX/SKILL.md",
+        ".codex/skills/noteX/SKILL.md",
+        ".codex/skills/proseX/SKILL.md",
+        ".codex/agents/coderX.toml",
+        ".codex/skills/specX/SKILL.md",
+        ".codex/skills/orchestrateX/modules/02-bus-payload.md",
+        ".codex/skills/orchestrateX/modules/09-dispatch-adapter.md",
+        ".codex/skills/orchestrateX/modules/08-requirements-discovery.md",
+        ".codex/skills/socratesX/SKILL.md",
+        ".codex/agents/evaluatorX.toml",
+        ".codex/skills/auditX/SKILL.md"
+      ],
+      "beforeUtf8Bytes": 50846,
+      "afterUtf8Bytes": 19515,
+      "reductionPercent": 61.6
+    },
+    {
+      "scenario": "repair-payload-reference",
+      "files": [
+        ".codex/skills/orchestrateX/modules/02-bus-payload.md"
+      ],
+      "beforeUtf8Bytes": 2917,
+      "afterUtf8Bytes": 2274,
+      "reductionPercent": 22
+    }
+  ]
+}

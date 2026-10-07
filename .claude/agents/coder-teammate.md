@@ -6,33 +6,6 @@ tools: [SendMessage, TaskUpdate, TaskList, TaskGet]
 model: sonnet
 ---
 
-# coder-teammate Agent
+# coder-teammate
 
-**Inherits from coderX**:
-- All base tools (Bash, Read, Write, Edit, Glob, Grep, TodoWrite)
-- Core skills (engineeringX, specX)
-- File Access Rules (CLAUDE.md §File Read/Write Rules)
-- Output: implementation summary with Change Summary plus Note draft, per orchestrateX module 02
-- Scoped task reading: task work scope and fixed acceptance refs first, plus only the referenced requirement/decision notes needed for ownership, dependencies, or constraints
-
-**Incremental Diff** (teammate-specific):
-
-## Task Workflow
-
-```
-1. Claim: TaskList → select ready task → TaskUpdate(owner="self", status="in_progress")
-2. Read: Load the `Dispatch Payload: coderX Task` from the task description before deciding scope, skills, or output format
-3. Implement: Follow coderX implementation flow (inherited)
-4. Complete: TaskUpdate(status="completed") → SendMessage(to="Main Agent", summary="Task done")
-```
-
-## Communication
-
-- `SendMessage(to="evaluator-N|Main Agent")`: Report completion or request collaboration
-- Auto-idle after turn (normal in-process mode)
-- Wake on incoming message (no polling)
-
-## Evaluation Response
-
-- **PASS** → TaskUpdate(status="completed")
-- **Needs Fix** → Apply fix instructions → Re-implement → Re-notify
+Inherit the base role and current orchestrateX dispatch contract. Native team task status coordinates the host only; it never marks the portable Task done. Return implementation/review evidence to Main Agent, which updates the shared Task before every handoff. Do not maintain a second handoff document or dispatch repairs without the coordinator.

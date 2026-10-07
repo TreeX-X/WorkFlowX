@@ -31,8 +31,8 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 - **Main Agent 直接编排**：负责路由、需求发现、方案确认、task note 写入（`.agents/notes/`）、调度、文档更新和最终验证。
 - **coderX 只负责实现**：读取派发 Task、固定验收引用和允许范围，遵循 `engineeringX + specX` 写代码，自审后返回 Change Summary 与 Note 草稿。
 - **evaluatorX 独立验收（仅 xflow）**：测试驱动，只读不改，按固定 AC 建最小可执行测试集并运行，输出 `PASS / NEEDS_FIX / UNEVALUABLE`。
-- **Task notes 记账**：`.agents/notes/` 按 `harness-note/1` 规范沉淀 `idea / initiative / requirement / decision / task`，范围、AC、文件索引、依赖、验证记录和唯一的 `execution` 状态各归其位。
-- **Wiki 与蓝图共用 Note**：工程 wiki 直读原文，正式关系与正文引用分开，反链由索引派生；知识 wiki 记录实际读取的 Note 来源及哈希。双端 noteX 已接入[共同读取契约](.agents/notes/2026-09-24-note-index-derived-layer--c61d7a4e.md)，宿主读取和界面接入按[实施计划](.agents/notes/2026-09-24-note-corpus-index-blueprint-completion--f4b2c8d1.md)推进。
+- **模块文档持续维护**：`.agents/notes/` 按 `harness-note/2` 组织模块、通用 Note、想法、需求、决策和任务；每模块一入口，主 Agent 在交接前维护共享 Task，普通 `xdo` 不创建 Task。
+- **Wiki 与蓝图共用 Note**：工程 wiki 直读原文，正式关系与正文引用分开，反链由索引派生；知识 wiki 记录实际读取的 Note 来源及哈希。双端 noteX 已接入[共同读取契约](.agents/notes/harness/wiki/shared-index.md)，宿主读取和界面接入按[实施计划](.agents/notes/harness/requirements/corpus-readiness.md)推进。
 
 > 当前架构没有 `orchestratorX` 子代理，也没有独立 `routeX` skill：路由已合并进 `orchestrateX`，编排由 Main Agent 直接承担；`xdel / xflow` 只通过结构化 Payload 交接。旧 `.hybrid/` 文档与 MCP / `promptX` / `noiseX` 属于重构前历史，不再作为运行依据。
 
@@ -131,34 +131,24 @@ xdo 实现用户登录功能，支持邮箱密码和 OAuth
 
 以 `xflow 实现用户登录功能` 为例，流程是：
 
-1. **入口路由**：Main Agent 按显式命令、完整输入和当前会话上下文路由；task notes（`.agents/notes/`）是持久的工作流事实来源，进入模式后不再悄悄切换。
-2. **环境初始化**：轻量自检，无全局锁；遗留 `.hybrid/.workflow-lock` 存在则删除后继续；派发前只做同目标冲突检查，按需使用沙箱或明确请求的并行能力。
-3. **仓库事实探索（module 08）**：搜索项目结构、相关模块、依赖、约束与既有约定，区分已证事实与未知项，形成文件索引，不做第二遍用户访谈。
-4. **需求澄清（socratesX，仅 xflow）**：按目标范围、行为边界、实现方向、验证上线分阶段批量提问，只问能改变范围/架构/行为/AC/依赖/风险的问题；有真实取舍才给选项，否则直接问。
-5. **Ready Summary 确认门**：信息充分时只提交一次 Ready Summary（目标、范围、非目标、约束、任务边界、影响文件、验证方式与风险），确认后才允许建 note；已确认事项不重复确认。
-6. **生成 task notes**：Main Agent 写 `requirement / task / decision`（另有 `idea / initiative` 承载方向），包含范围、稳定 `AC-n`、依赖、文件索引与验证方向；派发依赖的事实必须先落字，口头约定不进派发。
-7. **coderX 实现**：按 task 固定验收引用与允许范围写代码，遵循 `engineeringX + specX`，自审后输出 Change Summary 与 Note 草稿（新建 `implemented/` 或原位同步）。
-8. **evaluatorX 验收**：按固定 AC 建最小可执行测试集并运行，输出 `PASS / NEEDS_FIX / UNEVALUABLE`、测试命令、失败用例、观察结果、可能原因、修复范围与回归风险；只读不改。
-9. **收口**：Main Agent 分级修复（局部缺陷用 Repair Packet 同 task 最多自动重派发一次；跨 task 用 Integration Note 交给后续 task；架构/范围问题直修或改 note），`UNEVALUABLE` 缩小范围、补检查或显式记风险承接，预算耗尽则停下交还用户；代码 + Note + 入口反向注释一次 commit，写作遵循 `proseX`。
+1. Main Agent 根据当前请求选择工作流；普通 xdo 不创建 Task，明确选中的已有 Task 保留验收与评估要求。
+2. 按需读取模块入口与必要引用。xflow 仅澄清尚未决定的问题，再形成范围与验证明确的 Task。
+3. 主 Agent 在每次交接前更新同一份 Task；coderX 返回实施结果，evaluatorX 独立验证，局部修复继续围绕原 Task。
+4. 根据实际变化维护相关模块和 Note，刷新更新时间。无文档事实变化时不制造更新；运行证据与当前文档状态分别判断。
+5. 检查实际结果、引用和移交信息，再完成落地。下一位 Agent 可从仓库资产接续，不依赖原聊天历史。
 
 ---
 
 ## 深入设计
 
 <details>
-<summary><b>Task notes：结构化任务资产</b></summary>
+<summary><b>模块文档与共享 Task</b></summary>
 
-Task notes（`.agents/notes/`，规范见 `standards/harness-note/1/`）是 WorkflowX 的事实来源，一事一文件，以 frontmatter `id`（UUID）寻址为 `note://<repo-id>/<note-id>`：
+Note 按模块及子模块组织，每个模块有一份 module.md 入口，旁边可以放完整主题文档。规划模块使用相同结构并标明状态。稳定 UUID 标识文档，文件名描述主题；创建时间保留，维护时刷新更新时间。
 
-| 文档 | 作用 |
-|---|---|
-| **idea** | 直觉、问题与 raw intent；方向先停车，不阻塞 Ready Summary |
-| **initiative** | 跨仓产品方向，聚合有收益时才建 |
-| **requirement** | 所需行为与稳定的 `AC-n` 验收条款（永不重编号） |
-| **task** | 有界交付：范围、验收引用、验证记录、依赖与唯一的 `execution` 状态 |
-| **decision** | 取舍：选项、成本与重访信号；`Alternatives` 必含什么都不做/复用项 |
+类型包括模块、通用 Note、想法、需求、决策和任务。Idea 可以转换类型；主 Agent 根据职责整理、合并或清理文档，并修复引用。Task 是实施、迭代和移交的共同资产，由主 Agent 维护。
 
-Main Agent 拥有路由、调度、文档更新与最终验证。coderX 只读派发与验收引用并自审输出 Change Summary + Note 草稿；evaluatorX 只读并跑测试，不改代码与文档。无中央索引、无 Parent/Child 文件、无 plans 目录；关联笔记用 URI + 一行摘要链接，不内联长文。每个 `implemented/` 决策在核心入口留一条反向注释，代码 + Note + 注释同 commit 落盘，提交信息携带 Note 路径。旧 `.hybrid/` 与旧命名一律只读参考，不迁移。
+参见 [模块结构](docs/module-structure.md)和 [harness-note/2](standards/harness-note/2/standard.md)。wiki 使用原文和可重建索引，按需展开内容。WorkflowX 定义规范，agentX 实现工具与执行，JanusX 接入蓝图和工程 Chat；各阶段分别验证。
 
 </details>
 
@@ -197,7 +187,7 @@ evaluatorX 的验收目标不是“看 coderX 写了什么总结”，而是（`
 路由已合并进 `orchestrateX`，无独立 skill。所有输入按完整提示词和当前会话上下文路由：
 
 | 显式命令 | `xdo / xdel / xflow / xstatus` 优先 | 按指定模式立即进入 |
-| 无显式命令 | 高影响、跨模块或不确定 | 推荐 `xflow`；本地清晰工作推荐 `xdel`，否则 `xdo` |
+| 无显式命令 | 根据完整请求和当前上下文 | 清晰直接工作用 `xdo`；明确委派用 `xdel`；完整编排用 `xflow` |
 | 拿不准 | 模式模糊 | 摆出三选一，不悄悄代选 |
 | 进行中 | 已有活跃工作流 | 后续输入留在当前模式，支持需求增量变更 |
 

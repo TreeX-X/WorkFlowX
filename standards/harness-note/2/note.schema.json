@@ -1,0 +1,624 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://workflowx.local/standards/harness-note/2/note.schema.json",
+  "title": "harness-note/2 frontmatter",
+  "description": "Module-oriented maintained documents. Unknown fields are diagnostics, never discarded.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "id",
+    "kind",
+    "lifecycle",
+    "created",
+    "updated"
+  ],
+  "properties": {
+    "schema": {
+      "const": "harness-note/2"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+      "description": "Lowercase UUID. Immutable identity; rename never changes it."
+    },
+    "kind": {
+      "enum": [
+        "module",
+        "note",
+        "idea",
+        "requirement",
+        "decision",
+        "task"
+      ]
+    },
+    "lifecycle": {
+      "enum": [
+        "draft",
+        "proposed",
+        "accepted",
+        "rejected",
+        "archived",
+        "implemented"
+      ],
+      "description": "implemented only for decision. See C2 transition table."
+    },
+    "created": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "class": {
+      "enum": [
+        "feature",
+        "bug-fix",
+        "architecture",
+        "process",
+        "testing",
+        "simplification"
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "parent": {
+      "type": "string",
+      "pattern": "^note://[0-9a-f-]{36}/[0-9a-f-]{36}$"
+    },
+    "relations": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "type",
+          "target"
+        ],
+        "properties": {
+          "type": {
+            "enum": [
+              "depends-on",
+              "implements",
+              "governed-by",
+              "derived-from",
+              "supersedes",
+              "related-to",
+              "parent"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "pattern": "^note://[0-9a-f-]{36}/[0-9a-f-]{36}$"
+          },
+          "criteria": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^AC-\\d+$"
+            },
+            "description": "Only for implements."
+          },
+          "scope": {
+            "enum": [
+              "full",
+              "partial"
+            ],
+            "description": "Only for supersedes; reason required."
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "repositories": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "type": "string",
+          "pattern": "^[0-9a-f-]{36}$"
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-f-]{36}$"
+          }
+        }
+      }
+    },
+    "codeRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repoId",
+          "path",
+          "role"
+        ],
+        "properties": {
+          "repoId": {
+            "type": "string",
+            "pattern": "^[0-9a-f-]{36}$"
+          },
+          "path": {
+            "type": "string",
+            "description": "Repo-relative POSIX path. No .., drive, UNC, or empty root.",
+            "pattern": "^(\\./)?([^\\0\\\\:\\*\\?\"<>|]+/)*[^\\0\\\\:\\*\\?\"<>|/]+/?$"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "entry",
+              "implementation",
+              "test"
+            ]
+          }
+        }
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "description": "Module-only explicit provided/needed interfaces. A missing provider remains unresolved demand.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "direction"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Z][A-Za-z0-9_]*$"
+          },
+          "direction": {
+            "enum": [
+              "provides",
+              "needs"
+            ]
+          },
+          "provider": {
+            "type": "string",
+            "pattern": "^note://[0-9a-f-]{36}/[0-9a-f-]{36}$"
+          }
+        }
+      }
+    },
+    "work": {
+      "type": "object",
+      "description": "Task-only (C3). Machine contract; prose never substitutes.",
+      "additionalProperties": false,
+      "required": [
+        "scope",
+        "acceptanceRefs",
+        "verification",
+        "review"
+      ],
+      "properties": {
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "repoId",
+              "paths"
+            ],
+            "properties": {
+              "repoId": {
+                "type": "string"
+              },
+              "paths": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "acceptanceRefs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "uri",
+              "criterionId"
+            ],
+            "properties": {
+              "uri": {
+                "type": "string"
+              },
+              "criterionId": {
+                "type": "string",
+                "pattern": "^AC-\\d+$"
+              }
+            }
+          }
+        },
+        "verification": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "kind",
+              "required",
+              "repoId",
+              "cwd"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "command",
+                  "manual"
+                ]
+              },
+              "required": {
+                "type": "boolean"
+              },
+              "repoId": {
+                "type": "string"
+              },
+              "cwd": {
+                "type": "string"
+              },
+              "program": {
+                "type": "string"
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "review": {
+          "enum": [
+            "self",
+            "independent"
+          ],
+          "description": "Acceptance obligation, independent of the current execution mode."
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "description": "Task-only (C3). Drafts must not carry active execution.",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "state",
+        "baseline",
+        "attempt",
+        "receipts",
+        "closeout"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "xdo",
+            "xdel",
+            "xflow"
+          ]
+        },
+        "state": {
+          "enum": [
+            "queued",
+            "running",
+            "verifying",
+            "blocked",
+            "paused",
+            "done",
+            "cancelled"
+          ]
+        },
+        "baseline": {
+          "type": "object",
+          "required": [
+            "taskContractHash",
+            "inputs"
+          ],
+          "properties": {
+            "taskContractHash": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "inputs": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "uri",
+                  "contentHash"
+                ],
+                "properties": {
+                  "uri": {
+                    "type": "string"
+                  },
+                  "contentHash": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  },
+                  "criteria": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "receipts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "closeout": {
+          "enum": [
+            "commit-required",
+            "working-tree-authorized"
+          ]
+        },
+        "blocker": {
+          "type": "object",
+          "required": [
+            "code",
+            "summary"
+          ],
+          "properties": {
+            "code": {
+              "type": "string"
+            },
+            "summary": {
+              "type": "string"
+            }
+          }
+        },
+        "authorizationRef": {
+          "type": "string"
+        }
+      }
+    },
+    "disposition": {
+      "type": "object",
+      "description": "Required for rejected/archived, forbidden otherwise.",
+      "required": [
+        "reason"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "extensions": {
+      "type": "object"
+    },
+    "updated": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d{3})?Z$"
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^note://[0-9a-f-]{36}/[0-9a-f-]{36}$"
+    },
+    "moduleState": {
+      "enum": [
+        "planned",
+        "partial",
+        "implemented",
+        "retired"
+      ]
+    },
+    "role": {
+      "enum": [
+        "project"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "module"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "moduleState"
+        ],
+        "not": {
+          "required": [
+            "module"
+          ]
+        }
+      },
+      "else": {
+        "required": [
+          "module"
+        ],
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "moduleState"
+              ]
+            },
+            {
+              "required": [
+                "interfaces"
+              ]
+            },
+            {
+              "required": [
+                "role"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "const": "task"
+          }
+        },
+        "required": [
+          "kind"
+        ]
+      },
+      "then": {
+        "required": [
+          "work"
+        ]
+      },
+      "else": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "work"
+              ]
+            },
+            {
+              "required": [
+                "execution"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "role": {
+            "const": "project"
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "module"
+          }
+        },
+        "not": {
+          "required": [
+            "parent"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle": {
+            "enum": [
+              "rejected",
+              "archived"
+            ]
+          }
+        },
+        "required": [
+          "lifecycle"
+        ]
+      },
+      "then": {
+        "required": [
+          "disposition"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "disposition"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle": {
+            "const": "implemented"
+          }
+        },
+        "required": [
+          "lifecycle"
+        ]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "const": "decision"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle": {
+            "enum": [
+              "draft",
+              "proposed"
+            ]
+          }
+        },
+        "required": [
+          "lifecycle"
+        ]
+      },
+      "then": {
+        "not": {
+          "required": [
+            "execution"
+          ]
+        }
+      }
+    }
+  ]
+}

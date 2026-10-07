@@ -1,46 +1,27 @@
-# 09. Claude Dispatch Adapter
+# Host dispatch
 
-> **Purpose**: Convert WorkflowX routing decisions into Claude subagent dispatch actions.
+For task handoff, use the host's native Agent/subagent tool when available. Otherwise use prompt-spawn only when the surface supports it; without either, report degraded dispatch and do not pretend Main Agent is an independent subagent. User-authorized direct fallback remains possible.
 
-WorkflowX decides which agent should do the work. This adapter decides how that handoff is executed on the Claude surface.
+## Native
 
-## Dispatch
+Select coderX/evaluatorX as required, with the current payload from module 02 and supported isolation. Record returned identity/status and validate output against the requested contract. Agent definitions alone do not establish a callable dispatch capability.
 
-Claude exposes a native Agent/subagent dispatch tool. Use it for every `xdel`/`xflow` handoff:
+## Prompt-spawn
 
-```js
-Agent({ subagent_type: "coderX", prompt: "<Dispatch Payload: coderX Task>" })
-Agent({ subagent_type: "evaluatorX", prompt: "<Dispatch Payload: evaluatorX Review Task>" })
+Emit this envelope, followed by the module 02 payload:
+
+```text
+WorkflowX Subagent Spawn Request
+Target Agent: <role>
+Dispatch Mode: prompt_spawn
+Isolation Request: <supported isolation>
+Return Contract: <required result>
 ```
 
-- Pass the full Dispatch Payload from module 02 as the prompt. Do not summarize or reinterpret it.
-- Request worktree isolation when the host supports it; otherwise run shared and record the fact.
+Require a returned `WorkflowX Subagent Receipt` with Agent Identity, Dispatch Mode Observed and Payload Type Received. A missing receipt is unverified, not a successful handoff. This handshake is not proof of isolation.
 
-## Degraded Handling
+## Result
 
-If no Agent dispatch tool is observable in the current surface:
+Check scope, required output and actual evidence. Malformed handoff data is Main Agent's responsibility; correct it once rather than replaying the whole conversation. Preserve independent evaluator identity and read-only behavior.
 
-1. Report: `subagent dispatch degraded: no native Agent tool in this surface`.
-2. Do not silently execute implementation or evaluation as Main Agent roleplay.
-3. Continue only for direct-handling tasks allowed by `CLAUDE.md`, or when the user explicitly approves a direct-execution fallback.
-
-## Output Validation
-
-1. Validate returned content against the expected output contract in module 02 (implementation summary + Change Summary + Note draft; or Evaluation Result).
-2. If a payload is malformed, Main Agent corrects the dispatch fields and retries once with minimal context, then hands to the user on repeated failure.
-
-## Dispatch Result Record
-
-After every dispatch attempt, Main Agent keeps a session-local record:
-
-```markdown
-### Dispatch Result
-- **Target Agent**: [agent]
-- **Status**: [success | failed | degraded]
-- **Output Contract**: [expected contract]
-- **Validation Result**: [pass | fail | not_applicable]
-- **Thread/Run ID**: [id or N/A]
-- **Notes**: [short reason for fallback or failure]
-```
-
-This record is session state unless a workflow document explicitly requires writing dispatch history.
+Keep host thread/run IDs and dispatch traces in local runtime records, not duplicated Note prose. Main Agent integrates useful results into the same Task before the next handoff.
