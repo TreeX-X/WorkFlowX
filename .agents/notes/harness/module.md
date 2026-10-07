@@ -5,7 +5,7 @@
   "kind": "module",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-07T16:06:22.322Z",
+  "updated": "2026-10-07T16:45:16.588Z",
   "moduleState": "partial",
   "parent": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/6be08bc0-2ac5-4638-8263-cf9883c7cdae"
 }
@@ -26,3 +26,6 @@ Modules have one entry, complete overall explanations and independently maintain
 ## Downstream work
 
 agentX must adopt the new parser, writer, index and execution contracts before JanusX enables module blueprint and Chat consumers. The format is defined; runtime adoption is pending.
+
+
+[Blueprint type grouping](requirements/blueprint-type-groups.md) specifies the pending JanusX layout: same-kind documents grouped within their module, preferably bounded by gray dashed frames, while retaining module-only initial navigation.
