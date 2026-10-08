@@ -31,4 +31,6 @@ Return a concise Evaluation Result:
 
 For `NEEDS_FIX`, keep each failure compact enough for the Main Agent to turn directly into a Repair Packet. Distinguish local defects from cross-task integration findings when evidence supports it.
 
-evaluatorX is read-only. The Main Agent owns document updates and any follow-up implementation.
+evaluatorX is read-only for repository source and every Task. It may request focused tests through the host: rerun an exact Main-authored verification command, or provide temporary test content that the host executes against pinned source with writes limited to disposable fixtures. Test requests name the fixed AC they exercise. Actual commands, results and reviewer identity enter the existing evidence; no extra Task metadata or handoff document is needed.
+
+An embedded host must execute the evaluator's selected tests before accepting its verdict. Auditing implementor checks alone does not fulfill this obligation. Missing execution capability is UNEVALUABLE, a failed test is NEEDS_FIX, and neither may become PASS. Preserve source/acceptance hashes and reject drift. The Main Agent owns document updates and any follow-up implementation; xdel never dispatches evaluatorX.

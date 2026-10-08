@@ -5,13 +5,13 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T11:37:00Z",
+  "updated": "2026-10-08T12:41:09Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
       {
         "repoId": "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
-        "paths": [".agents/notes/distribution/","docs/reviews/","docs/migrations/"]
+        "paths": [".agents/notes/distribution/",".agents/notes/workflow/",".codex/",".claude/","scripts/","docs/reviews/","docs/migrations/"]
       },
       {"repoId":"62b44166-82f0-41ff-838d-e2b02388ed06","paths":["."]},
       {
@@ -47,6 +47,8 @@
       {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-2"},
       {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-3"},
       {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-4"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-5"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-6"},
       {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c","criterionId":"AC-1"},
       {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c","criterionId":"AC-2"},
       {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c","criterionId":"AC-3"},
@@ -99,7 +101,9 @@ JanusX scope is mapped to the shared Note boundary, desktop execution host, blue
 - [ ] AC-1: Source findings remain resolved; record the exact candidate source commit, profile/version/digest and managed inventory before local integration. Complete independent review and integration debugging before final release/push, then record the finalized source revision.
 - [ ] AC-2: agentX then JanusX adopt the complete inventory, including teammate rules. Dry-run/diff, managed parity and repeat-run idempotence pass while local settings remain intact. Each runtime supports the selected profile before activating it; no fake profile update bypasses the synchronization guard.
 - [ ] AC-3: Each target has a distinct legacy Note migration work item completed before final parsing validation. Account for old identities, rewritten/deleted sources, repaired references and protected exclusions; validate maintained module structure, type conversion, timestamps and planned modules.
-- [ ] AC-4: Target evidence proves common wiki source reads and engineering tools, ordinary xdo without Task creation, and fresh-session continuation using the same Main-Agent-owned Task updated before each handoff. Preserve review obligations. JanusX proves module-only initial blueprint, single-click expansion, double-click detail/return and Chat harness read/edit/script execution through agentX.
+- [ ] AC-4: Target evidence proves common wiki source reads and engineering tools, ordinary xdo without Task creation, and fresh-session continuation using the same Main-Agent-owned Task updated before each handoff. Preserve review obligations. JanusX uses the single-root module home, single-click source preview, double-click scoped browsing with the current parent retained, return restoration and shared Chat focus/navigation.
+- [ ] AC-5: The embedded independent evaluator selects or constructs minimal tests against fixed AC, the host executes them and records actual results under the reviewer identity before the verdict. Repository source and Task remain read-only to reviewer-generated tests; failures, unavailable execution, cancellation and baseline drift cannot pass. xdel never dispatches an evaluator and retains any pending independent obligation. agentX and JanusX use the same test request contract.
+- [ ] AC-6: Architect Notes express cross-module ownership and collaboration using existing module, requirement, decision and Task contracts. Blueprint parses pure-Note planning and ordinary development workspaces, recursive modules, shared requirements/decisions, typed relations and acceptance refs without duplicating ownership. Cross-module references remain reachable through browsing and focus. Cross-repo identity, selected checkout and unavailable/ambiguous targets remain explicit; no new mandatory architect field gates standard Note reads.
 
 ## Verification
 
@@ -143,9 +147,11 @@ Main checks pass 29 agentX tests and its package build, 40 JanusX adapter/turn-g
 
 Main Agent alone maintains this Task. Current local delivery: agentX d6cd44569eee3c36c637a996131a1303b3900bde and JanusX 584ca88; WorkflowX runtime/profile remains pinned to candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and 2.0.0. Original adoption receipts and migration reports keep their original revisions. JanusX plan items 1-4 (module browsing, focus tools, responsibility directories, README demonstrations) are implemented and Main-checked.
 
-Next: clarify the evaluator test-execution boundary in WorkflowX, implement the missing reviewer-directed testing path in agentX, and align JanusX's desktop adapter. The embedded evaluator currently audits pre-run checks; this does not yet fulfill the auditX contract to derive and run minimal fixed-AC tests. Source findings and the proposed shared boundary belong to the [agentX adoption Note](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19). Follow with architect v2 composition/navigation verification and evidence-backed fixes; current xarch and initialization already use module documents. The [JanusX plan](note://972afef3-2fc7-49de-a3ee-7e041225d28c/7359ef5b-8cbb-4e30-a727-9a4907ac5fa0) records this revised sequence before final independent review.
+The evaluator execution path and architect adaptation are implemented and Main-checked. WorkflowX now defines host-executed evaluator plans and cross-module xarch Notes; both adopter rule trees are synchronized. agentX adds fixed-AC test planning, exact declared-check reruns and permission-limited Node assertions. JanusX integrates the shared test phase in both desktop review entries, preserves typed cross-module associations and fixes preview reflow during double-click. Details and actual checks belong to the [agentX adoption Note](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19) and [JanusX plan](note://972afef3-2fc7-49de-a3ee-7e041225d28c/7359ef5b-8cbb-4e30-a727-9a4907ac5fa0).
 
-Before a new formal Task execution, explicitly revise this Task's stale AC-4 click/expand wording, specify evaluator and architect acceptance coverage, and pin the new baseline. Current AC and historical receipts are unchanged by this analysis. Keep work.review independent; no evaluator was dispatched and no formal execution/acceptance receipt was created. Preserve the three deferred knowledge Notes and unrelated local work. No push or release is requested.
+Next: dispatch a separate evaluator against the committed changes and the current readable Task snapshot, with particular focus on AC-4/AC-5/AC-6 and retained integration obligations. The reviewer runs focused checks, returns Evaluation Result and changes no Task/source. Main integrates findings and repairs; Main self-checks are not independent acceptance.
+
+The user authorized scheduling and immediate implementation. Main executes the remaining changes directly; AC-4 is explicitly revised to accepted navigation and AC-5/AC-6 pin evaluator and architect coverage for the next evaluation. Historical receipts remain evidence only for their original baseline. Keep work.review independent; no new evaluator result or formal acceptance is claimed by this planning update. Preserve the three deferred knowledge Notes and unrelated local work. No push or release is requested.
 
 ## Additional release requirements
 

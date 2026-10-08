@@ -10,7 +10,7 @@
     "xarch",
     "orchestrateX"
   ],
-  "updated": "2026-10-07T16:12:56.085Z",
+  "updated": "2026-10-08T12:05:33Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/4d4ff96e-89a1-4efc-839e-c9333eba0bc5",
   "extensions": {
     "migration": {
@@ -33,6 +33,8 @@ A scaffold must produce identifiable module structure without guessing repositor
 ## Decision
 
 Main Agent uses xarch to create a project module.md and only confirmed or explicitly planned modules, each with one entry. Existing repository identity is preserved. Module state, known interfaces and explicit checkout selection describe the structure. Optional host registration and projection checks report unavailable capabilities rather than claiming success.
+
+Architect work manages cross-module responsibilities and collaboration through existing Notes, within one repository or across repositories. Shared requirements and decisions have one owning common module; affected modules reference the same source. Local implementation and Tasks remain with their owners, with no required parent Task or duplicated progress. A separate architect repository is optional. A pure-Note plan remains readable before code or repository bindings exist; project role denotes a root rather than an exclusive architect type. Blueprint verification covers ownership versus association, typed links and cross-module navigation.
 
 ## Alternatives considered
 
