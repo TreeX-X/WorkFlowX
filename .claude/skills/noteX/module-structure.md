@@ -12,4 +12,4 @@ Create a submodule when a durable independent responsibility benefits from its o
 
 A cross-repository declaration has one owning repository; link rather than copy. Selected checkouts must be explicit. Do not expand edits into another module/repository unless the user includes it; report required out-of-scope synchronization.
 
-Blueprint consumers begin with module entries, including planned/partial modules. Single-click expands internal structure; double-click enters detail with return navigation. Ordinary Notes remain available in module detail/wiki without becoming module nodes.
+Blueprint consumers begin with module entries, including planned/partial modules. Single-click previews the module document; double-click enters module browsing with the current module retained as the parent and return navigation available. Ordinary Notes remain available within their owning module/wiki without becoming module nodes.
