@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T12:41:09Z",
+  "updated": "2026-10-08T13:04:40Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -149,7 +149,9 @@ Main Agent alone maintains this Task. Current local delivery: agentX d6cd44569ee
 
 The evaluator execution path and architect adaptation are implemented and Main-checked. WorkflowX now defines host-executed evaluator plans and cross-module xarch Notes; both adopter rule trees are synchronized. agentX adds fixed-AC test planning, exact declared-check reruns and permission-limited Node assertions. JanusX integrates the shared test phase in both desktop review entries, preserves typed cross-module associations and fixes preview reflow during double-click. Details and actual checks belong to the [agentX adoption Note](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19) and [JanusX plan](note://972afef3-2fc7-49de-a3ee-7e041225d28c/7359ef5b-8cbb-4e30-a727-9a4907ac5fa0).
 
-Next: dispatch a separate evaluator against the committed changes and the current readable Task snapshot, with particular focus on AC-4/AC-5/AC-6 and retained integration obligations. The reviewer runs focused checks, returns Evaluation Result and changes no Task/source. Main integrates findings and repairs; Main self-checks are not independent acceptance.
+Independent evaluation of WorkflowX 4e96135, agentX b40d1eb and JanusX 7257fa9 returned NEEDS_FIX for AC-4. R1: on a fresh blueprint page, opening source preview moves cards; a physical double-click whose second click lands on the pane stays on the home module. The reviewer reproduced three failing cases on both surfaces with the pinned stylesheet, excluding concurrent CSS changes as the cause. The existing retained-target handler only receives node double-clicks.
+
+Main repaired R1 in JanusX 34388af: canvas capture handles node/pane second-click targets, bounds retained clicks by time/distance and clears them on user movement. Six focused browser regressions pass, covering both surfaces, both module targets, one-step return and unrelated pane double-clicks. Next: the separate evaluator reruns R1 and relevant navigation/gesture checks against this repair and unchanged AC. Task contract and acceptance remain fixed; no independent pass or formal runtime acceptance is claimed yet.
 
 The user authorized scheduling and immediate implementation. Main executes the remaining changes directly; AC-4 is explicitly revised to accepted navigation and AC-5/AC-6 pin evaluator and architect coverage for the next evaluation. Historical receipts remain evidence only for their original baseline. Keep work.review independent; no new evaluator result or formal acceptance is claimed by this planning update. Preserve the three deferred knowledge Notes and unrelated local work. No push or release is requested.
 
