@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T10:52:05.017Z",
+  "updated": "2026-10-08T11:37:00Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -92,7 +92,7 @@
 
 The user accepts the WorkflowX core refactor as ready for the next phase. Integrate locally in janus-agentX, then JanusX; finish debugging and adjustments before the final release push. Pin the exact candidate source commit/profile and managed inventory for each integration attempt; a candidate pin is not a release declaration. Include skills, commands, managed AGENTS/CLAUDE and agent instructions, teammate wrappers, and required standard resources. Preserve local models, permissions, plugins, unrelated configuration and unmanaged text. Keep uppercase-X skill names.
 
-JanusX scope is mapped to the shared Note boundary, desktop execution host, blueprint/wiki projection, document producers, tests, migration and managed configuration. Reverse source references are repaired during migration; unrelated behavior is outside scope. AgentX remains the completed prerequisite.
+JanusX scope is mapped to the shared Note boundary, desktop execution host, blueprint/wiki projection, document producers, tests, migration and managed configuration. Reverse source references are repaired during migration; unrelated behavior is outside scope. AgentX's initial v2 adoption is delivered; the evaluator execution gap identified below remains a prerequisite for final integration acceptance.
 
 ## Acceptance criteria
 
@@ -143,7 +143,9 @@ Main checks pass 29 agentX tests and its package build, 40 JanusX adapter/turn-g
 
 Main Agent alone maintains this Task. Current local delivery: agentX d6cd44569eee3c36c637a996131a1303b3900bde and JanusX 584ca88; WorkflowX runtime/profile remains pinned to candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and 2.0.0. Original adoption receipts and migration reports keep their original revisions. JanusX plan items 1-4 (module browsing, focus tools, responsibility directories, README demonstrations) are implemented and Main-checked.
 
-Next: final independent review and fixes against the integrated code, real corpus and demonstrations. Before a new formal Task execution, explicitly revise this Task's stale AC-4 click/expand wording and pin the new acceptance baseline to the accepted module-browsing/focus requirements. Keep work.review independent; this xdo did not run evaluatorX or create a formal execution/acceptance receipt. Preserve the three deferred knowledge Notes and unrelated local work. No push or release is requested.
+Next: clarify the evaluator test-execution boundary in WorkflowX, implement the missing reviewer-directed testing path in agentX, and align JanusX's desktop adapter. The embedded evaluator currently audits pre-run checks; this does not yet fulfill the auditX contract to derive and run minimal fixed-AC tests. Source findings and the proposed shared boundary belong to the [agentX adoption Note](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19). Follow with architect v2 composition/navigation verification and evidence-backed fixes; current xarch and initialization already use module documents. The [JanusX plan](note://972afef3-2fc7-49de-a3ee-7e041225d28c/7359ef5b-8cbb-4e30-a727-9a4907ac5fa0) records this revised sequence before final independent review.
+
+Before a new formal Task execution, explicitly revise this Task's stale AC-4 click/expand wording, specify evaluator and architect acceptance coverage, and pin the new baseline. Current AC and historical receipts are unchanged by this analysis. Keep work.review independent; no evaluator was dispatched and no formal execution/acceptance receipt was created. Preserve the three deferred knowledge Notes and unrelated local work. No push or release is requested.
 
 ## Additional release requirements
 
