@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T14:09:02Z",
+  "updated": "2026-10-08T14:23:53Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -155,7 +155,9 @@ The user now authorizes the remaining integration acceptance. Pin WorkflowX 4af8
 
 Independent checks pass the complete current README recording, all 40 cross-repository references, migration inventory coverage and repeated managed-sync replicas. The compiled desktop command exposed R-runtime-test: its deterministic model recognized only the old verdict prompt and misclassified the new test-plan phase in two independent-review cases. Main repaired the fixture in JanusX 2e2ce79; all five compiled desktop cases and strict types now pass, with host-produced reviewer evidence asserted. Production code and fixed AC remain unchanged. Five historical JanusX raw source hashes cannot be reproduced, but original content/identity/AC accounting passes; agentX pre-adoption personal-config bytes are unavailable while current preservation passes. Keep these historical evidence limitations explicit.
 
-Next: independently rerun the repaired compiled desktop tests against 2e2ce79, then integrate the final Evaluation Result and evidence qualifications before local acceptance closure. No source/Task writes by the reviewer; temporary fixtures and generated artifacts are allowed. The native result is not an embedded runtime receipt and claims no external-model result. Preserve the three deferred knowledge Notes and unrelated work. No push or release is requested or performed.
+Independent rerun verifies the generated evaluator evidence and finds R-runtime-ready: one xdo/independent relaunch reads window.electron before preload is ready. The same case passes on unchanged isolated rerun, confirming a timing race in the test. Main will await the actual desktop API after both launches, then request focused independent verification. No production failure is reproduced.
+
+Next: fix the preload readiness wait, then integrate the final Evaluation Result and historical evidence qualifications before local acceptance closure. No source/Task writes by the reviewer; temporary fixtures and generated artifacts are allowed. The native result is not an embedded runtime receipt and claims no external-model result. Preserve the three deferred knowledge Notes and unrelated work. No push or release is requested or performed.
 
 ## Additional release requirements
 
