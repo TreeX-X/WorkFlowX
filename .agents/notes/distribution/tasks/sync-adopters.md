@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T13:40:15Z",
+  "updated": "2026-10-08T14:09:02Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -153,7 +153,9 @@ Main Agent alone maintains this Task. Current reviewed implementation: WorkflowX
 
 The user now authorizes the remaining integration acceptance. Pin WorkflowX 4af8c1b, agentX 5c41e2f and JanusX 0408046 as the review candidates; this Handoff-only update does not change the work contract or acceptance. Main prepares an isolated JanusX build from the pinned source and preserves unrelated working edits. A separate evaluator must execute checks for historical migration completeness, local-setting preservation, cross-repository references, and the complete desktop README recording/runtime continuation. Prior scoped implementation results remain evidence for their unchanged code; record actual remaining coverage rather than repeat all passing suites.
 
-Next: collect the independent Evaluation Result for those remaining AC-1/2/3/4/6 and README/type-group obligations, repair any failures through Main, and close this Task only when the integration criteria are satisfied. No source/Task writes by the reviewer; temporary fixtures and generated artifacts are allowed. The native result is not an embedded runtime receipt and claims no external-model result. Preserve the three deferred knowledge Notes and unrelated work. No push or release is requested or performed.
+Independent checks pass the complete current README recording, all 40 cross-repository references, migration inventory coverage and repeated managed-sync replicas. The compiled desktop command exposed R-runtime-test: its deterministic model recognized only the old verdict prompt and misclassified the new test-plan phase in two independent-review cases. Main repaired the fixture in JanusX 2e2ce79; all five compiled desktop cases and strict types now pass, with host-produced reviewer evidence asserted. Production code and fixed AC remain unchanged. Five historical JanusX raw source hashes cannot be reproduced, but original content/identity/AC accounting passes; agentX pre-adoption personal-config bytes are unavailable while current preservation passes. Keep these historical evidence limitations explicit.
+
+Next: independently rerun the repaired compiled desktop tests against 2e2ce79, then integrate the final Evaluation Result and evidence qualifications before local acceptance closure. No source/Task writes by the reviewer; temporary fixtures and generated artifacts are allowed. The native result is not an embedded runtime receipt and claims no external-model result. Preserve the three deferred knowledge Notes and unrelated work. No push or release is requested or performed.
 
 ## Additional release requirements
 
