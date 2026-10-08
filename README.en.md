@@ -38,7 +38,7 @@ WorkflowX is an **engineering workflow** that lives inside your AI coding tool. 
 <p align="center">
   <img src="docs/assets/06-workflow-animation-en.gif" alt="WorkflowX xflow Workflow Demo" width="880" />
   <br/>
-  <sub>A complete xflow workflow: repo discovery → socratesX → Ready Summary → task notes → coderX → evaluatorX → tiered fix → atomic close</sub>
+  <sub>xflow illustration: discovery → socratesX → Ready Summary → Task → coderX → evaluatorX → repair and handoff. Results shown are teaching examples, not repository acceptance evidence.</sub>
 </p>
 
 ---
@@ -67,8 +67,8 @@ you
 │
 ▼
 Main Agent
-├─ orchestrateX routing: explicit command wins, otherwise recommend by blast radius; on ambiguity present all three, then stay in mode
-├─ xdo: Main Agent direct work with engineeringX plus self-review; atomic landing (code + Note + entry reverse comment, one commit)
+├─ orchestrateX routing: explicit command wins; clear local work defaults to xdo, clarify unresolved scope as needed
+├─ xdo: Main works directly with engineeringX and self-review; no new Task, maintain relevant documents in place
 ├─ xdel: one-shot coderX delegation against an accepted task note (engineeringX + specX + self-review), returns a Note draft, no evaluatorX
 └─ xflow: discovery → socratesX → Ready Summary → task notes → dependency-ordered dispatch and independent evaluation
         │
@@ -82,7 +82,7 @@ Main Agent
 <sub>Main Agent works directly by default; complex modes use coderX / evaluatorX as needed (evaluatorX is xflow-only)</sub>
 </p>
 
-In one line: **Main Agent works directly by default; engineeringX provides implementation principles and self-review, while complex work adds task notes, dispatch contracts, and a test-driven evaluation chain. Atomic landing and the proseX writing standard apply across modes (gate timing exempt, standard never exempt).**
+Main Agent works directly by default with engineeringX and self-review. Delegation and full orchestration use Tasks, dispatch contracts and evaluation. Related code, documents and reverse references land together; output follows proseX.
 
 ---
 
@@ -114,8 +114,8 @@ Choose by blast radius. If unsure, describe the requirement and the Main Agent r
 
 | Mode | Use case | Planning | Verify loop | Example |
 |---|---|---|---|---|
-| **`xdo`** | Main Agent direct work | engineeringX; task notes and harness optional; parallel only on explicit request | Main Agent self-review and verification; atomic landing | `xdo add timeout config to Config` |
-| **`xdel`** | Single-task traceable delegation | Use an accepted task note (create one when none fits); one-shot coderX with self-review, returns a Note draft | evaluatorX not triggered; independent review only as a separate task on explicit request | `xdel fix order list pagination bug` |
+| **`xdo`** | Main Agent direct work | No new Task for ordinary work; maintain existing topics as needed; parallel only on explicit request | Main self-review and verification; explicitly selected Tasks retain review obligations | `xdo add timeout config to Config` |
+| **`xdel`** | Single-task traceable delegation | Use a Task with accepted scope; one coderX dispatch with self-review and a Note draft | No evaluatorX dispatch; any existing independent-review obligation remains pending | `xdel fix order list pagination bug` |
 | **`xflow`** | New feature, cross-module refactor, high-impact work | Repo discovery → socratesX → Ready Summary → task notes, dependency-ordered | evaluatorX after each task; local defects get at most one minimal repair re-dispatch by default | `xflow build the order center` |
 
 Common flag: `-box demo` isolates work in a sandbox branch. Parallelism must be explicitly requested; the Main Agent owns scheduling, shared-file coordination, integration, and final review. There are no `-N` round or `-team` flags and no fixed iteration loop.
@@ -139,6 +139,43 @@ For `xflow implement user login`, the workflow is:
 ---
 
 ## Deep Dive
+
+### Directory and maintenance example
+
+Each module has one `module.md`; parent-level topics coexist with submodules. This structure matches the desktop recording in section 07 of the [JanusX README](https://github.com/TreeX-X/JanusX#readme):
+
+```text
+.agents/notes/
+├─ module.md                          module: project entry
+├─ project-guide.md                   note: project conventions
+└─ files/
+   ├─ module.md                       module: file reading
+   ├─ reading-guide.md                note: reading conventions
+   └─ parser/
+      ├─ module.md                    module: parsing and hints
+      ├─ batch-import.md              idea: batch import
+      ├─ error-context.md             decision: preserve context
+      ├─ requirements/read-errors.md  requirement: failure hints
+      └─ tasks/read-errors.md         task: add retry hints
+```
+
+<p align="center">
+  <img src="docs/assets/07-maintained-notes.png" alt="Three module levels, six document kinds and in-place xdo maintenance" width="880" />
+</p>
+
+For `xdo update reading conventions: preserve the current location on failure and offer retry`, Main reads `files/reading-guide.md` and updates its behavior in place. UUID, created and path stay unchanged; updated becomes the UTC maintenance time. Ordinary xdo creates no Task or per-turn Note. Add a document or submodule when a distinct subject or responsibility warrants one.
+
+For xflow, Main maintains the scope, fixed AC references and verification entry in `tasks/read-errors.md`. Before every handoff, update the same Task:
+
+| Handoff | Main writes into the Task | Subagent returns |
+| --- | --- | --- |
+| Implementation | Current scope, unfinished work, constraints and next action | coderX Change Summary + Note draft |
+| Evaluation | Implemented behavior, actual checks and pending independent verification | evaluatorX Evaluation Result |
+| Repair | Failing cases, observations, repair scope and recheck requirements | Repair results, then evaluation against fixed AC |
+
+Subagents only read the Task. Main integrates results without per-agent handoff Notes. Unexecuted work, unrun checks and pending independent evaluation stay explicit; the example Task is not an accepted execution result.
+
+The source is [readme-visuals.html](docs/assets/readme-visuals.html). After installing repository dependencies, run `node scripts/export-readme-assets.mjs` to regenerate both languages. Diagrams explain the workflow; JanusX records and asserts actual application behavior.
 
 <details>
 <summary><b>Module documents and shared Tasks</b></summary>
@@ -231,7 +268,7 @@ Full comparison: [comparison-report.md](docs/comparison-report.md) (historical s
 
 | Capability | WorkflowX | Superpowers | OMC |
 |---|:---:|:---:|:---:|
-| Task note requirement tracking (5 kinds + harness spec) | Unique | Not supported | Not supported |
+| Module documents and Task tracking (6 kinds + harness spec) | Unique | Not supported | Not supported |
 | Test-driven AC independent verification | Unique | Not supported | Not supported |
 | Repo discovery + socratesX + Ready Summary | Strong | Basic | Basic |
 | Minimal-context dispatch and repair packets | Systematic | Partial | Partial |

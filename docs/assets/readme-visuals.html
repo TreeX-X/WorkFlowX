@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Note: .agents/notes/distribution/requirements/readme-demo.md -->
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -196,7 +197,7 @@
 
     .node {
       min-height: 94px;
-      padding: 14px 16px;
+      padding: 10px 14px;
     }
 
     .node .label,
@@ -238,7 +239,7 @@
     .main-core {
       position: relative;
       min-height: 396px;
-      padding: 22px 28px;
+      padding: 16px 24px;
       display: grid;
       grid-template-rows: auto 1fr auto;
       overflow: hidden;
@@ -248,8 +249,8 @@
     }
 
     .main-core h2 {
-      margin: 14px 0 9px;
-      font-size: 34px;
+      margin: 10px 0 7px;
+      font-size: 30px;
       line-height: 1;
     }
 
@@ -263,15 +264,15 @@
 
     .core-orbit {
       position: relative;
-      height: 150px;
-      margin: 12px 0;
+      height: 136px;
+      margin: 8px 0;
       border: 1px solid var(--line-soft);
       background: #000;
       display: grid;
       grid-template-columns: 1fr 128px 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 10px 14px;
-      padding: 16px 38px;
+      padding: 10px 30px;
       align-items: stretch;
     }
 
@@ -538,14 +539,18 @@
 
     .cap-card {
       min-height: 124px;
-      padding: 18px;
+      padding: 12px;
       background: #030303;
     }
 
     .cap-card strong {
-      margin-top: 18px;
+      margin-top: 10px;
       font-size: 18px;
     }
+
+    .node strong { margin: 8px 0 6px; font-size: 18px; }
+    .main-core .data-strip div { padding: 8px 10px; }
+    .main-core .data-strip span { display: block; line-height: 1.35; }
 
     .cap-card.feature {
       border-color: rgba(255, 100, 40, 0.54);
@@ -1528,6 +1533,11 @@
       grid-template-columns: repeat(2, 1fr);
     }
 
+    .doc-tree-build .tree-root { width: 100%; }
+    .doc-tree-build span { display: block; line-height: 1.3; }
+    .doc-tree-build .tree-child { padding: 7px; min-width: 0; }
+    .doc-tree-build .tree-ac { padding: 6px; }
+
     .tree-ac {
       min-height: 28px;
       padding: 6px 8px;
@@ -2004,6 +2014,15 @@
       letter-spacing: 0.12em;
       pointer-events: none;
     }
+
+    .notes-demo { position: relative; margin-top: 18px; display: grid; grid-template-columns: 1fr 1.12fr; gap: 16px; }
+    .notes-demo article { border: 1px solid var(--line); background: var(--panel); padding: 18px; }
+    .notes-demo h2 { font-size: 19px; margin: 0 0 16px; color: var(--accent); }
+    .notes-demo pre { font: 16px/1.5 Consolas, monospace; margin: 0; color: var(--soft); }
+    .notes-demo p { font-size: 16px; line-height: 1.55; margin: 12px 0; color: var(--soft); }
+    .notes-demo .sample-path { color: var(--ink); font: 17px Consolas, monospace; }
+    .notes-demo .sample-change { border-left: 2px solid var(--accent); padding-left: 16px; }
+    .notes-demo footer { grid-column: 1/-1; border-top: 1px solid var(--line); padding-top: 15px; font-size: 15px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -2022,7 +2041,7 @@
         tokenTitle: "把长对话拆成可控预算",
         tokenSub: "单文件归位、链接代替内联、最小派发，让多轮迭代不再把上下文反复塞满。",
         capTitle: "按影响范围选择工作流入口",
-        capSub: "xdo、xdel、xflow 共享同一套 task notes 与 AC 验收模型，只改变规划深度和评估强度。",
+        capSub: "普通 xdo 直接维护主题；xdel 读取已验收 Task 自审；xflow 按依赖实现与独立评估。",
         workflowTitle: "一次 xflow 从路由到全部 AC 通过",
         workflowSub: "orchestrateX 路由、仓库发现、socratesX 澄清、Ready Summary、task notes、coderX、evaluatorX 与分级修复。",
         labelArch: "架构",
@@ -2039,7 +2058,7 @@
         },
         core: {
           title: "Main Agent",
-          sub: "唯一编排者，task notes 唯一写入者",
+          sub: "唯一编排者，Task 全文唯一写入者",
           orbit: [
             ["路由", "显式优先"],
             ["发现", "module 08 + socratesX"],
@@ -2047,8 +2066,8 @@
             ["闭环", "派发 / 验收 / 分级修复"]
           ],
           data: [
-            ["task notes", "范围、AC、依赖、文件索引、验证记录"],
-            ["harness-note/1", "5 类文档 + UUID 寻址"],
+            ["task notes", "范围、AC、进展、证据与 Handoff"],
+            ["harness-note/2", "6 类文档 + UUID 寻址"],
             ["同目标检查", "无全局锁，worktree 隔离"]
           ]
         },
@@ -2063,28 +2082,28 @@
         },
         modes: [
           ["xdo", "直接执行", "主 Agent 直接工作，engineeringX + 自审，原子落盘。", "最快"],
-          ["xdel", "单次委托", "凭已验收 task note 单次派发 coderX，不触发评估。", "可追溯"],
+          ["xdel", "单次委托", "已验收 Task 单次派发 coderX，自审后返回，不触发 evaluatorX。", "可追溯"],
           ["xflow", "全流程编排", "发现、确认、文档、逐个实现与独立评估、分级修复。", "完整"]
         ],
         caps: [
-          ["task notes", "idea / initiative / requirement / decision / task 各归其位，URI 寻址。"],
+          ["task notes", "module / note / idea / requirement / decision / task 各归其位，URI 寻址。"],
           ["AC 独立验收", "evaluatorX 测试驱动，不采信 coderX 的完成声明。"],
-          ["socratesX 前置", "仅 xflow 分阶段批量澄清，经 Ready Summary 才建 note。"],
+          ["socratesX 前置", "xflow 澄清未决问题，确认 Ready Summary 后规划 Task。"],
           ["engineeringX + specX", "最小改动、简单实现、完成前自审；越界回 scope-change。"],
           ["同目标检查", "无全局锁，派发前只查同文件同 note 冲突，支持时 worktree 隔离。"],
-          ["xstatus 可视化", "只读扫描 task notes，生成高保真 HTML 状态报告。"]
+          ["xstatus 可视化", "只读扫描模块与 Note，生成高保真 HTML 状态报告。"]
         ],
         steps: [
           ["路由", "显式 xflow 进入，不悄悄切换"],
           ["仓库发现", "module 08 + 同目标检查"],
           ["文件索引", "结构、依赖、约束落图"],
           ["socratesX 澄清", "分阶段批量问 + 主动质疑"],
-          ["Ready Summary", "确认后才允许建 note"],
+          ["Ready Summary", "确认范围后规划 Task"],
           ["task notes", "requirement / task / decision 落字"],
           ["coderX 实现", "固定 AC + 自审 + Note 草稿"],
           ["evaluatorX 验收", "最小测试集，输出 PASS / FIX"],
-          ["分级修复", "Repair Packet / Integration Note / 直修"],
-          ["全部通过", "Scope、AC 与 Note 全部关闭"]
+          ["分级修复", "失败记录 / 更新同一 Task / 修复"],
+          ["全部通过", "结果核对后，更新同一 Task"]
         ]
       },
       en: {
@@ -2093,7 +2112,7 @@
         tokenTitle: "Make long iterations budgetable",
         tokenSub: "One file per fact, links instead of inline prose, and minimal dispatch keep repeated rounds from flooding context.",
         capTitle: "Choose the entry by blast radius",
-        capSub: "xdo, xdel, and xflow share task notes and AC validation. Only planning depth and evaluation change.",
+        capSub: "Ordinary xdo maintains topics directly; xdel self-reviews an accepted Task; xflow adds independent evaluation.",
         workflowTitle: "One xflow run from routing to all ACs passed",
         workflowSub: "orchestrateX routing, repo discovery, socratesX clarification, Ready Summary, task notes, coderX, evaluatorX, and tiered fixes.",
         labelArch: "Architecture",
@@ -2118,8 +2137,8 @@
             ["Loop", "Dispatch / verify / tiered fix"]
           ],
           data: [
-            ["task notes", "Scope, AC, dependencies, file index, verification"],
-            ["harness-note/1", "Five kinds plus UUID addressing"],
+            ["task notes", "Scope, AC, progress, evidence and Handoff"],
+            ["harness-note/2", "Six kinds plus UUID addressing"],
             ["Same-target check", "No global lock, worktree isolation"]
           ]
         },
@@ -2134,28 +2153,28 @@
         },
         modes: [
           ["xdo", "Direct work", "Main Agent builds directly with engineeringX plus self-review.", "fastest"],
-          ["xdel", "One-shot delegate", "Single coderX dispatch against an accepted task note, no evaluation.", "traceable"],
+          ["xdel", "One-shot delegate", "One coderX dispatch and self-review; no evaluatorX.", "traceable"],
           ["xflow", "Full orchestration", "Discovery, confirmation, docs, per-task build, verify, and tiered fix.", "complete"]
         ],
         caps: [
-          ["task notes", "idea / initiative / requirement / decision / task each in its home, URI-addressed."],
+          ["task notes", "module / note / idea / requirement / decision / task each in its home, URI-addressed."],
           ["AC independent check", "evaluatorX is test-driven and distrusts coderX self-report."],
-          ["socratesX preflight", "xflow-only batched clarification; notes start after Ready Summary."],
+          ["socratesX preflight", "Resolve open xflow decisions; plan Tasks after Ready Summary."],
           ["engineeringX + specX", "Minimal diffs, simple builds, self-review; scope escapes become change requests."],
           ["Same-target check", "No global lock; check same files and notes before dispatch, isolate in worktrees."],
-          ["xstatus visualization", "Read-only scan of task notes into a high-fidelity HTML report."]
+          ["xstatus visualization", "Read-only scan of modules and Notes into a high-fidelity HTML report."]
         ],
         steps: [
           ["Routing", "Explicit xflow enters without silent switching"],
           ["Repo discovery", "module 08 plus same-target check"],
           ["File index", "Structure, deps, and constraints mapped"],
           ["socratesX", "Batched questions plus challenge"],
-          ["Ready Summary", "Notes start only after confirmation"],
+          ["Ready Summary", "Confirm scope before Task planning"],
           ["task notes", "requirement / task / decision written down"],
           ["coderX build", "Fixed AC plus self-review plus Note draft"],
           ["evaluatorX check", "Smallest test set emits PASS / FIX"],
-          ["Tiered fix", "Repair Packet / Integration Note / direct"],
-          ["All passed", "Scope, ACs, and notes all closed"]
+          ["Tiered fix", "Failure record / same Task / repair"],
+          ["All passed", "Reconcile results in the same Task"]
         ]
       }
     };
@@ -2163,6 +2182,7 @@
     const C = i18n[lang] || i18n.zh;
 
     function sceneLabel() {
+      if (scene === "notes") return "harness-note/2";
       if (scene === "architecture") return C.labelArch;
       if (scene === "token") return C.labelToken;
       if (scene === "capabilities") return C.labelCap;
@@ -2305,7 +2325,7 @@
       const local = clamp(cursor / weights[idx]);
       const enter = expo(clamp(local * 1.6));
       const card = C.steps[idx];
-      const status = idx < 4 ? "DISCOVER" : idx < 5 ? "SPEC" : idx < 6 ? "BUILD" : idx < 7 ? "VERIFY" : idx < 8 ? "FIX" : "CLOSED";
+      const status = idx < 5 ? "DISCOVER" : idx === 5 ? "SPEC" : idx === 6 ? "BUILD" : idx === 7 ? "VERIFY" : idx === 8 ? "FIX" : local < 0.5 ? "HANDOFF" : "CLOSED";
       const view = activeView(idx, local, enter, expo, clamp);
       const style = [
         `--scene-x:${((1 - enter) * 14).toFixed(1)}px`,
@@ -2357,10 +2377,10 @@
       };
       const rows = [
         ["Scope", lang === "zh" ? "范围与非目标" : "Scope and non-goals", ...statusFor("scope", 3, 4)],
-        ["AC-01", lang === "zh" ? "路由与状态恢复" : "Routing and state recovery", ...statusFor("ac1", 4, 6)],
-        ["AC-02", lang === "zh" ? "实现符合 task 范围" : "Implementation matches task", ...statusFor("ac2", 4, 8, 6)],
-        ["AC-03", lang === "zh" ? "测试验收与分级修复" : "Test check and tiered fix", ...statusFor("ac3", 4, 8, 6)],
-        ["Note", lang === "zh" ? "原子落盘与反向注释" : "Atomic landing plus reverse comment", ...statusFor("note", 8, 9)]
+        ["AC-01", lang === "zh" ? "路由与状态恢复" : "Routing and state recovery", ...statusFor("ac1", 5, 7)],
+        ["AC-02", lang === "zh" ? "回滚记录操作者" : "Rollback records the operator", ...statusFor("ac2", 5, 9, 7)],
+        ["AC-03", lang === "zh" ? "支付回调幂等" : "Idempotent payment callbacks", ...statusFor("ac3", 5, 7)],
+        ["Note", lang === "zh" ? "原子落盘与反向注释" : "Atomic landing plus reverse comment", ...statusFor("note", 8, local < 0.5 ? 10 : 9)]
       ];
       return `<div class="tree-ledger">${rows.map(([name, body, cls, status]) => `
         <div class="tree-row ${cls}">
@@ -2402,7 +2422,7 @@
       }
       if (idx === 2) {
         const scan = expo(clamp(local * 1.35)).toFixed(3);
-        const files = ["src/routes/order.ts", "src/services/auth.ts", "src/payments/callback.ts", "tests/order.spec.ts", ".agents/notes/order-task.md"];
+        const files = ["src/routes/order.ts", "src/services/auth.ts", "src/payments/callback.ts", "tests/order.spec.ts", ".agents/notes/orders/tasks/restore.md"];
         const lines = [92, 72, 64, 88, 56, 76, 68].map((w, i) => `<i class="code-line ${i === 2 || i === 5 ? "hot" : ""}" style="--w:${w}%;--scan:${scan}"></i>`).join("");
         return `<div class="code-scan">
           <div class="file-tree">${files.map((file, i) => `<div class="file-node ${i < local * files.length ? "active" : ""}">${file}</div>`).join("")}</div>
@@ -2420,7 +2440,7 @@
           ["src/services/auth.ts", "auth"],
           ["src/payments/callback.ts", "risk"],
           ["tests/order.spec.ts", "test"],
-          [".agents/notes/order-task.md", "notes"]
+          [".agents/notes/orders/tasks/restore.md", "notes"]
         ];
         return `<div class="discovery-search">
           <div class="dialogue-stream">${turns.map((turn, i) => `<div class="turn ${i === 1 ? "answer" : ""} ${i === 2 ? "challenge" : ""}" style="--reveal:${reveal(i)}"><b>${turn[0]}</b><span>${turn[1]}</span></div>`).join("")}</div>
@@ -2447,49 +2467,49 @@
         return `<div class="confirm-tree">
           <div class="confirm-card"><div><b>${lang === "zh" ? "已确认" : "Confirmed"}</b><span>${gateText}</span></div></div>
           <div class="doc-tree-build" style="--tree-pop:${treePop}">
-            <div class="tree-root"><b>requirement.md</b><span>${lang === "zh" ? "范围 / 非目标 / AC-n" : "Scope / non-goals / AC-n"}</span></div>
+            <div class="tree-root"><b>orders/module.md</b><span>${lang === "zh" ? "模块职责与总体设计；下方 Task 引用固定 AC" : "Responsibility and design; Tasks below reference fixed AC"}</span></div>
             <div class="tree-branches">
-              <div class="tree-child"><b>task-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-01</b><span>${lang === "zh" ? "路由恢复可验收" : "Route recovery is verifiable"}</span></div><div class="tree-ac"><b>AC-02</b><span>${lang === "zh" ? "回滚记录操作者" : "Rollback records operator"}</span></div></div></div>
-              <div class="tree-child"><b>task-02.md</b><span>${lang === "zh" ? "支付回调与幂等" : "Payment callback and idempotency"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-03</b><span>${lang === "zh" ? "幂等和测试覆盖" : "Idempotency and test coverage"}</span></div><div class="tree-ac"><b>decision</b><span>${lang === "zh" ? "取舍与重访信号" : "Trade-off and revisit"}</span></div></div></div>
+              <div class="tree-child"><b>tasks/restore.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-01</b><span>${lang === "zh" ? "路由恢复可验收" : "Route recovery is verifiable"}</span></div><div class="tree-ac"><b>AC-02</b><span>${lang === "zh" ? "回滚记录操作者" : "Rollback records operator"}</span></div></div></div>
+              <div class="tree-child"><b>tasks/idempotency.md</b><span>${lang === "zh" ? "支付回调与幂等" : "Payment callback and idempotency"}</span><div class="tree-ac-list"><div class="tree-ac"><b>AC-03</b><span>${lang === "zh" ? "幂等和测试覆盖" : "Idempotency and test coverage"}</span></div><div class="tree-ac"><b>decision</b><span>${lang === "zh" ? "取舍与重访信号" : "Trade-off and revisit"}</span></div></div></div>
             </div>
           </div>
         </div>`;
       }
       if (idx === 6) {
         const write = expo(clamp(local * 1.4)).toFixed(3);
-        const dims = ["Task URI", "AC refs", "Scope", "Decisions", "Checks"];
+        const dims = ["Task URI", "AC refs", "Scope", "Handoff", "Checks"];
         const diffs = [92, 64, 78, 54].map((w) => `<i class="diff-line add" style="--w:${w}%;--write:${write}"></i>`).join("");
         return `<div class="prompt-dispatch">
-          <div class="payload-card"><b>coderX</b><span>${lang === "zh" ? "按固定 AC 与允许范围实现，自审后返回。" : "Implements fixed AC in scope, then self-reviews."}</span><div class="dim-list">${dims.map((d, i) => `<i class="${i < local * dims.length ? "hot" : ""}">${d}</i>`).join("")}</div></div>
+          <div class="payload-card"><b>coderX</b><span>${lang === "zh" ? "Main 更新 Handoff 后派发；coderX 只读 Task，自审后返回。" : "Main updates Handoff first; coderX reads the Task and self-reviews."}</span><div class="dim-list">${dims.map((d, i) => `<i class="${i < local * dims.length ? "hot" : ""}">${d}</i>`).join("")}</div></div>
           <div class="diff-card"><b>${lang === "zh" ? "实现 + 自审" : "Build + self-review"}</b><span>engineeringX + specX</span>${diffs}<div class="razor">${lang === "zh" ? "最小改动，只做被要求的；Note 草稿随实现返回。" : "Smallest change only; Note draft returns with code."}</div></div>
         </div>`;
       }
       if (idx === 7) {
         const cols = lang === "zh"
-          ? [["AC-01", ["下单路由 200", "回滚记录审计"], "PASS"], ["AC-02", ["幂等缺 key", "并发重试冲突"], "FIX"], ["AC-03", ["恢复路径可测", "测试已运行"], "PASS"]]
-          : [["AC-01", ["route 200", "rollback audited"], "PASS"], ["AC-02", ["missing idempotency key", "retry conflict"], "FIX"], ["AC-03", ["recovery path tested", "tests run"], "PASS"]];
+          ? [["AC-01", ["下单路由 200", "恢复状态正确"], "PASS"], ["AC-02", ["回滚缺少操作者", "审计断言失败"], "FIX"], ["AC-03", ["回调幂等通过", "测试已运行"], "PASS"]]
+          : [["AC-01", ["route 200", "state restored"], "PASS"], ["AC-02", ["rollback operator missing", "audit assertion failed"], "FIX"], ["AC-03", ["idempotency passed", "tests run"], "PASS"]];
         return `<div class="eval-board">${cols.map((col, i) => `
           <div class="eval-col ${i === 1 ? "active" : ""}"><b>${col[0]} · ${col[2]}</b><div class="ac-list">${col[1].map((c) => `<i class="${col[2] === "PASS" ? "" : "hot"}">${c}</i>`).join("")}</div></div>`).join("")}</div>`;
       }
       if (idx === 8) {
         return tieredFix(local, expo, clamp);
       }
-      if (idx === 10) {
+      if (idx === 9 && local < 0.5) {
         const treePop = expo(1);
         return `<div class="confirm-tree">
           <div class="confirm-card"><div><b>${lang === "zh" ? "回写" : "Writeback"}</b><span>${lang === "zh" ? "主智能体把复验结果写回 task notes，而不是只显示 PASS。" : "The Main Agent writes verification results back to task notes, not just a PASS label."}</span></div></div>
           <div class="doc-tree-build" style="--tree-pop:${treePop}">
-            <div class="tree-root"><b>requirement.md</b><span>${lang === "zh" ? "DoD / 需求状态 / 验证记录" : "DoD / requirement state / verification"}</span></div>
+            <div class="tree-root"><b>orders/module.md</b><span>${lang === "zh" ? "模块维护设计；下方 Task 维护证据与交接" : "Module owns design; Tasks below own evidence and handoff"}</span></div>
             <div class="tree-branches">
-              <div class="tree-child"><b>task-01.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复已验收" : "Route recovery verified"}</span></div><div class="tree-ac pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "回滚审计已覆盖" : "Rollback audit covered"}</span></div></div></div>
-              <div class="tree-child"><b>task-02.md</b><span>${lang === "zh" ? "支付回调与幂等" : "Payment callback and idempotency"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "幂等测试已通过" : "Idempotency tests passed"}</span></div><div class="tree-ac"><b>Note</b><span>${lang === "zh" ? "等待原子落盘" : "Atomic landing pending"}</span></div></div></div>
+              <div class="tree-child"><b>tasks/restore.md</b><span>${lang === "zh" ? "订单状态与恢复" : "Order state and recovery"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复已验收" : "Route recovery verified"}</span></div><div class="tree-ac pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "回滚审计已覆盖" : "Rollback audit covered"}</span></div></div></div>
+              <div class="tree-child"><b>tasks/idempotency.md</b><span>${lang === "zh" ? "支付回调与幂等" : "Payment callback and idempotency"}</span><div class="tree-ac-list"><div class="tree-ac pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "幂等测试已通过" : "Idempotency tests passed"}</span></div><div class="tree-ac"><b>Note</b><span>${lang === "zh" ? "等待原子落盘" : "Atomic landing pending"}</span></div></div></div>
             </div>
           </div>
         </div>`;
       }
       return `<div class="final-board tree-close">
-        <div class="final-tree"><h3>task notes</h3><div class="tree-root"><b>requirement.md</b><span>${lang === "zh" ? "Scope / AC / Note 全部关闭" : "Scope / ACs / notes all closed"}</span></div><div class="final-pass-grid"><div class="final-pass"><b>Scope PASS</b><span>${lang === "zh" ? "边界锁定" : "boundaries locked"}</span></div><div class="final-pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复" : "route recovery"}</span></div><div class="final-pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "范围符合" : "scope matched"}</span></div><div class="final-pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "测试覆盖" : "tests covered"}</span></div><div class="final-pass"><b>Note landed</b><span>${lang === "zh" ? "原子落盘" : "atomically landed"}</span></div><div class="final-pass"><b>Closed</b><span>${lang === "zh" ? "流程关闭" : "flow closed"}</span></div></div></div>
-        <div class="close-card"><b>${lang === "zh" ? "工作流结束条件" : "Workflow exit condition"}</b><span>${lang === "zh" ? "结束画面绑定 task notes：Scope、AC 与 Note 全部通过，代码 + Note + 反向注释同 commit，写作遵循 proseX。" : "The ending is bound to task notes: the workflow closes only after Scope, ACs, and notes all pass; code + Note + comment land together per proseX."}</span></div>
+        <div class="final-tree"><h3>task notes</h3><div class="tree-root"><b>orders/module.md</b><span>${lang === "zh" ? "模块状态独立于 Task 结果" : "Module state stays separate from Task results"}</span></div><div class="final-pass-grid"><div class="final-pass"><b>Scope PASS</b><span>${lang === "zh" ? "边界锁定" : "boundaries locked"}</span></div><div class="final-pass"><b>AC-01 PASS</b><span>${lang === "zh" ? "路由恢复" : "route recovery"}</span></div><div class="final-pass"><b>AC-02 PASS</b><span>${lang === "zh" ? "回滚审计" : "rollback audited"}</span></div><div class="final-pass"><b>AC-03 PASS</b><span>${lang === "zh" ? "回调幂等" : "idempotent callbacks"}</span></div><div class="final-pass"><b>Note landed</b><span>${lang === "zh" ? "原子落盘" : "atomically landed"}</span></div><div class="final-pass"><b>Closed</b><span>${lang === "zh" ? "流程关闭" : "flow closed"}</span></div></div></div>
+        <div class="close-card"><b>${lang === "zh" ? "工作流结束条件" : "Workflow exit condition"}</b><span>${lang === "zh" ? "Main 核对真实结果，回写同一 Task 的进展、证据与 Handoff。模块状态独立维护；代码与相关 Note 一起落地。" : "Main reconciles real results and updates progress, evidence and Handoff in the same Task. Module state stays separate; code and related Notes land together."}</span></div>
       </div>`;
     }
 
@@ -2497,11 +2517,11 @@
       const p = clamp(progress);
       const on = (n) => expo(clamp(p * 1.6 - n * 0.3)).toFixed(3);
       const cards = lang === "zh"
-        ? [["Repair Packet", "局部缺陷：同 task 最多自动重派发一次，只带失败测试与相关文件。"], ["Integration Note", "跨 task 问题：压缩成后续 task 的适配要求，不回传全文。"], ["直接处理", "架构或范围问题：Main Agent 改 note 或直修。"]]
-        : [["Repair Packet", "Local defect: at most one auto re-dispatch with failing tests only."], ["Integration Note", "Cross-task issue: compressed for a later task, no full history."], ["Direct fix", "Architecture or scope: Main Agent updates notes or fixes directly."]];
+        ? [["Repair Packet", "局部缺陷：同 task 最多自动重派发一次，只带失败测试与相关文件。"], ["同一 Task", "主 Agent 回写进展、证据与 Handoff；跨任务问题进入受影响 Task。"], ["直接处理", "架构或范围问题：Main Agent 改 note 或直修。"]]
+        : [["Repair Packet", "Local defect: at most one auto re-dispatch with failing tests only."], ["Same Task", "Main updates progress, evidence and Handoff; cross-task issues go to affected Tasks."], ["Direct fix", "Architecture or scope: Main Agent updates notes or fixes directly."]];
       return `<div class="route-options" style="padding:18px">
         ${cards.map((c, i) => `<div class="route-card ${i === 0 ? "active" : ""}" style="--pop:${on(i)}"><b>${c[0]}</b><span>${c[1]}</span></div>`).join("")}
-        <div class="route-decision" style="--pop:${on(2)}">${closing ? (lang === "zh" ? "修复关闭 → 原子收口：代码 + Note + 反向注释同 commit" : "Fix closed → atomic landing: code + Note + comment in one commit") : (lang === "zh" ? "默认最多一次自动重派发，预算耗尽停下交还用户" : "At most one auto retry by default; stop on exhausted budget")}</div>
+        <div class="route-decision" style="--pop:${on(2)}">${closing ? (lang === "zh" ? "修复关闭 → 原子收口：代码 + Note + 反向注释同 commit" : "Fix closed → atomic landing: code + Note + comment in one commit") : (lang === "zh" ? "默认最多一次自动修复；之后由 Main 判断后续行动" : "At most one automatic repair; Main decides further action")}</div>
       </div>`;
     }
 
@@ -2536,8 +2556,37 @@
       </div>`;
     }
 
+
+    function maintainedNotes() {
+      const zh = lang === "zh";
+      layout(`<div class="notes-demo">
+        <article><h2>${zh ? '一个模块，一份入口' : 'One entry per module'}</h2>
+<pre>.agents/notes/
+├─ module.md
+├─ project-guide.md          note
+└─ files/
+   ├─ module.md
+   ├─ reading-guide.md      note
+   └─ parser/
+      ├─ module.md
+      ├─ batch-import.md   idea
+      ├─ error-context.md  decision
+      ├─ requirements/read-errors.md
+      └─ tasks/read-errors.md</pre></article>
+        <article><h2>${zh ? 'xdo：维护已有主题' : 'xdo: maintain an existing topic'}</h2>
+          <p class="sample-path">files/reading-guide.md</p>
+          <div class="sample-change"><p>${zh ? '之前：保留工作区上下文。' : 'Before: preserve workspace context.'}</p>
+          <p>${zh ? '之后：读取失败时也保留当前位置，并提供重试入口。' : 'After: preserve the current location on failure and offer retry.'}</p></div>
+          <p>UUID · created · path → ${zh ? '保持不变' : 'unchanged'}<br>updated → ${zh ? '本次维护时间' : 'maintenance time'}</p>
+          <p>${zh ? '不新建 Task。仅当出现独立主题或职责时，才新增文档或子模块。' : 'No new Task. Add documents or submodules when a distinct subject or responsibility warrants one.'}</p>
+        </article>
+        <footer>module · note · idea · requirement · decision · task<br>${zh ? 'Task：Main 在交接前更新进展、证据和 Handoff；子智能体只读，返回结果与草稿。' : 'Task: Main updates progress, evidence and Handoff before dispatch; children read and return results or drafts.'}</footer>
+      </div>`, zh ? '目录跟随职责，文档持续维护' : 'Module documents, maintained in place', zh ? '结构与操作示意；真实桌面演示见 JanusX README。' : 'Structure and workflow illustration; see JanusX for the desktop recording.');
+    }
+
     function render(t) {
-      if (scene === "architecture") architecture();
+      if (scene === "notes") maintainedNotes();
+      else if (scene === "architecture") architecture();
       else if (scene === "token") token();
       else if (scene === "capabilities") capabilities();
       else workflow(t);

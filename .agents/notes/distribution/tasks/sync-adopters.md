@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T09:29:10.642Z",
+  "updated": "2026-10-08T10:52:05.017Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -113,7 +113,7 @@ Task files are read-only to subagents. Main Agent integrates Change Summary + No
 
 Workspace build and 270 relevant tests pass (harness-core 93, harness-node 55, janus-agent 102, CLI harness-mode 20). Final handoff/output adjustments pass the seven-test v2-handoff/workflowx-executor rerun. WorkflowX passes 14 source tests, eight review regression assertions and standard/corpus/resource checks. Managed synchronization updates 23 files, passes parity and changes nothing on repeated apply; local settings remain intact. Controlled model/reviewer ports do not establish live-model or JanusX UI acceptance.
 
-Main's pre-existing deletions remain in stash f8a48c8e58490f9a865a2cc059d366aaf89620c8; original untracked Notes/plans remain protected. README demonstrations, independent final review and release remain pending. No remote push is performed.
+Main's pre-existing deletions remain in stash f8a48c8e58490f9a865a2cc059d366aaf89620c8; original untracked Notes/plans remain protected. Independent final review and release remain pending; current README delivery is recorded below. No remote push is performed.
 
 JanusX local implementation is committed at 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204 on develop. It uses shared v2 read/write/wiki and engineering tools, module-only navigation with per-module type groups, and Task-owned progress/evidence/Handoff. Desktop IPC preserves returned drafts and pending independent review for xdel; explicit xdo Tasks keep their review obligation. The distinct migration Task is completed and self-reviewed: 254 sources migrated into maintained directories, 3 pre-existing dirty Notes preserved, 9 module entries and 256 maintained v2 documents. Final corpus validation has zero errors; 19 unbound foreign-reference diagnostics and 3 protected old links are explicit.
 
@@ -125,7 +125,7 @@ JanusX's follow-up module browsing implementation is committed at 48bc3b7 on dev
 
 [Source readiness review](../../../../docs/reviews/workflowx-v2.md) records blockers and requirement coverage. [Source verification](../../../../docs/migrations/verification.md) records limited existing checks. [Maintained document requirements](../../harness/requirements/maintained-notes.md) distinguish WorkflowX contracts from later runtime adoption. [AgentX evidence](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19) and its docs/migrations/note-v2.json. [JanusX adoption](note://972afef3-2fc7-49de-a3ee-7e041225d28c/7359ef5b-8cbb-4e30-a727-9a4907ac5fa0), its docs/migrations/workflowx-v2-verification.md and docs/migrations/note-v2.json pin target evidence at commit 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204. No external live-model result is claimed.
 
-## Handoff
+Follow-up baseline and Main checks before README delivery:
 
 Main Agent owns this Task. AgentX remains at 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2; JanusX's original adoption evidence remains pinned to 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204, using WorkflowX candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and the 2.0.0 profile. JanusX follow-ups 48bc3b7, a30f73b and ded7128 implement [module browsing](note://972afef3-2fc7-49de-a3ee-7e041225d28c/810fe6d0-a765-48f1-b89e-b0b3dd7048a8) AC-1 through AC-8. Single-root home uses the root module page and its multi-row layout; multi-root aggregation and no-module access remain available. No new formal Task execution or independent evaluation occurred.
 
@@ -135,11 +135,19 @@ JanusX eed41bd completes the responsibility reorganization in two batches. Bluep
 
 Main verification passes 31 distinct targeted unit tests, two real-corpus browser scenarios on embedded/workbench surfaces, strict typechecking and corpus checks. All 270 documents remain reachable; corpus validation reports 267 maintained v2 documents, 254 historical migrated sources, three protected legacy files, zero errors and 23 permitted read diagnostics. Baseline AC and historical metadata match, all eight original user-file hashes remain unchanged, and production source changes only repair Note comments. The browser tests use shared parsing, projection and lazy source reads with an Electron transport bridge; they do not satisfy independent review or full Electron acceptance. New concurrent configuration-assistant edits remain outside this commit.
 
-Follow the revised JanusX plan at eed41bd: items 1–3 (module browsing, focus adaptation and responsibility directories) are implemented and self-checked. Next update README examples and demonstration assets against the current module tree, navigation, focus tools and Main-owned Task handoff. Then perform independent final review and fixes. Other responsibility areas retain their present depth; the three protected knowledge Notes remain deferred. Before starting a new formal Task execution, explicitly revise this Task's earlier AC-4 interaction wording and pin the new acceptance baseline; prior click/expand evidence remains attached to the original integration commit. Keep work.review independent. No push or release is requested. A new session can continue from this Task and the linked target evidence without the earlier conversation.
+README delivery is committed in JanusX 584ca88, after the dc8a639 disabled-capture fix. Shared agentX d6cd44569eee3c36c637a996131a1303b3900bde fixes spurious repair of successful domain statuses. WorkflowX's bilingual README, diagrams and maintained-note PNGs follow the same current model. The [demo requirement](../requirements/readme-demo.md) records presentation acceptance and reproducible commands; it does not close independent integration review.
+
+Main checks pass 29 agentX tests and its package build, 40 JanusX adapter/turn-guard tests, five showcase tests, isolated build and strict types. The 271-frame desktop recording executes real scope/focus/read/write tools with a deterministic local model and requires error-free completed turns. Current JanusX corpus remains 267 maintained v2 documents plus three protected legacy files, zero errors and 24 permitted read diagnostics; the added diagnostic is the explicitly unbound cross-repository link to agentX's runtime module. Eight original user-file hashes are unchanged. Concurrent configuration-assistant edits remain excluded.
+
+## Handoff
+
+Main Agent alone maintains this Task. Current local delivery: agentX d6cd44569eee3c36c637a996131a1303b3900bde and JanusX 584ca88; WorkflowX runtime/profile remains pinned to candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and 2.0.0. Original adoption receipts and migration reports keep their original revisions. JanusX plan items 1-4 (module browsing, focus tools, responsibility directories, README demonstrations) are implemented and Main-checked.
+
+Next: final independent review and fixes against the integrated code, real corpus and demonstrations. Before a new formal Task execution, explicitly revise this Task's stale AC-4 click/expand wording and pin the new acceptance baseline to the accepted module-browsing/focus requirements. Keep work.review independent; this xdo did not run evaluatorX or create a formal execution/acceptance receipt. Preserve the three deferred knowledge Notes and unrelated local work. No push or release is requested.
 
 ## Additional release requirements
 
 - [README demonstrations](../requirements/readme-demo.md): update examples and demonstration assets to the integrated module-document workflow before release.
 - [JanusX blueprint type groups](../../harness/requirements/blueprint-type-groups.md): group same-kind documents inside each module, using gray dashed rectangular frames and type labels; preserve module-only initial navigation.
 
-README demonstrations and independent release acceptance remain pending. Blueprint type grouping is implemented and browser-tested in JanusX; its evidence is recorded above. Include both requirements in downstream review and update this Task before handoff.
+README demonstrations are delivered with Main self-checks; independent release acceptance remains pending. Blueprint type grouping is implemented and browser-tested in JanusX; its evidence is recorded above. Include both requirements in downstream review and update this Task before handoff.

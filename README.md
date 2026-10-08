@@ -39,7 +39,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 <p align="center">
   <img src="docs/assets/06-workflow-animation.gif" alt="WorkflowX xflow 工作流演示" width="880" />
   <br/>
-  <sub>一次完整 xflow：仓库发现 → socratesX → Ready Summary → task notes → coderX → evaluatorX → 分级修复 → 原子收口</sub>
+  <sub>xflow 流程示意：仓库发现 → socratesX → Ready Summary → Task → coderX → evaluatorX → 修复与交接。图中结果是教学示例，不是本仓验收证据。</sub>
 </p>
 
 ---
@@ -51,7 +51,7 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 | 痛点 | WorkflowX 的处理方式 |
 |---|---|
 | **上下文越聊越乱** | Main Agent 维护状态，执行代理独立上下文工作，只通过 Payload 传递必要信息；后续 task 只传相关契约、文件、失败与风险，不回传完整历史 |
-| **需求散落在聊天里** | 需求落到 5 类 task notes（一事一文件，URI 寻址），变更只改对应 note，受影响 task 按依赖重新调度 |
+| **需求散落在聊天里** | 模块文档与六类 Note 通过 URI 寻址；同一主题原位维护，受影响 Task 按依赖调度 |
 | **AI 自称完成但没达标** | evaluatorX 不信任 coderX 自述，独立建测试并运行，逐条核对固定 AC，输出测试结果与失败记录 |
 | **编码后才发现需求误解** | xflow 先做仓库事实探索（module 08）、按阶段批量澄清的 socratesX 追问和主动质疑，经 Ready Summary 确认后才建 note |
 | **多轮迭代 Token 成本高** | 单文件承载范围/验收/验证、关联笔记只用 URI + 一行摘要链接、派发与修复包只带最小上下文 |
@@ -68,8 +68,8 @@ WorkflowX 是一套放进 AI 编程工具里的**工程化工作流**。你仍�
 │
 ▼
 Main Agent
-├─ orchestrateX 路由：显式命令优先，否则按影响范围推荐；模糊时摆出三选一，进入模式后不再悄悄切换
-├─ xdo：主 Agent 直接工作，engineeringX + 自审；原子落盘（代码 + Note + 入口反向注释，一次 commit）
+├─ orchestrateX 路由：显式命令优先；清晰本地工作默认 xdo，未决范围按需澄清
+├─ xdo：主 Agent 直接工作，engineeringX + 自审；不新建 Task，原位维护相关文档
 ├─ xdel：基于已验收 task note 单次委托 coderX（engineeringX + specX + 自审），带回 Note 草稿，不触发 evaluatorX
 └─ xflow：仓库发现 → socratesX → Ready Summary → task notes → 按依赖派发与独立评估
         │
@@ -83,7 +83,7 @@ Main Agent
 <sub>Main Agent 默认直接工作；复杂模式按需使用 coderX / evaluatorX（evaluatorX 仅 xflow）</sub>
 </p>
 
-一句话：**Main Agent 默认直接工作，engineeringX 提供实现原则与自审，复杂任务再使用 task notes、派发契约和测试驱动的评估链。原子落盘与 proseX 写作规范对三模式通用（门控时机为例外，标准本身无例外）。**
+Main Agent 默认直接工作，engineeringX 提供实现原则与自审。需要委派或完整编排时使用 Task、派发契约和评估链；相关代码、文档与反向引用一起落地，输出遵循 proseX。
 
 ---
 
@@ -115,8 +115,8 @@ xdo 实现用户登录功能，支持邮箱密码和 OAuth
 
 | 模式 | 适用场景 | 规划方式 | 验收循环 | 示例 |
 |---|---|---|---|---|
-| **`xdo`** | 主 Agent 直接工作 | engineeringX；task note 与 harness 可选；并行仅在用户明确要求时 | 主 Agent 自审与验证；原子落盘 | `xdo 给 Config 加超时配置` |
-| **`xdel`** | 单 task 可追溯委托 | 使用已验收 task note（无则新建）；coderX 一次实现并自审，带回 Note 草稿 | 不触发 evaluatorX；独立复核只在明确要求时单开 | `xdel 修复订单列表分页 bug` |
+| **`xdo`** | 主 Agent 直接工作 | 普通工作不创建 Task；按需维护已有主题；并行须明确要求 | 主 Agent 自审与验证；明确选中的已有 Task 保留评估义务 | `xdo 给 Config 加超时配置` |
+| **`xdel`** | 单 task 可追溯委托 | 基于范围已接受的 Task，单次派发 coderX，自审后带回 Note 草稿 | 不触发 evaluatorX；既有独立评估义务仍待满足 | `xdel 修复订单列表分页 bug` |
 | **`xflow`** | 新功能、跨模块重构、高影响任务 | 仓库发现 → socratesX → Ready Summary → task notes，按依赖执行 | 每个 task 后触发 evaluatorX；局部缺陷默认最多一次最小修复重派发 | `xflow 实现订单中心` |
 
 常用参数：`-box demo` 在沙箱分支隔离执行；并行必须由用户明确要求，具体调度、共享文件协调与集成收口由 Main Agent 负责。已无 `-N` 轮数与 `-team` 参数，不存在固定迭代循环。
@@ -140,6 +140,43 @@ xdo 实现用户登录功能，支持邮箱密码和 OAuth
 ---
 
 ## 深入设计
+
+### 目录与维护示例
+
+每个模块只有一份 `module.md`，父层主题与子模块共存。以下结构与 [JanusX README](https://github.com/TreeX-X/JanusX#readme) 第 07 项桌面录制一致：
+
+```text
+.agents/notes/
+├─ module.md                          module：项目入口
+├─ project-guide.md                   note：项目约定
+└─ files/
+   ├─ module.md                       module：文件阅读
+   ├─ reading-guide.md                note：阅读约定
+   └─ parser/
+      ├─ module.md                    module：解析与提示
+      ├─ batch-import.md              idea：批量导入建议
+      ├─ error-context.md             decision：错误保留上下文
+      ├─ requirements/read-errors.md  requirement：读取失败提示
+      └─ tasks/read-errors.md         task：补齐失败提示
+```
+
+<p align="center">
+  <img src="docs/assets/07-maintained-notes-zh.png" alt="三层模块目录、六种文档类型与 xdo 原位维护示意" width="880" />
+</p>
+
+例如输入 `xdo 更新阅读约定：读取失败时保留当前位置，并提供重试入口`。Main 先读取 `files/reading-guide.md`，在原文补充行为；UUID、created 和路径保留，updated 刷新为本次 UTC 维护时间。普通 xdo 不新建 Task，也不为每轮讨论另开一篇 Note；独立主题或职责出现时再新增文档或子模块。
+
+需要 xflow 时，Main 维护 `tasks/read-errors.md` 的范围、固定 AC 引用与验证入口。每次交接前更新同一 Task：
+
+| 交接 | Main 写入 Task | 子智能体返回 |
+| --- | --- | --- |
+| 派发实现 | 当前范围、未完成项、约束和下一步 | coderX 的 Change Summary + Note 草稿 |
+| 派发评估 | 已实现内容、实际检查、尚未独立验证项 | evaluatorX 的 Evaluation Result |
+| 返修 | 失败用例、观察结果、修复范围与复验要求 | 修复结果，随后按固定 AC 复验 |
+
+子智能体只读 Task；Main 整合结果，不新增每位智能体各自的交接 Note。尚未执行、未运行的检查和待独立评估内容明确保留，示例待办不代表已经验收。
+
+图源为 [readme-visuals.html](docs/assets/readme-visuals.html)，在仓库依赖安装后运行 `node scripts/export-readme-assets.mjs` 重建中英文资产。图表说明流程；真实应用行为由 JanusX 录制与断言验证。
 
 <details>
 <summary><b>模块文档与共享 Task</b></summary>
@@ -232,7 +269,7 @@ xstatus --output ./reports/today.html
 
 | 能力 | WorkflowX | Superpowers | OMC |
 |---|:---:|:---:|:---:|
-| Task note 需求追踪（5 类 + harness 规范） | 独有 | 不支持 | 不支持 |
+| 模块文档与 Task 追踪（6 类 + harness 规范） | 独有 | 不支持 | 不支持 |
 | 测试驱动的 AC 独立验收 | 独有 | 不支持 | 不支持 |
 | 仓库发现 + socratesX + Ready Summary | 强 | 基础 | 基础 |
 | 最小上下文派发与修复包 | 系统化 | 部分 | 部分 |

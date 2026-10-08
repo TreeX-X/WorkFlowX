@@ -1,3 +1,4 @@
+// Note: maintained-module demonstrations — see .agents/notes/distribution/requirements/readme-demo.md
 import { chromium } from "playwright";
 import ffmpegPath from "ffmpeg-static";
 import { spawnSync } from "node:child_process";
@@ -21,6 +22,8 @@ const stills = [
   ["token", "en", "03-token-optimization.png"],
   ["capabilities", "zh", "05-capabilities-zh.png"],
   ["capabilities", "en", "05-capabilities.png"],
+  ["notes", "zh", "07-maintained-notes-zh.png"],
+  ["notes", "en", "07-maintained-notes.png"],
 ];
 
 const edgePaths = [
@@ -49,10 +52,12 @@ for (const [scene, lang, filename] of stills) {
   await page.screenshot({ path: path.join(assetDir, filename), fullPage: false });
 }
 
+if (path.dirname(framesDir) !== assetDir || path.basename(framesDir) !== '.readme-frames') throw new Error('Unexpected frame directory');
 await rm(framesDir, { recursive: true, force: true });
 await mkdir(framesDir, { recursive: true });
 
 async function renderGif(lang, output) {
+  console.log(`Rendering workflow: ${lang}`);
   const langDir = path.join(framesDir, lang);
   await mkdir(langDir, { recursive: true });
   const frames = 360;
@@ -87,7 +92,7 @@ async function renderGif(lang, output) {
 }
 
 function runFfmpeg(args) {
-  const result = spawnSync(ffmpegPath, args, { stdio: "inherit" });
+  const result = spawnSync(ffmpegPath, ["-hide_banner", "-loglevel", "error", ...args], { stdio: "inherit" });
   if (result.status !== 0) {
     throw new Error(`ffmpeg failed with exit code ${result.status}`);
   }
