@@ -3,9 +3,9 @@
   "schema": "harness-note/2",
   "id": "2ce416be-b118-40c4-bddc-87da25a8fe02",
   "kind": "task",
-  "lifecycle": "draft",
+  "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T02:04:06.747Z",
+  "updated": "2026-10-08T04:42:07.243Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -14,7 +14,33 @@
         "paths": [".agents/notes/distribution/","docs/reviews/","docs/migrations/"]
       },
       {"repoId":"62b44166-82f0-41ff-838d-e2b02388ed06","paths":["."]},
-      {"repoId":"972afef3-2fc7-49de-a3ee-7e041225d28c","paths":["."]}
+      {
+        "repoId": "972afef3-2fc7-49de-a3ee-7e041225d28c",
+        "paths": [
+          "src/main/harness/",
+          "src/main/notes/",
+          "src/main/blueprint/",
+          "src/main/roundtable/",
+          "src/main/janus/blueprint-migrate.ts",
+          "src/renderer/src/components/blueprint/",
+          "src/renderer/src/features/blueprint/",
+          "src/renderer/src/i18n/",
+          "tests/",
+          "scripts/",
+          ".agents/",
+          ".codex/",
+          ".claude/",
+          "standards/",
+          "docs/migrations/",
+          "package.json",
+          "package-lock.json",
+          "AGENTS.md",
+          "CLAUDE.md",
+          "src/main/ipc/",
+          "src/shared/",
+          "src/renderer/src/components/janus/"
+        ]
+      }
     ],
     "acceptanceRefs": [
       {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-1"},
@@ -66,7 +92,7 @@
 
 The user accepts the WorkflowX core refactor as ready for the next phase. Integrate locally in janus-agentX, then JanusX; finish debugging and adjustments before the final release push. Pin the exact candidate source commit/profile and managed inventory for each integration attempt; a candidate pin is not a release declaration. Include skills, commands, managed AGENTS/CLAUDE and agent instructions, teammate wrappers, and required standard resources. Preserve local models, permissions, plugins, unrelated configuration and unmanaged text. Keep uppercase-X skill names.
 
-Target root scopes are provisional because runtime paths have not been mapped. Before accepting or dispatching this Task, inspect each target and narrow paths to the actual adoption modules. No unrelated module cleanup is authorized.
+JanusX scope is mapped to the shared Note boundary, desktop execution host, blueprint/wiki projection, document producers, tests, migration and managed configuration. Reverse source references are repaired during migration; unrelated behavior is outside scope. AgentX remains the completed prerequisite.
 
 ## Acceptance criteria
 
@@ -87,19 +113,23 @@ Task files are read-only to subagents. Main Agent integrates Change Summary + No
 
 Workspace build and 270 relevant tests pass (harness-core 93, harness-node 55, janus-agent 102, CLI harness-mode 20). Final handoff/output adjustments pass the seven-test v2-handoff/workflowx-executor rerun. WorkflowX passes 14 source tests, eight review regression assertions and standard/corpus/resource checks. Managed synchronization updates 23 files, passes parity and changes nothing on repeated apply; local settings remain intact. Controlled model/reviewer ports do not establish live-model or JanusX UI acceptance.
 
-Main's pre-existing deletions remain in stash f8a48c8e58490f9a865a2cc059d366aaf89620c8; original untracked Notes/plans remain protected. JanusX integration, README demonstrations, independent final review and release remain pending. No remote push is performed.
+Main's pre-existing deletions remain in stash f8a48c8e58490f9a865a2cc059d366aaf89620c8; original untracked Notes/plans remain protected. README demonstrations, independent final review and release remain pending. No remote push is performed.
+
+JanusX local implementation is committed at 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204 on develop. It uses shared v2 read/write/wiki and engineering tools, module-only navigation with per-module type groups, and Task-owned progress/evidence/Handoff. Desktop IPC preserves returned drafts and pending independent review for xdel; explicit xdo Tasks keep their review obligation. The distinct migration Task is completed and self-reviewed: 254 sources migrated into maintained directories, 3 pre-existing dirty Notes preserved, 9 module entries and 256 maintained v2 documents. Final corpus validation has zero errors; 19 unbound foreign-reference diagnostics and 3 protected old links are explicit.
+
+JanusX verification passes strict typechecking, build:check, 124 relevant unit tests (58 + 59 + 4 + 3), 7 mechanical gate tests, 18 browser tests and 5 compiled Electron scenarios. A 24-test overlapping rerun covers no-op timestamp preservation. Chat executes real shared read/edit/script tools without creating a Task; Electron tests use a local deterministic HTTP model and recover persisted receipts/history after relaunch. This verifies host integration, not external model quality. Managed parity, 397-file repeat-apply idempotence, 54-file dual-host skill comparison, package boundary and i18n checks pass. Local runtime preferences and all eight original user files are unchanged. These are Main self-review results; the independent-review obligation remains pending.
 
 ## Evidence
 
-[Source readiness review](../../../../docs/reviews/workflowx-v2.md) records blockers and requirement coverage. [Source verification](../../../../docs/migrations/verification.md) records limited existing checks. [Maintained document requirements](../../harness/requirements/maintained-notes.md) distinguish WorkflowX contracts from later runtime adoption. [AgentX evidence](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19) and its docs/migrations/note-v2.json. No JanusX adoption or live-model result is claimed.
+[Source readiness review](../../../../docs/reviews/workflowx-v2.md) records blockers and requirement coverage. [Source verification](../../../../docs/migrations/verification.md) records limited existing checks. [Maintained document requirements](../../harness/requirements/maintained-notes.md) distinguish WorkflowX contracts from later runtime adoption. [AgentX evidence](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19) and its docs/migrations/note-v2.json. [JanusX adoption](note://972afef3-2fc7-49de-a3ee-7e041225d28c/7359ef5b-8cbb-4e30-a727-9a4907ac5fa0), its docs/migrations/workflowx-v2-verification.md and docs/migrations/note-v2.json pin target evidence at commit 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204. No external live-model result is claimed.
 
 ## Handoff
 
-Main Agent owns this shared Task and updates it before every handoff with current source/target revisions, fixed references, narrowed scope, unresolved issues, next action and verification evidence. Next inspect JanusX consumers and narrow its integration scope against agentX revision 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2. Reuse the common tools and module metadata; implement module-only navigation and type grouping. Finalize and push only after integration debugging and review. AgentX local acceptance is recorded above; JanusX remains the next phase. New agents read this Task and linked source documents without relying on earlier conversation.
+Main Agent owns this Task. Local adoption is implemented in agentX 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2 and JanusX 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204, using WorkflowX candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and the pinned 2.0.0 profile. The [JanusX migration Task](note://972afef3-2fc7-49de-a3ee-7e041225d28c/bdced085-ceb8-441f-a4fc-48d6223b6257) is complete for clean sources; its three protected user-edited Notes and old links remain explicit exclusions. Next update README demonstrations and obtain independent review against the fixed acceptance references and exact commits, then resolve findings before any release. Keep work.review independent and do not treat these Main-authored checks as an evaluator result. No remote push or release is part of this completed local integration. A new session can continue from this Task and the target evidence without the earlier conversation.
 
 ## Additional release requirements
 
 - [README demonstrations](../requirements/readme-demo.md): update examples and demonstration assets to the integrated module-document workflow before release.
 - [JanusX blueprint type groups](../../harness/requirements/blueprint-type-groups.md): group same-kind documents inside each module, using gray dashed rectangular frames and type labels; preserve module-only initial navigation.
 
-These are pending requirements, not completed adoption evidence. Include them in downstream/release acceptance and update this shared Task before handoff.
+README demonstrations and independent release acceptance remain pending. Blueprint type grouping is implemented and browser-tested in JanusX; its evidence is recorded above. Include both requirements in downstream review and update this Task before handoff.
