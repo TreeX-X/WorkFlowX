@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T13:15:29Z",
+  "updated": "2026-10-08T13:40:15Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -151,7 +151,9 @@ Independent checks executed WorkflowX review-note-v2, note-v2/note-format/sync t
 
 Main Agent alone maintains this Task. Current reviewed implementation: WorkflowX 4e96135, agentX b40d1eb and JanusX 34388af. The shared evaluator test phase, cross-module architect Notes, Blueprint association/navigation and R1 repair pass scoped independent evaluation. Both adopter rule trees are synchronized; schema/profile remains 2.0.0 and original receipts/migration inventories retain their own revisions. The user's scheduled implementation is complete locally.
 
-Before release, independently re-establish the remaining full integration coverage: historical migration completeness and local-setting preservation, external-reference coverage, and the complete desktop README recording. Current source/corpus/parity checks and focused host tests do not close those broad AC-1/2/3 and external release obligations. Keep work.review independent and this Task open for that release follow-up. The native evaluator's result is not an embedded runtime receipt and claims no external-model result. Preserve the three deferred knowledge Notes and unrelated work. No push or release is requested or performed.
+The user now authorizes the remaining integration acceptance. Pin WorkflowX 4af8c1b, agentX 5c41e2f and JanusX 0408046 as the review candidates; this Handoff-only update does not change the work contract or acceptance. Main prepares an isolated JanusX build from the pinned source and preserves unrelated working edits. A separate evaluator must execute checks for historical migration completeness, local-setting preservation, cross-repository references, and the complete desktop README recording/runtime continuation. Prior scoped implementation results remain evidence for their unchanged code; record actual remaining coverage rather than repeat all passing suites.
+
+Next: collect the independent Evaluation Result for those remaining AC-1/2/3/4/6 and README/type-group obligations, repair any failures through Main, and close this Task only when the integration criteria are satisfied. No source/Task writes by the reviewer; temporary fixtures and generated artifacts are allowed. The native result is not an embedded runtime receipt and claims no external-model result. Preserve the three deferred knowledge Notes and unrelated work. No push or release is requested or performed.
 
 ## Additional release requirements
 
