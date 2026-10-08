@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "draft",
   "created": "2026-10-07",
-  "updated": "2026-10-08T01:53:19.310Z",
+  "updated": "2026-10-08T02:04:06.747Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -81,18 +81,21 @@ V-1 passes after source repair. Local integration can proceed after mapping targ
 
 ## Progress
 
-AgentX implementation and local integration are complete at main revision 3765178e2ede9337f9ae945231ea24d7b6177274 (implementation a801a806420b31faa9fe7281a4b3f799497f693f). Shared parser/writer/wiki and Task execution support the WorkflowX v2 profile; old v1 handling and receipt semantics remain supported. Sixty tracked Notes were migrated into 69 module-owned documents before final validation. An unrelated untracked main-checkout Note remains an exact-hash exclusion.
+AgentX local integration is complete at main revision 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2, adopting WorkflowX rules and compact metadata from a44cfb7c46219b215a6e6c0dc93221a3d39e6d65. Shared v2 parser/writer/wiki and Task execution are supported; the existing schema/profile and receipt semantics remain unchanged. Sixty tracked Notes are migrated into 69 module-owned documents.
 
-Workspace build and 319 relevant tests pass. The broad run's single CLI automatic-repair timeout passed in the isolated 20-test harness-mode rerun; agent-core retains one existing skipped test. After merging, main passed build, 13 targeted v2/profile/handoff tests, both corpus validators and managed-rule parity. These use controlled model/reviewer ports, not live-model or JanusX UI acceptance.
+Task files are read-only to subagents. Main Agent integrates Change Summary + Note draft and Evaluation Result. Runtime Handoff keeps one next-action block; xdel stops after self-review while any independent-review obligation remains pending. xflow retains discovery, socratesX, Ready Summary, Tasks and dependency-ordered independent evaluation.
 
-Main's pre-existing deletions are retained in stash f8a48c8e58490f9a865a2cc059d366aaf89620c8; original untracked Notes/plans were restored. No remote push or final release was performed. JanusX integration, README demonstrations, independent final review and final release remain pending, so the cross-repository acceptance boxes remain open.
+Workspace build and 270 relevant tests pass (harness-core 93, harness-node 55, janus-agent 102, CLI harness-mode 20). Final handoff/output adjustments pass the seven-test v2-handoff/workflowx-executor rerun. WorkflowX passes 14 source tests, eight review regression assertions and standard/corpus/resource checks. Managed synchronization updates 23 files, passes parity and changes nothing on repeated apply; local settings remain intact. Controlled model/reviewer ports do not establish live-model or JanusX UI acceptance.
+
+Main's pre-existing deletions remain in stash f8a48c8e58490f9a865a2cc059d366aaf89620c8; original untracked Notes/plans remain protected. JanusX integration, README demonstrations, independent final review and release remain pending. No remote push is performed.
+
 ## Evidence
 
-[Source readiness review](../../../../docs/reviews/workflowx-v2.md) records blockers and requirement coverage. [Source verification](../../../../docs/migrations/verification.md) records limited existing checks. [Maintained document requirements](../../harness/requirements/maintained-notes.md) distinguish WorkflowX contracts from later runtime adoption. AgentX evidence: note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19 and its docs/migrations/note-v2.json. No JanusX adoption or live-model result is claimed.
+[Source readiness review](../../../../docs/reviews/workflowx-v2.md) records blockers and requirement coverage. [Source verification](../../../../docs/migrations/verification.md) records limited existing checks. [Maintained document requirements](../../harness/requirements/maintained-notes.md) distinguish WorkflowX contracts from later runtime adoption. [AgentX evidence](note://62b44166-82f0-41ff-838d-e2b02388ed06/0b2e7c13-8ae0-42d9-b185-1dd575c43a19) and its docs/migrations/note-v2.json. No JanusX adoption or live-model result is claimed.
 
 ## Handoff
 
-Main Agent owns this shared Task and updates it before every handoff with current source/target revisions, fixed references, narrowed scope, unresolved issues, next action and verification evidence. Next inspect JanusX consumers and narrow its integration scope against agentX revision 3765178e2ede9337f9ae945231ea24d7b6177274. Reuse the common tools and module metadata; implement module-only navigation and type grouping. Finalize and push only after integration debugging and review. AgentX local acceptance is recorded above; JanusX remains the next phase. New agents read this Task and linked source documents without relying on earlier conversation.
+Main Agent owns this shared Task and updates it before every handoff with current source/target revisions, fixed references, narrowed scope, unresolved issues, next action and verification evidence. Next inspect JanusX consumers and narrow its integration scope against agentX revision 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2. Reuse the common tools and module metadata; implement module-only navigation and type grouping. Finalize and push only after integration debugging and review. AgentX local acceptance is recorded above; JanusX remains the next phase. New agents read this Task and linked source documents without relying on earlier conversation.
 
 ## Additional release requirements
 
