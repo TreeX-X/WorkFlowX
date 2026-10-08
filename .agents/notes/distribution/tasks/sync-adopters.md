@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T06:47:53.111Z",
+  "updated": "2026-10-08T07:17:30Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -127,9 +127,9 @@ JanusX's follow-up module browsing implementation is committed at 48bc3b7 on dev
 
 ## Handoff
 
-Main Agent owns this Task. AgentX remains at 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2; JanusX's original adoption evidence remains pinned to 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204, using WorkflowX candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and the 2.0.0 profile. JanusX follow-ups 48bc3b7 and a30f73b implement [module browsing](note://972afef3-2fc7-49de-a3ee-7e041225d28c/810fe6d0-a765-48f1-b89e-b0b3dd7048a8) AC-1 through AC-7, including retaining the current module as the page parent. Main self-check evidence is recorded in that requirement. No new formal Task execution or independent evaluation occurred.
+Main Agent owns this Task. AgentX remains at 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2; JanusX's original adoption evidence remains pinned to 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204, using WorkflowX candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and the 2.0.0 profile. JanusX follow-ups 48bc3b7, a30f73b and ded7128 implement [module browsing](note://972afef3-2fc7-49de-a3ee-7e041225d28c/810fe6d0-a765-48f1-b89e-b0b3dd7048a8) AC-1 through AC-8. Single-root home now uses the root module page and its multi-row layout, including root-owned documents, without a duplicate overview breadcrumb or history step. Multi-root aggregation and no-module access remain available. The latest Main self-check passes 15 unit tests, 9 browser tests, strict typechecking and corpus validation; detailed evidence is in that requirement. No new formal Task execution or independent evaluation occurred.
 
-Follow the revised JanusX plan at 6ab5b22: (1) module browsing is implemented; (2) next adapt [focus tools to module navigation](note://972afef3-2fc7-49de-a3ee-7e041225d28c/c28b6fb3-5cb4-4ebc-895d-0e8dab6c1725); (3) design responsibility-based submodules and reorganize Notes incrementally; (4) update README demonstrations; (5) independent final review and fixes. Item 2 is accepted but not implemented. First align tool intent and browser/selection/working-set context, then wire shared navigation and module-grouped focus lists, then verify real tool calls through both UI surfaces. Keep parent and target in view, preserve pins/removals, and prevent background reads or scope updates from taking over navigation. The six new AC have no implementation pass evidence yet.
+Follow the revised JanusX plan at ded7128: (1) module browsing and the single-root home follow-up are implemented; (2) next adapt [focus tools to module navigation](note://972afef3-2fc7-49de-a3ee-7e041225d28c/c28b6fb3-5cb4-4ebc-895d-0e8dab6c1725); (3) design responsibility-based submodules and reorganize Notes incrementally; (4) update README demonstrations; (5) independent final review and fixes. Item 2 is accepted but not implemented. First align tool intent and browser/selection/working-set context, then wire shared navigation and module-grouped focus lists, then verify real tool calls through both UI surfaces. Keep parent and target in view, preserve pins/removals, and prevent background reads or scope updates from taking over navigation. The six new AC have no implementation pass evidence yet.
 
 The repository still has its original project and eight broad modules. Preserve identities, historical acceptance and the three protected legacy Notes during later reorganization. Before starting a new formal Task execution, explicitly revise this Task's earlier AC-4 interaction wording and pin the new acceptance baseline; prior click/expand evidence remains attached to the original integration commit. Keep work.review independent. No push or release is requested. A new session can continue from this Task and the linked target evidence without the earlier conversation.
 
