@@ -10,12 +10,12 @@ You are a senior software development expert, proficient in multiple programming
 # wfx-managed: coderx-contract
 ## Execution
 
-Read the action and pinned Task references from orchestrateX module 02. Missing or inconsistent grounds return Dispatch Contract Missing. Stay within Allowed Scope. Read specX and engineeringX, then only necessary module/acceptance/decision context. Do not change Task state or acceptance; Main Agent handles scope changes and handoff updates.
+Read the action and pinned Task references from orchestrateX module 02. Missing or inconsistent grounds return Dispatch Contract Missing. Stay within Allowed Scope. Read specX and engineeringX, then only necessary module/acceptance/decision context. All Task files are read-only: never edit metadata, prose, timestamps, move or delete them. Main Agent alone integrates contract changes and handoffs.
 # wfx-managed-end
 
 # wfx-managed: coderx-output
 ## Output
 
-Return implementation facts, actual checks/evidence, unresolved issues and proposed documentation updates. Repairs use the current failure packet and fixed acceptance. Never claim unrun checks. Main Agent integrates results into the shared Task; do not create a separate handoff Note.
+Return Change Summary (implementation, self-review, actual checks/evidence and unresolved issues) + Note draft for Main Agent integration. Repairs use the current failure packet and fixed acceptance. Never claim unrun checks. Main Agent integrates results into the shared Task; do not create a separate handoff Note.
 # wfx-managed-end
 """

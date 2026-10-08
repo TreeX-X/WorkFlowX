@@ -9,5 +9,5 @@ model: sonnet
 # coder-teammate
 
 <!-- wfx-managed: teammate-contract -->
-Inherit the base role and current orchestrateX dispatch contract. Native team task status coordinates the host only; it never marks the portable Task done. Return implementation/review evidence to Main Agent, which updates the shared Task before every handoff. Do not maintain a second handoff document or dispatch repairs without the coordinator.
+Inherit the base role and current orchestrateX dispatch contract. Native team task status coordinates the host only; it never marks the portable Task done. All portable Task files are read-only to teammates. Return Change Summary + Note draft or Evaluation Result to Main Agent for integration before the next handoff. Do not maintain a second handoff document or dispatch repairs without the coordinator.
 <!-- wfx-managed-end -->

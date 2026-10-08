@@ -10,42 +10,20 @@
     "scope": [
       {
         "repoId": "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
-        "paths": [
-          ".codex/skills/",
-          ".claude/skills/",
-          ".claude/commands/xarch.md",
-          "docs/",
-          "scripts/",
-          ".agents/notes/"
-        ]
+        "paths": [".codex/skills/",".claude/skills/",".claude/commands/xarch.md","docs/","scripts/",".agents/notes/"]
       },
       {
         "repoId": "62b44166-82f0-41ff-838d-e2b02388ed06",
-        "paths": [
-          ".codex/skills/",
-          ".claude/skills/",
-          ".claude/commands/xarch.md",
-          ".agents/notes/"
-        ]
+        "paths": [".codex/skills/",".claude/skills/",".claude/commands/xarch.md",".agents/notes/"]
       },
       {
         "repoId": "972afef3-2fc7-49de-a3ee-7e041225d28c",
-        "paths": [
-          ".codex/skills/",
-          ".claude/skills/",
-          ".claude/commands/xarch.md"
-        ]
+        "paths": [".codex/skills/",".claude/skills/",".claude/commands/xarch.md"]
       }
     ],
     "acceptanceRefs": [
-      {
-        "uri": "note://972afef3-2fc7-49de-a3ee-7e041225d28c/2baf7439-f3a2-4bcf-a451-b922db598ea7",
-        "criterionId": "AC-1"
-      },
-      {
-        "uri": "note://972afef3-2fc7-49de-a3ee-7e041225d28c/2baf7439-f3a2-4bcf-a451-b922db598ea7",
-        "criterionId": "AC-2"
-      }
+      {"uri":"note://972afef3-2fc7-49de-a3ee-7e041225d28c/2baf7439-f3a2-4bcf-a451-b922db598ea7","criterionId":"AC-1"},
+      {"uri":"note://972afef3-2fc7-49de-a3ee-7e041225d28c/2baf7439-f3a2-4bcf-a451-b922db598ea7","criterionId":"AC-2"}
     ],
     "verification": [
       {
@@ -55,9 +33,7 @@
         "repoId": "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
         "cwd": ".",
         "program": "node",
-        "args": [
-          "scripts/verify-harness-standard.mjs"
-        ]
+        "args": ["scripts/verify-harness-standard.mjs"]
       },
       {
         "id": "V-2",
@@ -66,17 +42,12 @@
         "repoId": "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
         "cwd": ".",
         "program": "node",
-        "args": [
-          "scripts/sync-harness-rules.mjs",
-          "--check",
-          "--repos",
-          "scripts/sync-repos.list"
-        ]
+        "args": ["scripts/sync-harness-rules.mjs","--check","--repos","scripts/sync-repos.list"]
       }
     ],
     "review": "independent"
   },
-  "updated": "2026-10-07T16:12:56.085Z",
+  "updated": "2026-10-08T01:53:19.310Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/4d4ff96e-89a1-4efc-839e-c9333eba0bc5",
   "extensions": {
     "migration": {

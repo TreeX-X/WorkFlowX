@@ -1,108 +1,62 @@
 ---
 {
-    "schema":  "harness-note/2",
-    "id":  "2ce416be-b118-40c4-bddc-87da25a8fe02",
-    "kind":  "task",
-    "lifecycle":  "draft",
-    "created":  "2026-10-07",
-    "updated": "2026-10-07T17:26:06.799Z",
-    "module":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
-    "work":  {
-                 "scope":  [
-                               {
-                                   "repoId":  "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
-                                   "paths":  [
-                                                 ".agents/notes/distribution/",
-                                                 "docs/reviews/",
-                                                 "docs/migrations/"
-                                             ]
-                               },
-                               {
-                                   "repoId":  "62b44166-82f0-41ff-838d-e2b02388ed06",
-                                   "paths":  [
-                                                 "."
-                                             ]
-                               },
-                               {
-                                   "repoId":  "972afef3-2fc7-49de-a3ee-7e041225d28c",
-                                   "paths":  [
-                                                 "."
-                                             ]
-                               }
-                           ],
-                 "acceptanceRefs":  [
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02",
-                                            "criterionId":  "AC-1"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02",
-                                            "criterionId":  "AC-2"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02",
-                                            "criterionId":  "AC-3"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02",
-                                            "criterionId":  "AC-4"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c",
-                                            "criterionId":  "AC-1"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c",
-                                            "criterionId":  "AC-2"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c",
-                                            "criterionId":  "AC-3"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/07dc09a5-5802-4714-957f-cc9ea7d3c167",
-                                            "criterionId":  "AC-1"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/07dc09a5-5802-4714-957f-cc9ea7d3c167",
-                                            "criterionId":  "AC-2"
-                                        },
-                                        {
-                                            "uri":  "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/07dc09a5-5802-4714-957f-cc9ea7d3c167",
-                                            "criterionId":  "AC-3"
-                                        }
-                                    ],
-                 "verification":  [
-                                      {
-                                          "id":  "V-1",
-                                          "kind":  "command",
-                                          "required":  true,
-                                          "repoId":  "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
-                                          "cwd":  ".",
-                                          "program":  "node",
-                                          "args":  [
-                                                       "scripts/review-note-v2.mjs"
-                                                   ]
-                                      },
-                                      {
-                                          "id":  "V-2",
-                                          "kind":  "manual",
-                                          "required":  true,
-                                          "repoId":  "62b44166-82f0-41ff-838d-e2b02388ed06",
-                                          "cwd":  ".",
-                                          "description":  "Verify pinned managed-file parity, migration accounting, runtime reads/writes/wiki, and fresh-session Task handoff; record commands and results."
-                                      },
-                                      {
-                                          "id":  "V-3",
-                                          "kind":  "manual",
-                                          "required":  true,
-                                          "repoId":  "972afef3-2fc7-49de-a3ee-7e041225d28c",
-                                          "cwd":  ".",
-                                          "description":  "Verify managed-file parity, migrated corpus, shared agentX tools in Chat, and planned/current module blueprint navigation; record commands and results."
-                                      }
-                                  ],
-                 "review":  "independent"
-             }
+  "schema": "harness-note/2",
+  "id": "2ce416be-b118-40c4-bddc-87da25a8fe02",
+  "kind": "task",
+  "lifecycle": "draft",
+  "created": "2026-10-07",
+  "updated": "2026-10-08T01:53:19.310Z",
+  "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
+  "work": {
+    "scope": [
+      {
+        "repoId": "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
+        "paths": [".agents/notes/distribution/","docs/reviews/","docs/migrations/"]
+      },
+      {"repoId":"62b44166-82f0-41ff-838d-e2b02388ed06","paths":["."]},
+      {"repoId":"972afef3-2fc7-49de-a3ee-7e041225d28c","paths":["."]}
+    ],
+    "acceptanceRefs": [
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-1"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-2"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-3"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/2ce416be-b118-40c4-bddc-87da25a8fe02","criterionId":"AC-4"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c","criterionId":"AC-1"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c","criterionId":"AC-2"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/ca370eb7-05a0-4bde-9539-4f9fddf77b2c","criterionId":"AC-3"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/07dc09a5-5802-4714-957f-cc9ea7d3c167","criterionId":"AC-1"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/07dc09a5-5802-4714-957f-cc9ea7d3c167","criterionId":"AC-2"},
+      {"uri":"note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/07dc09a5-5802-4714-957f-cc9ea7d3c167","criterionId":"AC-3"}
+    ],
+    "verification": [
+      {
+        "id": "V-1",
+        "kind": "command",
+        "required": true,
+        "repoId": "d2499d5b-4ceb-4d46-aa3b-18e5c9b86034",
+        "cwd": ".",
+        "program": "node",
+        "args": ["scripts/review-note-v2.mjs"]
+      },
+      {
+        "id": "V-2",
+        "kind": "manual",
+        "required": true,
+        "repoId": "62b44166-82f0-41ff-838d-e2b02388ed06",
+        "cwd": ".",
+        "description": "Verify pinned managed-file parity, migration accounting, runtime reads/writes/wiki, and fresh-session Task handoff; record commands and results."
+      },
+      {
+        "id": "V-3",
+        "kind": "manual",
+        "required": true,
+        "repoId": "972afef3-2fc7-49de-a3ee-7e041225d28c",
+        "cwd": ".",
+        "description": "Verify managed-file parity, migrated corpus, shared agentX tools in Chat, and planned/current module blueprint navigation; record commands and results."
+      }
+    ],
+    "review": "independent"
+  }
 }
 ---
 

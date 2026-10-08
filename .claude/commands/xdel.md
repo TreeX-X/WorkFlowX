@@ -4,6 +4,6 @@ description: xdel WorkflowX workflow
 
 # /xdel
 
-Use the shared Task for one delegated implementation. Main Agent updates it before handoff and integrates results; respect its existing review obligations.
+Dispatch coderX once against an accepted Task with engineeringX, specX and self-review. Return Change Summary + Note draft. Main Agent alone edits Tasks; never automatically invoke evaluatorX. Any retained independent-review obligation remains pending.
 
 Use .claude/skills/orchestrateX/SKILL.md and only its applicable references.

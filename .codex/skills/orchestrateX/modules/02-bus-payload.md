@@ -1,29 +1,25 @@
 # Task handoff contract
 
-Main Agent updates the shared Task before every handoff. The Task holds durable scope, acceptance, verification, current progress, unresolved issues and next action. A payload selects a role/action against a fixed snapshot; it does not duplicate the whole Task.
+Only Main Agent writes the shared Task, including metadata, prose, time and execution updates through its runtime. Subagents read fixed inputs and return results; they never edit, move or delete Tasks.
+
+## Task ownership
+
+Keep each fact once: work holds literal scope, AC references, check declarations and review obligation; Scope explains delivery constraints; Acceptance criteria owns local clauses or links external ones; Verification adds conditions absent from declared checks. Progress records verified/unverified work and findings; Evidence locates results; Handoff records blockers and the next action. Do not copy commands, raw logs or machine state into prose. Preserve required snapshots and receipts.
+
+Before dispatch, Main Agent integrates prior results, validates scope/AC/dependencies, and accepts the agreed Task using confirmed user intent. Pin its readable snapshot; a hash without content is insufficient. Draft/proposed Tasks cannot execute. Changed grounds require reassessment, never silent rebaselining.
 
 ## coderX Task
 
-Before execution, validate Task scope, acceptance sources and dependencies; resolve blockers and retain the mode-required review obligation. Using already-confirmed user intent, Main Agent accepts the agreed contract (`lifecycle: accepted`) before pinning its snapshot and dispatching. Draft/proposed Tasks are not executable; unclear or changed execution grounds require resolution, never an automatic rebaseline.
+Required: Workflow Mode; Task URI and fixed snapshot; current Objective; Allowed Scope; fixed Acceptance Refs; Applicable Decisions; Dependency Tasks/results; Standard Version; Required Skills (engineeringX, specX); Verification; Output. Supply existing fields through precise Task references, without pasting whole documents or conversations. Add only necessary module context.
 
-Required: Workflow Mode; Task URI and snapshot (commit or source hash); current Objective; Allowed Scope; fixed Acceptance Refs; Applicable Decisions; Dependency Tasks and relevant results; Standard Version; Required Skills (engineeringX, specX); Verification; Output.
-
-Fields already explicit in the pinned Task may be supplied as precise section/field references. Include only necessary Goal Refs/module context. Verify referenced snapshots are readable; a hash alone does not supply missing content.
-
-Output: implementation summary, actual checks/evidence, unresolved issues and proposed documentation updates. Return contract changes as scope-change requests. Main Agent owns the Task and final document integration.
+Output: Change Summary (implementation, self-review, actual checks, unresolved issues) + Note draft. Return requested contract changes to Main Agent. xdel dispatches once and never automatically invokes evaluatorX; a retained independent-review obligation remains pending, not waived.
 
 ## evaluatorX Review
 
-Required: Task URI and fixed snapshot; Changed Files/tested manifest; fixed Acceptance Source; Review Focus; Output (tests, findings, PASS/NEEDS_FIX/UNEVALUABLE).
+Required: Task URI and fixed snapshot; Changed Files/tested manifest; fixed Acceptance Source; Review Focus; Output (Evaluation Result: tests, findings, PASS/NEEDS_FIX/UNEVALUABLE).
 
-Provide constraints and evidence, not the implementation conversation or persuasive success narrative. Reviewer identity differs from implementer. For NEEDS_FIX return a compact failure record: failed check, observed/expected, likely cause, scope, regression risk and blocker.
+Run the smallest useful checks against fixed AC. Supply constraints and evidence without implementation conversation or persuasive success narrative. Use a separate reviewer identity. On NEEDS_FIX, return failed check, observed/expected result, likely cause, repair scope, regression risk and blocker.
 
-## Repair / dependent task
+## Repair and continuation
 
-A local repair reuses Task URI, fixed acceptance and scope with a new attempt: include failure evidence, current action and prohibited unrelated edits. Do not resend full history.
-
-A cross-task issue belongs in the affected Task: predecessor URI, changed contract, relevant files, required adaptation and risk. Main Agent reconciles dependencies before dispatch.
-
-## Checkpoint
-
-Before handoff, Main Agent writes Progress, Evidence and Handoff sections: verified work, unverified reports, concrete unresolved issues, next action and exact necessary references. Refresh updated. Do not change acceptance to match an implementation. On interruption, re-read Task and inspect current code/evidence; old conversation is optional context, never a prerequisite.
+Main Agent updates the same Task before repair or dependent work. A repair payload carries fixed references, current action and failure evidence; do not resend history. Cross-task issues belong in the affected Task with predecessor, changed interface, files and adaptation needed. On interruption, re-read Task/code/evidence and recheck run ownership. Local logs are optional; no separate per-agent handoff Note.

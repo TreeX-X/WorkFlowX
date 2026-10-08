@@ -8,7 +8,7 @@ Notes live recursively under .agents/notes. Full identity is note://<repo-id>/<n
 
 Kinds are module, note, idea, requirement, decision and task. Module entries own overall design, ordinary notes own independently useful detail, ideas own exploration, requirements own acceptance, decisions own reasons and tasks own bounded delivery. Former initiative documents are classified by purpose rather than automatically converted to modules.
 
-Frontmatter is JSON or the documented YAML subset: two-space maps/lists, scalars and inline scalar lists; no tags, anchors, aliases, merge keys, multiline/block scalars or inline YAML objects. Unknown fields produce diagnostics and must survive reads. Writers preserve unrelated user content. JSON frontmatter is valid YAML and is useful for exact nested contracts.
+Frontmatter is JSON or the documented YAML subset: two-space maps/lists, scalars and inline scalar lists; no tags, anchors, aliases, merge keys, multiline/block scalars or inline YAML objects. Unknown fields produce diagnostics and must survive reads. Writers preserve unrelated user content. Prefer compact, readable JSON metadata with two-space indentation and short nested values inline. Formatting changes raw-file identity, never parsed values or Task contract semantics. JSON frontmatter is valid YAML and is useful for exact nested contracts.
 
 ## Ownership and states
 

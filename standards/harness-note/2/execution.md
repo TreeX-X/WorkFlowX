@@ -2,13 +2,13 @@
 
 Main Agent owns Task updates and scheduling. All implementer/reviewer/repair agents use the same Task for one deliverable, returning results for Main Agent to integrate. Independent deliverables may have separate Tasks; changing agents or retrying does not create a new Task or handoff document.
 
-Before each handoff, refresh updated and record current Progress, Evidence and Handoff: verified work, reports not yet verified, concrete unresolved issues, next action, relevant dependencies and accessible fixed references. An interrupted session is recoverable from repository Task, referenced source snapshots, code and formal evidence; recheck the checkout and run ownership. Conversations and local logs are optional context.
+Before each handoff, refresh updated and record current Progress, Evidence and Handoff: verified work, reports not yet verified, concrete unresolved issues, next action, relevant dependencies and accessible fixed references. An interrupted session is recoverable from repository Task, referenced source snapshots, code and formal evidence; recheck the checkout and run ownership. Conversations and local logs are optional context. Keep progress, evidence and next action distinct; runtime state, baseline hashes and receipt lists already in execution need no second prose copy. A bounded host checkpoint may identify the next action while preserving Main Agent-authored context.
 
 ## Modes and authority
 
-Ordinary xdo has no Task and never creates one. Explicitly selected existing Tasks may run directly as xdo. xdel/xflow create or reuse Tasks. Changing executor/mode cannot weaken work.review or acceptance: independent remains independent until the user explicitly revises the obligation. xflow requires independent review; xdel defaults to self review unless an existing stronger obligation applies.
+Ordinary xdo has no Task and never creates one. Explicitly selected existing Tasks may run directly as xdo. xdel/xflow create or reuse Tasks. Changing executor/mode cannot weaken work.review or acceptance: independent remains independent until the user explicitly revises the obligation. xflow requires independent review. xdel performs one implementation and self-review and never automatically invokes evaluatorX. An existing stronger obligation remains pending; the self-review receipt cannot complete that Task. Main Agent arranges separate review without weakening the contract.
 
-Subagents do not change task.execution or acceptance. The runtime performs controlled state transitions for Main Agent using exact expected file hashes, matching previous execution state and local run revisions. A stale writer reloads; summaries never authorize overwriting a run lease. Unavailable native dispatch is reported rather than role-played.
+Subagents cannot modify any Task metadata, body, timestamps, paths or existence. Only Main Agent maintains Tasks; implementation and evaluation results return to it. The runtime performs controlled state transitions for Main Agent using exact expected file hashes, matching previous execution state and local run revisions. A stale writer reloads; summaries never authorize overwriting a run lease. Unavailable native dispatch is reported rather than role-played.
 
 ## Contract identity
 
