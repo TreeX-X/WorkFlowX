@@ -1,6 +1,6 @@
 # WorkflowX v2 readiness review
 
-Reviewed implementation: `324f20518dcb021d3c27451ff107edd46c9ff5bd`. Original result: **NEEDS_FIX**. Current status: **all five findings repaired and self-reviewed; independent finalization and downstream adoption remain pending**. The compact skills preserve the main intended design, but the existing test suite does not establish complete execution readiness.
+Reviewed implementation: `324f20518dcb021d3c27451ff107edd46c9ff5bd`. Original result: **NEEDS_FIX**. Current status: **source and downstream local integration independently accepted**; see the final [integration Task](../../.agents/notes/distribution/tasks/sync-adopters.md). The findings and limited coverage below describe their historical reviewed baseline. The compact skills preserve the main intended design, but the existing test suite does not establish complete execution readiness.
 
 ## Findings at the reviewed revision
 
@@ -54,4 +54,4 @@ Existing v1/v2 format and hash locks are unchanged: these are implementation cor
 
 ## Follow-up
 
-Independently finalize and pin the repaired source revision before [the downstream synchronization Task](../../.agents/notes/distribution/tasks/sync-adopters.md). Keep existing uppercase-X skill names. agentX runtime adoption and JanusX blueprint/Chat behavior remain separate acceptance phases.
+Source regressions and downstream local acceptance are complete, including shared evaluator execution, Blueprint interactions, full desktop recording and migration/configuration checks. The [integration Task](../../.agents/notes/distribution/tasks/sync-adopters.md) records the reviewed revisions and two historical evidence qualifications. Release and remote push remain separate actions.

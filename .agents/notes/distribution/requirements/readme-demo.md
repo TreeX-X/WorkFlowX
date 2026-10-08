@@ -5,7 +5,7 @@
   "kind": "requirement",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T10:50:21.819Z",
+  "updated": "2026-10-08T14:39:00Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf"
 }
 ---
@@ -24,7 +24,7 @@ WorkflowX's bilingual README and diagrams show maintained module documents and c
 
 ## Evidence
 
-Main self-checks satisfy this presentation requirement; final independent integration review remains pending. Both READMEs contain the same nine-document tree and explicit implementation/evaluation/repair handoff examples. Each module has one entry, ordinary Notes remain at project and parent levels, and all six kinds are present. The example Task remains unexecuted; no receipt or independent verdict is invented.
+Presentation acceptance now also passes independent integration review. Both READMEs contain the same nine-document tree and explicit implementation/evaluation/repair handoff examples. Each module has one entry, ordinary Notes remain at project and parent levels, and all six kinds are present. The example Task remains unexecuted; no receipt or independent verdict is invented.
 
 `node scripts/export-readme-assets.mjs` passes. Maintained-note PNGs are 1200×675; both workflow GIFs are 960×540, 360 frames and 30 seconds. Source rendering has no page errors; bilingual directory/footer and implementation, evaluation, repair and closeout samples were visually checked. Task AC meanings stay consistent between planning, evaluation and closeout. All 50 local links in both repositories' READMEs and the recorder guide resolve.
 
@@ -32,4 +32,4 @@ JanusX's `npm run showcase -- build blueprint` passes on isolated source `dc8a63
 
 ## Delivery
 
-The [adoption Task](../tasks/sync-adopters.md) records the local demo delivery and exact repository commits. Final independent review and release remain separate obligations.
+The [adoption Task](../tasks/sync-adopters.md) records the local demo delivery and exact repository commits. The independent evaluator reran the complete recording on JanusX 0408046 with agentX 5c41e2f: 271 frames, exact six scripted requests and all identity/count assertions passed; generated visuals were inspected. Local acceptance is complete, while publication remains a separate action.

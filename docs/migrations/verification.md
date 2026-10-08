@@ -1,6 +1,6 @@
 # WorkflowX v2 verification
 
-This repository delivers the v2 format, compact WorkflowX instructions, offline conformance tools and its tracked Note corpus migration. agentX runtime adoption and JanusX blueprint/Chat acceptance remain later phases.
+This repository delivers the v2 format, compact WorkflowX instructions, offline conformance tools and its tracked Note corpus migration. Source and downstream local integration now pass independent acceptance; the [integration Task](../../.agents/notes/distribution/tasks/sync-adopters.md) owns current revisions and historical evidence qualifications. Checks below preserve their original baselines.
 
 ## Checks
 
@@ -27,4 +27,4 @@ Before agentX writes v2, implement the supported parser/writer/index and verify 
 
 ## Readiness qualification
 
-The subsequent [source review](../reviews/workflowx-v2.md) found five issues, now repaired. Current verification passes 12 unit tests, 8 review regression assertions, standard/corpus validation for 20 documents, skill-resource checks and source managed parity. Original checks above remain historical evidence. Independent finalization and downstream runtime adoption are still pending; source fixes do not establish host execution or blueprint acceptance.
+The subsequent [source review](../reviews/workflowx-v2.md) found five issues, now repaired. Current verification passes 12 unit tests, 8 review regression assertions, standard/corpus validation for 20 documents, skill-resource checks and source managed parity. Original checks above remain historical evidence. Later independent source and downstream acceptance are complete in the integration Task; these original offline checks alone did not establish host execution or Blueprint acceptance.
