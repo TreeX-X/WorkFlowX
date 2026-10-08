@@ -5,7 +5,7 @@
   "kind": "task",
   "lifecycle": "accepted",
   "created": "2026-10-07",
-  "updated": "2026-10-08T04:42:07.243Z",
+  "updated": "2026-10-08T05:42:54.599Z",
   "module": "note://d2499d5b-4ceb-4d46-aa3b-18e5c9b86034/7d9d87b8-8153-4b01-8c0b-fa52f50127cf",
   "work": {
     "scope": [
@@ -125,7 +125,7 @@ JanusX verification passes strict typechecking, build:check, 124 relevant unit t
 
 ## Handoff
 
-Main Agent owns this Task. Local adoption is implemented in agentX 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2 and JanusX 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204, using WorkflowX candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and the pinned 2.0.0 profile. The [JanusX migration Task](note://972afef3-2fc7-49de-a3ee-7e041225d28c/bdced085-ceb8-441f-a4fc-48d6223b6257) is complete for clean sources; its three protected user-edited Notes and old links remain explicit exclusions. Next update README demonstrations and obtain independent review against the fixed acceptance references and exact commits, then resolve findings before any release. Keep work.review independent and do not treat these Main-authored checks as an evaluator result. No remote push or release is part of this completed local integration. A new session can continue from this Task and the target evidence without the earlier conversation.
+Main Agent owns this Task. Local adoption is implemented in agentX 61d6e7fe2e943deb8da725c6e518c5ba0ed030c2 and JanusX 9c49dbabfa5f9ff1a1144fb23da0a7f3f6992204, using WorkflowX candidate a44cfb7c46219b215a6e6c0dc93221a3d39e6d65 and the pinned 2.0.0 profile. The [JanusX migration Task](note://972afef3-2fc7-49de-a3ee-7e041225d28c/bdced085-ceb8-441f-a4fc-48d6223b6257) is complete for clean sources; its three protected user-edited Notes and old links remain explicit exclusions. The user has since accepted a new [module browsing requirement](note://972afef3-2fc7-49de-a3ee-7e041225d28c/810fe6d0-a765-48f1-b89e-b0b3dd7048a8). Follow the revised JanusX plan recorded in fe1d072: (1) unified blueprint entry, single-click left preview, double-click module browsing, return restoration, source-wide search/Chat navigation and distinct module/file nodes; (2) responsibility-based submodule design and incremental Note reorganization; (3) README demonstrations using the stabilized behavior; (4) independent final review and fixes. Next implement item 1 against the new requirement AC-1 through AC-6, using a three-level fixture before real-corpus refinement. Before starting a new Task execution, explicitly revise the earlier AC-4 interaction wording and pin the new acceptance baseline; the prior click/expand evidence remains attached to the original integration commit. This update records planning only; none of the new UI work is complete. Keep work.review independent and do not treat these Main-authored checks as an evaluator result. No remote push or release is part of this completed local integration. A new session can continue from this Task and the target evidence without the earlier conversation.
 
 ## Additional release requirements
 
