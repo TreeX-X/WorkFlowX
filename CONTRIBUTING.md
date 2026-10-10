@@ -6,7 +6,7 @@ Split independent changes. A PR carries one `kind/*` label and every material `a
 
 ## Atomic landing
 
-Non-trivial changes land with their Agent Note in the same PR: code + Note (new `implemented/` or in-place sync per `noteX`) + entry reverse comment. Only mechanical or local edits are exempt (`not applicable`).
+Non-trivial changes land with their Agent Note in the same PR: code + Note (in-place sync per `noteX`, new topic file only when none fits) + entry reverse comment. Only mechanical or local edits are exempt (`not applicable`).
 
 ## Writing standard
 
